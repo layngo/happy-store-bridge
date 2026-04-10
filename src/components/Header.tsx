@@ -1,19 +1,57 @@
 import { Link } from "react-router-dom";
 import { CartDrawer } from "./CartDrawer";
+import { cn } from "@/lib/utils";
 
-export const Header = () => {
+export const Header = ({ variant = "default" }: { variant?: "default" | "light" }) => {
+  const light = variant === "light";
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full border-b backdrop-blur-md",
+        light ? "border-sky-200/80 bg-sky-100/85" : "border-border bg-background/80",
+      )}
+    >
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <span className="font-heading text-xl font-bold tracking-wider text-foreground">LAY / N / GO</span>
+          <span
+            className={cn(
+              "font-heading text-xl font-bold tracking-wider",
+              light ? "text-slate-900" : "text-foreground",
+            )}
+          >
+            LAY / N / GO
+          </span>
         </Link>
         <nav className="hidden md:flex items-center gap-8">
-          <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Home</Link>
-          <a href="#products" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Shop</a>
-          <a href="#about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">About</a>
+          <Link
+            to="/"
+            className={cn(
+              "text-sm font-medium transition-colors",
+              light ? "text-slate-600 hover:text-slate-900" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            Home
+          </Link>
+          <a
+            href="#products"
+            className={cn(
+              "text-sm font-medium transition-colors",
+              light ? "text-slate-600 hover:text-slate-900" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            Shop
+          </a>
+          <a
+            href="#about"
+            className={cn(
+              "text-sm font-medium transition-colors",
+              light ? "text-slate-600 hover:text-slate-900" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            About
+          </a>
         </nav>
-        <CartDrawer />
+        <CartDrawer triggerClassName={light ? "text-slate-700 hover:bg-sky-200/60 hover:text-slate-900" : undefined} />
       </div>
     </header>
   );
