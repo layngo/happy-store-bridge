@@ -3,7 +3,7 @@ import { ProductGrid } from "@/components/ProductGrid";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[hsl(178_12%_5.5%)]">
       <Header />
       
       {/* Hero */}
