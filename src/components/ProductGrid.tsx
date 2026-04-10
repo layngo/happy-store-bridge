@@ -8,9 +8,11 @@ interface ProductGridProps {
   prefetchedProducts?: ShopifyProduct[];
   /** Load products belonging to this collection handle (Storefront API). */
   collectionHandle?: string;
+  /** When fetching all products (home / search-style), limit count. */
+  fetchFirst?: number;
 }
 
-export const ProductGrid = ({ prefetchedProducts, collectionHandle }: ProductGridProps = {}) => {
+export const ProductGrid = ({ prefetchedProducts, collectionHandle, fetchFirst }: ProductGridProps = {}) => {
   const [products, setProducts] = useState<ShopifyProduct[]>(prefetchedProducts ?? []);
   const [loading, setLoading] = useState(prefetchedProducts === undefined);
 
@@ -30,7 +32,7 @@ export const ProductGrid = ({ prefetchedProducts, collectionHandle }: ProductGri
           const col = await fetchCollectionByHandle(collectionHandle, 48);
           if (!cancelled) setProducts(col?.products ?? []);
         } else {
-          const list = await fetchProducts(20);
+          const list = await fetchProducts(fetchFirst ?? 20);
           if (!cancelled) setProducts(list);
         }
       } catch (e) {
@@ -45,7 +47,7 @@ export const ProductGrid = ({ prefetchedProducts, collectionHandle }: ProductGri
     return () => {
       cancelled = true;
     };
-  }, [prefetchedProducts, collectionHandle]);
+  }, [prefetchedProducts, collectionHandle, fetchFirst]);
 
   if (loading) {
     return (

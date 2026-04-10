@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { fetchCollections, type ShopifyCollectionSummary } from "@/lib/shopify";
 import { sortCollectionsForDisplay } from "@/lib/collectionOrder";
 import { Header } from "@/components/Header";
+import { SiteFooter } from "@/components/SiteFooter";
 import { CollectionCard } from "@/components/CollectionCard";
 import { Loader2, ChevronRight, Home } from "lucide-react";
 
@@ -18,9 +19,9 @@ const CollectionsIndex = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <div className="container py-8">
+      <div className="container py-8 flex-1">
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
           <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground transition-colors">
             <Home className="w-4 h-4" />
@@ -49,6 +50,7 @@ const CollectionsIndex = () => {
           </div>
         )}
       </div>
+      <SiteFooter />
     </div>
   );
 };

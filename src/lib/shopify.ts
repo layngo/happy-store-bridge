@@ -46,6 +46,8 @@ export interface ShopifyProduct {
       name: string;
       values: string[];
     }>;
+    tags: string[];
+    createdAt?: string;
   };
 }
 
@@ -86,6 +88,8 @@ const STOREFRONT_QUERY = `
           title
           description
           handle
+          tags
+          createdAt
           priceRange {
             minVariantPrice {
               amount
@@ -134,6 +138,8 @@ const PRODUCT_BY_HANDLE_QUERY = `
       title
       description
       handle
+      tags
+      createdAt
       priceRange {
         minVariantPrice {
           amount
@@ -178,6 +184,11 @@ export async function fetchProducts(first = 20, query?: string): Promise<Shopify
   return data?.data?.products?.edges || [];
 }
 
+export async function fetchRelatedProducts(excludeHandle: string, first = 12): Promise<ShopifyProduct[]> {
+  const edges = await fetchProducts(first + 6);
+  return edges.filter((e) => e.node.handle !== excludeHandle).slice(0, first);
+}
+
 export async function fetchProductByHandle(handle: string): Promise<ShopifyProduct['node'] | null> {
   const data = await storefrontApiRequest(PRODUCT_BY_HANDLE_QUERY, { handle });
   return data?.data?.productByHandle || null;
@@ -188,6 +199,8 @@ const PRODUCT_LIST_FIELDS = `
   title
   description
   handle
+  tags
+  createdAt
   priceRange {
     minVariantPrice {
       amount
