@@ -1,8 +1,8 @@
 {
   "source": "https://www.layngo.com",
-  "fetched_at_utc": "2026-04-10T16:33:47.068682+00:00",
-  "note": "Raw HTML snapshots from live Shopify store for rebrand reference. Assets load from original CDN when opened locally. Policy URLs fetched separately (not in public sitemap).",
-  "page_count": 34,
+  "fetched_at_utc": "2026-04-10T16:36:40.627869+00:00",
+  "note": "Raw HTML snapshots. Includes /collections listing. Assets load from Shopify CDN when opened locally.",
+  "page_count": 35,
   "urls": [
     {
       "url": "https://www.layngo.com/blogs/news",
@@ -21,6 +21,12 @@
       "path": "collections/frontpage.html",
       "bytes": 118973,
       "sha256_prefix": "da9ba602eaf5bad3"
+    },
+    {
+      "url": "https://www.layngo.com/collections",
+      "path": "collections/index.html",
+      "bytes": 125515,
+      "sha256_prefix": "aa490eb5d5e279c5"
     },
     {
       "url": "https://www.layngo.com/collections/military-first-responder",

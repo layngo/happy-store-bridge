@@ -1,18 +1,51 @@
 import { useEffect, useState } from "react";
-import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
+import { fetchCollectionByHandle, fetchProducts, type ShopifyProduct } from "@/lib/shopify";
 import { ProductCard } from "./ProductCard";
 import { Loader2 } from "lucide-react";
 
-export const ProductGrid = () => {
-  const [products, setProducts] = useState<ShopifyProduct[]>([]);
-  const [loading, setLoading] = useState(true);
+interface ProductGridProps {
+  /** When set, grid does not fetch — uses this list (e.g. collection page after one query). */
+  prefetchedProducts?: ShopifyProduct[];
+  /** Load products belonging to this collection handle (Storefront API). */
+  collectionHandle?: string;
+}
+
+export const ProductGrid = ({ prefetchedProducts, collectionHandle }: ProductGridProps = {}) => {
+  const [products, setProducts] = useState<ShopifyProduct[]>(prefetchedProducts ?? []);
+  const [loading, setLoading] = useState(prefetchedProducts === undefined);
 
   useEffect(() => {
-    fetchProducts(20)
-      .then(setProducts)
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
+    if (prefetchedProducts !== undefined) {
+      setProducts(prefetchedProducts);
+      setLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setLoading(true);
+
+    const run = async () => {
+      try {
+        if (collectionHandle) {
+          const col = await fetchCollectionByHandle(collectionHandle, 48);
+          if (!cancelled) setProducts(col?.products ?? []);
+        } else {
+          const list = await fetchProducts(20);
+          if (!cancelled) setProducts(list);
+        }
+      } catch (e) {
+        console.error(e);
+        if (!cancelled) setProducts([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [prefetchedProducts, collectionHandle]);
 
   if (loading) {
     return (

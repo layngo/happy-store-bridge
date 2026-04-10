@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { ProductGrid } from "@/components/ProductGrid";
 
@@ -17,11 +18,11 @@ const Index = () => {
             <p className="text-slate-600 text-lg max-w-md animate-fade-in" style={{ animationDelay: '0.2s' }}>
               Lay-n-Go is a patented activity mat, cleanup, storage and carryall solution in one. Perfect for home but durable enough for wherever your travels take you.
             </p>
-            <a href="#products" className="inline-block animate-fade-in" style={{ animationDelay: '0.3s' }}>
-              <button className="bg-primary text-primary-foreground px-8 py-3 rounded-md font-medium hover:bg-primary/90 transition-colors">
+            <Link to="/collections" className="inline-block animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              <button type="button" className="bg-primary text-primary-foreground px-8 py-3 rounded-md font-medium hover:bg-primary/90 transition-colors">
                 Shop Now
               </button>
-            </a>
+            </Link>
           </div>
         </div>
         {/* Decorative gradient */}
@@ -30,9 +31,14 @@ const Index = () => {
 
       {/* Products */}
       <section id="products" className="container py-16">
-        <div className="mb-10">
-          <h2 className="font-heading text-3xl font-bold text-slate-900">Our Products</h2>
-          <p className="text-slate-600 mt-2">Browse our collection of organizational solutions</p>
+        <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div>
+            <h2 className="font-heading text-3xl font-bold text-slate-900">Our Products</h2>
+            <p className="text-slate-600 mt-2">Browse our collection of organizational solutions</p>
+          </div>
+          <Link to="/collections" className="text-primary text-sm font-semibold hover:underline shrink-0">
+            Shop by collection →
+          </Link>
         </div>
         <ProductGrid />
       </section>

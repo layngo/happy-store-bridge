@@ -183,6 +183,127 @@ export async function fetchProductByHandle(handle: string): Promise<ShopifyProdu
   return data?.data?.productByHandle || null;
 }
 
+const PRODUCT_LIST_FIELDS = `
+  id
+  title
+  description
+  handle
+  priceRange {
+    minVariantPrice {
+      amount
+      currencyCode
+    }
+  }
+  images(first: 5) {
+    edges {
+      node {
+        url
+        altText
+      }
+    }
+  }
+  variants(first: 10) {
+    edges {
+      node {
+        id
+        title
+        price {
+          amount
+          currencyCode
+        }
+        availableForSale
+        selectedOptions {
+          name
+          value
+        }
+      }
+    }
+  }
+  options {
+    name
+    values
+  }
+`;
+
+const COLLECTIONS_LIST_QUERY = `
+  query CollectionsList($first: Int!) {
+    collections(first: $first) {
+      edges {
+        node {
+          id
+          title
+          handle
+          description
+          image {
+            url
+            altText
+          }
+        }
+      }
+    }
+  }
+`;
+
+const COLLECTION_BY_HANDLE_QUERY = `
+  query CollectionByHandle($handle: String!, $first: Int!) {
+    collection(handle: $handle) {
+      id
+      title
+      handle
+      description
+      image {
+        url
+        altText
+      }
+      products(first: $first) {
+        edges {
+          node {
+            ${PRODUCT_LIST_FIELDS}
+          }
+        }
+      }
+    }
+  }
+`;
+
+export interface ShopifyCollectionSummary {
+  id: string;
+  title: string;
+  handle: string;
+  description: string;
+  image: { url: string; altText: string | null } | null;
+}
+
+export interface ShopifyCollectionDetail extends ShopifyCollectionSummary {
+  products: ShopifyProduct[];
+}
+
+export async function fetchCollections(first = 50): Promise<ShopifyCollectionSummary[]> {
+  const data = await storefrontApiRequest(COLLECTIONS_LIST_QUERY, { first });
+  const edges = data?.data?.collections?.edges || [];
+  return edges.map((e: { node: ShopifyCollectionSummary }) => e.node);
+}
+
+export async function fetchCollectionByHandle(
+  handle: string,
+  productFirst = 48,
+): Promise<ShopifyCollectionDetail | null> {
+  const data = await storefrontApiRequest(COLLECTION_BY_HANDLE_QUERY, { handle, first: productFirst });
+  const col = data?.data?.collection;
+  if (!col) return null;
+  const products: ShopifyProduct[] = (col.products?.edges || []).map((e: { node: ShopifyProduct['node'] }) => ({
+    node: e.node,
+  }));
+  return {
+    id: col.id,
+    title: col.title,
+    handle: col.handle,
+    description: col.description || '',
+    image: col.image || null,
+    products,
+  };
+}
+
 // Cart mutations
 const CART_QUERY = `
   query cart($id: ID!) {

@@ -32,15 +32,15 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           >
             Home
           </Link>
-          <a
-            href="#products"
+          <Link
+            to="/collections"
             className={cn(
               "text-sm font-medium transition-colors",
               light ? "text-slate-600 hover:text-slate-900" : "text-muted-foreground hover:text-foreground",
             )}
           >
             Shop
-          </a>
+          </Link>
           <a
             href="#about"
             className={cn(

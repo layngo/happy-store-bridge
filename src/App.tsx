@@ -7,6 +7,9 @@ import { useCartSync } from "@/hooks/useCartSync";
 import Index from "./pages/Index.tsx";
 import ProductDetail from "./pages/ProductDetail.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import CollectionsIndex from "./pages/CollectionsIndex.tsx";
+import Collection from "./pages/Collection.tsx";
+import ProductUrlRedirect from "./pages/ProductUrlRedirect.tsx";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +19,10 @@ const AppContent = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/collections" element={<CollectionsIndex />} />
+        <Route path="/collections/:handle" element={<Collection />} />
         <Route path="/product/:handle" element={<ProductDetail />} />
+        <Route path="/products/:handle" element={<ProductUrlRedirect />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

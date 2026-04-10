@@ -43,7 +43,9 @@ const ProductDetail = () => {
         <Header />
         <div className="container py-20 text-center">
           <p className="text-muted-foreground text-lg">Product not found</p>
-          <Link to="/" className="text-primary hover:underline mt-4 inline-block">Go back to shop</Link>
+          <Link to="/collections" className="text-primary hover:underline mt-4 inline-block">
+            View collections
+          </Link>
         </div>
       </div>
     );
@@ -70,9 +72,9 @@ const ProductDetail = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container py-8">
-        <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8">
+        <Link to="/collections" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8">
           <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm">Back to shop</span>
+          <span className="text-sm">Back to collections</span>
         </Link>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* Images */}
