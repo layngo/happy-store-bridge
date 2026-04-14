@@ -24,7 +24,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
     <header
       className={cn(
         "sticky top-0 z-50 w-full border-b backdrop-blur-md",
-        light ? "border-sky-200/80 bg-sky-100/90" : "border-border bg-background/90",
+        light ? "border-border bg-background/95" : "border-border bg-background/90",
       )}
     >
       <div className="container pt-3 pb-2">
@@ -53,14 +53,14 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
               rel="noopener noreferrer"
               className={cn(
                 "inline-flex items-center justify-center rounded-md p-2 transition-colors",
-                light ? "text-slate-700 hover:bg-sky-200/50" : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                light ? "text-foreground hover:bg-muted/80" : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
               aria-label="My account"
             >
               <User className="w-5 h-5" />
             </a>
             <CartDrawer
-              triggerClassName={light ? "text-slate-700 hover:bg-sky-200/60 hover:text-slate-900" : undefined}
+              triggerClassName={light ? "text-foreground hover:bg-muted/80 hover:text-foreground" : undefined}
             />
           </div>
         </div>
@@ -68,7 +68,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
         <nav
           className={cn(
             "flex overflow-x-auto pb-1 md:flex-wrap md:justify-center items-center gap-x-5 gap-y-2 pt-3 mt-2 border-t",
-            light ? "border-sky-200/70" : "border-border/60",
+            light ? "border-border/70" : "border-border/60",
           )}
         >
           <Link to="/" className={linkClass}>
