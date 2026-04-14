@@ -130,13 +130,13 @@ const Index = () => {
                   href={logo.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mx-4 inline-flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-full border border-border/80 bg-background"
+                  className="mx-4 inline-flex h-20 w-40 sm:h-24 sm:w-44 shrink-0 items-center justify-center rounded-2xl border border-border/80 bg-background"
                 >
                   <img
                     src={logo.src}
                     alt={logo.name}
                     loading="lazy"
-                    className="h-8 w-8 sm:h-9 sm:w-9 object-contain opacity-95"
+                    className="h-10 w-28 sm:h-12 sm:w-32 object-contain opacity-95"
                   />
                 </a>
               ))}
