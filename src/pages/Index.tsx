@@ -130,7 +130,7 @@ const Index = () => {
                   href={logo.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mx-4 inline-flex h-20 w-40 sm:h-24 sm:w-44 shrink-0 items-center justify-center rounded-2xl border border-border/80 bg-background"
+                  className="mx-5 inline-flex h-20 w-40 sm:h-24 sm:w-44 shrink-0 items-center justify-center"
                 >
                   <img
                     src={logo.src}
