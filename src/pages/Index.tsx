@@ -14,14 +14,46 @@ const HERO_BG =
   "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=2000&q=80";
 
 const PRESS_LOGOS = [
-  { name: "BuzzFeed", src: "https://www.google.com/s2/favicons?domain=buzzfeed.com&sz=128" },
-  { name: "Parents", src: "https://www.google.com/s2/favicons?domain=parents.com&sz=128" },
-  { name: "People", src: "https://www.google.com/s2/favicons?domain=people.com&sz=128" },
-  { name: "Today Show", src: "https://www.google.com/s2/favicons?domain=today.com&sz=128" },
-  { name: "Lifehacker", src: "https://www.google.com/s2/favicons?domain=lifehacker.com&sz=128" },
-  { name: "Elvis Duran", src: "https://www.google.com/s2/favicons?domain=elvisduran.iheart.com&sz=128" },
-  { name: "Red Tricycle", src: "https://www.google.com/s2/favicons?domain=redtri.com&sz=128" },
-  { name: "Gizmodo", src: "https://www.google.com/s2/favicons?domain=gizmodo.com&sz=128" },
+  {
+    name: "BuzzFeed",
+    src: "https://www.layngo.com/cdn/shop/files/BuzzFeed-Logo_160x160@2x.png?v=1613754525",
+    href: "https://www.buzzfeed.com/jessicaprobus/store-it-good#.bma95m3qjl",
+  },
+  {
+    name: "Parents",
+    src: "https://www.layngo.com/cdn/shop/files/parents-logo_160x160@2x.png?v=1613754525",
+    href: "https://www.parents.com/parenting/work/entrepreneurial-moms/#page=2",
+  },
+  {
+    name: "People",
+    src: "https://www.layngo.com/cdn/shop/files/58481955cef1014c0b5e49b7_160x160@2x.png?v=1613754525",
+    href: "https://people.com/style/youve-never-seen-a-makeup-bag-that-keeps-your-products-this-organized/",
+  },
+  {
+    name: "Today Show",
+    src: "https://www.layngo.com/cdn/shop/files/Today_show__2009-13__logo_160x160@2x.png?v=1613754527",
+    href: "https://www.today.com/style/bobbies-buzz-3-great-gifts-girlfriends-2D11638370",
+  },
+  {
+    name: "Lifehacker",
+    src: "https://www.layngo.com/cdn/shop/files/Lifehacker.svg_05a1286a-376a-431d-9637-56c119ec882b_160x160@2x.png?v=1613754526",
+    href: "https://lifehacker.com/lay-n-go-traveler-makes-finding-small-items-in-your-bag-1496408342",
+  },
+  {
+    name: "Elvis Duran",
+    src: "https://www.layngo.com/cdn/shop/files/5936f3c13b94cd5f41653cb8_160x160@2x.png?v=1613754526",
+    href: "https://elvisduran.iheart.com/articles/whats-trending-461825/whats-trending-december-11th-13055859/",
+  },
+  {
+    name: "Red Tricycle",
+    src: "https://www.layngo.com/cdn/shop/files/image_160x160@2x.jpg?v=1613754527",
+    href: "https://redtri.com/ways-to-organize-your-legos/?utm_source=FB&utm_medium=NATL&utm_campaign=FB-NATL#",
+  },
+  {
+    name: "Gizmodo",
+    src: "https://www.layngo.com/cdn/shop/files/5847f9a4cef1014c0b5e48c3_160x160@2x.png?v=1613754527",
+    href: "https://www.gizmodo.com.au/2013/12/the-perfect-toiletry-bag-for-those-morally-opposed-to-organization/",
+  },
 ];
 
 const Index = () => {
@@ -93,8 +125,11 @@ const Index = () => {
           <div className="overflow-hidden rounded-full border border-border bg-card/70 py-4">
             <div className="press-carousel-track">
               {[...PRESS_LOGOS, ...PRESS_LOGOS].map((logo, i) => (
-                <div
+                <a
                   key={`${logo.name}-${i}`}
+                  href={logo.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="mx-5 inline-flex min-w-[84px] sm:min-w-[96px] h-14 items-center justify-center rounded-full border border-border/80 bg-background px-4"
                 >
                   <img
@@ -103,7 +138,7 @@ const Index = () => {
                     loading="lazy"
                     className="h-8 sm:h-9 w-auto object-contain opacity-95"
                   />
-                </div>
+                </a>
               ))}
             </div>
           </div>
