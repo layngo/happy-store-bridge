@@ -70,7 +70,7 @@
     width: max-content;
     display: flex;
     align-items: center;
-    animation: press-scroll 24s linear infinite;
+    animation: press-scroll 48s linear infinite;
     will-change: transform;
   }
 }

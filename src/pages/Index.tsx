@@ -14,14 +14,14 @@ const HERO_BG =
   "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=2000&q=80";
 
 const PRESS_LOGOS = [
-  { name: "BuzzFeed", src: "https://logo.clearbit.com/buzzfeed.com" },
-  { name: "Parents", src: "https://logo.clearbit.com/parents.com" },
-  { name: "People", src: "https://logo.clearbit.com/people.com" },
-  { name: "Today Show", src: "https://logo.clearbit.com/today.com" },
-  { name: "Lifehacker", src: "https://logo.clearbit.com/lifehacker.com" },
-  { name: "Elvis Duran", src: "https://logo.clearbit.com/elvisduran.com" },
-  { name: "Red Tricycle", src: "https://logo.clearbit.com/redtricycle.com" },
-  { name: "Gizmodo", src: "https://logo.clearbit.com/gizmodo.com" },
+  { name: "BuzzFeed", src: "https://www.google.com/s2/favicons?domain=buzzfeed.com&sz=128" },
+  { name: "Parents", src: "https://www.google.com/s2/favicons?domain=parents.com&sz=128" },
+  { name: "People", src: "https://www.google.com/s2/favicons?domain=people.com&sz=128" },
+  { name: "Today Show", src: "https://www.google.com/s2/favicons?domain=today.com&sz=128" },
+  { name: "Lifehacker", src: "https://www.google.com/s2/favicons?domain=lifehacker.com&sz=128" },
+  { name: "Elvis Duran", src: "https://www.google.com/s2/favicons?domain=elvisduran.iheart.com&sz=128" },
+  { name: "Red Tricycle", src: "https://www.google.com/s2/favicons?domain=redtri.com&sz=128" },
+  { name: "Gizmodo", src: "https://www.google.com/s2/favicons?domain=gizmodo.com&sz=128" },
 ];
 
 const Index = () => {
@@ -95,13 +95,13 @@ const Index = () => {
               {[...PRESS_LOGOS, ...PRESS_LOGOS].map((logo, i) => (
                 <div
                   key={`${logo.name}-${i}`}
-                  className="mx-5 inline-flex min-w-[150px] sm:min-w-[170px] h-12 items-center justify-center rounded-full border border-border/80 bg-background px-5"
+                  className="mx-5 inline-flex min-w-[84px] sm:min-w-[96px] h-14 items-center justify-center rounded-full border border-border/80 bg-background px-4"
                 >
                   <img
                     src={logo.src}
                     alt={logo.name}
                     loading="lazy"
-                    className="h-5 sm:h-6 w-auto object-contain opacity-90 grayscale contrast-125"
+                    className="h-8 sm:h-9 w-auto object-contain opacity-95"
                   />
                 </div>
               ))}
