@@ -18,7 +18,7 @@ const PRESS_LOGOS = [
     name: "BuzzFeed",
     src: "https://www.layngo.com/cdn/shop/files/BuzzFeed-Logo_160x160@2x.png?v=1613754525",
     href: "https://www.buzzfeed.com/jessicaprobus/store-it-good#.bma95m3qjl",
-    imageClass: "scale-125",
+    imageClass: "scale-150",
   },
   {
     name: "Parents",
@@ -50,7 +50,7 @@ const PRESS_LOGOS = [
     name: "Red Tricycle",
     src: "https://www.layngo.com/cdn/shop/files/image_160x160@2x.jpg?v=1613754527",
     href: "https://redtri.com/ways-to-organize-your-legos/?utm_source=FB&utm_medium=NATL&utm_campaign=FB-NATL#",
-    imageClass: "scale-125 mix-blend-multiply",
+    imageClass: "scale-150 mix-blend-darken contrast-125",
   },
   {
     name: "Gizmodo",
