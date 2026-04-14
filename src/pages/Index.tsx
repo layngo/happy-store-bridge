@@ -18,6 +18,7 @@ const PRESS_LOGOS = [
     name: "BuzzFeed",
     src: "https://www.layngo.com/cdn/shop/files/BuzzFeed-Logo_160x160@2x.png?v=1613754525",
     href: "https://www.buzzfeed.com/jessicaprobus/store-it-good#.bma95m3qjl",
+    imageClass: "scale-125",
   },
   {
     name: "Parents",
@@ -43,11 +44,13 @@ const PRESS_LOGOS = [
     name: "Elvis Duran",
     src: "https://www.layngo.com/cdn/shop/files/5936f3c13b94cd5f41653cb8_160x160@2x.png?v=1613754526",
     href: "https://elvisduran.iheart.com/articles/whats-trending-461825/whats-trending-december-11th-13055859/",
+    imageClass: "scale-125",
   },
   {
     name: "Red Tricycle",
     src: "https://www.layngo.com/cdn/shop/files/image_160x160@2x.jpg?v=1613754527",
     href: "https://redtri.com/ways-to-organize-your-legos/?utm_source=FB&utm_medium=NATL&utm_campaign=FB-NATL#",
+    imageClass: "scale-125 mix-blend-multiply",
   },
   {
     name: "Gizmodo",
@@ -136,7 +139,7 @@ const Index = () => {
                     src={logo.src}
                     alt={logo.name}
                     loading="lazy"
-                    className="h-10 w-28 sm:h-12 sm:w-32 object-contain opacity-95"
+                    className={`h-10 w-28 sm:h-12 sm:w-32 object-contain opacity-95 transition-transform ${logo.imageClass ?? ""}`}
                   />
                 </a>
               ))}
