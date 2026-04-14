@@ -13,7 +13,16 @@ import { Loader2 } from "lucide-react";
 const HERO_BG =
   "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=2000&q=80";
 
-const PRESS_LOGOS = ["BuzzFeed", "Parents", "People", "Today Show", "Lifehacker", "Elvis Duran", "Red Tricycle", "Gizmodo"];
+const PRESS_LOGOS = [
+  { name: "BuzzFeed", src: "https://logo.clearbit.com/buzzfeed.com" },
+  { name: "Parents", src: "https://logo.clearbit.com/parents.com" },
+  { name: "People", src: "https://logo.clearbit.com/people.com" },
+  { name: "Today Show", src: "https://logo.clearbit.com/today.com" },
+  { name: "Lifehacker", src: "https://logo.clearbit.com/lifehacker.com" },
+  { name: "Elvis Duran", src: "https://logo.clearbit.com/elvisduran.com" },
+  { name: "Red Tricycle", src: "https://logo.clearbit.com/redtricycle.com" },
+  { name: "Gizmodo", src: "https://logo.clearbit.com/gizmodo.com" },
+];
 
 const Index = () => {
   const [collections, setCollections] = useState<ShopifyCollectionSummary[]>([]);
@@ -83,13 +92,18 @@ const Index = () => {
           </p>
           <div className="overflow-hidden rounded-full border border-border bg-card/70 py-4">
             <div className="press-carousel-track">
-              {[...PRESS_LOGOS, ...PRESS_LOGOS].map((name, i) => (
-                <span
-                  key={`${name}-${i}`}
-                  className="mx-5 inline-flex min-w-max items-center rounded-full border border-border/80 bg-background px-5 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.14em] text-foreground"
+              {[...PRESS_LOGOS, ...PRESS_LOGOS].map((logo, i) => (
+                <div
+                  key={`${logo.name}-${i}`}
+                  className="mx-5 inline-flex min-w-[150px] sm:min-w-[170px] h-12 items-center justify-center rounded-full border border-border/80 bg-background px-5"
                 >
-                  {name}
-                </span>
+                  <img
+                    src={logo.src}
+                    alt={logo.name}
+                    loading="lazy"
+                    className="h-5 sm:h-6 w-auto object-contain opacity-90 grayscale contrast-125"
+                  />
+                </div>
               ))}
             </div>
           </div>
