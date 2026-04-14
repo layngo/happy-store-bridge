@@ -102,7 +102,9 @@ const Index = () => {
 
       {/* Category grid */}
       <section className="container py-16">
-        <h2 className="font-heading text-2xl md:text-3xl font-semibold text-foreground text-center mb-2">Shop by Category</h2>
+        <h2 className="font-heading text-2xl md:text-3xl font-medium uppercase tracking-[0.14em] text-foreground text-center mb-2">
+          Shop by Category
+        </h2>
         <p className="text-muted-foreground text-center max-w-xl mx-auto mb-10">
           Cosmetic bags, tech &amp; travel, play, pets, outdoor / tactical, and nail solutions.
         </p>
@@ -152,7 +154,7 @@ const Index = () => {
       <section className="border-y border-border bg-muted/30">
         <div className="container py-16 grid md:grid-cols-2 gap-10 items-center">
           <div className="space-y-4">
-            <h2 className="font-heading text-3xl font-semibold text-foreground">Our Story</h2>
+            <h2 className="font-heading text-3xl font-medium uppercase tracking-[0.12em] text-foreground">Our Story</h2>
             <p className="text-muted-foreground leading-relaxed">
               From toy cleanup to cosmetics, tech, nails, pets, and tactical gear, every Lay-n-Go product opens flat for
               full visibility and cinches closed for travel. Women-owned, built on utility patents, and trusted by
@@ -179,7 +181,7 @@ const Index = () => {
       <section id="products" className="container py-16">
         <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
-            <h2 className="font-heading text-3xl font-semibold text-foreground">Top Selling Products</h2>
+            <h2 className="font-heading text-3xl font-medium uppercase tracking-[0.12em] text-foreground">Top Selling Products</h2>
             <p className="text-muted-foreground mt-2">Some of our most popular selections</p>
           </div>
           <Link to="/collections" className="text-primary text-sm font-semibold hover:underline shrink-0">
@@ -192,7 +194,9 @@ const Index = () => {
       {/* Testimonials */}
       <section className="border-t border-border bg-background py-16">
         <div className="container">
-          <h2 className="font-heading text-3xl font-semibold text-foreground text-center mb-2">Testimonials</h2>
+          <h2 className="font-heading text-3xl font-medium uppercase tracking-[0.12em] text-foreground text-center mb-2">
+            Testimonials
+          </h2>
           <p className="text-muted-foreground text-center mb-10 max-w-lg mx-auto">What customers say about Lay-n-Go</p>
           <Carousel
             opts={{ align: "start", loop: true }}
