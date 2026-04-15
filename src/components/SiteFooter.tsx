@@ -35,7 +35,7 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
             <img
               src="/layngo-logo-outlined.png"
               alt="Lay-n-Go"
-              className="h-14 sm:h-16 w-auto object-contain"
+              className="h-20 sm:h-24 w-auto object-contain"
             />
           </Link>
         </div>
