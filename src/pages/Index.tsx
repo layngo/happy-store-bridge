@@ -84,7 +84,7 @@ const Index = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-br from-black/55 via-black/45 to-slate-800/40" />
         <div className="relative container py-16 md:py-24">
-          <div className="mx-auto max-w-3xl text-center space-y-14 md:space-y-16 text-white">
+          <div className="mx-auto max-w-3xl text-center space-y-20 md:space-y-24 text-white">
             <h1 className="font-heading text-4xl md:text-6xl font-semibold leading-tight tracking-tight drop-shadow-sm">
               Organizational Solutions for Life, Play, and Travel
             </h1>
