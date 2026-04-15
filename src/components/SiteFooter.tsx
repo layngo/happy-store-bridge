@@ -30,6 +30,16 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
       )}
     >
       <div className="container py-12 space-y-12">
+        <div className="flex justify-center">
+          <Link to="/" aria-label="Lay-n-Go home">
+            <img
+              src="/layngo-logo-outlined.png"
+              alt="Lay-n-Go"
+              className="h-14 sm:h-16 w-auto object-contain"
+            />
+          </Link>
+        </div>
+
         <div className="max-w-xl mx-auto text-center space-y-4">
           <h2 className={cn("font-heading text-xl font-semibold", light ? "text-slate-900" : "text-foreground")}>
             Sign up for our Newsletter

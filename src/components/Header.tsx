@@ -35,14 +35,11 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
 
           <div className="flex justify-center order-1 lg:order-2">
             <Link to="/" className="flex flex-col items-center">
-              <span
-                className={cn(
-                  "font-heading text-xl sm:text-2xl font-bold tracking-[0.2em]",
-                  light ? "text-slate-900" : "text-foreground",
-                )}
-              >
-                LAY / N / GO
-              </span>
+              <img
+                src="/layngo-logo-outlined.png"
+                alt="Lay-n-Go"
+                className="h-12 sm:h-14 w-auto object-contain"
+              />
             </Link>
           </div>
 
