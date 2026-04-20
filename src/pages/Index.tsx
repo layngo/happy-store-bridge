@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -61,7 +61,21 @@ const PRESS_LOGOS = [
 const Index = () => {
   const [collections, setCollections] = useState<ShopifyCollectionSummary[]>([]);
   const [collectionsLoading, setCollectionsLoading] = useState(true);
-  const [testimonialStart, setTestimonialStart] = useState(0);
+  const [floatingTestimonials, setFloatingTestimonials] = useState<
+    Array<{
+      id: number;
+      quote: string;
+      name: string;
+      left: number;
+      top: number;
+      drift: number;
+      rightAligned: boolean;
+      primaryTint: boolean;
+    }>
+  >([]);
+  const [maxFloatingTestimonials, setMaxFloatingTestimonials] = useState(8);
+  const testimonialIdRef = useRef(0);
+  const testimonialIndexRef = useRef(0);
 
   useEffect(() => {
     fetchCollections(50)
@@ -71,16 +85,71 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setTestimonialStart((prev) => (prev + 1) % testimonials.length);
-    }, 3200);
+    const computeBubbleLimit = () => {
+      const width = window.innerWidth;
+      if (width < 640) return 5;
+      if (width < 1024) return 7;
+      return 10;
+    };
 
-    return () => window.clearInterval(interval);
+    const seedInitialBubbles = (limit: number) => {
+      const seeded = Array.from({ length: Math.max(3, Math.floor(limit * 0.7)) }, () => {
+        const t = testimonials[testimonialIndexRef.current % testimonials.length];
+        testimonialIndexRef.current += 1;
+        testimonialIdRef.current += 1;
+
+        return {
+          id: testimonialIdRef.current,
+          quote: t.quote,
+          name: t.name,
+          left: 5 + Math.random() * 78,
+          top: 18 + Math.random() * 60,
+          drift: 26 + Math.random() * 42,
+          rightAligned: Math.random() > 0.5,
+          primaryTint: Math.random() > 0.5,
+        };
+      });
+
+      setFloatingTestimonials(seeded);
+    };
+
+    const initialLimit = computeBubbleLimit();
+    setMaxFloatingTestimonials(initialLimit);
+    seedInitialBubbles(initialLimit);
+
+    const onResize = () => {
+      setMaxFloatingTestimonials(computeBubbleLimit());
+    };
+
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const visibleTestimonials = Array.from({ length: Math.min(4, testimonials.length) }, (_, idx) => {
-    return testimonials[(testimonialStart + idx) % testimonials.length];
-  });
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      const t = testimonials[testimonialIndexRef.current % testimonials.length];
+      testimonialIndexRef.current += 1;
+      testimonialIdRef.current += 1;
+
+      const nextBubble = {
+        id: testimonialIdRef.current,
+        quote: t.quote,
+        name: t.name,
+        left: 5 + Math.random() * 78,
+        top: 20 + Math.random() * 58,
+        drift: 26 + Math.random() * 42,
+        rightAligned: Math.random() > 0.5,
+        primaryTint: Math.random() > 0.5,
+      };
+
+      setFloatingTestimonials((prev) => {
+        const next = [...prev, nextBubble];
+        return next.slice(-maxFloatingTestimonials);
+      });
+    }, 1150);
+
+    return () => window.clearInterval(interval);
+  }, [maxFloatingTestimonials]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -214,24 +283,25 @@ const Index = () => {
           <p className="text-muted-foreground text-center mb-10 max-w-lg mx-auto">
             Real customer notes, rotating in like a text thread.
           </p>
-          <div className="mx-auto max-w-5xl grid gap-5 md:grid-cols-2">
-            {visibleTestimonials.map((t, i) => {
-              const isRightAligned = i % 2 === 1;
-
-              return (
-                <article
-                  key={`${testimonialStart}-${t.name}-${i}`}
-                  className={`testimonial-message animate-fade-in rounded-3xl border border-border px-5 py-4 shadow-sm ${
-                    isRightAligned
-                      ? "testimonial-message-right bg-primary/10 text-right md:ml-14"
-                      : "bg-muted/70 text-left md:mr-14"
-                  }`}
-                >
-                  <p className="text-foreground leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
-                  <footer className="mt-3 text-sm font-semibold text-foreground/85">{t.name}</footer>
-                </article>
-              );
-            })}
+          <div className="testimonial-cloud relative mx-auto h-[28rem] max-w-6xl overflow-hidden rounded-3xl border border-border/70 bg-muted/25">
+            {floatingTestimonials.map((t) => (
+              <article
+                key={t.id}
+                className={`testimonial-float absolute w-fit max-w-[min(88vw,29rem)] rounded-[1.4rem] border border-border/90 px-4 py-3 shadow-sm md:px-5 md:py-4 ${
+                  t.primaryTint ? "bg-primary/12" : "bg-background/90"
+                } ${t.rightAligned ? "testimonial-float-right text-right" : "text-left"}`}
+                style={
+                  {
+                    left: `${t.left}%`,
+                    top: `${t.top}%`,
+                    "--float-distance": `${t.drift}px`,
+                  } as React.CSSProperties
+                }
+              >
+                <p className="text-foreground leading-relaxed">{t.quote}</p>
+                <footer className="mt-2 text-xs sm:text-sm font-semibold text-foreground/80">{t.name}</footer>
+              </article>
+            ))}
           </div>
         </div>
       </section>

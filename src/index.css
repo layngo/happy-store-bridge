@@ -75,28 +75,48 @@
     will-change: transform;
   }
 
-  .testimonial-message {
+  .testimonial-float {
     position: relative;
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    animation: testimonial-float-up 8.2s ease-out forwards;
+    will-change: transform, opacity;
   }
 
-  .testimonial-message::after {
+  .testimonial-float::after {
     content: "";
     position: absolute;
-    bottom: -9px;
-    left: 18px;
-    width: 18px;
-    height: 18px;
+    bottom: -7px;
+    left: 16px;
+    width: 14px;
+    height: 14px;
     border-left: 1px solid hsl(var(--border));
     border-bottom: 1px solid hsl(var(--border));
     background: inherit;
     transform: rotate(-45deg);
   }
 
-  .testimonial-message-right::after {
+  .testimonial-float-right::after {
     left: auto;
-    right: 18px;
+    right: 16px;
     transform: rotate(45deg);
+  }
+}
+
+@keyframes testimonial-float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+  }
+  12% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  72% {
+    opacity: 1;
+    transform: translateY(calc(var(--float-distance, 36px) * -0.62)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(calc(var(--float-distance, 36px) * -1)) scale(0.985);
   }
 }
 
