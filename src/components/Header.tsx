@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { CartDrawer } from "./CartDrawer";
-import { SearchBar } from "./SearchBar";
 import { cn } from "@/lib/utils";
 import { SHOP_ACCOUNT_URL, shopCollectionLinks } from "@/lib/siteNav";
 import { User, ChevronDown } from "lucide-react";
@@ -28,12 +27,10 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
       )}
     >
       <div className="container pt-3 pb-2">
-        <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center">
-          <div className="flex justify-center lg:justify-start order-2 lg:order-1">
-            <SearchBar light={light} className="max-w-full sm:max-w-xs w-full" />
-          </div>
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center">
+          <div />
 
-          <div className="flex justify-center order-1 lg:order-2">
+          <div className="flex justify-center">
             <Link to="/" className="flex flex-col items-center">
               <img
                 src="/layngo-logo-outlined.png"
@@ -43,7 +40,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
             </Link>
           </div>
 
-          <div className="flex justify-center lg:justify-end items-center gap-2 order-3">
+          <div className="flex justify-end items-center gap-2">
             <a
               href={SHOP_ACCOUNT_URL}
               target="_blank"
@@ -84,12 +81,19 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
                 Shop <ChevronDown className="w-3 h-3 opacity-70" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="center" className="min-w-[12rem]">
-              <DropdownMenuItem asChild>
+            <DropdownMenuContent
+              align="center"
+              className="min-w-[14rem] rounded-xl border-slate-200 bg-white p-2 font-sans text-base font-medium tracking-normal shadow-lg"
+            >
+              <DropdownMenuItem className="rounded-lg px-4 py-3 text-slate-800 hover:text-slate-900" asChild>
                 <Link to="/collections">All collections</Link>
               </DropdownMenuItem>
               {shopCollectionLinks.map((l) => (
-                <DropdownMenuItem key={l.to} asChild>
+                <DropdownMenuItem
+                  key={l.to}
+                  className="rounded-lg px-4 py-3 text-slate-800 hover:text-slate-900"
+                  asChild
+                >
                   <Link to={l.to}>{l.label}</Link>
                 </DropdownMenuItem>
               ))}
