@@ -75,13 +75,11 @@
     will-change: transform;
   }
 
-  .testimonial-float {
+  .testimonial-bubble {
     position: relative;
-    animation: testimonial-float-up 8.2s ease-out forwards;
-    will-change: transform, opacity;
   }
 
-  .testimonial-float::after {
+  .testimonial-bubble::after {
     content: "";
     position: absolute;
     bottom: -7px;
@@ -94,29 +92,26 @@
     transform: rotate(-45deg);
   }
 
-  .testimonial-float-right::after {
+  .testimonial-bubble-right::after {
     left: auto;
     right: 16px;
     transform: rotate(45deg);
   }
+
+  .testimonial-fade-rise {
+    animation: testimonial-fade-rise 2.1s ease-out;
+    will-change: transform, opacity;
+  }
 }
 
-@keyframes testimonial-float-up {
+@keyframes testimonial-fade-rise {
   0% {
     opacity: 0;
-    transform: translateY(30px) scale(0.98);
-  }
-  12% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  72% {
-    opacity: 1;
-    transform: translateY(calc(var(--float-distance, 36px) * -0.62)) scale(1);
+    transform: translateY(16px);
   }
   100% {
-    opacity: 0;
-    transform: translateY(calc(var(--float-distance, 36px) * -1)) scale(0.985);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

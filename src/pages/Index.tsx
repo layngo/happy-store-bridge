@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -61,21 +61,8 @@ const PRESS_LOGOS = [
 const Index = () => {
   const [collections, setCollections] = useState<ShopifyCollectionSummary[]>([]);
   const [collectionsLoading, setCollectionsLoading] = useState(true);
-  const [floatingTestimonials, setFloatingTestimonials] = useState<
-    Array<{
-      id: number;
-      quote: string;
-      name: string;
-      left: number;
-      top: number;
-      drift: number;
-      rightAligned: boolean;
-      primaryTint: boolean;
-    }>
-  >([]);
-  const [maxFloatingTestimonials, setMaxFloatingTestimonials] = useState(8);
-  const testimonialIdRef = useRef(0);
-  const testimonialIndexRef = useRef(0);
+  const [testimonialStart, setTestimonialStart] = useState(0);
+  const [visibleTestimonialCount, setVisibleTestimonialCount] = useState(8);
 
   useEffect(() => {
     fetchCollections(50)
@@ -85,40 +72,17 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    const computeBubbleLimit = () => {
+    const computeVisibleCount = () => {
       const width = window.innerWidth;
-      if (width < 640) return 5;
-      if (width < 1024) return 7;
+      if (width < 640) return 4;
+      if (width < 1024) return 6;
       return 10;
     };
 
-    const seedInitialBubbles = (limit: number) => {
-      const seeded = Array.from({ length: Math.max(3, Math.floor(limit * 0.7)) }, () => {
-        const t = testimonials[testimonialIndexRef.current % testimonials.length];
-        testimonialIndexRef.current += 1;
-        testimonialIdRef.current += 1;
-
-        return {
-          id: testimonialIdRef.current,
-          quote: t.quote,
-          name: t.name,
-          left: 5 + Math.random() * 78,
-          top: 18 + Math.random() * 60,
-          drift: 26 + Math.random() * 42,
-          rightAligned: Math.random() > 0.5,
-          primaryTint: Math.random() > 0.5,
-        };
-      });
-
-      setFloatingTestimonials(seeded);
-    };
-
-    const initialLimit = computeBubbleLimit();
-    setMaxFloatingTestimonials(initialLimit);
-    seedInitialBubbles(initialLimit);
+    setVisibleTestimonialCount(computeVisibleCount());
 
     const onResize = () => {
-      setMaxFloatingTestimonials(computeBubbleLimit());
+      setVisibleTestimonialCount(computeVisibleCount());
     };
 
     window.addEventListener("resize", onResize);
@@ -127,29 +91,15 @@ const Index = () => {
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      const t = testimonials[testimonialIndexRef.current % testimonials.length];
-      testimonialIndexRef.current += 1;
-      testimonialIdRef.current += 1;
-
-      const nextBubble = {
-        id: testimonialIdRef.current,
-        quote: t.quote,
-        name: t.name,
-        left: 5 + Math.random() * 78,
-        top: 20 + Math.random() * 58,
-        drift: 26 + Math.random() * 42,
-        rightAligned: Math.random() > 0.5,
-        primaryTint: Math.random() > 0.5,
-      };
-
-      setFloatingTestimonials((prev) => {
-        const next = [...prev, nextBubble];
-        return next.slice(-maxFloatingTestimonials);
-      });
-    }, 1150);
+      setTestimonialStart((prev) => (prev + 1) % testimonials.length);
+    }, 2100);
 
     return () => window.clearInterval(interval);
-  }, [maxFloatingTestimonials]);
+  }, []);
+
+  const visibleTestimonials = Array.from({ length: visibleTestimonialCount }, (_, idx) => {
+    return testimonials[(testimonialStart + idx) % testimonials.length];
+  });
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -283,25 +233,22 @@ const Index = () => {
           <p className="text-muted-foreground text-center mb-10 max-w-lg mx-auto">
             Real customer notes, rotating in like a text thread.
           </p>
-          <div className="testimonial-cloud relative mx-auto h-[28rem] max-w-6xl overflow-hidden rounded-3xl border border-border/70 bg-muted/25">
-            {floatingTestimonials.map((t) => (
-              <article
-                key={t.id}
-                className={`testimonial-float absolute w-fit max-w-[min(88vw,29rem)] rounded-[1.4rem] border border-border/90 px-4 py-3 shadow-sm md:px-5 md:py-4 ${
-                  t.primaryTint ? "bg-primary/12" : "bg-background/90"
-                } ${t.rightAligned ? "testimonial-float-right text-right" : "text-left"}`}
-                style={
-                  {
-                    left: `${t.left}%`,
-                    top: `${t.top}%`,
-                    "--float-distance": `${t.drift}px`,
-                  } as React.CSSProperties
-                }
-              >
-                <p className="text-foreground leading-relaxed">{t.quote}</p>
-                <footer className="mt-2 text-xs sm:text-sm font-semibold text-foreground/80">{t.name}</footer>
-              </article>
-            ))}
+          <div className="mx-auto max-w-6xl rounded-3xl border border-border/70 bg-muted/25 p-4 sm:p-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {visibleTestimonials.map((t, idx) => (
+                <article
+                  key={`${testimonialStart}-${t.name}-${idx}`}
+                  className={`testimonial-bubble testimonial-fade-rise w-fit max-w-full rounded-[1.4rem] border border-border/90 px-4 py-3 shadow-sm md:px-5 md:py-4 ${
+                    idx % 3 === 1
+                      ? "testimonial-bubble-right bg-primary/12 justify-self-end text-right"
+                      : "bg-background/90 justify-self-start text-left"
+                  }`}
+                >
+                  <p className="text-foreground leading-relaxed">{t.quote}</p>
+                  <footer className="mt-2 text-xs sm:text-sm font-semibold text-foreground/80">{t.name}</footer>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
