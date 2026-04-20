@@ -7,7 +7,6 @@ import { CollectionCard } from "@/components/CollectionCard";
 import { fetchCollections, type ShopifyCollectionSummary } from "@/lib/shopify";
 import { sortCollectionsForDisplay } from "@/lib/collectionOrder";
 import { testimonials } from "@/lib/siteNav";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Loader2 } from "lucide-react";
 
 const HERO_BG =
@@ -62,6 +61,7 @@ const PRESS_LOGOS = [
 const Index = () => {
   const [collections, setCollections] = useState<ShopifyCollectionSummary[]>([]);
   const [collectionsLoading, setCollectionsLoading] = useState(true);
+  const [testimonialStart, setTestimonialStart] = useState(0);
 
   useEffect(() => {
     fetchCollections(50)
@@ -69,6 +69,18 @@ const Index = () => {
       .catch(console.error)
       .finally(() => setCollectionsLoading(false));
   }, []);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setTestimonialStart((prev) => (prev + 1) % testimonials.length);
+    }, 3200);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const visibleTestimonials = Array.from({ length: Math.min(4, testimonials.length) }, (_, idx) => {
+    return testimonials[(testimonialStart + idx) % testimonials.length];
+  });
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -199,24 +211,28 @@ const Index = () => {
           <h2 className="font-heading text-3xl font-medium uppercase tracking-[0.12em] text-foreground text-center mb-2">
             Testimonials
           </h2>
-          <p className="text-muted-foreground text-center mb-10 max-w-lg mx-auto">What customers say about Lay-n-Go</p>
-          <Carousel
-            opts={{ align: "start", loop: true }}
-            className="w-full max-w-5xl mx-auto relative px-8 md:px-14"
-          >
-            <CarouselContent>
-              {testimonials.map((t, i) => (
-                <CarouselItem key={i} className="md:basis-1/2">
-                  <blockquote className="h-full rounded-lg border border-border bg-card p-6 shadow-sm">
-                    <p className="text-muted-foreground leading-relaxed italic">&ldquo;{t.quote}&rdquo;</p>
-                    <footer className="mt-4 text-sm font-semibold text-foreground">{t.name}</footer>
-                  </blockquote>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-0 border-border text-foreground" />
-            <CarouselNext className="right-0 border-border text-foreground" />
-          </Carousel>
+          <p className="text-muted-foreground text-center mb-10 max-w-lg mx-auto">
+            Real customer notes, rotating in like a text thread.
+          </p>
+          <div className="mx-auto max-w-5xl grid gap-5 md:grid-cols-2">
+            {visibleTestimonials.map((t, i) => {
+              const isRightAligned = i % 2 === 1;
+
+              return (
+                <article
+                  key={`${testimonialStart}-${t.name}-${i}`}
+                  className={`testimonial-message animate-fade-in rounded-3xl border border-border px-5 py-4 shadow-sm ${
+                    isRightAligned
+                      ? "testimonial-message-right bg-primary/10 text-right md:ml-14"
+                      : "bg-muted/70 text-left md:mr-14"
+                  }`}
+                >
+                  <p className="text-foreground leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
+                  <footer className="mt-3 text-sm font-semibold text-foreground/85">{t.name}</footer>
+                </article>
+              );
+            })}
+          </div>
         </div>
       </section>
 

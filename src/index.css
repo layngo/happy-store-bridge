@@ -74,6 +74,30 @@
     animation: press-scroll 48s linear infinite;
     will-change: transform;
   }
+
+  .testimonial-message {
+    position: relative;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .testimonial-message::after {
+    content: "";
+    position: absolute;
+    bottom: -9px;
+    left: 18px;
+    width: 18px;
+    height: 18px;
+    border-left: 1px solid hsl(var(--border));
+    border-bottom: 1px solid hsl(var(--border));
+    background: inherit;
+    transform: rotate(-45deg);
+  }
+
+  .testimonial-message-right::after {
+    left: auto;
+    right: 18px;
+    transform: rotate(45deg);
+  }
 }
 
 @keyframes press-scroll {
