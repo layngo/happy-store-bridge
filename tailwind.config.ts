@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['Montserrat', 'sans-serif'],
-        body: ['Montserrat', 'sans-serif'],
+        heading: ["League Spartan", "sans-serif"],
+        body: ["League Spartan", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

@@ -85,7 +85,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-black/55 via-black/45 to-slate-800/40" />
         <div className="relative container py-16 md:py-24">
           <div className="mx-auto max-w-3xl text-center space-y-20 md:space-y-24 text-white">
-            <h1 className="font-heading text-[max(1.25rem,calc(2.25rem-50px))] md:text-[max(2rem,calc(3.75rem-50px))] font-semibold leading-tight tracking-tight drop-shadow-sm">
+            <h1 className="font-heading text-[max(1.25rem,calc(2.25rem-50px))] md:text-[max(2rem,calc(3.75rem-50px))] font-bold leading-tight tracking-tight drop-shadow-sm">
               Organizational Solutions for Life, Play, and Travel
             </h1>
             <Link to="/collections">
