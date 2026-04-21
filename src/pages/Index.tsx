@@ -85,9 +85,9 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header variant="light" />
 
-      {/* Hero — 21:9 frame, full width; 16:9 Vimeo iframe fills width and crops top/bottom (no pillarboxing) */}
+      {/* Hero — ~20:9 frame (slightly taller than 21:9) reveals more of the 16:9 Vimeo crop; full width */}
       <section className="relative w-full border-b border-border bg-black">
-        <div className="relative aspect-[21/9] w-full overflow-hidden">
+        <div className="relative aspect-[20/9] w-full overflow-hidden">
           <div className="pointer-events-none absolute left-0 right-0 top-1/2 aspect-video w-full -translate-y-1/2">
             <iframe
               src={VIMEO_EMBED_SRC}
