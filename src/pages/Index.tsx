@@ -85,24 +85,26 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header variant="light" />
 
-      {/* Hero — full width, aspect between 16:9 and 21:9 (mean ≈ 37:18); Vimeo letterboxes 16:9 inside */}
+      {/* Hero — 21:9 frame, full width; 16:9 Vimeo iframe fills width and crops top/bottom (no pillarboxing) */}
       <section className="relative w-full border-b border-border bg-black">
-        <div className="relative aspect-[37/18] w-full overflow-hidden">
-          <iframe
-            src={VIMEO_EMBED_SRC}
-            title="Lay-n-Go"
-            frameBorder={0}
-            allow="autoplay; encrypted-media; picture-in-picture"
-            referrerPolicy="strict-origin-when-cross-origin"
-            tabIndex={-1}
-            className="pointer-events-none absolute inset-0 h-full w-full select-none"
-            aria-hidden
-          />
+        <div className="relative aspect-[21/9] w-full overflow-hidden">
+          <div className="pointer-events-none absolute left-0 right-0 top-1/2 aspect-video w-full -translate-y-1/2">
+            <iframe
+              src={VIMEO_EMBED_SRC}
+              title="Lay-n-Go"
+              frameBorder={0}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              referrerPolicy="strict-origin-when-cross-origin"
+              tabIndex={-1}
+              className="pointer-events-none absolute inset-0 h-full w-full select-none"
+              aria-hidden
+            />
+          </div>
           <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-black/15"
+            className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-black/55 via-black/25 to-black/15"
             aria-hidden
           />
-          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-4 px-5 text-center sm:gap-5 sm:px-8">
+          <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-5 text-center sm:gap-5 sm:px-8">
             <h1 className="font-heading text-xl font-bold leading-tight tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)] sm:text-2xl md:text-3xl lg:text-4xl">
               Organizational Solutions
               <br />
