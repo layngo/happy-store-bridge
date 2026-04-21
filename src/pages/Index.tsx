@@ -9,8 +9,7 @@ import { sortCollectionsForDisplay } from "@/lib/collectionOrder";
 import { testimonials } from "@/lib/siteNav";
 import { Loader2 } from "lucide-react";
 
-const HERO_BG =
-  "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=2000&q=80";
+const VIMEO_PLAYER_SCRIPT = "https://player.vimeo.com/api/player.js";
 
 const PRESS_LOGOS = [
   {
@@ -61,8 +60,6 @@ const PRESS_LOGOS = [
 const Index = () => {
   const [collections, setCollections] = useState<ShopifyCollectionSummary[]>([]);
   const [collectionsLoading, setCollectionsLoading] = useState(true);
-  const [testimonialStart, setTestimonialStart] = useState(0);
-  const [visibleTestimonialCount, setVisibleTestimonialCount] = useState(8);
 
   useEffect(() => {
     fetchCollections(50)
@@ -72,64 +69,30 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    const computeVisibleCount = () => {
-      const width = window.innerWidth;
-      if (width < 640) return 4;
-      if (width < 1024) return 6;
-      return 10;
-    };
-
-    setVisibleTestimonialCount(computeVisibleCount());
-
-    const onResize = () => {
-      setVisibleTestimonialCount(computeVisibleCount());
-    };
-
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    const id = "vimeo-player-api";
+    if (document.getElementById(id)) return;
+    const script = document.createElement("script");
+    script.id = id;
+    script.src = VIMEO_PLAYER_SCRIPT;
+    script.async = true;
+    document.body.appendChild(script);
   }, []);
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setTestimonialStart((prev) => (prev + 1) % testimonials.length);
-    }, 2100);
-
-    return () => window.clearInterval(interval);
-  }, []);
-
-  const visibleTestimonials = Array.from({ length: visibleTestimonialCount }, (_, idx) => {
-    return testimonials[(testimonialStart + idx) % testimonials.length];
-  });
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header variant="light" />
 
-      {/* Hero */}
-      <section className="relative border-b border-border min-h-[420px] md:min-h-[540px] flex items-center">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${HERO_BG})` }}
-          role="img"
-          aria-label="Organized makeup products"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/55 via-black/45 to-slate-800/40" />
-        <div className="relative container py-16 md:py-24">
-          <div className="mx-auto max-w-3xl text-center space-y-20 md:space-y-24 text-white">
-            <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight drop-shadow-sm">
-              Organizational Solutions
-              <br />
-              for Life, Play, and Travel
-            </h1>
-            <Link to="/collections">
-              <button
-                type="button"
-                className="bg-primary text-primary-foreground px-9 py-3 rounded-full text-sm md:text-base font-semibold tracking-wide hover:bg-primary/90 transition-colors shadow-lg"
-              >
-                Shop Now
-              </button>
-            </Link>
-          </div>
+      {/* Hero — Vimeo */}
+      <section className="relative border-b border-border w-full bg-black">
+        <div className="relative w-full" style={{ padding: "56.25% 0 0 0" }}>
+          <iframe
+            src="https://player.vimeo.com/video/1185281289?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1"
+            title="draft1"
+            frameBorder={0}
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            className="absolute top-0 left-0 h-full w-full"
+          />
         </div>
       </section>
 
@@ -231,21 +194,17 @@ const Index = () => {
             Testimonials
           </h2>
           <p className="text-muted-foreground text-center mb-10 max-w-lg mx-auto">
-            Real customer notes, rotating in like a text thread.
+            Real customer reviews on an infinite loop.
           </p>
-          <div className="mx-auto max-w-6xl rounded-3xl border border-border/70 bg-muted/25 p-4 sm:p-6">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {visibleTestimonials.map((t, idx) => (
+          <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border/70 bg-muted/25 py-4 sm:py-6">
+            <div className="testimonial-slider-track">
+              {[...testimonials, ...testimonials].map((t, idx) => (
                 <article
-                  key={`${testimonialStart}-${t.name}-${idx}`}
-                  className={`testimonial-bubble testimonial-fade-rise w-fit max-w-full rounded-[1.4rem] border border-border/90 px-4 py-3 shadow-sm md:px-5 md:py-4 ${
-                    idx % 3 === 1
-                      ? "testimonial-bubble-right bg-primary/12 justify-self-end text-right"
-                      : "bg-background/90 justify-self-start text-left"
-                  }`}
+                  key={`${t.name}-${idx}`}
+                  className="w-[20rem] sm:w-[24rem] shrink-0 rounded-3xl border border-border/90 bg-background/90 px-5 py-4 shadow-sm"
                 >
                   <p className="text-foreground leading-relaxed">{t.quote}</p>
-                  <footer className="mt-2 text-xs sm:text-sm font-semibold text-foreground/80">{t.name}</footer>
+                  <footer className="mt-3 text-sm font-semibold text-foreground/80">{t.name}</footer>
                 </article>
               ))}
             </div>
