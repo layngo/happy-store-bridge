@@ -11,6 +11,9 @@ import { Loader2 } from "lucide-react";
 
 const VIMEO_PLAYER_SCRIPT = "https://player.vimeo.com/api/player.js";
 
+const VIMEO_EMBED_SRC =
+  "https://player.vimeo.com/video/1185281289?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1";
+
 const PRESS_LOGOS = [
   {
     name: "BuzzFeed",
@@ -82,17 +85,42 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header variant="light" />
 
-      {/* Hero — Vimeo */}
-      <section className="relative border-b border-border w-full bg-black">
-        <div className="relative w-full" style={{ padding: "56.25% 0 0 0" }}>
-          <iframe
-            src="https://player.vimeo.com/video/1185281289?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1"
-            title="draft1"
-            frameBorder={0}
-            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            className="absolute top-0 left-0 h-full w-full"
-          />
+      {/* Hero — Vimeo (decorative, non-interactive) + overlay */}
+      <section className="relative w-full border-b border-border bg-black py-6 md:py-8">
+        <div className="container">
+          <div className="relative mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl overflow-hidden rounded-xl shadow-lg aspect-video">
+            <iframe
+              src={VIMEO_EMBED_SRC}
+              title="Lay-n-Go"
+              frameBorder={0}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              referrerPolicy="strict-origin-when-cross-origin"
+              tabIndex={-1}
+              className="pointer-events-none absolute inset-0 h-full w-full select-none"
+              aria-hidden
+            />
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-black/15"
+              aria-hidden
+            />
+            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-5 px-5 text-center sm:gap-6 sm:px-8">
+              <h1 className="font-heading text-2xl font-bold leading-tight tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)] sm:text-3xl md:text-4xl">
+                Organizational Solutions
+                <br />
+                for Life, Play, and Travel
+              </h1>
+              <div className="pointer-events-auto">
+                <Link to="/collections">
+                  <button
+                    type="button"
+                    className="bg-primary text-primary-foreground rounded-full px-8 py-2.5 text-sm font-semibold tracking-wide shadow-lg transition-colors hover:bg-primary/90 md:px-9 md:py-3 md:text-base"
+                  >
+                    Shop Now
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
