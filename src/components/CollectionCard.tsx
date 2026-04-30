@@ -15,10 +15,9 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
 
   if (isOutdoorTacticalHomeCard) {
     return (
-      <Link to={`/collections/${collection.handle}`} className="block w-[94%] mx-auto">
-        <article className="bg-background">
-          <div className="relative aspect-square overflow-hidden bg-background">
-            <div className="absolute left-1/2 top-1/2 h-full aspect-video -translate-x-1/2 -translate-y-1/2">
+      <Link to={`/collections/${collection.handle}`} className="group block w-[94%] mx-auto cursor-pointer">
+        <article className="bg-background transition-transform duration-300 group-hover:-translate-y-0.5">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-md bg-background ring-1 ring-transparent transition-shadow duration-300 group-hover:shadow-md group-hover:ring-border">
             <iframe
               src={OUTDOOR_VIDEO_SRC}
               title="Outdoor and Tactical category video"
@@ -29,10 +28,12 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
               tabIndex={-1}
               aria-hidden
             />
+            <div className="pointer-events-none absolute right-2 top-2 rounded-full bg-background/90 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground/80 shadow-sm">
+              Tap to open
             </div>
           </div>
-          <div className="pt-3 pb-1 text-center">
-            <h2 className="font-heading text-lg font-semibold uppercase tracking-[0.08em] text-foreground">
+          <div className="pt-3 pb-1 text-center transition-colors duration-200 group-hover:text-primary">
+            <h2 className="font-heading text-lg font-semibold uppercase tracking-[0.08em] text-foreground group-hover:text-primary">
               Outdoor / Tactical
             </h2>
           </div>
