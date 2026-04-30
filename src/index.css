@@ -71,7 +71,7 @@
     width: max-content;
     display: flex;
     align-items: center;
-    animation: press-scroll 48s linear infinite;
+    animation: press-scroll 22s linear infinite;
     will-change: transform;
   }
 
@@ -81,16 +81,17 @@
     align-items: stretch;
     gap: 1rem;
     padding: 0 1rem;
-    animation: testimonial-scroll 62s linear infinite;
+    animation: testimonial-scroll 42s linear infinite;
     will-change: transform;
   }
 
   .our-story-slide {
     position: absolute;
     inset: 0;
-    animation-duration: 14s;
-    animation-iteration-count: infinite;
-    animation-timing-function: ease-in-out;
+    animation-duration: 8s, 16s;
+    animation-iteration-count: infinite, infinite;
+    animation-timing-function: ease-in-out, ease-in-out;
+    animation-direction: normal, alternate;
     will-change: opacity, transform;
     transform-origin: center center;
   }
@@ -114,26 +115,20 @@
 }
 
 @keyframes our-story-fade-a {
-  0%, 45% {
+  0%, 47% {
     opacity: 1;
   }
-  50%, 95% {
+  53%, 100% {
     opacity: 0;
-  }
-  100% {
-    opacity: 1;
   }
 }
 
 @keyframes our-story-fade-b {
-  0%, 45% {
+  0%, 47% {
     opacity: 0;
   }
-  50%, 95% {
+  53%, 100% {
     opacity: 1;
-  }
-  100% {
-    opacity: 0;
   }
 }
 
@@ -142,7 +137,17 @@
     transform: scale(1);
   }
   100% {
-    transform: scale(1.08);
+    transform: scale(1.045);
+  }
+}
+
+@media (min-width: 640px) {
+  .press-carousel-track {
+    animation-duration: 48s;
+  }
+
+  .testimonial-slider-track {
+    animation-duration: 62s;
   }
 }
 

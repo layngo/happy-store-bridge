@@ -148,7 +148,7 @@ const Index = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {displayCollections.map((c) => (
-              <CollectionCard key={c.id} collection={c} />
+              <CollectionCard key={c.id} collection={c} variant="home" />
             ))}
           </div>
         )}
@@ -168,13 +168,13 @@ const Index = () => {
                   href={logo.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mx-5 inline-flex h-20 w-40 sm:h-24 sm:w-44 shrink-0 items-center justify-center"
+                  className="mx-2 inline-flex h-12 w-[44vw] max-w-[9rem] sm:mx-5 sm:h-24 sm:w-44 shrink-0 items-center justify-center"
                 >
                   <img
                     src={logo.src}
                     alt={logo.name}
                     loading="lazy"
-                    className={`h-10 w-28 sm:h-12 sm:w-32 object-contain opacity-95 transition-transform ${logo.imageClass ?? ""}`}
+                    className={`h-7 w-20 sm:h-12 sm:w-32 object-contain opacity-95 transition-transform ${logo.imageClass ?? ""}`}
                   />
                 </a>
               ))}
@@ -254,7 +254,7 @@ const Index = () => {
               {[...testimonials, ...testimonials].map((t, idx) => (
                 <article
                   key={`${t.name}-${idx}`}
-                  className="w-[20rem] sm:w-[24rem] shrink-0 rounded-3xl border border-border/90 bg-background/90 px-5 py-4 shadow-sm"
+                  className="w-[76vw] max-w-[17rem] sm:w-[24rem] shrink-0 rounded-3xl border border-border/90 bg-background/90 px-4 py-3 sm:px-5 sm:py-4 shadow-sm"
                 >
                   <p className="text-foreground leading-relaxed">{t.quote}</p>
                   <footer className="mt-3 text-sm font-semibold text-foreground/80">{t.name}</footer>
