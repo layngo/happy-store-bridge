@@ -17,9 +17,9 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
 
   if (isOutdoorTacticalHomeCard) {
     return (
-      <Link to={`/collections/${collection.handle}`} className="group block w-3/4 mx-auto">
+      <Link to={`/collections/${collection.handle}`} className="group block w-[94%] mx-auto">
         <article className="relative aspect-square overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-          <div className="absolute left-1/2 top-1/2 h-full aspect-video -translate-x-1/2 -translate-y-1/2">
+          <div className="absolute left-1/2 top-1/2 h-full aspect-video -translate-x-1/2 -translate-y-1/2 hidden lg:block">
             <iframe
               src={OUTDOOR_VIDEO_SRC}
               title="Outdoor and Tactical category video"
@@ -34,11 +34,11 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
           <img
             src={OUTDOOR_HOVER_IMAGE}
             alt="Outdoor and tactical Lay-n-Go product"
-            className="absolute inset-0 h-full w-full object-cover opacity-0 transition-[opacity,transform] duration-700 ease-out group-hover:opacity-100 group-hover:scale-105"
+            className="absolute inset-0 h-full w-full object-cover opacity-100 transition-[opacity,transform] duration-700 ease-out lg:opacity-0 lg:group-hover:opacity-100 group-hover:scale-105"
             loading="lazy"
           />
           <div className="absolute inset-0 bg-black/25" />
-          <div className="absolute inset-0 flex items-end p-4">
+          <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
             <h2 className="font-heading text-xl font-bold uppercase tracking-[0.08em] text-white">
               Outdoor / Tactical
             </h2>
