@@ -10,9 +10,19 @@ interface ProductGridProps {
   collectionHandle?: string;
   /** When fetching all products (home / search-style), limit count. */
   fetchFirst?: number;
+  /** Product card visual treatment. */
+  cardVariant?: "default" | "imageOverlay";
+  /** Override default grid layout classes. */
+  gridClassName?: string;
 }
 
-export const ProductGrid = ({ prefetchedProducts, collectionHandle, fetchFirst }: ProductGridProps = {}) => {
+export const ProductGrid = ({
+  prefetchedProducts,
+  collectionHandle,
+  fetchFirst,
+  cardVariant = "default",
+  gridClassName,
+}: ProductGridProps = {}) => {
   const [products, setProducts] = useState<ShopifyProduct[]>(prefetchedProducts ?? []);
   const [loading, setLoading] = useState(prefetchedProducts === undefined);
 
@@ -67,9 +77,9 @@ export const ProductGrid = ({ prefetchedProducts, collectionHandle, fetchFirst }
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className={gridClassName ?? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"}>
       {products.map((product) => (
-        <ProductCard key={product.node.id} product={product} />
+        <ProductCard key={product.node.id} product={product} variant={cardVariant} />
       ))}
     </div>
   );

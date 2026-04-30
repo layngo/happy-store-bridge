@@ -13,6 +13,8 @@ const VIMEO_PLAYER_SCRIPT = "https://player.vimeo.com/api/player.js";
 
 const VIMEO_EMBED_SRC =
   "https://player.vimeo.com/video/1185281289?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1";
+const OUR_STORY_IMAGE =
+  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/blogs/19146/images/S8Fu3O6AS2qM9Et6DQQ0__114727158_5b0d4ae5-b34a-4ac9-ba03-d81b128ed670.jpg";
 
 const PRESS_LOGOS = [
   {
@@ -63,6 +65,11 @@ const PRESS_LOGOS = [
 const Index = () => {
   const [collections, setCollections] = useState<ShopifyCollectionSummary[]>([]);
   const [collectionsLoading, setCollectionsLoading] = useState(true);
+  const displayCollections = collections.filter((c) => {
+    const handle = c.handle.toLowerCase();
+    const title = c.title.toLowerCase();
+    return handle !== "frontpage" && handle !== "homepage" && title !== "homepage";
+  });
 
   useEffect(() => {
     fetchCollections(50)
@@ -138,7 +145,7 @@ const Index = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {collections.map((c) => (
+            {displayCollections.map((c) => (
               <CollectionCard key={c.id} collection={c} />
             ))}
           </div>
@@ -175,44 +182,55 @@ const Index = () => {
       </section>
 
       {/* Our story */}
-      <section className="border-y border-border bg-muted/30">
-        <div className="container py-16 grid md:grid-cols-2 gap-10 items-center">
-          <div className="space-y-4">
-            <h2 className="font-heading text-3xl font-medium uppercase tracking-[0.12em] text-foreground">Our Story</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              From toy cleanup to cosmetics, tech, nails, pets, and tactical gear, every Lay-n-Go product opens flat for
-              full visibility and cinches closed for travel. Women-owned, built on utility patents, and trusted by
-              customers who are tired of digging through dark bags.
-            </p>
-            <Link
-              to="/pages/about-us"
-              className="inline-flex items-center text-primary font-semibold hover:underline"
-            >
-              Learn more
-            </Link>
-          </div>
-          <div className="rounded-lg overflow-hidden border border-border shadow-sm aspect-video bg-muted">
-            <img
-              src="https://images.unsplash.com/photo-1596462505698-0996edbe7a88?auto=format&fit=crop&w=1200&q=80"
-              alt="Organized cosmetics flat lay"
-              className="w-full h-full object-cover"
-            />
-          </div>
+      <section className="border-y border-border bg-muted/20">
+        <div className="container py-16">
+          <Link to="/pages/about-us" className="group block">
+            <article className="relative overflow-hidden rounded-2xl border border-border/80 shadow-sm">
+              <div className="aspect-[16/8] md:aspect-[21/9] bg-muted">
+                <img
+                  src={OUR_STORY_IMAGE}
+                  alt="Lay-n-Go founder story"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+
+              <div className="absolute inset-0 bg-black/35 transition-colors duration-500 group-hover:bg-white/50" />
+              <div className="absolute inset-0 flex items-end">
+                <div className="p-6 sm:p-8 md:p-10">
+                  <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-[0.08em] text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.7)] transition-all duration-500 group-hover:-translate-y-1 group-hover:tracking-[0.11em] group-hover:text-slate-900 group-hover:drop-shadow-none">
+                    Our Story
+                  </h2>
+                </div>
+              </div>
+            </article>
+          </Link>
+
+          <p className="mt-5 max-w-3xl text-sm sm:text-base text-muted-foreground leading-relaxed">
+            From toy cleanup to cosmetics, tech, nails, pets, and tactical gear, every Lay-n-Go product opens flat for
+            full visibility and cinches closed for travel. Women-owned, built on utility patents, and trusted by
+            customers who are tired of digging through dark bags.
+          </p>
         </div>
       </section>
 
       {/* Top selling */}
-      <section id="products" className="container py-16">
-        <div className="mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-          <div>
-            <h2 className="font-heading text-3xl font-medium uppercase tracking-[0.12em] text-foreground">Top Selling Products</h2>
-            <p className="text-muted-foreground mt-2">Some of our most popular selections</p>
+      <section id="products" className="py-16">
+        <div className="container rounded-2xl border border-border bg-card/45 px-5 py-8 sm:px-7 sm:py-10">
+          <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div>
+              <h2 className="font-heading text-3xl font-medium uppercase tracking-[0.1em] text-foreground">Top Selling Products</h2>
+              <p className="text-muted-foreground mt-2">Best sellers, curated for a cleaner shopping view.</p>
+            </div>
+            <Link to="/collections" className="text-primary text-sm font-semibold hover:underline shrink-0">
+              View all collections
+            </Link>
           </div>
-          <Link to="/collections" className="text-primary text-sm font-semibold hover:underline shrink-0">
-            View all collections
-          </Link>
+          <ProductGrid
+            fetchFirst={6}
+            cardVariant="imageOverlay"
+            gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          />
         </div>
-        <ProductGrid fetchFirst={8} />
       </section>
 
       {/* Testimonials */}

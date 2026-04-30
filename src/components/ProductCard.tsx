@@ -6,13 +6,15 @@ import { toast } from "sonner";
 
 interface ProductCardProps {
   product: ShopifyProduct;
+  variant?: "default" | "imageOverlay";
 }
 
-export const ProductCard = ({ product }: ProductCardProps) => {
+export const ProductCard = ({ product, variant = "default" }: ProductCardProps) => {
   const { node } = product;
   const addItem = useCartStore(state => state.addItem);
   const isLoading = useCartStore(state => state.isLoading);
   const image = node.images.edges[0]?.node;
+  const hoverImage = node.images.edges[1]?.node ?? image;
   const price = node.priceRange.minVariantPrice;
   const firstVariant = node.variants.edges[0]?.node;
 
@@ -30,6 +32,40 @@ export const ProductCard = ({ product }: ProductCardProps) => {
     });
     toast.success("Added to cart", { description: node.title, position: "top-center" });
   };
+
+  if (variant === "imageOverlay") {
+    return (
+      <Link to={`/product/${node.handle}`} className="group block">
+        <article className="relative overflow-hidden rounded-xl border border-border/80 bg-card shadow-sm">
+          <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+            {image ? (
+              <>
+                <img
+                  src={image.url}
+                  alt={image.altText || node.title}
+                  className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-0"
+                  loading="lazy"
+                />
+                <img
+                  src={hoverImage?.url ?? image.url}
+                  alt={hoverImage?.altText || node.title}
+                  className="absolute inset-0 h-full w-full object-cover opacity-0 transition-[opacity,transform] duration-700 group-hover:opacity-100 group-hover:scale-105"
+                  loading="lazy"
+                />
+              </>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground">No image</div>
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/0" />
+            <div className="absolute inset-x-0 bottom-0 p-4">
+              <h3 className="font-heading text-lg font-bold text-white drop-shadow-md line-clamp-2">{node.title}</h3>
+              <p className="mt-1 text-white/90 font-semibold">${parseFloat(price.amount).toFixed(2)}</p>
+            </div>
+          </div>
+        </article>
+      </Link>
+    );
+  }
 
   return (
     <Link to={`/product/${node.handle}`} className="group block">
