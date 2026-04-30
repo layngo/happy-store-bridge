@@ -17,7 +17,7 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
 
   if (isOutdoorTacticalHomeCard) {
     return (
-      <Link to={`/collections/${collection.handle}`} className="group block">
+      <Link to={`/collections/${collection.handle}`} className="group block w-3/4 mx-auto">
         <article className="relative aspect-square overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
           <div className="absolute left-1/2 top-1/2 h-full aspect-video -translate-x-1/2 -translate-y-1/2">
             <iframe
@@ -37,9 +37,9 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
             className="absolute inset-0 h-full w-full object-cover opacity-0 transition-[opacity,transform] duration-700 ease-out group-hover:opacity-100 group-hover:scale-105"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-black/10" />
+          <div className="absolute inset-0 bg-black/25" />
           <div className="absolute inset-0 flex items-end p-4">
-            <h2 className="font-heading text-xl font-bold uppercase tracking-[0.08em] text-black mix-blend-screen">
+            <h2 className="font-heading text-xl font-bold uppercase tracking-[0.08em] text-white">
               Outdoor / Tactical
             </h2>
           </div>
