@@ -18,7 +18,7 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
       <Link to={`/collections/${collection.handle}`} className="block w-[94%] mx-auto">
         <article className="bg-background">
           <div className="relative aspect-square overflow-hidden bg-background">
-            <div className="absolute left-1/2 top-1/2 w-full aspect-video -translate-x-1/2 -translate-y-1/2">
+            <div className="absolute left-1/2 top-1/2 h-full aspect-video -translate-x-1/2 -translate-y-1/2">
               <iframe
                 src={OUTDOOR_VIDEO_SRC}
                 title="Outdoor and Tactical category video"
