@@ -13,8 +13,10 @@ const VIMEO_PLAYER_SCRIPT = "https://player.vimeo.com/api/player.js";
 
 const VIMEO_EMBED_SRC =
   "https://player.vimeo.com/video/1185281289?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1";
-const OUR_STORY_IMAGE =
-  "https://kajabi-storefronts-production.kajabi-cdn.com/kajabi-storefronts-production/blogs/19146/images/S8Fu3O6AS2qM9Et6DQQ0__114727158_5b0d4ae5-b34a-4ac9-ba03-d81b128ed670.jpg";
+const OUR_STORY_IMAGES = [
+  "/our-story-slide-1.png",
+  "/our-story-slide-2.png",
+] as const;
 
 const PRESS_LOGOS = [
   {
@@ -188,9 +190,14 @@ const Index = () => {
             <article className="relative overflow-hidden rounded-2xl border border-border/80 shadow-sm">
               <div className="aspect-[16/8] md:aspect-[21/9] bg-muted">
                 <img
-                  src={OUR_STORY_IMAGE}
+                  src={OUR_STORY_IMAGES[0]}
                   alt="Lay-n-Go founder story"
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="our-story-slide our-story-slide-a h-full w-full object-cover"
+                />
+                <img
+                  src={OUR_STORY_IMAGES[1]}
+                  alt="Lay-n-Go founder story alternate"
+                  className="our-story-slide our-story-slide-b h-full w-full object-cover"
                 />
               </div>
 
@@ -206,9 +213,9 @@ const Index = () => {
           </Link>
 
           <p className="mt-5 max-w-3xl text-sm sm:text-base text-muted-foreground leading-relaxed">
-            From toy cleanup to cosmetics, tech, nails, pets, and tactical gear, every Lay-n-Go product opens flat for
-            full visibility and cinches closed for travel. Women-owned, built on utility patents, and trusted by
-            customers who are tired of digging through dark bags.
+            Lay-n-Go started with a simple idea, &ldquo;There has to be a better way to do this.&rdquo; From solving
+            toy cleanup to building patented solutions for cosmetics, tech, travel, pets, and tactical gear, every
+            product is designed to open flat for visibility and cinch closed for life on the go.
           </p>
         </div>
       </section>

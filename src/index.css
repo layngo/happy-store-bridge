@@ -84,6 +84,24 @@
     animation: testimonial-scroll 62s linear infinite;
     will-change: transform;
   }
+
+  .our-story-slide {
+    position: absolute;
+    inset: 0;
+    animation-duration: 14s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+    will-change: opacity, transform;
+    transform-origin: center center;
+  }
+
+  .our-story-slide-a {
+    animation-name: our-story-fade-a, our-story-zoom;
+  }
+
+  .our-story-slide-b {
+    animation-name: our-story-fade-b, our-story-zoom;
+  }
 }
 
 @keyframes testimonial-scroll {
@@ -92,6 +110,39 @@
   }
   100% {
     transform: translateX(0);
+  }
+}
+
+@keyframes our-story-fade-a {
+  0%, 45% {
+    opacity: 1;
+  }
+  50%, 95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes our-story-fade-b {
+  0%, 45% {
+    opacity: 0;
+  }
+  50%, 95% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes our-story-zoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
   }
 }
 
