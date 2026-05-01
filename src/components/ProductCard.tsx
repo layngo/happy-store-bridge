@@ -112,6 +112,8 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
     );
   }
 
+  const useContainedImage = isCosmoMiniInteractive && selectedVariant && !isCosmoBlackVariant(selectedVariant);
+
   return (
     <article className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
       <Link
@@ -122,7 +124,10 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
           <img
             src={displayImage.url}
             alt={displayImage.altText || node.title}
-            className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+            className={cn(
+              "h-full w-full object-center transition-transform duration-500 group-hover:scale-105",
+              useContainedImage ? "object-contain p-5" : "object-cover",
+            )}
             loading="lazy"
           />
         ) : (
@@ -138,7 +143,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
           >
             {node.title}
           </Link>
-          <span className="shrink-0 text-2xl font-semibold tabular-nums text-foreground">
+          <span className="shrink-0 text-xl font-semibold tabular-nums text-foreground">
             ${parseFloat(priceAmount).toFixed(2)}
           </span>
         </div>
@@ -183,7 +188,9 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
                 />
               ))}
               {remainingColors > 0 ? (
-                <span className="text-xs font-medium text-muted-foreground">+{remainingColors} more</span>
+                <Link to={`/product/${node.handle}`} className="text-xs font-medium text-primary hover:underline">
+                  +{remainingColors} more
+                </Link>
               ) : null}
             </>
           ) : (
