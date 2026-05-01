@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Facebook, Globe, Instagram } from "lucide-react";
 import { footerCatalogLinks, footerInfoLinks, socialLinks } from "@/lib/siteNav";
-import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -11,8 +10,7 @@ interface SiteFooterProps {
   variant?: "light" | "dark";
 }
 
-export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
-  const light = variant === "light";
+export const SiteFooter = (_props: SiteFooterProps) => {
   const [email, setEmail] = useState("");
 
   const onNewsletter = (e: React.FormEvent) => {
@@ -23,72 +21,68 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
   };
 
   return (
-    <footer
-      className={cn(
-        "border-t",
-        light ? "border-sky-200/80 bg-sky-200/50 text-slate-900" : "border-border bg-card text-foreground",
-      )}
-    >
-      <div className="container py-12 space-y-12">
-        <div className="flex justify-center">
-          <Link to="/" aria-label="Lay-n-Go home">
-            <img
-              src="/layngo-logo-outlined.png"
-              alt="Lay-n-Go"
-              className="h-12 sm:h-14 w-auto object-contain mix-blend-multiply scale-[1.55] sm:scale-[1.65]"
-            />
-          </Link>
-        </div>
-
-        <div className="max-w-xl mx-auto text-center space-y-4">
-          <h2 className={cn("font-heading text-xl font-semibold", light ? "text-slate-900" : "text-foreground")}>
-            Sign up for our Newsletter
-          </h2>
-          <p className={cn("text-sm", light ? "text-slate-600" : "text-muted-foreground")}>
-            New product alerts, special offers, and coupon codes — straight to your inbox.
-          </p>
-          <form onSubmit={onNewsletter} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-            <Input
-              type="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={light ? "bg-white/80 border-sky-200" : ""}
-            />
-            <Button type="submit" className="shrink-0">
-              Join
-            </Button>
-          </form>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          <div className="space-y-3">
-            <h3 className={cn("font-heading font-semibold", light ? "text-slate-900" : "text-foreground")}>
-              Lay-n-Go Info
-            </h3>
-            <p className={cn("text-sm leading-normal font-medium", light ? "text-slate-600" : "text-muted-foreground")}>
-              Lay-n-Go is a patented drawstring mat, cleanup, storage and carryall solution in one. Perfect for
-              wherever life takes you!
+    <footer className="border-t border-border bg-muted">
+      <div className="container max-w-5xl py-8 sm:py-9">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-8 lg:grid-cols-4 lg:gap-8">
+          {/* Brand */}
+          <div className="flex flex-col items-center gap-3 text-center sm:items-start sm:text-left">
+            <Link to="/" aria-label="Lay-n-Go home" className="inline-block shrink-0">
+              <img
+                src="/layngo-logo-outlined.png"
+                alt="Lay-n-Go"
+                className="h-9 w-auto object-contain mix-blend-multiply scale-125 sm:scale-[1.35]"
+              />
+            </Link>
+            <p className="text-xs leading-snug text-muted-foreground max-w-[240px] sm:max-w-none">
+              Patented drawstring mat, cleanup, storage, and carryall in one — for wherever life takes you.
             </p>
-            <p className={cn("text-sm", light ? "text-slate-700" : "text-muted-foreground")}>
-              <strong className={light ? "text-slate-900" : "text-foreground"}>Contact:</strong>{" "}
-              <a href="mailto:info@layngo.com" className="text-primary hover:underline">
-                info@layngo.com
-              </a>
-            </p>
-            <p className={cn("text-sm", light ? "text-slate-700" : "text-muted-foreground")}>
-              <strong className={light ? "text-slate-900" : "text-foreground"}>Address:</strong> Alexandria, Virginia
-            </p>
+            <div className="text-xs leading-relaxed text-muted-foreground space-y-0.5">
+              <p>
+                <span className="font-semibold text-foreground">Contact</span>{" "}
+                <a href="mailto:info@layngo.com" className="text-primary hover:underline">
+                  info@layngo.com
+                </a>
+              </p>
+              <p>
+                <span className="font-semibold text-foreground">Address</span> Alexandria, Virginia
+              </p>
+            </div>
           </div>
 
-          <div className="space-y-3">
-            <h3 className={cn("font-heading font-semibold", light ? "text-slate-900" : "text-foreground")}>
+          {/* Newsletter */}
+          <div className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
+            <h3 className="font-heading text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+              Newsletter
+            </h3>
+            <p className="text-xs text-muted-foreground max-w-[260px] sm:max-w-none">
+              Alerts, offers, and codes in your inbox.
+            </p>
+            <form
+              onSubmit={onNewsletter}
+              className="flex w-full max-w-[280px] flex-col gap-2 sm:max-w-none sm:flex-row sm:items-center"
+            >
+              <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-9 flex-1 bg-background text-sm"
+              />
+              <Button type="submit" size="sm" className="h-9 shrink-0 px-4 sm:w-auto w-full">
+                Join
+              </Button>
+            </form>
+          </div>
+
+          {/* Catalog */}
+          <div className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
+            <h3 className="font-heading text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
               Catalog
             </h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-1.5 text-sm text-muted-foreground">
               {footerCatalogLinks.map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} className={cn("hover:text-primary transition-colors", light ? "text-slate-600" : "text-muted-foreground")}>
+                  <Link to={l.to} className="transition-colors hover:text-primary">
                     {l.label}
                   </Link>
                 </li>
@@ -96,38 +90,36 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
             </ul>
           </div>
 
-          <div className="space-y-3">
-            <h3 className={cn("font-heading font-semibold", light ? "text-slate-900" : "text-foreground")}>
-              Company & policies
+          {/* Company + social */}
+          <div className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
+            <h3 className="font-heading text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+              Company
             </h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-1.5 text-sm text-muted-foreground">
               {footerInfoLinks.map((l) => (
                 <li key={l.to}>
-                  <Link to={l.to} className={cn("hover:text-primary transition-colors", light ? "text-slate-600" : "text-muted-foreground")}>
+                  <Link to={l.to} className="transition-colors hover:text-primary">
                     {l.label}
                   </Link>
                 </li>
               ))}
             </ul>
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex justify-center gap-1.5 pt-1 sm:justify-start">
               {socialLinks.map((s) => (
                 <a
                   key={s.href}
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={cn(
-                    "rounded-full p-2 border transition-colors",
-                    light ? "border-sky-300 text-slate-700 hover:bg-sky-100" : "border-border text-muted-foreground hover:text-foreground",
-                  )}
+                  className="rounded-full border border-border bg-background/60 p-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
                   aria-label={s.label}
                 >
                   {s.icon === "facebook" ? (
-                    <Facebook className="w-4 h-4" />
+                    <Facebook className="h-4 w-4" />
                   ) : s.icon === "instagram" ? (
-                    <Instagram className="w-4 h-4" />
+                    <Instagram className="h-4 w-4" />
                   ) : (
-                    <Globe className="w-4 h-4" />
+                    <Globe className="h-4 w-4" />
                   )}
                 </a>
               ))}
@@ -135,7 +127,7 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
           </div>
         </div>
 
-        <div className={cn("text-center text-xs pt-4 border-t", light ? "border-sky-200/80 text-slate-600" : "border-border text-muted-foreground")}>
+        <div className="mt-8 border-t border-border/70 pt-5 text-center text-[11px] text-muted-foreground">
           © {new Date().getFullYear()} Lay-n-Go. All rights reserved.
         </div>
       </div>
