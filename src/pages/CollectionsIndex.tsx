@@ -33,7 +33,7 @@ const CollectionsIndex = () => {
 
         <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-2">Collections</h1>
         <p className="max-w-2xl mb-10 text-base font-medium leading-normal text-foreground/80">
-          Browse Lay-n-Go products by category — cosmetic bags, play mats, travel, pets, and more.
+          Browse Lay-n-Go products by category: cosmetic bags, play mats, travel, pets, and more.
         </p>
 
         {loading ? (

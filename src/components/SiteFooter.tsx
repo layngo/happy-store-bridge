@@ -19,7 +19,7 @@ export const SiteFooter = (_props: SiteFooterProps) => {
   const onNewsletter = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
-    toast.success("Thanks!", { description: "Newsletter signup is coming soon — we captured your interest." });
+    toast.success("Thanks!", { description: "Newsletter signup is coming soon. We captured your interest." });
     setEmail("");
   };
 
@@ -60,7 +60,7 @@ export const SiteFooter = (_props: SiteFooterProps) => {
               />
             </Link>
             <p className="text-sm leading-snug text-muted-foreground max-w-[260px] sm:max-w-none">
-              Patented drawstring mat, cleanup, storage, and carryall in one — for wherever life takes you.
+              Patented drawstring mat for cleanup and storage, built for everyday use.
             </p>
             <div className="text-sm leading-snug text-muted-foreground space-y-1">
               <p>

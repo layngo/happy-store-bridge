@@ -84,7 +84,6 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
         </div>
         <div className="p-4 space-y-2">
           <h3 className="font-heading text-sm font-semibold text-foreground line-clamp-1">{node.title}</h3>
-          <p className="text-xs text-muted-foreground line-clamp-2">{node.description}</p>
           <div className="flex items-center justify-between pt-2">
             <span className="text-lg font-bold text-primary">
               ${parseFloat(price.amount).toFixed(2)}

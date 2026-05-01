@@ -11,7 +11,8 @@ const PRIMARY_ORDER = [
 ];
 
 export function sortCollectionsForDisplay(cols: ShopifyCollectionSummary[]) {
-  return [...cols].sort((a, b) => {
+  const visible = cols.filter((c) => c.handle !== "frontpage" && c.handle !== "homepage");
+  return [...visible].sort((a, b) => {
     const ia = PRIMARY_ORDER.indexOf(a.handle);
     const ib = PRIMARY_ORDER.indexOf(b.handle);
     if (ia !== -1 || ib !== -1) {
