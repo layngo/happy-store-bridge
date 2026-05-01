@@ -1,47 +1,50 @@
 import { Link } from "react-router-dom";
 import type { ShopifyCollectionSummary } from "@/lib/shopify";
+import { VimeoLoopFadeEmbed } from "@/components/VimeoLoopFadeEmbed";
 
 interface CollectionCardProps {
   collection: ShopifyCollectionSummary;
   variant?: "default" | "home";
 }
 
-const OUTDOOR_VIDEO_SRC =
-  "https://player.vimeo.com/video/1188182193?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&loop=1&muted=1&controls=0&title=0&byline=0&portrait=0&dnt=1";
-const OUTDOOR_HOVER_IMAGE =
-  "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/layngo-DEFENDER_OpenClosed.jpg?v=1626119933";
+const HOME_VIDEO_CARDS: Record<string, { videoId: string; hoverSrc: string; label: string }> = {
+  "military-first-responder": {
+    videoId: "1188287900",
+    hoverSrc:
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/layngo-DEFENDER_OpenClosed.jpg?v=1626119933",
+    label: "Outdoor / Tactical",
+  },
+  "pet-solutions": {
+    videoId: "1188284592",
+    hoverSrc: "https://www.layngo.com/cdn/shop/products/B08MV2JM98.PT01_1200x1200.jpg?v=1626120624",
+    label: "Pet Solutions",
+  },
+};
 
 export const CollectionCard = ({ collection, variant = "default" }: CollectionCardProps) => {
   const img = collection.image;
-  const isOutdoorTacticalHomeCard = variant === "home" && collection.handle === "military-first-responder";
+  const homeVideo = variant === "home" ? HOME_VIDEO_CARDS[collection.handle] : undefined;
 
-  if (isOutdoorTacticalHomeCard) {
+  if (homeVideo) {
     return (
       <Link to={`/collections/${collection.handle}`} className="group block w-[94%] mx-auto">
         <article className="relative aspect-square overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
           <div className="absolute left-1/2 top-1/2 h-full aspect-video -translate-x-1/2 -translate-y-1/2">
-            <iframe
-              src={OUTDOOR_VIDEO_SRC}
-              title="Outdoor and Tactical category video"
-              frameBorder={0}
-              allow="autoplay; encrypted-media; picture-in-picture"
-              referrerPolicy="strict-origin-when-cross-origin"
+            <VimeoLoopFadeEmbed
+              videoId={homeVideo.videoId}
+              title={`${homeVideo.label} category video`}
               className="pointer-events-none absolute inset-0 h-full w-full"
-              tabIndex={-1}
-              aria-hidden
             />
           </div>
           <img
-            src={OUTDOOR_HOVER_IMAGE}
-            alt="Outdoor and tactical Lay-n-Go product"
+            src={homeVideo.hoverSrc}
+            alt={homeVideo.label}
             className="absolute inset-0 h-full w-full object-cover opacity-100 transition-[opacity,transform] duration-700 ease-out lg:opacity-0 lg:group-hover:opacity-100 group-hover:scale-105"
             loading="lazy"
           />
           <div className="absolute inset-0 bg-black/25" />
           <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
-            <h2 className="font-heading text-xl font-bold uppercase tracking-[0.08em] text-white">
-              Outdoor / Tactical
-            </h2>
+            <h2 className="font-heading text-xl font-bold uppercase tracking-[0.08em] text-white">{homeVideo.label}</h2>
           </div>
         </article>
       </Link>
@@ -69,7 +72,9 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
           <h2 className="font-heading text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
             {collection.title}
           </h2>
-          {collection.description ? <p className="text-sm text-muted-foreground line-clamp-2">{stripHtml(collection.description)}</p> : null}
+          {collection.description ? (
+            <p className="text-sm text-muted-foreground line-clamp-2">{stripHtml(collection.description)}</p>
+          ) : null}
         </div>
       </div>
     </Link>
