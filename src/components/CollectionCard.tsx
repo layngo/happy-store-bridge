@@ -8,6 +8,16 @@ interface CollectionCardProps {
 }
 
 const HOME_VIDEO_CARDS: Record<string, { videoId: string; hoverSrc: string; label: string }> = {
+  "cosmetic-bags": {
+    videoId: "1188306142",
+    hoverSrc: "https://www.layngo.com/cdn/shop/products/B00B04V3PQ.PT01_1200x1200.jpg?v=1670376558",
+    label: "Cosmetic Bags",
+  },
+  "nail-solutions": {
+    videoId: "1188306129",
+    hoverSrc: "https://www.layngo.com/cdn/shop/products/B082LQ788D.PT01_1200x1200.jpg?v=1626120523",
+    label: "Nail Solutions",
+  },
   "military-first-responder": {
     videoId: "1188297111",
     hoverSrc:
@@ -39,7 +49,7 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
           <img
             src={homeVideo.hoverSrc}
             alt={homeVideo.label}
-            className="absolute inset-0 h-full w-full object-cover opacity-100 transition-[opacity,transform] duration-700 ease-out lg:opacity-0 lg:group-hover:opacity-100 group-hover:scale-105"
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-0 transition-[opacity,transform] duration-700 ease-out lg:group-hover:opacity-100 lg:group-hover:scale-105"
             loading="lazy"
           />
           <div className="absolute inset-0 bg-black/25" />
