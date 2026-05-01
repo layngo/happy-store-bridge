@@ -20,8 +20,7 @@ const HOME_VIDEO_CARDS: Record<string, { videoId: string; hoverSrc: string; labe
   },
   "military-first-responder": {
     videoId: "1188297111",
-    hoverSrc:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/layngo-DEFENDER_OpenClosed.jpg?v=1626119933",
+    hoverSrc: "https://www.layngo.com/cdn/shop/products/B08SKHPY36.PT02_1200x1200.jpg?v=1626119977",
     label: "Outdoor / Tactical",
   },
   "pet-solutions": {
