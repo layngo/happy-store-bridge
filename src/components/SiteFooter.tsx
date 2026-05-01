@@ -10,6 +10,9 @@ interface SiteFooterProps {
   variant?: "light" | "dark";
 }
 
+const sectionHeading =
+  "font-heading text-sm font-semibold uppercase tracking-[0.14em] text-foreground";
+
 export const SiteFooter = (_props: SiteFooterProps) => {
   const [email, setEmail] = useState("");
 
@@ -20,23 +23,46 @@ export const SiteFooter = (_props: SiteFooterProps) => {
     setEmail("");
   };
 
+  const socialRow = (
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      {socialLinks.map((s) => (
+        <a
+          key={s.href}
+          href={s.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full border border-border bg-background/70 p-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+          aria-label={s.label}
+        >
+          {s.icon === "facebook" ? (
+            <Facebook className="h-4 w-4" />
+          ) : s.icon === "instagram" ? (
+            <Instagram className="h-4 w-4" />
+          ) : (
+            <Globe className="h-4 w-4" />
+          )}
+        </a>
+      ))}
+    </div>
+  );
+
   return (
     <footer className="border-t border-border bg-muted">
-      <div className="container max-w-5xl py-8 sm:py-9">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-8 lg:grid-cols-4 lg:gap-8">
+      <div className="container max-w-5xl py-6 sm:py-7">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-6 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-6">
           {/* Brand */}
           <div className="flex flex-col items-center gap-3 text-center sm:items-start sm:text-left">
             <Link to="/" aria-label="Lay-n-Go home" className="inline-block shrink-0">
               <img
                 src="/layngo-logo-outlined.png"
                 alt="Lay-n-Go"
-                className="h-9 w-auto object-contain mix-blend-multiply scale-125 sm:scale-[1.35]"
+                className="h-10 w-auto object-contain mix-blend-multiply scale-[1.32] sm:h-11 sm:scale-[1.4]"
               />
             </Link>
-            <p className="text-xs leading-snug text-muted-foreground max-w-[240px] sm:max-w-none">
+            <p className="text-sm leading-snug text-muted-foreground max-w-[260px] sm:max-w-none">
               Patented drawstring mat, cleanup, storage, and carryall in one — for wherever life takes you.
             </p>
-            <div className="text-xs leading-relaxed text-muted-foreground space-y-0.5">
+            <div className="text-sm leading-snug text-muted-foreground space-y-1">
               <p>
                 <span className="font-semibold text-foreground">Contact</span>{" "}
                 <a href="mailto:info@layngo.com" className="text-primary hover:underline">
@@ -51,15 +77,13 @@ export const SiteFooter = (_props: SiteFooterProps) => {
 
           {/* Newsletter */}
           <div className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
-            <h3 className="font-heading text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
-              Newsletter
-            </h3>
-            <p className="text-xs text-muted-foreground max-w-[260px] sm:max-w-none">
+            <h3 className={sectionHeading}>Newsletter</h3>
+            <p className="text-sm text-muted-foreground max-w-[280px] sm:max-w-none">
               Alerts, offers, and codes in your inbox.
             </p>
             <form
               onSubmit={onNewsletter}
-              className="flex w-full max-w-[280px] flex-col gap-2 sm:max-w-none sm:flex-row sm:items-center"
+              className="flex w-full max-w-[300px] flex-col gap-2 sm:max-w-none sm:flex-row sm:items-center"
             >
               <Input
                 type="email"
@@ -76,9 +100,7 @@ export const SiteFooter = (_props: SiteFooterProps) => {
 
           {/* Catalog */}
           <div className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
-            <h3 className="font-heading text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
-              Catalog
-            </h3>
+            <h3 className={sectionHeading}>Catalog</h3>
             <ul className="space-y-1.5 text-sm text-muted-foreground">
               {footerCatalogLinks.map((l) => (
                 <li key={l.to}>
@@ -90,11 +112,9 @@ export const SiteFooter = (_props: SiteFooterProps) => {
             </ul>
           </div>
 
-          {/* Company + social */}
+          {/* Company */}
           <div className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
-            <h3 className="font-heading text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
-              Company
-            </h3>
+            <h3 className={sectionHeading}>Company</h3>
             <ul className="space-y-1.5 text-sm text-muted-foreground">
               {footerInfoLinks.map((l) => (
                 <li key={l.to}>
@@ -104,30 +124,17 @@ export const SiteFooter = (_props: SiteFooterProps) => {
                 </li>
               ))}
             </ul>
-            <div className="flex justify-center gap-1.5 pt-1 sm:justify-start">
-              {socialLinks.map((s) => (
-                <a
-                  key={s.href}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full border border-border bg-background/60 p-2 text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
-                  aria-label={s.label}
-                >
-                  {s.icon === "facebook" ? (
-                    <Facebook className="h-4 w-4" />
-                  ) : s.icon === "instagram" ? (
-                    <Instagram className="h-4 w-4" />
-                  ) : (
-                    <Globe className="h-4 w-4" />
-                  )}
-                </a>
-              ))}
-            </div>
           </div>
         </div>
 
-        <div className="mt-8 border-t border-border/70 pt-5 text-center text-[11px] text-muted-foreground">
+        {/* Socials centered under Newsletter + Catalog columns on large screens */}
+        <div className="mt-5 grid grid-cols-1 lg:grid-cols-4 lg:gap-x-8">
+          <div className="hidden lg:block" aria-hidden />
+          <div className="flex justify-center lg:col-span-2">{socialRow}</div>
+          <div className="hidden lg:block" aria-hidden />
+        </div>
+
+        <div className="mt-5 border-t border-border/70 pt-4 text-center text-sm text-muted-foreground">
           © {new Date().getFullYear()} Lay-n-Go. All rights reserved.
         </div>
       </div>
