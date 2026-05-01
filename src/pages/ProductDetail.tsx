@@ -57,6 +57,15 @@ const ProductDetail = () => {
 
   const backHref = collectionHandle ? `/collections/${collectionHandle}` : "/collections";
 
+  const isCosmoMini16 = product ? isCosmoMini16Product(product.handle, product.title) : false;
+  const orderedImages = useMemo(() => {
+    const imgs = product?.images.edges ?? [];
+    if (!isCosmoMini16 || imgs.length < 4) return imgs;
+    const next = [...imgs];
+    [next[1], next[3]] = [next[3], next[1]];
+    return next;
+  }, [product, isCosmoMini16]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
@@ -87,13 +96,6 @@ const ProductDetail = () => {
   const selectedVariant = product.variants.edges[selectedVariantIdx]?.node;
   const images = product.images.edges;
   const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
-  const isCosmoMini16 = isCosmoMini16Product(product.handle, product.title);
-  const orderedImages = useMemo(() => {
-    if (!isCosmoMini16 || images.length < 4) return images;
-    const next = [...images];
-    [next[1], next[3]] = [next[3], next[1]];
-    return next;
-  }, [images, isCosmoMini16]);
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
