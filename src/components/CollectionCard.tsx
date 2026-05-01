@@ -9,13 +9,13 @@ interface CollectionCardProps {
 
 const HOME_VIDEO_CARDS: Record<string, { videoId: string; hoverSrc: string; label: string }> = {
   "military-first-responder": {
-    videoId: "1188287900",
+    videoId: "1188297111",
     hoverSrc:
       "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/layngo-DEFENDER_OpenClosed.jpg?v=1626119933",
     label: "Outdoor / Tactical",
   },
   "pet-solutions": {
-    videoId: "1188284592",
+    videoId: "1188297775",
     hoverSrc: "https://www.layngo.com/cdn/shop/products/B08MV2JM98.PT01_1200x1200.jpg?v=1626120624",
     label: "Pet Solutions",
   },
