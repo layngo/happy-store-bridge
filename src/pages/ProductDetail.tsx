@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   fetchProductByHandle,
@@ -48,6 +48,13 @@ const ProductDetail = () => {
     fetchRelatedProducts(product.handle, 4).then(setRelated).catch(console.error);
   }, [product]);
 
+  useEffect(() => {
+    if (!product) return;
+    setSelectedVariantIdx(0);
+    setSelectedImage(0);
+    setQuantity(1);
+  }, [product?.id]);
+
   const backHref = collectionHandle ? `/collections/${collectionHandle}` : "/collections";
 
   if (loading) {
@@ -81,6 +88,12 @@ const ProductDetail = () => {
   const images = product.images.edges;
   const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
   const isCosmoMini16 = isCosmoMini16Product(product.handle, product.title);
+  const orderedImages = useMemo(() => {
+    if (!isCosmoMini16 || images.length < 4) return images;
+    const next = [...images];
+    [next[1], next[3]] = [next[3], next[1]];
+    return next;
+  }, [images, isCosmoMini16]);
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
@@ -138,19 +151,19 @@ const ProductDetail = () => {
                   alt={`${product.title} (Crossmarks)`}
                   className="w-full h-full object-contain p-6"
                 />
-              ) : images[selectedImage]?.node ? (
+              ) : orderedImages[selectedImage]?.node ? (
                 <img
-                  src={images[selectedImage].node.url}
-                  alt={images[selectedImage].node.altText || product.title}
+                  src={orderedImages[selectedImage].node.url}
+                  alt={orderedImages[selectedImage].node.altText || product.title}
                   className="w-full h-full object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-muted-foreground">No image</div>
               )}
             </div>
-            {images.length > 1 && (
+            {orderedImages.length > 1 && (
               <div className="flex gap-2 overflow-x-auto">
-                {images.map((img, i) => (
+                {orderedImages.map((img, i) => (
                   <button
                     key={i}
                     type="button"
@@ -201,10 +214,10 @@ const ProductDetail = () => {
                             setSelectedVariantIdx(vIdx);
                             const variantImageUrl = v.node.image?.url;
                             if (variantImageUrl) {
-                              const imageIdx = images.findIndex((img) => img.node.url === variantImageUrl);
+                              const imageIdx = orderedImages.findIndex((img) => img.node.url === variantImageUrl);
                               if (imageIdx >= 0) setSelectedImage(imageIdx);
                             } else if (isCosmoMini16 && !isCosmoBlackVariant(v.node)) {
-                              setSelectedImage(0);
+                              setSelectedImage(1);
                             }
                           }}
                           className={cn(
