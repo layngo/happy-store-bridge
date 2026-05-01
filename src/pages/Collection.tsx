@@ -130,11 +130,11 @@ const Collection = () => {
         {collection.description ? (
           hasHtml ? (
             <div
-              className="text-muted-foreground leading-relaxed max-w-3xl mb-8 space-y-3 [&_a]:text-primary [&_a]:underline [&_p]:mb-3"
+              className="text-muted-foreground leading-normal font-medium max-w-3xl mb-8 space-y-3 [&_a]:text-primary [&_a]:underline [&_p]:mb-3"
               dangerouslySetInnerHTML={{ __html: collection.description }}
             />
           ) : (
-            <p className="text-muted-foreground leading-relaxed max-w-3xl mb-8 whitespace-pre-wrap">
+            <p className="text-muted-foreground leading-normal font-medium max-w-3xl mb-8 whitespace-pre-wrap">
               {collection.description}
             </p>
           )

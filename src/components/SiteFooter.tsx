@@ -66,7 +66,7 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
             <h3 className={cn("font-heading font-semibold", light ? "text-slate-900" : "text-foreground")}>
               Lay-n-Go Info
             </h3>
-            <p className={cn("text-sm leading-relaxed", light ? "text-slate-600" : "text-muted-foreground")}>
+            <p className={cn("text-sm leading-normal font-medium", light ? "text-slate-600" : "text-muted-foreground")}>
               Lay-n-Go is a patented drawstring mat, cleanup, storage and carryall solution in one. Perfect for
               wherever life takes you!
             </p>

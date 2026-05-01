@@ -137,7 +137,7 @@ const Index = () => {
         <h2 className="font-heading text-2xl md:text-3xl font-medium uppercase tracking-[0.14em] text-foreground text-center mb-2">
           Shop by Category
         </h2>
-        <p className="text-muted-foreground text-center max-w-xl mx-auto mb-10">
+        <p className="text-center text-base font-medium text-foreground/80 max-w-xl mx-auto mb-10 leading-normal tracking-normal">
           Cosmetic bags, tech &amp; travel, play, pets, outdoor / tactical, and nail solutions.
         </p>
         {collectionsLoading ? (
@@ -211,7 +211,7 @@ const Index = () => {
             </article>
           </Link>
 
-          <p className="mt-5 max-w-3xl text-sm sm:text-base text-muted-foreground leading-relaxed">
+          <p className="mt-5 max-w-3xl text-base font-medium text-foreground/90 leading-normal">
             Lay-n-Go started with a simple idea, &ldquo;There has to be a better way to do this.&rdquo; From solving
             toy cleanup to building patented solutions for cosmetics, tech, travel, pets, and tactical gear, every
             product is designed to open flat for visibility and cinch closed for life on the go.

@@ -26,7 +26,7 @@ const commitments = [
 
 const AboutUs = () => (
   <StaticPageLayout title="About Us">
-    <div className="not-prose space-y-12 text-muted-foreground">
+    <div className="not-prose space-y-12 text-base font-medium leading-normal text-foreground/88">
       <section className="space-y-5">
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">OUR STORY</h2>
         <p>

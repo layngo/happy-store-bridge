@@ -14,8 +14,19 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ["League Spartan", "sans-serif"],
-        body: ["League Spartan", "sans-serif"],
+        sans: ['"League Spartan"', "ui-sans-serif", "system-ui", "sans-serif"],
+        heading: ['"League Spartan"', "ui-sans-serif", "system-ui", "sans-serif"],
+        body: ['"League Spartan"', "ui-sans-serif", "system-ui", "sans-serif"],
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            fontFamily: '"League Spartan", ui-sans-serif, system-ui, sans-serif',
+            fontWeight: "500",
+            lineHeight: "1.55",
+            maxWidth: "none",
+          },
+        },
       },
       colors: {
         border: "hsl(var(--border))",

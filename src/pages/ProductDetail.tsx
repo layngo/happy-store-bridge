@@ -164,11 +164,11 @@ const ProductDetail = () => {
 
             {descHtml ? (
               <div
-                className="text-muted-foreground leading-relaxed space-y-3 [&_a]:text-primary [&_ul]:list-disc [&_ul]:pl-5 [&_p]:mb-2"
+                className="text-muted-foreground leading-normal font-medium space-y-3 [&_a]:text-primary [&_ul]:list-disc [&_ul]:pl-5 [&_p]:mb-2"
                 dangerouslySetInnerHTML={{ __html: product.description }}
               />
             ) : (
-              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{product.description}</p>
+              <p className="text-muted-foreground leading-normal font-medium whitespace-pre-wrap">{product.description}</p>
             )}
 
             {product.tags?.length ? (

@@ -36,8 +36,8 @@
 
     --radius: 0.5rem;
 
-    --font-heading: "League Spartan", sans-serif;
-    --font-body: "League Spartan", sans-serif;
+    --font-heading: "League Spartan", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "League Spartan", ui-sans-serif, system-ui, sans-serif;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 220 16% 10%;
@@ -56,8 +56,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-body);
+    @apply bg-background text-foreground font-sans antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
