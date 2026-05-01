@@ -1,34 +1,66 @@
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
   product: ShopifyProduct;
   variant?: "default" | "imageOverlay";
 }
 
+type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
+
 export const ProductCard = ({ product, variant = "default" }: ProductCardProps) => {
   const { node } = product;
   const addItem = useCartStore(state => state.addItem);
   const isLoading = useCartStore(state => state.isLoading);
-  const image = node.images.edges[0]?.node;
-  const hoverImage = node.images.edges[1]?.node ?? image;
-  const price = node.priceRange.minVariantPrice;
-  const firstVariant = node.variants.edges[0]?.node;
+
+  const cosmoMiniVariants = useMemo(() => orderCosmoMiniColorVariants(node), [node]);
+  const isCosmoMiniInteractive = isCosmoMini16Product(node.handle, node.title) && cosmoMiniVariants.length >= 2;
+
+  const [selectedCosmoIdx, setSelectedCosmoIdx] = useState(0);
+
+  useEffect(() => {
+    setSelectedCosmoIdx(0);
+  }, [node.id]);
+
+  const selectedVariant = isCosmoMiniInteractive ? cosmoMiniVariants[selectedCosmoIdx] : node.variants.edges[0]?.node;
+
+  const defaultImage = node.images.edges[0]?.node;
+  const hoverImage = node.images.edges[1]?.node ?? defaultImage;
+
+  const displayImage = useMemo(() => {
+    if (isCosmoMiniInteractive && selectedVariant) {
+      if (selectedVariant.image?.url) {
+        return {
+          url: selectedVariant.image.url,
+          altText: selectedVariant.image.altText ?? node.title,
+        };
+      }
+      const idx = Math.min(selectedCosmoIdx, node.images.edges.length - 1);
+      return node.images.edges[idx]?.node ?? defaultImage;
+    }
+    return defaultImage;
+  }, [isCosmoMiniInteractive, selectedVariant, selectedCosmoIdx, node.images.edges, node.title, defaultImage]);
+
+  const priceAmount = isCosmoMiniInteractive && selectedVariant
+    ? selectedVariant.price.amount
+    : node.priceRange.minVariantPrice.amount;
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!firstVariant) return;
+    if (!selectedVariant) return;
     await addItem({
       product,
-      variantId: firstVariant.id,
-      variantTitle: firstVariant.title,
-      price: firstVariant.price,
+      variantId: selectedVariant.id,
+      variantTitle: selectedVariant.title,
+      price: selectedVariant.price,
       quantity: 1,
-      selectedOptions: firstVariant.selectedOptions || [],
+      selectedOptions: selectedVariant.selectedOptions || [],
     });
     toast.success("Added to cart", { description: node.title, position: "top-center" });
   };
@@ -42,16 +74,16 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
       <Link to={`/product/${node.handle}`} className="group block">
         <article className="relative overflow-hidden rounded-xl border border-border/80 bg-card shadow-sm">
           <div className="relative aspect-[4/5] overflow-hidden bg-muted">
-            {image ? (
+            {defaultImage ? (
               <>
                 <img
-                  src={image.url}
-                  alt={image.altText || node.title}
+                  src={defaultImage.url}
+                  alt={defaultImage.altText || node.title}
                   className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-0"
                   loading="lazy"
                 />
                 <img
-                  src={hoverImage?.url ?? image.url}
+                  src={hoverImage?.url ?? defaultImage.url}
                   alt={hoverImage?.altText || node.title}
                   className="absolute inset-0 h-full w-full object-cover opacity-0 transition-[opacity,transform] duration-700 group-hover:opacity-100 group-hover:scale-105"
                   loading="lazy"
@@ -63,7 +95,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/0" />
             <div className="absolute inset-x-0 bottom-0 p-4">
               <h3 className="font-heading text-lg font-bold text-white drop-shadow-md line-clamp-2">{node.title}</h3>
-              <p className="mt-1 text-white/90 font-semibold">${parseFloat(price.amount).toFixed(2)}</p>
+              <p className="mt-1 text-white/90 font-semibold">${parseFloat(node.priceRange.minVariantPrice.amount).toFixed(2)}</p>
             </div>
           </div>
         </article>
@@ -72,58 +104,145 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
   }
 
   return (
-    <Link to={`/product/${node.handle}`} className="group block">
-      <div className="overflow-hidden rounded-xl bg-card border border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-        <div className="aspect-square overflow-hidden bg-muted">
-          {image ? (
-            <img
-              src={image.url}
-              alt={image.altText || node.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground">No image</div>
-          )}
-        </div>
-        <div className="p-4 space-y-3">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-heading text-[1.05rem] font-medium text-foreground line-clamp-1">{node.title}</h3>
-            <span className="shrink-0 text-2xl font-semibold text-foreground">
-              ${parseFloat(price.amount).toFixed(2)}
-            </span>
-          </div>
+    <article className="overflow-hidden rounded-xl bg-card border border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
+      <Link to={`/product/${node.handle}`} className="group block aspect-square overflow-hidden bg-muted">
+        {displayImage ? (
+          <img
+            src={displayImage.url}
+            alt={displayImage.altText || node.title}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-muted-foreground">No image</div>
+        )}
+      </Link>
 
-          {colorValues.length > 0 ? (
-            <div className="flex items-center gap-2">
-              {visibleColors.map((color) => (
-                <span
-                  key={color}
-                  className="h-6 w-6 rounded-full border border-foreground/20 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
-                  style={{ backgroundColor: colorToHex(color) }}
-                  title={color}
-                  aria-label={color}
-                />
-              ))}
-              {remainingColors > 0 ? (
-                <span className="text-xs font-medium text-muted-foreground">+{remainingColors} more</span>
-              ) : null}
-            </div>
-          ) : null}
-
-          <Button
-            size="sm"
-            onClick={handleAddToCart}
-            disabled={isLoading || !firstVariant?.availableForSale}
-            className="h-11 w-full rounded-md border border-foreground/25 bg-transparent text-foreground hover:bg-muted"
+      <div className="space-y-3 bg-background p-4">
+        <div className="flex items-start justify-between gap-2">
+          <Link
+            to={`/product/${node.handle}`}
+            className="font-heading text-[1.05rem] font-medium leading-snug text-foreground line-clamp-2 hover:text-primary min-w-0"
           >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Add to Cart"}
-          </Button>
+            {node.title}
+          </Link>
+          <span className="shrink-0 text-2xl font-semibold text-foreground">${parseFloat(priceAmount).toFixed(2)}</span>
         </div>
+
+        {isCosmoMiniInteractive ? (
+          <div className="flex items-center gap-2" role="radiogroup" aria-label="Color">
+            {cosmoMiniVariants.slice(0, 2).map((v, i) => {
+              const colorLabel = getVariantColorValue(v) ?? v.title;
+              const selected = i === selectedCosmoIdx;
+              const swatch = cosmoMiniSwatchStyle(colorLabel);
+              return (
+                <button
+                  key={v.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  title={colorLabel}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSelectedCosmoIdx(i);
+                  }}
+                  className={cn(
+                    "h-7 w-7 shrink-0 rounded-full border border-foreground/25 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)] outline-none transition-[box-shadow,transform] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    selected && "ring-2 ring-foreground ring-offset-2 ring-offset-background scale-[1.03]",
+                  )}
+                  style={swatch}
+                />
+              );
+            })}
+          </div>
+        ) : colorValues.length > 0 ? (
+          <div className="flex items-center gap-2">
+            {visibleColors.map((color) => (
+              <span
+                key={color}
+                className="h-6 w-6 rounded-full border border-foreground/20 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+                style={{ backgroundColor: colorToHex(color) }}
+                title={color}
+                aria-label={color}
+              />
+            ))}
+            {remainingColors > 0 ? (
+              <span className="text-xs font-medium text-muted-foreground">+{remainingColors} more</span>
+            ) : null}
+          </div>
+        ) : null}
+
+        <Button
+          size="sm"
+          onClick={handleAddToCart}
+          disabled={isLoading || !selectedVariant?.availableForSale}
+          className="h-11 w-full rounded-md border border-foreground/25 bg-transparent text-foreground hover:bg-muted"
+        >
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add to Cart"}
+        </Button>
       </div>
-    </Link>
+    </article>
   );
 };
+
+function isCosmoMini16Product(handle: string, title: string): boolean {
+  const h = handle.toLowerCase();
+  const t = title.toLowerCase();
+  const mentionsMini = h.includes("cosmo-mini") || (t.includes("cosmo") && t.includes("mini"));
+  const mentions16 = h.includes("16") || t.includes("16");
+  return mentionsMini && mentions16;
+}
+
+function getVariantColorValue(v: VariantNode): string | undefined {
+  const opt = v.selectedOptions.find(o => /color|colour/i.test(o.name));
+  return opt?.value;
+}
+
+function orderCosmoMiniColorVariants(product: ShopifyProduct["node"]): VariantNode[] {
+  let variants = product.variants.edges.map(e => e.node);
+  let colored = variants.filter((v) => v.selectedOptions.some(o => /color|colour/i.test(o.name)));
+
+  if (
+    colored.length < 2 &&
+    variants.length >= 2 &&
+    isCosmoMini16Product(product.handle, product.title)
+  ) {
+    colored = variants.slice(0, 2);
+  }
+
+  if (colored.length === 0) return [];
+
+  return [...colored].sort((a, b) => {
+    const ca = (getVariantColorValue(a) ?? a.title).toLowerCase();
+    const cb = (getVariantColorValue(b) ?? b.title).toLowerCase();
+    const aBlack = ca.includes("black");
+    const bBlack = cb.includes("black");
+    if (aBlack && !bBlack) return -1;
+    if (!aBlack && bBlack) return 1;
+    return ca.localeCompare(cb);
+  });
+}
+
+/** Visual swatches for Cosmo Mini 16″ marketing shots (black quilt vs patterned / navy brushstroke). */
+function cosmoMiniSwatchStyle(colorLabel: string): CSSProperties {
+  const key = colorLabel.toLowerCase();
+  if (key.includes("black")) {
+    return { backgroundColor: "#111111" };
+  }
+  if (key.includes("navy") || key.includes("brush")) {
+    return {
+      backgroundImage: "url(/swatches/cosmo-mini-16-brushstroke-navy.png)",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    };
+  }
+  return {
+    backgroundImage: "url(/swatches/cosmo-mini-16-charcoal-pattern.png)",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  };
+}
 
 function getColorValues(product: ShopifyProduct["node"]): string[] {
   const option = product.options.find((o) => o.name.toLowerCase().includes("color") || o.name.toLowerCase().includes("colour"));

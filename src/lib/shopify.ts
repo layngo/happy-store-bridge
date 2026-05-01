@@ -35,6 +35,7 @@ export interface ShopifyProduct {
             currencyCode: string;
           };
           availableForSale: boolean;
+          image: { url: string; altText: string | null } | null;
           selectedOptions: Array<{
             name: string;
             value: string;
@@ -114,6 +115,10 @@ const STOREFRONT_QUERY = `
                   currencyCode
                 }
                 availableForSale
+                image {
+                  url
+                  altText
+                }
                 selectedOptions {
                   name
                   value
@@ -164,6 +169,10 @@ const PRODUCT_BY_HANDLE_QUERY = `
               currencyCode
             }
             availableForSale
+            image {
+              url
+              altText
+            }
             selectedOptions {
               name
               value
@@ -225,6 +234,10 @@ const PRODUCT_LIST_FIELDS = `
           currencyCode
         }
         availableForSale
+        image {
+          url
+          altText
+        }
         selectedOptions {
           name
           value
