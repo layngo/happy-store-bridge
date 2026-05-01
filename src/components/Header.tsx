@@ -85,6 +85,9 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
               align="center"
               className="min-w-[14rem] rounded-xl border-slate-200 bg-white p-2 font-sans text-base font-medium tracking-normal shadow-lg"
             >
+              <DropdownMenuItem className="rounded-lg px-4 py-3 text-slate-800 hover:text-slate-900" asChild>
+                <Link to="/collections">View All</Link>
+              </DropdownMenuItem>
               {shopCollectionLinks.map((l) => (
                 <DropdownMenuItem
                   key={l.to}
