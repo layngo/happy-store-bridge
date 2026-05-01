@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
-import { ProductGrid } from "@/components/ProductGrid";
 import { CollectionCard } from "@/components/CollectionCard";
 import { fetchCollections, type ShopifyCollectionSummary } from "@/lib/shopify";
 import { sortCollectionsForDisplay } from "@/lib/collectionOrder";
@@ -217,26 +216,6 @@ const Index = () => {
             toy cleanup to building patented solutions for cosmetics, tech, travel, pets, and tactical gear, every
             product is designed to open flat for visibility and cinch closed for life on the go.
           </p>
-        </div>
-      </section>
-
-      {/* Top selling */}
-      <section id="products" className="py-16">
-        <div className="container rounded-2xl border border-border bg-card/45 px-5 py-8 sm:px-7 sm:py-10">
-          <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-            <div>
-              <h2 className="font-heading text-3xl font-medium uppercase tracking-[0.1em] text-foreground">Top Selling Products</h2>
-              <p className="text-muted-foreground mt-2">Best sellers, curated for a cleaner shopping view.</p>
-            </div>
-            <Link to="/collections" className="text-primary text-sm font-semibold hover:underline shrink-0">
-              View all collections
-            </Link>
-          </div>
-          <ProductGrid
-            fetchFirst={6}
-            cardVariant="imageOverlay"
-            gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
-          />
         </div>
       </section>
 
