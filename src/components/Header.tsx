@@ -7,35 +7,9 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const SHOP_MENU_MEDIA: Record<string, { image: string; hoverImage: string }> = {
-  "/collections/cosmetic-bags": {
-    image: "https://www.layngo.com/cdn/shop/products/B00B04V3PQ.PT01_1200x1200.jpg?v=1670376558",
-    hoverImage: "https://www.layngo.com/cdn/shop/products/B00B04V3PQ.PT04_1200x1200.jpg?v=1670376558",
-  },
-  "/collections/nail-solutions": {
-    image: "https://www.layngo.com/cdn/shop/products/B082LQ788D.PT01_1200x1200.jpg?v=1626120523",
-    hoverImage: "https://www.layngo.com/cdn/shop/products/B082LQ788D.PT03_1200x1200.jpg?v=1626120523",
-  },
-  "/collections/play": {
-    image: "https://www.layngo.com/cdn/shop/products/B00DI5Q1Q8.PT01_1200x1200.jpg?v=1670379124",
-    hoverImage: "https://www.layngo.com/cdn/shop/products/B00DI5Q1Q8.PT02_1200x1200.jpg?v=1670379124",
-  },
-  "/collections/technology": {
-    image: "https://www.layngo.com/cdn/shop/products/B07P6M2MHG.PT01_1200x1200.jpg?v=1626120559",
-    hoverImage: "https://www.layngo.com/cdn/shop/products/B07P6M2MHG.PT03_1200x1200.jpg?v=1626120559",
-  },
-  "/collections/pet-solutions": {
-    image: "https://www.layngo.com/cdn/shop/products/B08MV2JM98.PT01_1200x1200.jpg?v=1626120624",
-    hoverImage: "https://www.layngo.com/cdn/shop/products/B08MV2JM98.PT03_1200x1200.jpg?v=1626120624",
-  },
-  "/collections/military-first-responder": {
-    image: "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/B08SKHPY36.PT06.jpg?v=1626119977",
-    hoverImage: "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/B08SKHPY36.PT01.jpg?v=1626119977",
-  },
-};
 
 export const Header = ({ variant = "default" }: { variant?: "default" | "light" }) => {
   const light = variant === "light";
@@ -109,43 +83,17 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="center"
-              className="w-[min(92vw,46rem)] rounded-xl border-slate-200 bg-white p-3 font-sans shadow-lg"
+              className="min-w-[14rem] rounded-xl border-slate-200 bg-white p-2 font-sans text-base font-medium tracking-normal shadow-lg"
             >
-              <Link
-                to="/collections"
-                className="mb-3 inline-flex rounded-md border border-border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-slate-700 transition-colors hover:bg-slate-100"
-              >
-                View All Collections
-              </Link>
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
-                {shopCollectionLinks.map((l) => {
-                  const media = SHOP_MENU_MEDIA[l.to];
-                  return (
-                    <Link key={l.to} to={l.to} className="group block">
-                      <article className="relative aspect-square overflow-hidden rounded-lg border border-border/80 bg-slate-100">
-                        <img
-                          src={media?.image}
-                          alt={l.label}
-                          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-500 group-hover:opacity-0"
-                          loading="lazy"
-                        />
-                        <img
-                          src={media?.hoverImage ?? media?.image}
-                          alt={l.label}
-                          className="absolute inset-0 h-full w-full object-cover opacity-0 transition-[opacity,transform] duration-500 group-hover:scale-105 group-hover:opacity-100"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-black/25" />
-                        <div className="absolute inset-0 flex items-end p-2.5">
-                          <h3 className="font-heading text-sm font-semibold uppercase tracking-[0.08em] text-white drop-shadow">
-                            {l.label}
-                          </h3>
-                        </div>
-                      </article>
-                    </Link>
-                  );
-                })}
-              </div>
+              {shopCollectionLinks.map((l) => (
+                <DropdownMenuItem
+                  key={l.to}
+                  className="rounded-lg px-4 py-3 text-slate-800 hover:text-slate-900"
+                  asChild
+                >
+                  <Link to={l.to}>{l.label}</Link>
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
