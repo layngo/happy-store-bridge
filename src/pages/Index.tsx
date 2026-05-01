@@ -6,7 +6,7 @@ import { CollectionCard } from "@/components/CollectionCard";
 import { fetchCollections, type ShopifyCollectionSummary } from "@/lib/shopify";
 import { sortCollectionsForDisplay } from "@/lib/collectionOrder";
 import { testimonials } from "@/lib/siteNav";
-import { Loader2 } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 
 const VIMEO_PLAYER_SCRIPT = "https://player.vimeo.com/api/player.js";
 
@@ -219,26 +219,60 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="border-t border-border bg-background py-16">
-        <div className="container">
-          <h2 className="font-heading text-3xl font-medium uppercase tracking-[0.12em] text-foreground text-center mb-2">
+      {/* Testimonials — compact avatar conveyor (5 visible) */}
+      <section className="border-t border-zinc-800 bg-zinc-950 py-16 text-white">
+        <div className="container max-w-lg px-4">
+          <h2 className="font-heading text-center text-2xl font-bold tracking-tight sm:text-3xl">
             Testimonials
           </h2>
-          <p className="text-muted-foreground text-center mb-10 max-w-lg mx-auto">
-            Real customer reviews on an infinite loop.
+          <p className="mx-auto mt-2 text-center text-sm text-zinc-400">
+            Compact avatar list — five visible at a time; reviews cycle upward on a loop.
           </p>
-          <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl border border-border/70 bg-muted/25 py-4 sm:py-6">
-            <div className="testimonial-slider-track">
-              {[...testimonials, ...testimonials].map((t, idx) => (
-                <article
-                  key={`${t.name}-${idx}`}
-                  className="w-[76vw] max-w-[17rem] sm:w-[24rem] shrink-0 rounded-3xl border border-border/90 bg-background/90 px-4 py-3 sm:px-5 sm:py-4 shadow-sm"
-                >
-                  <p className="text-foreground leading-relaxed">{t.quote}</p>
-                  <footer className="mt-3 text-sm font-semibold text-foreground/80">{t.name}</footer>
-                </article>
-              ))}
+
+          <div className="relative mx-auto mt-10">
+            <div
+              className="testimonial-conveyor-viewport relative overflow-hidden rounded-2xl border border-zinc-800/90 bg-zinc-900/60"
+              style={{
+                height: "calc(5 * (5rem + 0.75rem) - 0.75rem)",
+              }}
+            >
+              <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-8 bg-gradient-to-b from-zinc-950 to-transparent" />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-8 bg-gradient-to-t from-zinc-950 to-transparent" />
+              <div className="testimonial-conveyor-track px-3 py-3">
+                {[...testimonials, ...testimonials].map((t, idx) => (
+                  <article
+                    key={`${t.name}-${idx}`}
+                    className="flex h-20 shrink-0 items-center gap-3 rounded-xl border border-zinc-700/60 bg-zinc-800/85 px-4 py-2.5 shadow-sm"
+                  >
+                    <div
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-950 text-sm font-semibold text-white ring-1 ring-blue-900/60"
+                      aria-hidden
+                    >
+                      {t.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="line-clamp-2 text-sm leading-snug text-zinc-100">
+                        &ldquo;{t.quote}&rdquo;
+                      </p>
+                      <div className="mt-1 flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-medium text-zinc-300">{t.name}</span>
+                        <span
+                          className="text-xs leading-none tracking-tight text-amber-400"
+                          aria-label="5 out of 5 stars"
+                        >
+                          ★★★★★
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4 flex justify-center" aria-hidden>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-700/50 bg-zinc-900/40 text-zinc-500">
+                <ChevronDown className="h-4 w-4" strokeWidth={1.75} />
+              </span>
             </div>
           </div>
         </div>

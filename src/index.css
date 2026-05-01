@@ -75,13 +75,15 @@
     will-change: transform;
   }
 
-  .testimonial-slider-track {
-    width: max-content;
+  .testimonial-conveyor-viewport:hover .testimonial-conveyor-track {
+    animation-play-state: paused;
+  }
+
+  .testimonial-conveyor-track {
     display: flex;
-    align-items: stretch;
-    gap: 1rem;
-    padding: 0 1rem;
-    animation: testimonial-scroll 42s linear infinite;
+    flex-direction: column;
+    gap: 0.75rem;
+    animation: testimonial-conveyor-up 48s linear infinite;
     will-change: transform;
   }
 
@@ -105,12 +107,18 @@
   }
 }
 
-@keyframes testimonial-scroll {
+@keyframes testimonial-conveyor-up {
   0% {
-    transform: translateX(-50%);
+    transform: translateY(0);
   }
   100% {
-    transform: translateX(0);
+    transform: translateY(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .testimonial-conveyor-track {
+    animation: none;
   }
 }
 
@@ -152,9 +160,6 @@
     animation-duration: 48s;
   }
 
-  .testimonial-slider-track {
-    animation-duration: 62s;
-  }
 }
 
 @keyframes press-scroll {
