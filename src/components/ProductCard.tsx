@@ -13,6 +13,9 @@ interface ProductCardProps {
 
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
 
+const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
+const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
+
 export const ProductCard = ({ product, variant = "default" }: ProductCardProps) => {
   const { node } = product;
   const addItem = useCartStore(state => state.addItem);
@@ -34,6 +37,12 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
 
   const displayImage = useMemo(() => {
     if (isCosmoMiniInteractive && selectedVariant) {
+      if (!isCosmoBlackVariant(selectedVariant)) {
+        return {
+          url: COSMO_MINI_CROSSMARKS_HERO,
+          altText: `${node.title} (Crossmarks)`,
+        };
+      }
       if (selectedVariant.image?.url) {
         return {
           url: selectedVariant.image.url,
@@ -104,13 +113,16 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
   }
 
   return (
-    <article className="overflow-hidden rounded-xl bg-card border border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-      <Link to={`/product/${node.handle}`} className="group block aspect-square overflow-hidden bg-muted">
+    <article className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
+      <Link
+        to={`/product/${node.handle}`}
+        className="group relative block aspect-square w-full shrink-0 overflow-hidden bg-muted"
+      >
         {displayImage ? (
           <img
             src={displayImage.url}
             alt={displayImage.altText || node.title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
         ) : (
@@ -118,66 +130,72 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
         )}
       </Link>
 
-      <div className="space-y-3 bg-background p-4">
-        <div className="flex items-start justify-between gap-2">
+      <div className="flex flex-1 flex-col gap-3 bg-background p-4">
+        <div className="flex min-h-[3rem] items-start justify-between gap-2">
           <Link
             to={`/product/${node.handle}`}
             className="font-heading text-[1.05rem] font-medium leading-snug text-foreground line-clamp-2 hover:text-primary min-w-0"
           >
             {node.title}
           </Link>
-          <span className="shrink-0 text-2xl font-semibold text-foreground">${parseFloat(priceAmount).toFixed(2)}</span>
+          <span className="shrink-0 text-2xl font-semibold tabular-nums text-foreground">
+            ${parseFloat(priceAmount).toFixed(2)}
+          </span>
         </div>
 
-        {isCosmoMiniInteractive ? (
-          <div className="flex items-center gap-2" role="radiogroup" aria-label="Color">
-            {cosmoMiniVariants.slice(0, 2).map((v, i) => {
-              const colorLabel = getVariantColorValue(v) ?? v.title;
-              const selected = i === selectedCosmoIdx;
-              const swatch = cosmoMiniSwatchStyle(colorLabel);
-              return (
-                <button
-                  key={v.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={selected}
-                  title={colorLabel}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setSelectedCosmoIdx(i);
-                  }}
-                  className={cn(
-                    "h-7 w-7 shrink-0 rounded-full border border-foreground/25 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)] outline-none transition-[box-shadow,transform] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                    selected && "ring-2 ring-foreground ring-offset-2 ring-offset-background scale-[1.03]",
-                  )}
-                  style={swatch}
+        <div className="flex min-h-7 flex-wrap items-center gap-2">
+          {isCosmoMiniInteractive ? (
+            <div className="flex items-center gap-2" role="radiogroup" aria-label="Color">
+              {cosmoMiniVariants.slice(0, 2).map((v, i) => {
+                const colorLabel = getVariantColorValue(v) ?? v.title;
+                const selected = i === selectedCosmoIdx;
+                const swatch = cosmoMiniSwatchStyle(v);
+                return (
+                  <button
+                    key={v.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={selected}
+                    title={colorLabel}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedCosmoIdx(i);
+                    }}
+                    className={cn(
+                      "h-7 w-7 shrink-0 rounded-full border border-foreground/25 bg-center bg-no-repeat outline-none shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] transition-[box-shadow,transform] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                      selected && "ring-2 ring-foreground ring-offset-2 ring-offset-background",
+                    )}
+                    style={swatch}
+                  />
+                );
+              })}
+            </div>
+          ) : colorValues.length > 0 ? (
+            <>
+              {visibleColors.map((color) => (
+                <span
+                  key={color}
+                  className="h-6 w-6 rounded-full border border-foreground/20 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+                  style={{ backgroundColor: colorToHex(color) }}
+                  title={color}
+                  aria-label={color}
                 />
-              );
-            })}
-          </div>
-        ) : colorValues.length > 0 ? (
-          <div className="flex items-center gap-2">
-            {visibleColors.map((color) => (
-              <span
-                key={color}
-                className="h-6 w-6 rounded-full border border-foreground/20 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
-                style={{ backgroundColor: colorToHex(color) }}
-                title={color}
-                aria-label={color}
-              />
-            ))}
-            {remainingColors > 0 ? (
-              <span className="text-xs font-medium text-muted-foreground">+{remainingColors} more</span>
-            ) : null}
-          </div>
-        ) : null}
+              ))}
+              {remainingColors > 0 ? (
+                <span className="text-xs font-medium text-muted-foreground">+{remainingColors} more</span>
+              ) : null}
+            </>
+          ) : (
+            <span className="sr-only">No swatches</span>
+          )}
+        </div>
 
         <Button
           size="sm"
           onClick={handleAddToCart}
           disabled={isLoading || !selectedVariant?.availableForSale}
-          className="h-11 w-full rounded-md border border-foreground/25 bg-transparent text-foreground hover:bg-muted"
+          className="mt-auto h-11 w-full rounded-md border border-foreground/25 bg-transparent text-foreground hover:bg-muted"
         >
           {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add to Cart"}
         </Button>
@@ -197,6 +215,11 @@ function isCosmoMini16Product(handle: string, title: string): boolean {
 function getVariantColorValue(v: VariantNode): string | undefined {
   const opt = v.selectedOptions.find(o => /color|colour/i.test(o.name));
   return opt?.value;
+}
+
+function isCosmoBlackVariant(v: VariantNode): boolean {
+  const label = (getVariantColorValue(v) ?? v.title).toLowerCase();
+  return label.includes("black");
 }
 
 function orderCosmoMiniColorVariants(product: ShopifyProduct["node"]): VariantNode[] {
@@ -224,21 +247,13 @@ function orderCosmoMiniColorVariants(product: ShopifyProduct["node"]): VariantNo
   });
 }
 
-/** Visual swatches for Cosmo Mini 16″ marketing shots (black quilt vs patterned / navy brushstroke). */
-function cosmoMiniSwatchStyle(colorLabel: string): CSSProperties {
-  const key = colorLabel.toLowerCase();
-  if (key.includes("black")) {
+/** Cosmo Mini 16″: solid black vs official Crossmarks circle swatch asset. */
+function cosmoMiniSwatchStyle(v: VariantNode): CSSProperties {
+  if (isCosmoBlackVariant(v)) {
     return { backgroundColor: "#111111" };
   }
-  if (key.includes("navy") || key.includes("brush")) {
-    return {
-      backgroundImage: "url(/swatches/cosmo-mini-16-brushstroke-navy.png)",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-    };
-  }
   return {
-    backgroundImage: "url(/swatches/cosmo-mini-16-charcoal-pattern.png)",
+    backgroundImage: `url(${COSMO_MINI_CROSSMARKS_SWATCH})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
   };
