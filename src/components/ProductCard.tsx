@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { isCosmo20Product, resolveCosmo20SwatchDef } from "@/components/Cosmo20ColorSelector";
+import { getCosmo20SwatchBackgroundStyle, isCosmo20Product } from "@/components/Cosmo20ColorSelector";
 import { COSMO_22_SWATCHES, isCosmo22Product } from "@/components/Cosmo22ColorSelector";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 
@@ -291,7 +291,7 @@ function cosmoMiniSwatchStyle(v: VariantNode): CSSProperties {
   };
 }
 
-/** Collection grid: Cosmo 20/22 use SS64 swatch URLs only; never Shopify variant photos (those are bag shots). */
+/** Collection grid: Cosmo 22 uses SS64 only; Cosmo 20 prefers SS64 then variant hero for uncatalogued colors. */
 function collectionSwatchStyle(product: ShopifyProduct["node"], colorValue: string): CSSProperties {
   if (isCosmo22Product(product.handle)) {
     const def = COSMO_22_SWATCHES.find((s) => s.shopifyColor === colorValue);
@@ -304,14 +304,10 @@ function collectionSwatchStyle(product: ShopifyProduct["node"], colorValue: stri
     }
   }
   if (isCosmo20Product(product.handle)) {
-    const def = resolveCosmo20SwatchDef(colorValue);
-    if (def?.swatchImageUrl) {
-      return {
-        backgroundImage: `url(${def.swatchImageUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      };
-    }
+    const variantImg = product.variants.edges.find(({ node }) =>
+      node.selectedOptions.some((o) => /color|colour/i.test(o.name) && o.value === colorValue),
+    )?.node.image?.url;
+    return getCosmo20SwatchBackgroundStyle(colorValue, variantImg);
   }
   return { backgroundColor: colorNameToApproximateHex(colorValue) };
 }

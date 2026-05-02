@@ -46,12 +46,8 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     shopifyColor: "Black",
     selectedLabel: "Black",
     tooltip: "Black",
-    bagImageUrl: "https://m.media-amazon.com/images/I/517jiBGX3XL._AC_SX679_.jpg",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81wVnvcGFtL._AC_SX679_.jpg",
     swatchImageUrl: "https://m.media-amazon.com/images/I/41z6K5qgpcL._SS64_.jpg",
-    galleryImageUrls: [
-      "https://m.media-amazon.com/images/I/517jiBGX3XL._AC_SX679_.jpg",
-      "https://m.media-amazon.com/images/I/51KciV3PddL._AC_SX679_.jpg",
-    ],
   },
   {
     shopifyColor: "Black & Gold",
@@ -327,7 +323,7 @@ export function Cosmo20ColorSelector({ product, selectedVariantIdx, onVariantCha
           const variant = entry?.node;
           const unavailable = Boolean(def?.forceUnavailable) || (variant ? !variant.availableForSale : true);
           const isSelected = variantIdx >= 0 && variantIdx === selectedVariantIdx;
-          const swatchStyle = getCosmo20SwatchStyle(def, shopifyColor);
+          const swatchStyle = getCosmo20SwatchBackgroundStyle(shopifyColor, variant?.image?.url);
           const tooltip = def?.tooltip ?? shopifyColor;
 
           return (
@@ -372,11 +368,25 @@ export function Cosmo20ColorSelector({ product, selectedVariantIdx, onVariantCha
   );
 }
 
-/** Only curated SS64 fabric circles — never Shopify variant images (bag heroes). */
-function getCosmo20SwatchStyle(def: Cosmo20SwatchDef | undefined, shopifyColor: string): CSSProperties {
+/**
+ * Swatch fill: prefer curated Amazon SS64; if no row for this Shopify Color (e.g. Paisley, Stars),
+ * use that variant’s Shopify hero image so the circle isn’t a blank hex slot.
+ */
+export function getCosmo20SwatchBackgroundStyle(
+  shopifyColor: string,
+  variantHeroImageUrl: string | null | undefined,
+): CSSProperties {
+  const def = resolveCosmo20SwatchDef(shopifyColor);
   if (def?.swatchImageUrl) {
     return {
       backgroundImage: `url(${def.swatchImageUrl})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    };
+  }
+  if (variantHeroImageUrl) {
+    return {
+      backgroundImage: `url(${variantHeroImageUrl})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
     };
