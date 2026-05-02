@@ -4,8 +4,6 @@ import { cn } from "@/lib/utils";
 
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
 
-export type Cosmo20SwatchKind = "solid" | "metallicSilver" | "metallicGold" | "pattern";
-
 export interface Cosmo20SwatchDef {
   /** Must match Shopify variant Color option value exactly */
   shopifyColor: string;
@@ -13,90 +11,244 @@ export interface Cosmo20SwatchDef {
   selectedLabel: string;
   /** Hover / native tooltip */
   tooltip: string;
-  kind: Cosmo20SwatchKind;
-  /** Solid / metallic base */
-  hex?: string;
-  /** Force unavailable (used with Shopify availability) */
+  /** Main hero / bag image (Amazon product image) */
+  bagImageUrl: string;
+  /** Small circular swatch (Amazon SS64) */
+  swatchImageUrl: string;
+  /** Extra PDP gallery images for this color (hero cycles via thumbnails); omit when only `bagImageUrl` applies */
+  galleryImageUrls?: string[];
+  /** Mark OOS in UI even if Shopify says available */
   forceUnavailable?: boolean;
-  /** If pattern image missing on variant, use this Shopify CDN URL */
-  // TODO: replace any stale URLs if Lay-n-Go updates product photography
-  fallbackImageUrl?: string;
 }
 
-/** Order and styling spec for Lay-n-Go COSMO (20") PDP — see product handle `lay-n-go-cosmo-20`. */
+/**
+ * Cosmo 20" color order + Amazon image URLs. `shopifyColor` must match the Color option in Shopify.
+ * Source: user-provided Amazon _AC_SX679_ (bag) + _SS64_ (swatch) pairs.
+ */
 export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
-  { shopifyColor: "Black", selectedLabel: "Black", tooltip: "Black", kind: "solid", hex: "#1a1a1a" },
-  { shopifyColor: "Navy", selectedLabel: "Navy", tooltip: "Navy", kind: "solid", hex: "#1b2a4a" },
-  { shopifyColor: "Pink", selectedLabel: "Pink", tooltip: "Pink", kind: "solid", hex: "#f4a7b9" },
-  { shopifyColor: "Purple", selectedLabel: "Purple", tooltip: "Purple", kind: "solid", hex: "#7b5ea7" },
-  { shopifyColor: "Ocean Blue", selectedLabel: "Ocean Blue", tooltip: "Ocean Blue", kind: "solid", hex: "#2a7fba" },
-  { shopifyColor: "Silver", selectedLabel: "Silver", tooltip: "Silver", kind: "metallicSilver" },
-  { shopifyColor: "Gold", selectedLabel: "Gold", tooltip: "Gold", kind: "metallicGold" },
+  {
+    shopifyColor: "Love",
+    selectedLabel: "Love",
+    tooltip: "Love",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81VEkKlSsDL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/61TlQoMP4NL._SS64_.jpg",
+    galleryImageUrls: [
+      "https://m.media-amazon.com/images/I/81VEkKlSsDL._AC_SX679_.jpg",
+      "https://m.media-amazon.com/images/I/811rUkXdRUL._AC_SY879_.jpg",
+      "https://m.media-amazon.com/images/I/71UEGfd8GUL._AC_SY879_.jpg",
+      "https://m.media-amazon.com/images/I/81xEtWpQmBL._AC_SY879_.jpg",
+      "https://m.media-amazon.com/images/I/81CLOt26ZSL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/81srH+9OBCL._AC_SL1500_.jpg",
+    ],
+  },
+  {
+    shopifyColor: "Black",
+    selectedLabel: "Black",
+    tooltip: "Black",
+    bagImageUrl: "https://m.media-amazon.com/images/I/517jiBGX3XL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/41z6K5qgpcL._SS64_.jpg",
+    galleryImageUrls: [
+      "https://m.media-amazon.com/images/I/517jiBGX3XL._AC_SX679_.jpg",
+      "https://m.media-amazon.com/images/I/51KciV3PddL._AC_SX679_.jpg",
+    ],
+  },
+  {
+    shopifyColor: "Black & Gold",
+    selectedLabel: "Black & Gold",
+    tooltip: "Black & Gold",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81dQcabno+L._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/31w694P7EpL._SS64_.jpg",
+    galleryImageUrls: [
+      "https://m.media-amazon.com/images/I/81dQcabno+L._AC_SX679_.jpg",
+      "https://m.media-amazon.com/images/I/81cvilKtZiL._AC_SY879_.jpg",
+      "https://m.media-amazon.com/images/I/81oE4aQZqBL._AC_SY879_.jpg",
+    ],
+  },
+  {
+    shopifyColor: "Blue Snakeskin",
+    selectedLabel: "Blue Snakeskin",
+    tooltip: "Blue Snakeskin",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81Kylbm3KvL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/41ZCxiSFbxL._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Comfort (Black)",
+    selectedLabel: "Comfort (Black)",
+    tooltip: "Comfort (Black)",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81E0lqfhG3L._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/51mwWbYVhIL._SS64_.jpg",
+    galleryImageUrls: [
+      "https://m.media-amazon.com/images/I/81E0lqfhG3L._AC_SX679_.jpg",
+      "https://m.media-amazon.com/images/I/81--CZhvheL._AC_SY879_.jpg",
+      "https://m.media-amazon.com/images/I/71omEeF4OgL._AC_SY879_.jpg",
+      "https://m.media-amazon.com/images/I/71omEeF4OgL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/81vB7AY9SHL._AC_SL1500_.jpg",
+    ],
+  },
+  {
+    shopifyColor: "Comfort (Blue Inside)",
+    selectedLabel: "Comfort (Blue Inside)",
+    tooltip: "Comfort (Blue Inside)",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81ZQcnkIiVL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/41dG-9FppzL._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Comfort (White Inside)",
+    selectedLabel: "Comfort (White Inside)",
+    tooltip: "Comfort (White Inside)",
+    bagImageUrl: "https://m.media-amazon.com/images/I/71DpbrW1HKL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/31ER-ofrfrL._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Dogs",
+    selectedLabel: "Dogs",
+    tooltip: "Dogs",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81exsfRN82L._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/41I-YjS7phL._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Dot (Navy/Green Stripe)",
+    selectedLabel: "Dot (Navy/Green Stripe)",
+    tooltip: "Dot (Navy/Green Stripe)",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81eLGN22ecL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/51vg3gVjfmL._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Elephants",
+    selectedLabel: "Elephants",
+    tooltip: "Elephants",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81ddN4IT1GL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/51ozWKsEUKL._SS64_.jpg",
+    galleryImageUrls: [
+      "https://m.media-amazon.com/images/I/81ddN4IT1GL._AC_SX679_.jpg",
+      "https://m.media-amazon.com/images/I/91GdIKsKSUL._AC_SX679_.jpg",
+      "https://m.media-amazon.com/images/I/818NCU3qs7L._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/81s1eMUU+sL._AC_SL1500_.jpg",
+    ],
+  },
+  {
+    shopifyColor: "Grit Grace Gratitude",
+    selectedLabel: "Grit Grace Gratitude",
+    tooltip: "Grit Grace Gratitude",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81gspS956bL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/51pXNPBPzvL._SS64_.jpg",
+  },
   {
     shopifyColor: "Leopard",
     selectedLabel: "Leopard",
     tooltip: "Leopard",
-    kind: "pattern",
-    fallbackImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/lay-n-go-cosmo-20cosmo-20lay-n-golayngo-new-28937643.jpg?v=1670376558",
+    bagImageUrl: "https://m.media-amazon.com/images/I/61cKWYc+iZL._AC_SL1080_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/41Q6W7FwObL._SS64_.jpg",
+    galleryImageUrls: [
+      "https://m.media-amazon.com/images/I/61cKWYc+iZL._AC_SL1080_.jpg",
+      "https://m.media-amazon.com/images/I/617sqbmll9L._AC_SL1080_.jpg",
+      "https://m.media-amazon.com/images/I/619XNuTzMAL._AC_SX679_.jpg",
+    ],
   },
   {
-    shopifyColor: "Chevron",
-    selectedLabel: "Chevron",
-    tooltip: "Chevron",
-    kind: "pattern",
-    fallbackImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/lay-n-go-cosmo-20cosmo-20lay-n-golayngo-new-28937653.jpg?v=1670376558",
+    shopifyColor: "Metallic Gold",
+    selectedLabel: "Metallic Gold",
+    tooltip: "Metallic Gold",
+    bagImageUrl: "https://m.media-amazon.com/images/I/710MVWNRDiS._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/21VU7yB9IEL._SS64_.jpg",
   },
   {
-    shopifyColor: "Paisley",
-    selectedLabel: "Paisley",
-    tooltip: "Paisley",
-    kind: "pattern",
-    fallbackImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/lay-n-go-cosmo-20cosmo-20lay-n-golayngo-new-28937644.jpg?v=1670376558",
+    shopifyColor: "Metallic Silver",
+    selectedLabel: "Metallic Silver",
+    tooltip: "Metallic Silver",
+    bagImageUrl: "https://m.media-amazon.com/images/I/8173dJHIVVS._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/31Hnmsu+RML._SS64_.jpg",
   },
   {
-    shopifyColor: "Rings",
-    selectedLabel: "Rings (Black & Pink)",
-    tooltip: "Rings (Black & Pink)",
-    kind: "pattern",
-    fallbackImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/lay-n-go-cosmo-20cosmo-20lay-n-golayngo-new-28937654.jpg?v=1670376558",
+    shopifyColor: "Navy",
+    selectedLabel: "Navy",
+    tooltip: "Navy",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81Ff-ALCZqL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/31v7o6uQ4UL._SS64_.jpg",
   },
   {
-    shopifyColor: "ZigZag",
-    selectedLabel: "ZigZag",
-    tooltip: "ZigZag (Out of Stock)",
-    kind: "pattern",
-    forceUnavailable: true,
-    fallbackImageUrl: "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/ZIG_ZAG.png?v=1670419871",
-  },
-  { shopifyColor: "Evergreen", selectedLabel: "Evergreen", tooltip: "Evergreen", kind: "solid", hex: "#2d5a3d" },
-  {
-    shopifyColor: "Stars",
-    selectedLabel: "Stars",
-    tooltip: "Stars (Out of Stock)",
-    kind: "pattern",
-    forceUnavailable: true,
-    fallbackImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/OPEN_AND_CLOSED_-_PSD_of_a_square_seperated_layout_Square_1000_x_1000.jpg?v=1670419871",
+    shopifyColor: "Ocean Blue",
+    selectedLabel: "Ocean Blue",
+    tooltip: "Ocean Blue",
+    bagImageUrl: "https://m.media-amazon.com/images/I/71w0Z9pjlPS._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/21eybAUvBRL._SS64_.jpg",
   },
   {
-    shopifyColor: "Pink Camo",
-    selectedLabel: "Pink Camo",
-    tooltip: "Pink Camo",
-    kind: "pattern",
-    fallbackImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/OPEN_AND_CLOSED_-_PSD_of_a_square_seperated_layout_JPG_Square_1_1000_x_1000.jpg?v=1670419871",
+    shopifyColor: "Pink",
+    selectedLabel: "Pink",
+    tooltip: "Pink",
+    bagImageUrl: "https://m.media-amazon.com/images/I/71n3bN-KA8S._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/31J83-22JUL._SS64_.jpg",
   },
   {
-    shopifyColor: "Dot and Stripe",
-    selectedLabel: "Dot/Stripe",
-    tooltip: "Dot/Stripe",
-    kind: "pattern",
-    fallbackImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/OPEN_AND_CLOSED_-_PSD_of_a_square_seperated_layout_Square_1_1000_x_1000.jpg?v=1670419871",
+    shopifyColor: "Pink Chevron",
+    selectedLabel: "Pink Chevron",
+    tooltip: "Pink Chevron",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81knuN5RlgL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/31ajkRBTDQL._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Purple",
+    selectedLabel: "Purple",
+    tooltip: "Purple",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81NdmHY4fwL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/31eTOK3c+SL._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Rings Black/White",
+    selectedLabel: "Rings Black/White",
+    tooltip: "Rings Black/White",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81GAGSx6ArL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/41+vAXTl9HL._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Sky Blue",
+    selectedLabel: "Sky Blue",
+    tooltip: "Sky Blue",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81wvznMkNIL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/41jDMaLDXHL._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Evergreen",
+    selectedLabel: "Evergreen",
+    tooltip: "Evergreen",
+    bagImageUrl: "https://m.media-amazon.com/images/I/817BajkVj+L._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/51l2P+kB71L._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Floral Large",
+    selectedLabel: "Floral Large",
+    tooltip: "Floral Large",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81LStDwYeIL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/51PEb9KgQ-L._SS64_.jpg",
+    galleryImageUrls: [
+      "https://m.media-amazon.com/images/I/81LStDwYeIL._AC_SX679_.jpg",
+      "https://m.media-amazon.com/images/I/81GgU-C3NvL._AC_SY879_.jpg",
+      "https://m.media-amazon.com/images/I/81IvmUk-wvL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/71aw1Wlxg4L._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/81yy7nyaCfL._AC_SL1500_.jpg",
+    ],
+  },
+  {
+    shopifyColor: "Lips (Black Inside)",
+    selectedLabel: "Lips (Black Inside)",
+    tooltip: "Lips (Black Inside)",
+    bagImageUrl: "https://m.media-amazon.com/images/I/814QvZESILL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/51He83yex3L._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Quilted Lavender",
+    selectedLabel: "Quilted Lavender",
+    tooltip: "Quilted Lavender",
+    bagImageUrl: "https://m.media-amazon.com/images/I/71q07nFuH8L._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/21JH7De0Y-L._SS64_.jpg",
+    galleryImageUrls: [
+      "https://m.media-amazon.com/images/I/71q07nFuH8L._AC_SX679_.jpg",
+      "https://m.media-amazon.com/images/I/71HBjKLCrGL._AC_SY879_.jpg",
+      "https://m.media-amazon.com/images/I/71RsYrD7K3L._AC_SY879_.jpg",
+      "https://m.media-amazon.com/images/I/81QuHkmvVUL._AC_SL1500_.jpg",
+      "https://m.media-amazon.com/images/I/71lJHKSukDL._AC_SL1500_.jpg",
+    ],
   },
 ];
 
@@ -129,11 +281,7 @@ export function Cosmo20ColorSelector({ product, selectedVariantIdx, onVariantCha
     <div className="space-y-3">
       <label className="text-sm font-medium text-foreground">Color</label>
 
-      <div
-        className="grid grid-cols-4 gap-2 sm:grid-cols-6"
-        role="listbox"
-        aria-label="Color"
-      >
+      <div className="grid grid-cols-4 gap-2 sm:grid-cols-6" role="listbox" aria-label="Color">
         {COSMO_20_SWATCHES.map((def) => {
           const entry = variantByColor.get(def.shopifyColor);
           const variantIdx = entry?.idx ?? -1;
@@ -141,8 +289,7 @@ export function Cosmo20ColorSelector({ product, selectedVariantIdx, onVariantCha
           const unavailable = def.forceUnavailable || (variant ? !variant.availableForSale : true);
           const isSelected = variantIdx >= 0 && variantIdx === selectedVariantIdx;
 
-          const patternUrl = variant?.image?.url ?? def.fallbackImageUrl;
-          const swatchStyle = getSwatchSurfaceStyle(def, patternUrl);
+          const swatchStyle = getSwatchSurfaceStyle(def);
 
           return (
             <div key={def.shopifyColor} className="flex flex-col items-center gap-1">
@@ -186,34 +333,41 @@ export function Cosmo20ColorSelector({ product, selectedVariantIdx, onVariantCha
   );
 }
 
-function getSwatchSurfaceStyle(def: Cosmo20SwatchDef, patternUrl?: string): CSSProperties {
-  switch (def.kind) {
-    case "solid":
-      return { backgroundColor: def.hex ?? "#ccc" };
-    case "metallicSilver":
-      return {
-        background:
-          "linear-gradient(135deg, #ececec 0%, #b4b4c4 32%, #f8f8f8 48%, #9a9aac 62%, #e4e4ee 100%)",
-      };
-    case "metallicGold":
-      return {
-        background:
-          "linear-gradient(135deg, #f3e6b8 0%, #c9a84c 38%, #ffe9a8 52%, #a88430 68%, #e8d49a 100%)",
-      };
-    case "pattern":
-      if (patternUrl) {
-        return {
-          backgroundImage: `url(${patternUrl})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        };
-      }
-      return { backgroundColor: "#e5e5e5" };
-    default:
-      return {};
-  }
+function getSwatchSurfaceStyle(def: Cosmo20SwatchDef): CSSProperties {
+  return {
+    backgroundImage: `url(${def.swatchImageUrl})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  };
 }
 
 export function isCosmo20Product(handle: string): boolean {
   return handle === "lay-n-go-cosmo-20";
+}
+
+/** Pick initial variant index: prefers Black, else first catalog color that exists in Shopify. */
+export function getCosmo20InitialSelection(product: ShopifyProduct["node"]): { variantIdx: number } | null {
+  if (!isCosmo20Product(product.handle)) return null;
+
+  const matchIdx = (color: string) =>
+    product.variants.edges.findIndex(({ node }) =>
+      node.selectedOptions.some((o) => /color|colour/i.test(o.name) && o.value === color),
+    );
+
+  const blackIdx = matchIdx("Black");
+  if (blackIdx >= 0) return { variantIdx: blackIdx };
+
+  for (const sw of COSMO_20_SWATCHES) {
+    const idx = matchIdx(sw.shopifyColor);
+    if (idx >= 0) return { variantIdx: idx };
+  }
+
+  return null;
+}
+
+/** Ordered hero/gallery URLs for a Cosmo 20 color (single `bagImageUrl` or full `galleryImageUrls`). */
+export function getCosmo20HeroImageUrls(shopifyColor: string): string[] {
+  const def = COSMO_20_SWATCHES.find((s) => s.shopifyColor === shopifyColor);
+  if (!def) return [];
+  return def.galleryImageUrls?.length ? def.galleryImageUrls : [def.bagImageUrl];
 }

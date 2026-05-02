@@ -13,7 +13,20 @@ import { ProductCard } from "@/components/ProductCard";
 import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronRight, Home } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { Cosmo20ColorSelector, isCosmo20Product } from "@/components/Cosmo20ColorSelector";
+import {
+  COSMO_20_SWATCHES,
+  Cosmo20ColorSelector,
+  getCosmo20HeroImageUrls,
+  getCosmo20InitialSelection,
+  isCosmo20Product,
+} from "@/components/Cosmo20ColorSelector";
+import {
+  COSMO_22_SWATCHES,
+  Cosmo22ColorSelector,
+  getCosmo22HeroImageUrls,
+  getCosmo22InitialSelection,
+  isCosmo22Product,
+} from "@/components/Cosmo22ColorSelector";
 
 const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
@@ -40,6 +53,8 @@ const ProductDetail = () => {
   const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [cosmo20GalleryIndex, setCosmo20GalleryIndex] = useState(0);
+  const [cosmo22GalleryIndex, setCosmo22GalleryIndex] = useState(0);
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
 
@@ -62,23 +77,26 @@ const ProductDetail = () => {
     setSelectedVariantIdx(0);
     setSelectedImage(0);
     setQuantity(1);
+    setCosmo20GalleryIndex(0);
+    setCosmo22GalleryIndex(0);
   }, [product?.id]);
 
   useEffect(() => {
     if (!product || !isCosmo20Product(product.handle)) return;
-    const edges = product.variants.edges;
-    const blackIdx = edges.findIndex(({ node }) =>
-      node.selectedOptions.some((o) => /color|colour/i.test(o.name) && o.value === "Black"),
-    );
-    if (blackIdx < 0) return;
-    setSelectedVariantIdx(blackIdx);
-    const url = edges[blackIdx]?.node?.image?.url;
-    if (url) {
-      const imgs = getOrderedImagesForProduct(product);
-      const imageIdx = imgs.findIndex((img) => img.node.url === url);
-      if (imageIdx >= 0) setSelectedImage(imageIdx);
-    }
+    const init = getCosmo20InitialSelection(product);
+    if (init) setSelectedVariantIdx(init.variantIdx);
   }, [product?.id, product?.handle]);
+
+  useEffect(() => {
+    if (!product || !isCosmo22Product(product.handle)) return;
+    const init = getCosmo22InitialSelection(product);
+    if (init) setSelectedVariantIdx(init.variantIdx);
+  }, [product?.id, product?.handle]);
+
+  useEffect(() => {
+    setCosmo20GalleryIndex(0);
+    setCosmo22GalleryIndex(0);
+  }, [selectedVariantIdx]);
 
   const backHref = collectionHandle ? `/collections/${collectionHandle}` : "/collections";
 
@@ -87,6 +105,42 @@ const ProductDetail = () => {
     if (!product) return [];
     return getOrderedImagesForProduct(product);
   }, [product]);
+
+  const cosmoVariantByColor = useMemo(() => {
+    if (!product || !isCosmo20Product(product.handle)) return new Map<string, number>();
+    const map = new Map<string, number>();
+    product.variants.edges.forEach((edge, idx) => {
+      const c = edge.node.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value;
+      if (c && !map.has(c)) map.set(c, idx);
+    });
+    return map;
+  }, [product]);
+
+  const cosmoVariantByColor22 = useMemo(() => {
+    if (!product || !isCosmo22Product(product.handle)) return new Map<string, number>();
+    const map = new Map<string, number>();
+    product.variants.edges.forEach((edge, idx) => {
+      const c = edge.node.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value;
+      if (c && !map.has(c)) map.set(c, idx);
+    });
+    return map;
+  }, [product]);
+
+  const cosmo20HeroUrls = useMemo(() => {
+    if (!product || !isCosmo20Product(product.handle)) return [];
+    const v = product.variants.edges[selectedVariantIdx]?.node;
+    const color = v?.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value;
+    if (!color) return [];
+    return getCosmo20HeroImageUrls(color);
+  }, [product, selectedVariantIdx]);
+
+  const cosmo22HeroUrls = useMemo(() => {
+    if (!product || !isCosmo22Product(product.handle)) return [];
+    const v = product.variants.edges[selectedVariantIdx]?.node;
+    const color = v?.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value;
+    if (!color) return [];
+    return getCosmo22HeroImageUrls(color);
+  }, [product, selectedVariantIdx]);
 
   if (loading) {
     return (
@@ -175,6 +229,18 @@ const ProductDetail = () => {
                   alt={`${product.title} (Crossmarks)`}
                   className="w-full h-full object-contain p-6"
                 />
+              ) : isCosmo22Product(product.handle) && cosmo22HeroUrls.length > 0 ? (
+                <img
+                  src={cosmo22HeroUrls[Math.min(cosmo22GalleryIndex, cosmo22HeroUrls.length - 1)]}
+                  alt={product.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : isCosmo20Product(product.handle) && cosmo20HeroUrls.length > 0 ? (
+                <img
+                  src={cosmo20HeroUrls[Math.min(cosmo20GalleryIndex, cosmo20HeroUrls.length - 1)]}
+                  alt={product.title}
+                  className="w-full h-full object-cover"
+                />
               ) : orderedImages[selectedImage]?.node ? (
                 <img
                   src={orderedImages[selectedImage].node.url}
@@ -185,7 +251,97 @@ const ProductDetail = () => {
                 <div className="w-full h-full flex items-center justify-center text-muted-foreground">No image</div>
               )}
             </div>
-            {orderedImages.length > 1 && (
+            {isCosmo22Product(product.handle) && cosmo22HeroUrls.length > 1 ? (
+              <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Variant photo gallery">
+                {cosmo22HeroUrls.map((url, i) => (
+                  <button
+                    key={`${url}-${i}`}
+                    type="button"
+                    onClick={() => setCosmo22GalleryIndex(i)}
+                    className={cn(
+                      "w-16 h-16 rounded-md overflow-hidden border-2 flex-shrink-0 transition-colors",
+                      i === cosmo22GalleryIndex ? "border-primary" : "border-border",
+                    )}
+                  >
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            {isCosmo20Product(product.handle) && cosmo20HeroUrls.length > 1 ? (
+              <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Variant photo gallery">
+                {cosmo20HeroUrls.map((url, i) => (
+                  <button
+                    key={`${url}-${i}`}
+                    type="button"
+                    onClick={() => setCosmo20GalleryIndex(i)}
+                    className={cn(
+                      "w-16 h-16 rounded-md overflow-hidden border-2 flex-shrink-0 transition-colors",
+                      i === cosmo20GalleryIndex ? "border-primary" : "border-border",
+                    )}
+                  >
+                    <img src={url} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            {isCosmo22Product(product.handle) ? (
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {COSMO_22_SWATCHES.map((sw) => {
+                  const vIdx = cosmoVariantByColor22.get(sw.shopifyColor) ?? -1;
+                  const disabled = vIdx < 0;
+                  const isThumbSelected = vIdx >= 0 && vIdx === selectedVariantIdx;
+                  return (
+                    <button
+                      key={sw.shopifyColor}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => {
+                        if (disabled) return;
+                        setSelectedVariantIdx(vIdx);
+                      }}
+                      className={cn(
+                        "w-16 h-16 rounded-md overflow-hidden border-2 flex-shrink-0 transition-colors",
+                        isThumbSelected ? "border-primary" : "border-border",
+                        disabled && "cursor-not-allowed opacity-40",
+                      )}
+                      aria-label={sw.selectedLabel}
+                      title={sw.tooltip}
+                    >
+                      <img src={sw.bagImageUrl} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  );
+                })}
+              </div>
+            ) : isCosmo20Product(product.handle) ? (
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {COSMO_20_SWATCHES.map((sw) => {
+                  const vIdx = cosmoVariantByColor.get(sw.shopifyColor) ?? -1;
+                  const disabled = vIdx < 0;
+                  const isThumbSelected = vIdx >= 0 && vIdx === selectedVariantIdx;
+                  return (
+                    <button
+                      key={sw.shopifyColor}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => {
+                        if (disabled) return;
+                        setSelectedVariantIdx(vIdx);
+                      }}
+                      className={cn(
+                        "w-16 h-16 rounded-md overflow-hidden border-2 flex-shrink-0 transition-colors",
+                        isThumbSelected ? "border-primary" : "border-border",
+                        disabled && "cursor-not-allowed opacity-40",
+                      )}
+                      aria-label={sw.selectedLabel}
+                      title={sw.tooltip}
+                    >
+                      <img src={sw.bagImageUrl} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  );
+                })}
+              </div>
+            ) : orderedImages.length > 1 ? (
               <div className="flex gap-2 overflow-x-auto">
                 {orderedImages.map((img, i) => (
                   <button
@@ -198,7 +354,7 @@ const ProductDetail = () => {
                   </button>
                 ))}
               </div>
-            )}
+            ) : null}
           </div>
 
           <div className="space-y-6">
@@ -221,6 +377,18 @@ const ProductDetail = () => {
             {(product.options ?? []).map((option, optIdx) => {
               if (option.values.length <= 1) return null;
               const isColorOption = /color|colour/i.test(option.name);
+              if (isCosmo22Product(product.handle) && isColorOption) {
+                return (
+                  <Cosmo22ColorSelector
+                    key={optIdx}
+                    product={product}
+                    selectedVariantIdx={selectedVariantIdx}
+                    onVariantChange={(variantIndex) => {
+                      setSelectedVariantIdx(variantIndex);
+                    }}
+                  />
+                );
+              }
               if (isCosmo20Product(product.handle) && isColorOption) {
                 return (
                   <Cosmo20ColorSelector
@@ -229,12 +397,6 @@ const ProductDetail = () => {
                     selectedVariantIdx={selectedVariantIdx}
                     onVariantChange={(variantIndex) => {
                       setSelectedVariantIdx(variantIndex);
-                      const v = product.variants.edges[variantIndex]?.node;
-                      const variantImageUrl = v?.image?.url;
-                      if (variantImageUrl) {
-                        const imageIdx = orderedImages.findIndex((img) => img.node.url === variantImageUrl);
-                        if (imageIdx >= 0) setSelectedImage(imageIdx);
-                      }
                     }}
                   />
                 );
