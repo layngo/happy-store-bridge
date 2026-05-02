@@ -138,13 +138,8 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     shopifyColor: "Leopard",
     selectedLabel: "Leopard",
     tooltip: "Leopard",
-    bagImageUrl: "https://m.media-amazon.com/images/I/61cKWYc+iZL._AC_SL1080_.jpg",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81hHDUt636L._AC_SX679_.jpg",
     swatchImageUrl: "https://m.media-amazon.com/images/I/41Q6W7FwObL._SS64_.jpg",
-    galleryImageUrls: [
-      "https://m.media-amazon.com/images/I/61cKWYc+iZL._AC_SL1080_.jpg",
-      "https://m.media-amazon.com/images/I/617sqbmll9L._AC_SL1080_.jpg",
-      "https://m.media-amazon.com/images/I/619XNuTzMAL._AC_SX679_.jpg",
-    ],
   },
   {
     shopifyColor: "Metallic Gold",
