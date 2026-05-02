@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
 
 export interface Cosmo20SwatchDef {
-  /** Must match Shopify variant Color option value exactly */
+  /** Canonical catalog key; Shopify may use a shorter alias — see {@link COSMO_20_SHOPIFY_ALIASES} */
   shopifyColor: string;
   /** Label under the grid when this swatch is selected */
   selectedLabel: string;
@@ -23,7 +23,7 @@ export interface Cosmo20SwatchDef {
 }
 
 /**
- * Cosmo 20" color order + Amazon image URLs. `shopifyColor` must match the Color option in Shopify.
+ * Cosmo 20" color order + Amazon image URLs.
  * Source: user-provided Amazon _AC_SX679_ (bag) + _SS64_ (swatch) pairs.
  */
 export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
@@ -253,6 +253,31 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
   },
 ];
 
+/**
+ * Live Shopify Color option → canonical row key in {@link COSMO_20_SWATCHES}.
+ * Archive snapshot: `archive/layngo-original/html/products/lay-n-go-cosmo-20.html` meta variants.
+ */
+export const COSMO_20_SHOPIFY_ALIASES: Record<string, string> = {
+  Rings: "Rings Black/White",
+  "Fuzzy White": "Comfort (White Inside)",
+  "Fuzzy Blue": "Comfort (Blue Inside)",
+  Lips: "Lips (Black Inside)",
+  Silver: "Metallic Silver",
+  Gold: "Metallic Gold",
+  Chevron: "Pink Chevron",
+  Elephant: "Elephants",
+  Lavender: "Quilted Lavender",
+  "Floral Fun": "Floral Large",
+  "Dot and Stripe": "Dot (Navy/Green Stripe)",
+  "Black Sherpa": "Comfort (Black)",
+};
+
+/** Resolve curated swatch + hero URLs for the Color string returned by Shopify. */
+export function resolveCosmo20SwatchDef(shopifyColor: string): Cosmo20SwatchDef | undefined {
+  const key = COSMO_20_SHOPIFY_ALIASES[shopifyColor] ?? shopifyColor;
+  return COSMO_20_SWATCHES.find((s) => s.shopifyColor === key);
+}
+
 interface Cosmo20ColorSelectorProps {
   product: ShopifyProduct["node"];
   selectedVariantIdx: number;
@@ -291,7 +316,7 @@ export function Cosmo20ColorSelector({ product, selectedVariantIdx, onVariantCha
     selectedVariant?.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value ?? colorValues[0] ?? "";
 
   const selectedDisplayLabel = useMemo(() => {
-    const def = COSMO_20_SWATCHES.find((s) => s.shopifyColor === selectedColor);
+    const def = resolveCosmo20SwatchDef(selectedColor);
     return def?.selectedLabel ?? selectedColor;
   }, [selectedColor]);
 
@@ -301,7 +326,7 @@ export function Cosmo20ColorSelector({ product, selectedVariantIdx, onVariantCha
 
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-6" role="listbox" aria-label="Color">
         {colorValues.map((shopifyColor) => {
-          const def = COSMO_20_SWATCHES.find((s) => s.shopifyColor === shopifyColor);
+          const def = resolveCosmo20SwatchDef(shopifyColor);
           const entry = variantByColor.get(shopifyColor);
           const variantIdx = entry?.idx ?? -1;
           const variant = entry?.node;
@@ -369,19 +394,32 @@ export function isCosmo20Product(handle: string): boolean {
 }
 
 /** Pick initial variant index: prefers Black, else first catalog color that exists in Shopify. */
-export function getCosmo20InitialSelection(product: ShopifyProduct["node"]): { variantIdx: number } | null {
-  if (!isCosmo20Product(product.handle)) return null;
-
+function variantIndexForCatalogColor(product: ShopifyProduct["node"], catalogShopifyColor: string): number {
   const matchIdx = (color: string) =>
     product.variants.edges.findIndex(({ node }) =>
       node.selectedOptions.some((o) => /color|colour/i.test(o.name) && o.value === color),
     );
 
-  const blackIdx = matchIdx("Black");
+  const direct = matchIdx(catalogShopifyColor);
+  if (direct >= 0) return direct;
+
+  for (const [alias, canonical] of Object.entries(COSMO_20_SHOPIFY_ALIASES)) {
+    if (canonical === catalogShopifyColor) {
+      const idx = matchIdx(alias);
+      if (idx >= 0) return idx;
+    }
+  }
+  return -1;
+}
+
+export function getCosmo20InitialSelection(product: ShopifyProduct["node"]): { variantIdx: number } | null {
+  if (!isCosmo20Product(product.handle)) return null;
+
+  const blackIdx = variantIndexForCatalogColor(product, "Black");
   if (blackIdx >= 0) return { variantIdx: blackIdx };
 
   for (const sw of COSMO_20_SWATCHES) {
-    const idx = matchIdx(sw.shopifyColor);
+    const idx = variantIndexForCatalogColor(product, sw.shopifyColor);
     if (idx >= 0) return { variantIdx: idx };
   }
 
@@ -391,7 +429,7 @@ export function getCosmo20InitialSelection(product: ShopifyProduct["node"]): { v
 
 /** Hero/gallery URLs: curated Amazon set when present, else variant featured image from Shopify. */
 export function getCosmo20HeroImageUrls(shopifyColor: string, variant?: VariantNode): string[] {
-  const def = COSMO_20_SWATCHES.find((s) => s.shopifyColor === shopifyColor);
+  const def = resolveCosmo20SwatchDef(shopifyColor);
   if (def) return def.galleryImageUrls?.length ? def.galleryImageUrls : [def.bagImageUrl];
   const u = variant?.image?.url;
   return u ? [u] : [];

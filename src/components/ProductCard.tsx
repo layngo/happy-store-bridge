@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { COSMO_20_SWATCHES, isCosmo20Product } from "@/components/Cosmo20ColorSelector";
+import { isCosmo20Product, resolveCosmo20SwatchDef } from "@/components/Cosmo20ColorSelector";
 import { COSMO_22_SWATCHES, isCosmo22Product } from "@/components/Cosmo22ColorSelector";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 
@@ -304,7 +304,7 @@ function collectionSwatchStyle(product: ShopifyProduct["node"], colorValue: stri
     }
   }
   if (isCosmo20Product(product.handle)) {
-    const def = COSMO_20_SWATCHES.find((s) => s.shopifyColor === colorValue);
+    const def = resolveCosmo20SwatchDef(colorValue);
     if (def?.swatchImageUrl) {
       return {
         backgroundImage: `url(${def.swatchImageUrl})`,
