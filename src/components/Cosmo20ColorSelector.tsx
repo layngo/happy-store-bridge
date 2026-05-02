@@ -31,16 +31,8 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     shopifyColor: "Love",
     selectedLabel: "Love",
     tooltip: "Love",
-    bagImageUrl: "https://m.media-amazon.com/images/I/81VEkKlSsDL._AC_SX679_.jpg",
+    bagImageUrl: "https://m.media-amazon.com/images/I/812Nk1H5gmL._AC_SX679_.jpg",
     swatchImageUrl: "https://m.media-amazon.com/images/I/61TlQoMP4NL._SS64_.jpg",
-    galleryImageUrls: [
-      "https://m.media-amazon.com/images/I/81VEkKlSsDL._AC_SX679_.jpg",
-      "https://m.media-amazon.com/images/I/811rUkXdRUL._AC_SY879_.jpg",
-      "https://m.media-amazon.com/images/I/71UEGfd8GUL._AC_SY879_.jpg",
-      "https://m.media-amazon.com/images/I/81xEtWpQmBL._AC_SY879_.jpg",
-      "https://m.media-amazon.com/images/I/81CLOt26ZSL._AC_SL1500_.jpg",
-      "https://m.media-amazon.com/images/I/81srH+9OBCL._AC_SL1500_.jpg",
-    ],
   },
   {
     shopifyColor: "Black",
@@ -62,6 +54,30 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     ],
   },
   {
+    shopifyColor: "Gold Stripe",
+    selectedLabel: "Gold Stripe",
+    tooltip: "Gold Stripe",
+    bagImageUrl:
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/COS20STBG7723-OPENANDCLOSED-SquareOverlayVersion_1.jpg?v=1730750218",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/31w694P7EpL._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Butterfly",
+    selectedLabel: "Butterfly",
+    tooltip: "Butterfly",
+    bagImageUrl:
+      "https://www.layngo.com/cdn/shop/files/COS20BFLY7693-OPEN-AND-CLOSED--Square-Overlay-Version_1_2000x.jpg?v=1730750330",
+    swatchImageUrl: "/swatches/cosmo-20-butterfly.jpg",
+  },
+  {
+    shopifyColor: "Checkered",
+    selectedLabel: "Checkered",
+    tooltip: "Checkered",
+    bagImageUrl:
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/COS20CHKT7716-OPENANDCLOSED-SquareOverlayVersion_1.jpg?v=1730750516",
+    swatchImageUrl: "/swatches/cosmo-20-checkered.jpg",
+  },
+  {
     shopifyColor: "Blue Snakeskin",
     selectedLabel: "Blue Snakeskin",
     tooltip: "Blue Snakeskin",
@@ -72,15 +88,8 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     shopifyColor: "Comfort (Black)",
     selectedLabel: "Comfort (Black)",
     tooltip: "Comfort (Black)",
-    bagImageUrl: "https://m.media-amazon.com/images/I/81E0lqfhG3L._AC_SX679_.jpg",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81qrM443mpL._AC_SX679_.jpg",
     swatchImageUrl: "https://m.media-amazon.com/images/I/51mwWbYVhIL._SS64_.jpg",
-    galleryImageUrls: [
-      "https://m.media-amazon.com/images/I/81E0lqfhG3L._AC_SX679_.jpg",
-      "https://m.media-amazon.com/images/I/81--CZhvheL._AC_SY879_.jpg",
-      "https://m.media-amazon.com/images/I/71omEeF4OgL._AC_SY879_.jpg",
-      "https://m.media-amazon.com/images/I/71omEeF4OgL._AC_SL1500_.jpg",
-      "https://m.media-amazon.com/images/I/81vB7AY9SHL._AC_SL1500_.jpg",
-    ],
   },
   {
     shopifyColor: "Comfort (Blue Inside)",
@@ -114,14 +123,8 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     shopifyColor: "Elephants",
     selectedLabel: "Elephants",
     tooltip: "Elephants",
-    bagImageUrl: "https://m.media-amazon.com/images/I/81ddN4IT1GL._AC_SX679_.jpg",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81GyiSowHrL._AC_SX679_.jpg",
     swatchImageUrl: "https://m.media-amazon.com/images/I/51ozWKsEUKL._SS64_.jpg",
-    galleryImageUrls: [
-      "https://m.media-amazon.com/images/I/81ddN4IT1GL._AC_SX679_.jpg",
-      "https://m.media-amazon.com/images/I/91GdIKsKSUL._AC_SX679_.jpg",
-      "https://m.media-amazon.com/images/I/818NCU3qs7L._AC_SL1500_.jpg",
-      "https://m.media-amazon.com/images/I/81s1eMUU+sL._AC_SL1500_.jpg",
-    ],
   },
   {
     shopifyColor: "Grit Grace Gratitude",
@@ -208,6 +211,30 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     swatchImageUrl: "https://m.media-amazon.com/images/I/51l2P+kB71L._SS64_.jpg",
   },
   {
+    shopifyColor: "Stars",
+    selectedLabel: "Stars",
+    tooltip: "Stars",
+    bagImageUrl:
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/OPEN_AND_CLOSED_-_PSD_of_a_square_seperated_layout_Square_1000_x_1000.jpg?v=1670419871",
+    swatchImageUrl: "/swatches/cosmo-20-stars.jpg",
+  },
+  {
+    shopifyColor: "Paisley",
+    selectedLabel: "Paisley",
+    tooltip: "Paisley",
+    bagImageUrl:
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/lay-n-go-cosmo-20cosmo-20lay-n-golayngo-new-28937644.jpg?v=1670376558",
+    swatchImageUrl: "/swatches/cosmo-20-paisley.jpg",
+  },
+  {
+    shopifyColor: "Pink Camo",
+    selectedLabel: "Pink Camo",
+    tooltip: "Pink Camo",
+    bagImageUrl:
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/OPEN_AND_CLOSED_-_PSD_of_a_square_seperated_layout_JPG_Square_1_1000_x_1000.jpg?v=1670419871",
+    swatchImageUrl: "/swatches/cosmo-20-pink-camo.jpg",
+  },
+  {
     shopifyColor: "Floral Large",
     selectedLabel: "Floral Large",
     tooltip: "Floral Large",
@@ -232,15 +259,9 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     shopifyColor: "Quilted Lavender",
     selectedLabel: "Quilted Lavender",
     tooltip: "Quilted Lavender",
-    bagImageUrl: "https://m.media-amazon.com/images/I/71q07nFuH8L._AC_SX679_.jpg",
+    bagImageUrl:
+      "https://www.layngo.com/cdn/shop/files/COS20QLAV7709-OPENANDCLOSED-SquareOverlayVersion_1_2000x.jpg?v=1730750845",
     swatchImageUrl: "https://m.media-amazon.com/images/I/21JH7De0Y-L._SS64_.jpg",
-    galleryImageUrls: [
-      "https://m.media-amazon.com/images/I/71q07nFuH8L._AC_SX679_.jpg",
-      "https://m.media-amazon.com/images/I/71HBjKLCrGL._AC_SY879_.jpg",
-      "https://m.media-amazon.com/images/I/71RsYrD7K3L._AC_SY879_.jpg",
-      "https://m.media-amazon.com/images/I/81QuHkmvVUL._AC_SL1500_.jpg",
-      "https://m.media-amazon.com/images/I/71lJHKSukDL._AC_SL1500_.jpg",
-    ],
   },
 ];
 
@@ -369,7 +390,7 @@ export function Cosmo20ColorSelector({ product, selectedVariantIdx, onVariantCha
 }
 
 /**
- * Swatch fill: prefer curated Amazon SS64; if no row for this Shopify Color (e.g. Paisley, Stars),
+ * Swatch fill: prefer curated Amazon SS64; if no row for this Shopify Color,
  * use that variant’s Shopify hero image so the circle isn’t a blank hex slot.
  */
 export function getCosmo20SwatchBackgroundStyle(
