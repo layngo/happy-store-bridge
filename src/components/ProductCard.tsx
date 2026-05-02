@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { COSMO_20_SWATCHES, isCosmo20Product } from "@/components/Cosmo20ColorSelector";
 import { COSMO_22_SWATCHES, isCosmo22Product } from "@/components/Cosmo22ColorSelector";
+import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 
 interface ProductCardProps {
   product: ShopifyProduct;
@@ -263,15 +264,13 @@ function cosmoMiniSwatchStyle(v: VariantNode): CSSProperties {
   };
 }
 
-/** Collection grid: Cosmo 20/22 use real Amazon swatches + Shopify variant image fallback (matches PDP). */
+/** Collection grid: Cosmo 20/22 use SS64 swatch URLs only; never Shopify variant photos (those are bag shots). */
 function collectionSwatchStyle(product: ShopifyProduct["node"], colorValue: string): CSSProperties {
-  const variant = findVariantByColorValue(product, colorValue);
   if (isCosmo22Product(product.handle)) {
     const def = COSMO_22_SWATCHES.find((s) => s.shopifyColor === colorValue);
-    const url = def?.swatchImageUrl ?? variant?.image?.url;
-    if (url) {
+    if (def?.swatchImageUrl) {
       return {
-        backgroundImage: `url(${url})`,
+        backgroundImage: `url(${def.swatchImageUrl})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       };
@@ -279,23 +278,15 @@ function collectionSwatchStyle(product: ShopifyProduct["node"], colorValue: stri
   }
   if (isCosmo20Product(product.handle)) {
     const def = COSMO_20_SWATCHES.find((s) => s.shopifyColor === colorValue);
-    const url = def?.swatchImageUrl ?? variant?.image?.url;
-    if (url) {
+    if (def?.swatchImageUrl) {
       return {
-        backgroundImage: `url(${url})`,
+        backgroundImage: `url(${def.swatchImageUrl})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       };
     }
   }
-  return { backgroundColor: colorToHex(colorValue) };
-}
-
-function findVariantByColorValue(product: ShopifyProduct["node"], colorValue: string): VariantNode | undefined {
-  const edge = product.variants.edges.find(({ node }) =>
-    node.selectedOptions.some((o) => /color|colour/i.test(o.name) && o.value === colorValue),
-  );
-  return edge?.node;
+  return { backgroundColor: colorNameToApproximateHex(colorValue) };
 }
 
 function getColorValues(product: ShopifyProduct["node"]): string[] {
@@ -313,31 +304,3 @@ function getColorValues(product: ShopifyProduct["node"]): string[] {
   return [...fromVariants];
 }
 
-function colorToHex(value: string): string {
-  const key = value.trim().toLowerCase();
-  const map: Record<string, string> = {
-    black: "#111111",
-    white: "#f5f5f5",
-    gray: "#8b8b8b",
-    grey: "#8b8b8b",
-    silver: "#b6b6b6",
-    charcoal: "#44464d",
-    navy: "#223049",
-    blue: "#4b5f8c",
-    red: "#b23b3b",
-    pink: "#d58aa4",
-    rose: "#cf8ea3",
-    green: "#7e9880",
-    olive: "#879173",
-    tan: "#c0aa8a",
-    beige: "#d3c5ad",
-    brown: "#7c6653",
-    purple: "#7a6e9c",
-    teal: "#5e8c8c",
-    orange: "#d08a4d",
-    yellow: "#d6be67",
-    gold: "#c3a86f",
-    clear: "#d9d9d9",
-  };
-  return map[key] ?? "#9aa3b2";
-}

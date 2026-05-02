@@ -1,5 +1,6 @@
 import { useMemo, type CSSProperties } from "react";
 import type { ShopifyProduct } from "@/lib/shopify";
+import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 import { cn } from "@/lib/utils";
 
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
@@ -306,7 +307,7 @@ export function Cosmo20ColorSelector({ product, selectedVariantIdx, onVariantCha
           const variant = entry?.node;
           const unavailable = Boolean(def?.forceUnavailable) || (variant ? !variant.availableForSale : true);
           const isSelected = variantIdx >= 0 && variantIdx === selectedVariantIdx;
-          const swatchStyle = getCosmo20SwatchStyle(def, variant);
+          const swatchStyle = getCosmo20SwatchStyle(def, shopifyColor);
           const tooltip = def?.tooltip ?? shopifyColor;
 
           return (
@@ -351,16 +352,16 @@ export function Cosmo20ColorSelector({ product, selectedVariantIdx, onVariantCha
   );
 }
 
-function getCosmo20SwatchStyle(def: Cosmo20SwatchDef | undefined, variant: VariantNode | undefined): CSSProperties {
-  const url = def?.swatchImageUrl ?? variant?.image?.url;
-  if (url) {
+/** Only curated SS64 fabric circles — never Shopify variant images (bag heroes). */
+function getCosmo20SwatchStyle(def: Cosmo20SwatchDef | undefined, shopifyColor: string): CSSProperties {
+  if (def?.swatchImageUrl) {
     return {
-      backgroundImage: `url(${url})`,
+      backgroundImage: `url(${def.swatchImageUrl})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
     };
   }
-  return { backgroundColor: "hsl(var(--muted))" };
+  return { backgroundColor: colorNameToApproximateHex(shopifyColor) };
 }
 
 export function isCosmo20Product(handle: string): boolean {

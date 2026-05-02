@@ -1,5 +1,6 @@
 import { useMemo, type CSSProperties } from "react";
 import type { ShopifyProduct } from "@/lib/shopify";
+import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 import { cn } from "@/lib/utils";
 
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
@@ -9,13 +10,33 @@ export interface Cosmo22SwatchDef {
   selectedLabel: string;
   tooltip: string;
   bagImageUrl: string;
-  swatchImageUrl: string;
+  /** Amazon `_SS64_.jpg` fabric circle; omit when not yet provided (UI falls back to approximate color). */
+  swatchImageUrl?: string;
   galleryImageUrls?: string[];
   forceUnavailable?: boolean;
 }
 
-/** COSMO Deluxe (22") — Shopify handle `lay-n-go-cosmo-deluxe-22`. Color option must match Shopify (e.g. `Paisley`). */
+/**
+ * COSMO Deluxe (22") — `lay-n-go-cosmo-deluxe-22`. `shopifyColor` must match Shopify Color option.
+ *
+ * Bag hero + `_AC_*` galleries + `_SS64_` circles:
+ * - Black / Paisley / Pink: user-supplied Amazon URLs for the 22″ listing.
+ * - Leopard / Purple: same Amazon assets as Cosmo 20″ for that print (shared fabric).
+ * - Tan Check: Lay-n-Go storefront gallery until Amazon `_SS64_` is supplied (swatch uses hex fallback).
+ */
 export const COSMO_22_SWATCHES: Cosmo22SwatchDef[] = [
+  {
+    shopifyColor: "Leopard",
+    selectedLabel: "Leopard",
+    tooltip: "Leopard",
+    bagImageUrl: "https://m.media-amazon.com/images/I/61cKWYc+iZL._AC_SL1080_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/41Q6W7FwObL._SS64_.jpg",
+    galleryImageUrls: [
+      "https://m.media-amazon.com/images/I/61cKWYc+iZL._AC_SL1080_.jpg",
+      "https://m.media-amazon.com/images/I/617sqbmll9L._AC_SL1080_.jpg",
+      "https://m.media-amazon.com/images/I/619XNuTzMAL._AC_SX679_.jpg",
+    ],
+  },
   {
     shopifyColor: "Black",
     selectedLabel: "Black",
@@ -30,6 +51,20 @@ export const COSMO_22_SWATCHES: Cosmo22SwatchDef[] = [
     ],
   },
   {
+    shopifyColor: "Purple",
+    selectedLabel: "Purple",
+    tooltip: "Purple",
+    bagImageUrl: "https://m.media-amazon.com/images/I/81NdmHY4fwL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/31eTOK3c+SL._SS64_.jpg",
+  },
+  {
+    shopifyColor: "Pink",
+    selectedLabel: "Pink",
+    tooltip: "Pink",
+    bagImageUrl: "https://m.media-amazon.com/images/I/8182IPeHmIL._AC_SX679_.jpg",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/31J83-22JUL._SS64_.jpg",
+  },
+  {
     shopifyColor: "Paisley",
     selectedLabel: "Blue Paisley",
     tooltip: "Blue Paisley",
@@ -41,11 +76,11 @@ export const COSMO_22_SWATCHES: Cosmo22SwatchDef[] = [
     ],
   },
   {
-    shopifyColor: "Pink",
-    selectedLabel: "Pink",
-    tooltip: "Pink",
-    bagImageUrl: "https://m.media-amazon.com/images/I/8182IPeHmIL._AC_SX679_.jpg",
-    swatchImageUrl: "https://m.media-amazon.com/images/I/31J83-22JUL._SS64_.jpg",
+    shopifyColor: "Tan Check",
+    selectedLabel: "Tan Check",
+    tooltip: "Tan Check",
+    bagImageUrl:
+      "https://www.layngo.com/cdn/shop/products/B00B04V3PQ.PT05_9759822f-2663-432c-8d06-1fca5be1a436_1200x1200.jpg?v=1626119416",
   },
 ];
 
@@ -103,7 +138,7 @@ export function Cosmo22ColorSelector({ product, selectedVariantIdx, onVariantCha
           const variant = entry?.node;
           const unavailable = Boolean(def?.forceUnavailable) || (variant ? !variant.availableForSale : true);
           const isSelected = variantIdx >= 0 && variantIdx === selectedVariantIdx;
-          const swatchStyle = getCosmo22SwatchStyle(def, variant);
+          const swatchStyle = getCosmo22SwatchStyle(def, shopifyColor);
           const tooltip = def?.tooltip ?? shopifyColor;
 
           return (
@@ -148,16 +183,16 @@ export function Cosmo22ColorSelector({ product, selectedVariantIdx, onVariantCha
   );
 }
 
-function getCosmo22SwatchStyle(def: Cosmo22SwatchDef | undefined, variant: VariantNode | undefined): CSSProperties {
-  const url = def?.swatchImageUrl ?? variant?.image?.url;
-  if (url) {
+/** Only curated SS64 fabric circles — never variant hero photos (those read as “bag” in a tiny circle). */
+function getCosmo22SwatchStyle(def: Cosmo22SwatchDef | undefined, shopifyColor: string): CSSProperties {
+  if (def?.swatchImageUrl) {
     return {
-      backgroundImage: `url(${url})`,
+      backgroundImage: `url(${def.swatchImageUrl})`,
       backgroundSize: "cover",
       backgroundPosition: "center",
     };
   }
-  return { backgroundColor: "hsl(var(--muted))" };
+  return { backgroundColor: colorNameToApproximateHex(shopifyColor) };
 }
 
 export function isCosmo22Product(handle: string): boolean {
