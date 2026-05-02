@@ -239,7 +239,7 @@ const ProductDetail = () => {
                             isColorOption
                               ? isCosmoMini16
                                 ? cosmoMiniSwatchStyle(v.node)
-                                : { backgroundColor: colorToHex(optValue || "") }
+                                : variantImageSwatchStyle(v.node, optValue || "")
                               : undefined
                           }
                           disabled={!v.node.availableForSale}
@@ -251,6 +251,14 @@ const ProductDetail = () => {
                       );
                     })}
                   </div>
+                  {isColorOptionName(option.name) ? (
+                    <p className="text-xs text-muted-foreground">
+                      Selected:{" "}
+                      <span className="font-medium text-foreground">
+                        {selectedVariant?.selectedOptions.find((o) => o.name === option.name)?.value ?? option.values[0]}
+                      </span>
+                    </p>
+                  ) : null}
                 </div>
               ) : null,
             )}
@@ -358,4 +366,22 @@ function colorToHex(value: string): string {
     clear: "#d9d9d9",
   };
   return map[key] ?? "#9aa3b2";
+}
+
+function isColorOptionName(name: string): boolean {
+  return /color|colour/i.test(name);
+}
+
+function variantImageSwatchStyle(
+  variant: ShopifyProduct["node"]["variants"]["edges"][number]["node"],
+  fallbackColor: string,
+): CSSProperties {
+  if (variant.image?.url) {
+    return {
+      backgroundImage: `url(${variant.image.url})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    };
+  }
+  return { backgroundColor: colorToHex(fallbackColor) };
 }
