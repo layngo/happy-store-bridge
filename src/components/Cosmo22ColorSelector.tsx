@@ -55,6 +55,21 @@ interface Cosmo22ColorSelectorProps {
   onVariantChange: (variantIndex: number) => void;
 }
 
+function shopifyColorOptionValues(product: ShopifyProduct["node"]): string[] {
+  const opt = product.options?.find((o) => /color|colour/i.test(o.name));
+  if (opt?.values?.length) return opt.values;
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const { node } of product.variants.edges) {
+    const c = node.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value;
+    if (c && !seen.has(c)) {
+      seen.add(c);
+      out.push(c);
+    }
+  }
+  return out;
+}
+
 export function Cosmo22ColorSelector({ product, selectedVariantIdx, onVariantChange }: Cosmo22ColorSelectorProps) {
   const variantByColor = useMemo(() => {
     const map = new Map<string, { idx: number; node: VariantNode }>();
@@ -65,9 +80,11 @@ export function Cosmo22ColorSelector({ product, selectedVariantIdx, onVariantCha
     return map;
   }, [product.variants.edges]);
 
+  const colorValues = useMemo(() => shopifyColorOptionValues(product), [product]);
+
   const selectedVariant = product.variants.edges[selectedVariantIdx]?.node;
   const selectedColor =
-    selectedVariant?.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value ?? COSMO_22_SWATCHES[0].shopifyColor;
+    selectedVariant?.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value ?? colorValues[0] ?? "";
 
   const selectedDisplayLabel = useMemo(() => {
     const def = COSMO_22_SWATCHES.find((s) => s.shopifyColor === selectedColor);
@@ -79,24 +96,25 @@ export function Cosmo22ColorSelector({ product, selectedVariantIdx, onVariantCha
       <label className="text-sm font-medium text-foreground">Color</label>
 
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-6" role="listbox" aria-label="Color">
-        {COSMO_22_SWATCHES.map((def) => {
-          const entry = variantByColor.get(def.shopifyColor);
+        {colorValues.map((shopifyColor) => {
+          const def = COSMO_22_SWATCHES.find((s) => s.shopifyColor === shopifyColor);
+          const entry = variantByColor.get(shopifyColor);
           const variantIdx = entry?.idx ?? -1;
           const variant = entry?.node;
-          const unavailable = def.forceUnavailable || (variant ? !variant.availableForSale : true);
+          const unavailable = Boolean(def?.forceUnavailable) || (variant ? !variant.availableForSale : true);
           const isSelected = variantIdx >= 0 && variantIdx === selectedVariantIdx;
-
-          const swatchStyle = getSwatchSurfaceStyle(def);
+          const swatchStyle = getCosmo22SwatchStyle(def, variant);
+          const tooltip = def?.tooltip ?? shopifyColor;
 
           return (
-            <div key={def.shopifyColor} className="flex flex-col items-center gap-1">
+            <div key={shopifyColor} className="flex flex-col items-center gap-1">
               <button
                 type="button"
                 role="option"
                 aria-selected={isSelected}
                 aria-disabled={unavailable}
                 disabled={unavailable}
-                title={def.tooltip}
+                title={tooltip}
                 onClick={() => {
                   if (unavailable || variantIdx < 0) return;
                   onVariantChange(variantIdx);
@@ -130,12 +148,16 @@ export function Cosmo22ColorSelector({ product, selectedVariantIdx, onVariantCha
   );
 }
 
-function getSwatchSurfaceStyle(def: Cosmo22SwatchDef): CSSProperties {
-  return {
-    backgroundImage: `url(${def.swatchImageUrl})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  };
+function getCosmo22SwatchStyle(def: Cosmo22SwatchDef | undefined, variant: VariantNode | undefined): CSSProperties {
+  const url = def?.swatchImageUrl ?? variant?.image?.url;
+  if (url) {
+    return {
+      backgroundImage: `url(${url})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    };
+  }
+  return { backgroundColor: "hsl(var(--muted))" };
 }
 
 export function isCosmo22Product(handle: string): boolean {
@@ -158,11 +180,14 @@ export function getCosmo22InitialSelection(product: ShopifyProduct["node"]): { v
     if (idx >= 0) return { variantIdx: idx };
   }
 
+  if (product.variants.edges.length > 0) return { variantIdx: 0 };
   return null;
 }
 
-export function getCosmo22HeroImageUrls(shopifyColor: string): string[] {
+/** Hero/gallery URLs: curated Amazon set when present, else variant featured image from Shopify. */
+export function getCosmo22HeroImageUrls(shopifyColor: string, variant?: VariantNode): string[] {
   const def = COSMO_22_SWATCHES.find((s) => s.shopifyColor === shopifyColor);
-  if (!def) return [];
-  return def.galleryImageUrls?.length ? def.galleryImageUrls : [def.bagImageUrl];
+  if (def) return def.galleryImageUrls?.length ? def.galleryImageUrls : [def.bagImageUrl];
+  const u = variant?.image?.url;
+  return u ? [u] : [];
 }

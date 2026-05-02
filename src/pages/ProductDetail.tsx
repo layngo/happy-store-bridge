@@ -14,14 +14,12 @@ import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronRight, Home } fro
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
-  COSMO_20_SWATCHES,
   Cosmo20ColorSelector,
   getCosmo20HeroImageUrls,
   getCosmo20InitialSelection,
   isCosmo20Product,
 } from "@/components/Cosmo20ColorSelector";
 import {
-  COSMO_22_SWATCHES,
   Cosmo22ColorSelector,
   getCosmo22HeroImageUrls,
   getCosmo22InitialSelection,
@@ -106,32 +104,12 @@ const ProductDetail = () => {
     return getOrderedImagesForProduct(product);
   }, [product]);
 
-  const cosmoVariantByColor = useMemo(() => {
-    if (!product || !isCosmo20Product(product.handle)) return new Map<string, number>();
-    const map = new Map<string, number>();
-    product.variants.edges.forEach((edge, idx) => {
-      const c = edge.node.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value;
-      if (c && !map.has(c)) map.set(c, idx);
-    });
-    return map;
-  }, [product]);
-
-  const cosmoVariantByColor22 = useMemo(() => {
-    if (!product || !isCosmo22Product(product.handle)) return new Map<string, number>();
-    const map = new Map<string, number>();
-    product.variants.edges.forEach((edge, idx) => {
-      const c = edge.node.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value;
-      if (c && !map.has(c)) map.set(c, idx);
-    });
-    return map;
-  }, [product]);
-
   const cosmo20HeroUrls = useMemo(() => {
     if (!product || !isCosmo20Product(product.handle)) return [];
     const v = product.variants.edges[selectedVariantIdx]?.node;
     const color = v?.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value;
     if (!color) return [];
-    return getCosmo20HeroImageUrls(color);
+    return getCosmo20HeroImageUrls(color, v);
   }, [product, selectedVariantIdx]);
 
   const cosmo22HeroUrls = useMemo(() => {
@@ -139,7 +117,7 @@ const ProductDetail = () => {
     const v = product.variants.edges[selectedVariantIdx]?.node;
     const color = v?.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value;
     if (!color) return [];
-    return getCosmo22HeroImageUrls(color);
+    return getCosmo22HeroImageUrls(color, v);
   }, [product, selectedVariantIdx]);
 
   if (loading) {
@@ -285,63 +263,7 @@ const ProductDetail = () => {
                 ))}
               </div>
             ) : null}
-            {isCosmo22Product(product.handle) ? (
-              <div className="flex gap-2 overflow-x-auto pb-1">
-                {COSMO_22_SWATCHES.map((sw) => {
-                  const vIdx = cosmoVariantByColor22.get(sw.shopifyColor) ?? -1;
-                  const disabled = vIdx < 0;
-                  const isThumbSelected = vIdx >= 0 && vIdx === selectedVariantIdx;
-                  return (
-                    <button
-                      key={sw.shopifyColor}
-                      type="button"
-                      disabled={disabled}
-                      onClick={() => {
-                        if (disabled) return;
-                        setSelectedVariantIdx(vIdx);
-                      }}
-                      className={cn(
-                        "w-16 h-16 rounded-md overflow-hidden border-2 flex-shrink-0 transition-colors",
-                        isThumbSelected ? "border-primary" : "border-border",
-                        disabled && "cursor-not-allowed opacity-40",
-                      )}
-                      aria-label={sw.selectedLabel}
-                      title={sw.tooltip}
-                    >
-                      <img src={sw.bagImageUrl} alt="" className="w-full h-full object-cover" />
-                    </button>
-                  );
-                })}
-              </div>
-            ) : isCosmo20Product(product.handle) ? (
-              <div className="flex gap-2 overflow-x-auto pb-1">
-                {COSMO_20_SWATCHES.map((sw) => {
-                  const vIdx = cosmoVariantByColor.get(sw.shopifyColor) ?? -1;
-                  const disabled = vIdx < 0;
-                  const isThumbSelected = vIdx >= 0 && vIdx === selectedVariantIdx;
-                  return (
-                    <button
-                      key={sw.shopifyColor}
-                      type="button"
-                      disabled={disabled}
-                      onClick={() => {
-                        if (disabled) return;
-                        setSelectedVariantIdx(vIdx);
-                      }}
-                      className={cn(
-                        "w-16 h-16 rounded-md overflow-hidden border-2 flex-shrink-0 transition-colors",
-                        isThumbSelected ? "border-primary" : "border-border",
-                        disabled && "cursor-not-allowed opacity-40",
-                      )}
-                      aria-label={sw.selectedLabel}
-                      title={sw.tooltip}
-                    >
-                      <img src={sw.bagImageUrl} alt="" className="w-full h-full object-cover" />
-                    </button>
-                  );
-                })}
-              </div>
-            ) : orderedImages.length > 1 ? (
+            {!isCosmo22Product(product.handle) && !isCosmo20Product(product.handle) && orderedImages.length > 1 ? (
               <div className="flex gap-2 overflow-x-auto">
                 {orderedImages.map((img, i) => (
                   <button

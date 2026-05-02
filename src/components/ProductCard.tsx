@@ -5,6 +5,8 @@ import { Loader2 } from "lucide-react";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { COSMO_20_SWATCHES, isCosmo20Product } from "@/components/Cosmo20ColorSelector";
+import { COSMO_22_SWATCHES, isCosmo22Product } from "@/components/Cosmo22ColorSelector";
 
 interface ProductCardProps {
   product: ShopifyProduct;
@@ -176,8 +178,8 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
               {visibleColors.map((color) => (
                 <span
                   key={color}
-                  className="h-6 w-6 rounded-full border border-foreground/20 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
-                  style={{ backgroundColor: colorToHex(color) }}
+                  className="h-6 w-6 rounded-full border border-foreground/20 bg-muted bg-cover bg-center shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]"
+                  style={collectionSwatchStyle(node, color)}
                   title={color}
                   aria-label={color}
                 />
@@ -259,6 +261,41 @@ function cosmoMiniSwatchStyle(v: VariantNode): CSSProperties {
     backgroundSize: "cover",
     backgroundPosition: "center",
   };
+}
+
+/** Collection grid: Cosmo 20/22 use real Amazon swatches + Shopify variant image fallback (matches PDP). */
+function collectionSwatchStyle(product: ShopifyProduct["node"], colorValue: string): CSSProperties {
+  const variant = findVariantByColorValue(product, colorValue);
+  if (isCosmo22Product(product.handle)) {
+    const def = COSMO_22_SWATCHES.find((s) => s.shopifyColor === colorValue);
+    const url = def?.swatchImageUrl ?? variant?.image?.url;
+    if (url) {
+      return {
+        backgroundImage: `url(${url})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      };
+    }
+  }
+  if (isCosmo20Product(product.handle)) {
+    const def = COSMO_20_SWATCHES.find((s) => s.shopifyColor === colorValue);
+    const url = def?.swatchImageUrl ?? variant?.image?.url;
+    if (url) {
+      return {
+        backgroundImage: `url(${url})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      };
+    }
+  }
+  return { backgroundColor: colorToHex(colorValue) };
+}
+
+function findVariantByColorValue(product: ShopifyProduct["node"], colorValue: string): VariantNode | undefined {
+  const edge = product.variants.edges.find(({ node }) =>
+    node.selectedOptions.some((o) => /color|colour/i.test(o.name) && o.value === colorValue),
+  );
+  return edge?.node;
 }
 
 function getColorValues(product: ShopifyProduct["node"]): string[] {
