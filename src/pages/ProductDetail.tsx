@@ -13,9 +13,18 @@ import { ProductCard } from "@/components/ProductCard";
 import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronRight, Home } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { Cosmo20ColorSelector, isCosmo20Product } from "@/components/Cosmo20ColorSelector";
 
 const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
+
+function getOrderedImagesForProduct(product: ShopifyProduct["node"]) {
+  const imgs = product.images.edges;
+  if (!isCosmoMini16Product(product.handle, product.title) || imgs.length < 4) return imgs;
+  const next = [...imgs];
+  [next[1], next[3]] = [next[3], next[1]];
+  return next;
+}
 
 const ProductDetail = () => {
   const { handle, collectionHandle, productHandle } = useParams<{
@@ -55,16 +64,29 @@ const ProductDetail = () => {
     setQuantity(1);
   }, [product?.id]);
 
+  useEffect(() => {
+    if (!product || !isCosmo20Product(product.handle)) return;
+    const edges = product.variants.edges;
+    const blackIdx = edges.findIndex(({ node }) =>
+      node.selectedOptions.some((o) => /color|colour/i.test(o.name) && o.value === "Black"),
+    );
+    if (blackIdx < 0) return;
+    setSelectedVariantIdx(blackIdx);
+    const url = edges[blackIdx]?.node?.image?.url;
+    if (url) {
+      const imgs = getOrderedImagesForProduct(product);
+      const imageIdx = imgs.findIndex((img) => img.node.url === url);
+      if (imageIdx >= 0) setSelectedImage(imageIdx);
+    }
+  }, [product?.id, product?.handle]);
+
   const backHref = collectionHandle ? `/collections/${collectionHandle}` : "/collections";
 
   const isCosmoMini16 = product ? isCosmoMini16Product(product.handle, product.title) : false;
   const orderedImages = useMemo(() => {
-    const imgs = product?.images.edges ?? [];
-    if (!isCosmoMini16 || imgs.length < 4) return imgs;
-    const next = [...imgs];
-    [next[1], next[3]] = [next[3], next[1]];
-    return next;
-  }, [product, isCosmoMini16]);
+    if (!product) return [];
+    return getOrderedImagesForProduct(product);
+  }, [product]);
 
   if (loading) {
     return (
@@ -196,8 +218,28 @@ const ProductDetail = () => {
               <p className="text-muted-foreground leading-normal font-medium whitespace-pre-wrap">{product.description}</p>
             )}
 
-            {(product.options ?? []).map((option, optIdx) =>
-              option.values.length > 1 ? (
+            {(product.options ?? []).map((option, optIdx) => {
+              if (option.values.length <= 1) return null;
+              const isColorOption = /color|colour/i.test(option.name);
+              if (isCosmo20Product(product.handle) && isColorOption) {
+                return (
+                  <Cosmo20ColorSelector
+                    key={optIdx}
+                    product={product}
+                    selectedVariantIdx={selectedVariantIdx}
+                    onVariantChange={(variantIndex) => {
+                      setSelectedVariantIdx(variantIndex);
+                      const v = product.variants.edges[variantIndex]?.node;
+                      const variantImageUrl = v?.image?.url;
+                      if (variantImageUrl) {
+                        const imageIdx = orderedImages.findIndex((img) => img.node.url === variantImageUrl);
+                        if (imageIdx >= 0) setSelectedImage(imageIdx);
+                      }
+                    }}
+                  />
+                );
+              }
+              return (
                 <div key={optIdx} className="space-y-2">
                   <label className="text-sm font-medium text-foreground">{option.name}</label>
                   <div className="flex flex-wrap gap-2">
@@ -207,7 +249,7 @@ const ProductDetail = () => {
                         (pv) => pv.node.selectedOptions.find((o) => o.name === option.name)?.value === optValue,
                       );
                       if (prevSame !== vIdx) return null;
-                      const isColorOption = /color|colour/i.test(option.name);
+                      const isColor = /color|colour/i.test(option.name);
                       return (
                         <button
                           key={vIdx}
@@ -223,10 +265,10 @@ const ProductDetail = () => {
                             }
                           }}
                           className={cn(
-                            isColorOption
+                            isColor
                               ? "h-9 w-9 rounded-full border border-foreground/25 bg-center bg-cover bg-no-repeat transition-[box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                               : "px-4 py-2 rounded-md text-sm border transition-colors",
-                            isColorOption
+                            isColor
                               ? vIdx === selectedVariantIdx
                                 ? "ring-2 ring-foreground ring-offset-2 ring-offset-background"
                                 : ""
@@ -236,7 +278,7 @@ const ProductDetail = () => {
                             !v.node.availableForSale ? "opacity-40 line-through" : "",
                           )}
                           style={
-                            isColorOption
+                            isColor
                               ? isCosmoMini16
                                 ? cosmoMiniSwatchStyle(v.node)
                                 : variantImageSwatchStyle(v.node, optValue || "")
@@ -246,7 +288,7 @@ const ProductDetail = () => {
                           aria-label={optValue}
                           title={optValue}
                         >
-                          {isColorOption ? <span className="sr-only">{optValue}</span> : optValue}
+                          {isColor ? <span className="sr-only">{optValue}</span> : optValue}
                         </button>
                       );
                     })}
@@ -260,8 +302,8 @@ const ProductDetail = () => {
                     </p>
                   ) : null}
                 </div>
-              ) : null,
-            )}
+              );
+            })}
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">Quantity</label>

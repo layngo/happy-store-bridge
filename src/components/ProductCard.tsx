@@ -112,8 +112,6 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
     );
   }
 
-  const useContainedImage = isCosmoMiniInteractive && selectedVariant && !isCosmoBlackVariant(selectedVariant);
-
   return (
     <article className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
       <Link
@@ -124,10 +122,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
           <img
             src={displayImage.url}
             alt={displayImage.altText || node.title}
-            className={cn(
-              "h-full w-full object-center transition-transform duration-500 group-hover:scale-105",
-              useContainedImage ? "object-contain p-5" : "object-cover",
-            )}
+            className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
           />
         ) : (
