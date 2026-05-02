@@ -33,7 +33,13 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
     setSelectedCosmoIdx(0);
   }, [node.id]);
 
-  const selectedVariant = isCosmoMiniInteractive ? cosmoMiniVariants[selectedCosmoIdx] : node.variants.edges[0]?.node;
+  const cosmo22DefaultVariant = useMemo(() => selectCosmo22CardVariant(node), [node]);
+
+  const selectedVariant = isCosmoMiniInteractive
+    ? cosmoMiniVariants[selectedCosmoIdx]
+    : isCosmo22Product(node.handle)
+      ? cosmo22DefaultVariant
+      : node.variants.edges[0]?.node;
 
   const defaultImage = node.images.edges[0]?.node;
   const hoverImage = node.images.edges[1]?.node ?? defaultImage;
@@ -58,9 +64,10 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
     return defaultImage;
   }, [isCosmoMiniInteractive, selectedVariant, selectedCosmoIdx, node.images.edges, node.title, defaultImage]);
 
-  const priceAmount = isCosmoMiniInteractive && selectedVariant
-    ? selectedVariant.price.amount
-    : node.priceRange.minVariantPrice.amount;
+  const priceAmount =
+    (isCosmoMiniInteractive || isCosmo22Product(node.handle)) && selectedVariant
+      ? selectedVariant.price.amount
+      : node.priceRange.minVariantPrice.amount;
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -77,7 +84,12 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
     toast.success("Added to cart", { description: node.title, position: "top-center" });
   };
 
-  const colorValues = getColorValues(node);
+  const colorValues = useMemo(() => {
+    const all = getColorValues(node);
+    if (!isCosmo22Product(node.handle)) return all;
+    const allow = new Set(COSMO_22_SWATCHES.map((s) => s.shopifyColor));
+    return all.filter((c) => allow.has(c));
+  }, [node]);
   const visibleColors = colorValues.slice(0, 4);
   const remainingColors = Math.max(0, colorValues.length - visibleColors.length);
 
@@ -215,6 +227,21 @@ function isCosmoMini16Product(handle: string, title: string): boolean {
   const mentionsMini = h.includes("cosmo-mini") || (t.includes("cosmo") && t.includes("mini"));
   const mentions16 = h.includes("16") || t.includes("16");
   return mentionsMini && mentions16;
+}
+
+/** First matching SKU among the three curated 22″ colors (prefer Black). */
+function selectCosmo22CardVariant(product: ShopifyProduct["node"]): VariantNode | undefined {
+  const matchColor = (color: string) =>
+    product.variants.edges.find(({ node: v }) =>
+      v.selectedOptions.some((o) => /color|colour/i.test(o.name) && o.value === color),
+    )?.node;
+  const black = matchColor("Black");
+  if (black) return black;
+  for (const sw of COSMO_22_SWATCHES) {
+    const v = matchColor(sw.shopifyColor);
+    if (v) return v;
+  }
+  return product.variants.edges[0]?.node;
 }
 
 function getVariantColorValue(v: VariantNode): string | undefined {
