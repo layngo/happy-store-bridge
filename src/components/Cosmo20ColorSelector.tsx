@@ -235,18 +235,12 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     swatchImageUrl: "/swatches/cosmo-20-pink-camo.jpg",
   },
   {
-    shopifyColor: "Floral Large",
-    selectedLabel: "Floral Large",
-    tooltip: "Floral Large",
-    bagImageUrl: "https://m.media-amazon.com/images/I/81LStDwYeIL._AC_SX679_.jpg",
+    shopifyColor: "Floral Fun",
+    selectedLabel: "Floral Fun",
+    tooltip: "Floral Fun",
+    bagImageUrl:
+      "https://www.layngo.com/cdn/shop/files/COS20FLBG7679-OPENANDCLOSED-SquareOverlayVersion_1_2000x.jpg?v=1730750646",
     swatchImageUrl: "https://m.media-amazon.com/images/I/51PEb9KgQ-L._SS64_.jpg",
-    galleryImageUrls: [
-      "https://m.media-amazon.com/images/I/81LStDwYeIL._AC_SX679_.jpg",
-      "https://m.media-amazon.com/images/I/81GgU-C3NvL._AC_SY879_.jpg",
-      "https://m.media-amazon.com/images/I/81IvmUk-wvL._AC_SL1500_.jpg",
-      "https://m.media-amazon.com/images/I/71aw1Wlxg4L._AC_SL1500_.jpg",
-      "https://m.media-amazon.com/images/I/81yy7nyaCfL._AC_SL1500_.jpg",
-    ],
   },
   {
     shopifyColor: "Lips (Black Inside)",
@@ -279,7 +273,8 @@ export const COSMO_20_SHOPIFY_ALIASES: Record<string, string> = {
   Chevron: "Pink Chevron",
   Elephant: "Elephants",
   Lavender: "Quilted Lavender",
-  "Floral Fun": "Floral Large",
+  /** Legacy option label if present on older storefronts */
+  "Floral Large": "Floral Fun",
   "Dot and Stripe": "Dot (Navy/Green Stripe)",
   "Black Sherpa": "Comfort (Black)",
 };

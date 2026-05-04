@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   fetchProductByHandle,
@@ -25,6 +25,7 @@ import {
   getCosmo22InitialSelection,
   isCosmo22Product,
 } from "@/components/Cosmo22ColorSelector";
+import { CosmoPdpBenefits } from "@/components/CosmoPdpBenefits";
 
 const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
@@ -120,6 +121,18 @@ const ProductDetail = () => {
     return getCosmo22HeroImageUrls(color, v);
   }, [product, selectedVariantIdx]);
 
+  const isCosmoPdp = Boolean(
+    product &&
+      (isCosmo20Product(product.handle) ||
+        isCosmo22Product(product.handle) ||
+        isCosmoMini16Product(product.handle, product.title)),
+  );
+
+  const cosmoYoutubeId = useMemo(
+    () => (product ? extractFirstYoutubeVideoId(product.description || "") : null),
+    [product?.description],
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
@@ -148,8 +161,10 @@ const ProductDetail = () => {
   }
 
   const selectedVariant = product.variants.edges[selectedVariantIdx]?.node;
-  const images = product.images.edges;
   const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
+  const priceDisplay = parseFloat(
+    selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount,
+  ).toFixed(2);
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
@@ -164,6 +179,213 @@ const ProductDetail = () => {
     });
     toast.success("Added to cart", { description: `${product.title} × ${quantity}`, position: "top-center" });
   };
+
+  const mainHeroImage: ReactNode = isCosmoMini16 && selectedVariant && !isCosmoBlackVariant(selectedVariant) ? (
+    <img
+      src={COSMO_MINI_CROSSMARKS_HERO}
+      alt={`${product.title} (Crossmarks)`}
+      className="h-full w-full object-contain p-6"
+    />
+  ) : isCosmo22Product(product.handle) && cosmo22HeroUrls.length > 0 ? (
+    <img
+      src={cosmo22HeroUrls[Math.min(cosmo22GalleryIndex, cosmo22HeroUrls.length - 1)]}
+      alt={product.title}
+      className="h-full w-full object-cover"
+    />
+  ) : isCosmo20Product(product.handle) && cosmo20HeroUrls.length > 0 ? (
+    <img
+      src={cosmo20HeroUrls[Math.min(cosmo20GalleryIndex, cosmo20HeroUrls.length - 1)]}
+      alt={product.title}
+      className="h-full w-full object-cover"
+    />
+  ) : orderedImages[selectedImage]?.node ? (
+    <img
+      src={orderedImages[selectedImage].node.url}
+      alt={orderedImages[selectedImage].node.altText || product.title}
+      className="h-full w-full object-cover"
+    />
+  ) : (
+    <div className="flex h-full w-full items-center justify-center text-muted-foreground">No image</div>
+  );
+
+  const heroThumbnails: ReactNode = (
+    <>
+      {isCosmo22Product(product.handle) && cosmo22HeroUrls.length > 1 ? (
+        <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Variant photo gallery">
+          {cosmo22HeroUrls.map((url, i) => (
+            <button
+              key={`${url}-${i}`}
+              type="button"
+              onClick={() => setCosmo22GalleryIndex(i)}
+              className={cn(
+                "h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border-2 transition-colors",
+                i === cosmo22GalleryIndex ? "border-primary" : "border-border",
+              )}
+            >
+              <img src={url} alt="" className="h-full w-full object-cover" />
+            </button>
+          ))}
+        </div>
+      ) : null}
+      {isCosmo20Product(product.handle) && cosmo20HeroUrls.length > 1 ? (
+        <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Variant photo gallery">
+          {cosmo20HeroUrls.map((url, i) => (
+            <button
+              key={`${url}-${i}`}
+              type="button"
+              onClick={() => setCosmo20GalleryIndex(i)}
+              className={cn(
+                "h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border-2 transition-colors",
+                i === cosmo20GalleryIndex ? "border-primary" : "border-border",
+              )}
+            >
+              <img src={url} alt="" className="h-full w-full object-cover" />
+            </button>
+          ))}
+        </div>
+      ) : null}
+      {!isCosmo22Product(product.handle) && !isCosmo20Product(product.handle) && orderedImages.length > 1 ? (
+        <div className="flex gap-2 overflow-x-auto">
+          {orderedImages.map((img, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setSelectedImage(i)}
+              className={`h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border-2 transition-colors ${i === selectedImage ? "border-primary" : "border-border"}`}
+            >
+              <img src={img.node.url} alt={img.node.altText || ""} className="h-full w-full object-cover" />
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </>
+  );
+
+  const optionPickersAndPurchase: ReactNode = (
+    <>
+      {(product.options ?? []).map((option, optIdx) => {
+        if (option.values.length <= 1) return null;
+        const isColorOption = /color|colour/i.test(option.name);
+        if (isCosmo22Product(product.handle) && isColorOption) {
+          return (
+            <Cosmo22ColorSelector
+              key={optIdx}
+              product={product}
+              selectedVariantIdx={selectedVariantIdx}
+              onVariantChange={(variantIndex) => {
+                setSelectedVariantIdx(variantIndex);
+              }}
+            />
+          );
+        }
+        if (isCosmo20Product(product.handle) && isColorOption) {
+          return (
+            <Cosmo20ColorSelector
+              key={optIdx}
+              product={product}
+              selectedVariantIdx={selectedVariantIdx}
+              onVariantChange={(variantIndex) => {
+                setSelectedVariantIdx(variantIndex);
+              }}
+            />
+          );
+        }
+        return (
+          <div key={optIdx} className="space-y-2">
+            <label className="text-sm font-medium text-foreground">{option.name}</label>
+            <div className="flex flex-wrap gap-2">
+              {product.variants.edges.map((v, vIdx) => {
+                const optValue = v.node.selectedOptions.find((o) => o.name === option.name)?.value;
+                const prevSame = product.variants.edges.findIndex(
+                  (pv) => pv.node.selectedOptions.find((o) => o.name === option.name)?.value === optValue,
+                );
+                if (prevSame !== vIdx) return null;
+                const isColor = /color|colour/i.test(option.name);
+                return (
+                  <button
+                    key={vIdx}
+                    type="button"
+                    onClick={() => {
+                      setSelectedVariantIdx(vIdx);
+                      const variantImageUrl = v.node.image?.url;
+                      if (variantImageUrl) {
+                        const imageIdx = orderedImages.findIndex((img) => img.node.url === variantImageUrl);
+                        if (imageIdx >= 0) setSelectedImage(imageIdx);
+                      } else if (isCosmoMini16 && !isCosmoBlackVariant(v.node)) {
+                        setSelectedImage(1);
+                      }
+                    }}
+                    className={cn(
+                      isColor
+                        ? "h-9 w-9 rounded-full border border-foreground/25 bg-cover bg-center bg-no-repeat transition-[box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        : "rounded-md border px-4 py-2 text-sm transition-colors",
+                      isColor
+                        ? vIdx === selectedVariantIdx
+                          ? "ring-2 ring-foreground ring-offset-2 ring-offset-background"
+                          : ""
+                        : vIdx === selectedVariantIdx
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border text-muted-foreground hover:border-foreground",
+                      !v.node.availableForSale ? "line-through opacity-40" : "",
+                    )}
+                    style={
+                      isColor
+                        ? isCosmoMini16
+                          ? cosmoMiniSwatchStyle(v.node)
+                          : variantImageSwatchStyle(v.node, optValue || "")
+                        : undefined
+                    }
+                    disabled={!v.node.availableForSale}
+                    aria-label={optValue}
+                    title={optValue}
+                  >
+                    {isColor ? <span className="sr-only">{optValue}</span> : optValue}
+                  </button>
+                );
+              })}
+            </div>
+            {isColorOptionName(option.name) ? (
+              <p className="text-xs text-muted-foreground">
+                Selected:{" "}
+                <span className="font-medium text-foreground">
+                  {selectedVariant?.selectedOptions.find((o) => o.name === option.name)?.value ?? option.values[0]}
+                </span>
+              </p>
+            ) : null}
+          </div>
+        );
+      })}
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-foreground">Quantity</label>
+        <div className="flex items-center gap-3">
+          <Button variant="outline" size="icon" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+            <Minus className="h-4 w-4" />
+          </Button>
+          <span className="w-12 text-center text-lg font-medium text-foreground">{quantity}</span>
+          <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      <Button
+        size="lg"
+        onClick={handleAddToCart}
+        disabled={isLoading || !selectedVariant?.availableForSale}
+        className="w-full bg-primary text-base text-primary-foreground hover:bg-primary/90"
+      >
+        {isLoading ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : (
+          <>
+            <ShoppingCart className="mr-2 h-5 w-5" />
+            Add to Cart
+          </>
+        )}
+      </Button>
+    </>
+  );
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -198,230 +420,90 @@ const ProductDetail = () => {
           <span className="text-sm">{collectionHandle ? "Back to collection" : "Back to collections"}</span>
         </Link>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="space-y-4">
-            <div className="aspect-square rounded-lg overflow-hidden bg-card border border-border">
-              {isCosmoMini16 && selectedVariant && !isCosmoBlackVariant(selectedVariant) ? (
-                <img
-                  src={COSMO_MINI_CROSSMARKS_HERO}
-                  alt={`${product.title} (Crossmarks)`}
-                  className="w-full h-full object-contain p-6"
-                />
-              ) : isCosmo22Product(product.handle) && cosmo22HeroUrls.length > 0 ? (
-                <img
-                  src={cosmo22HeroUrls[Math.min(cosmo22GalleryIndex, cosmo22HeroUrls.length - 1)]}
-                  alt={product.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : isCosmo20Product(product.handle) && cosmo20HeroUrls.length > 0 ? (
-                <img
-                  src={cosmo20HeroUrls[Math.min(cosmo20GalleryIndex, cosmo20HeroUrls.length - 1)]}
-                  alt={product.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : orderedImages[selectedImage]?.node ? (
-                <img
-                  src={orderedImages[selectedImage].node.url}
-                  alt={orderedImages[selectedImage].node.altText || product.title}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-muted-foreground">No image</div>
-              )}
-            </div>
-            {isCosmo22Product(product.handle) && cosmo22HeroUrls.length > 1 ? (
-              <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Variant photo gallery">
-                {cosmo22HeroUrls.map((url, i) => (
-                  <button
-                    key={`${url}-${i}`}
-                    type="button"
-                    onClick={() => setCosmo22GalleryIndex(i)}
-                    className={cn(
-                      "w-16 h-16 rounded-md overflow-hidden border-2 flex-shrink-0 transition-colors",
-                      i === cosmo22GalleryIndex ? "border-primary" : "border-border",
-                    )}
-                  >
-                    <img src={url} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            ) : null}
-            {isCosmo20Product(product.handle) && cosmo20HeroUrls.length > 1 ? (
-              <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Variant photo gallery">
-                {cosmo20HeroUrls.map((url, i) => (
-                  <button
-                    key={`${url}-${i}`}
-                    type="button"
-                    onClick={() => setCosmo20GalleryIndex(i)}
-                    className={cn(
-                      "w-16 h-16 rounded-md overflow-hidden border-2 flex-shrink-0 transition-colors",
-                      i === cosmo20GalleryIndex ? "border-primary" : "border-border",
-                    )}
-                  >
-                    <img src={url} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            ) : null}
-            {!isCosmo22Product(product.handle) && !isCosmo20Product(product.handle) && orderedImages.length > 1 ? (
-              <div className="flex gap-2 overflow-x-auto">
-                {orderedImages.map((img, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setSelectedImage(i)}
-                    className={`w-16 h-16 rounded-md overflow-hidden border-2 flex-shrink-0 transition-colors ${i === selectedImage ? "border-primary" : "border-border"}`}
-                  >
-                    <img src={img.node.url} alt={img.node.altText || ""} className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            ) : null}
-          </div>
-
-          <div className="space-y-6">
-            <div>
-              <h1 className="font-heading text-3xl font-bold text-foreground">{product.title}</h1>
-              <p className="text-2xl font-bold text-primary mt-2">
-                ${parseFloat(selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount).toFixed(2)}
-              </p>
-            </div>
-
-            {descHtml ? (
-              <div
-                className="text-muted-foreground leading-normal font-medium space-y-3 [&_a]:text-primary [&_ul]:list-disc [&_ul]:pl-5 [&_p]:mb-2"
-                dangerouslySetInnerHTML={{ __html: product.description }}
-              />
-            ) : (
-              <p className="text-muted-foreground leading-normal font-medium whitespace-pre-wrap">{product.description}</p>
-            )}
-
-            {(product.options ?? []).map((option, optIdx) => {
-              if (option.values.length <= 1) return null;
-              const isColorOption = /color|colour/i.test(option.name);
-              if (isCosmo22Product(product.handle) && isColorOption) {
-                return (
-                  <Cosmo22ColorSelector
-                    key={optIdx}
-                    product={product}
-                    selectedVariantIdx={selectedVariantIdx}
-                    onVariantChange={(variantIndex) => {
-                      setSelectedVariantIdx(variantIndex);
-                    }}
-                  />
-                );
-              }
-              if (isCosmo20Product(product.handle) && isColorOption) {
-                return (
-                  <Cosmo20ColorSelector
-                    key={optIdx}
-                    product={product}
-                    selectedVariantIdx={selectedVariantIdx}
-                    onVariantChange={(variantIndex) => {
-                      setSelectedVariantIdx(variantIndex);
-                    }}
-                  />
-                );
-              }
-              return (
-                <div key={optIdx} className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">{option.name}</label>
-                  <div className="flex flex-wrap gap-2">
-                    {product.variants.edges.map((v, vIdx) => {
-                      const optValue = v.node.selectedOptions.find((o) => o.name === option.name)?.value;
-                      const prevSame = product.variants.edges.findIndex(
-                        (pv) => pv.node.selectedOptions.find((o) => o.name === option.name)?.value === optValue,
-                      );
-                      if (prevSame !== vIdx) return null;
-                      const isColor = /color|colour/i.test(option.name);
-                      return (
-                        <button
-                          key={vIdx}
-                          type="button"
-                          onClick={() => {
-                            setSelectedVariantIdx(vIdx);
-                            const variantImageUrl = v.node.image?.url;
-                            if (variantImageUrl) {
-                              const imageIdx = orderedImages.findIndex((img) => img.node.url === variantImageUrl);
-                              if (imageIdx >= 0) setSelectedImage(imageIdx);
-                            } else if (isCosmoMini16 && !isCosmoBlackVariant(v.node)) {
-                              setSelectedImage(1);
-                            }
-                          }}
-                          className={cn(
-                            isColor
-                              ? "h-9 w-9 rounded-full border border-foreground/25 bg-center bg-cover bg-no-repeat transition-[box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                              : "px-4 py-2 rounded-md text-sm border transition-colors",
-                            isColor
-                              ? vIdx === selectedVariantIdx
-                                ? "ring-2 ring-foreground ring-offset-2 ring-offset-background"
-                                : ""
-                              : vIdx === selectedVariantIdx
-                                ? "border-primary bg-primary/10 text-primary"
-                                : "border-border text-muted-foreground hover:border-foreground",
-                            !v.node.availableForSale ? "opacity-40 line-through" : "",
-                          )}
-                          style={
-                            isColor
-                              ? isCosmoMini16
-                                ? cosmoMiniSwatchStyle(v.node)
-                                : variantImageSwatchStyle(v.node, optValue || "")
-                              : undefined
-                          }
-                          disabled={!v.node.availableForSale}
-                          aria-label={optValue}
-                          title={optValue}
-                        >
-                          {isColor ? <span className="sr-only">{optValue}</span> : optValue}
-                        </button>
-                      );
-                    })}
+        {isCosmoPdp ? (
+          <>
+            <section className="-mx-4 rounded-3xl bg-gradient-to-b from-muted/45 via-background to-background px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
+              <div className="grid gap-8 lg:grid-cols-12 lg:items-start lg:gap-10">
+                <div className="space-y-4 lg:col-span-7 xl:col-span-8">
+                  <div className="relative aspect-[4/5] max-h-[min(88vh,920px)] overflow-hidden rounded-2xl border border-border bg-card shadow-xl sm:aspect-square">
+                    {mainHeroImage}
+                    <div
+                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent"
+                      aria-hidden
+                    />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 p-5 sm:p-8">
+                      <h1 className="font-heading text-2xl font-bold tracking-tight text-white drop-shadow-md sm:text-4xl sm:leading-tight">
+                        {product.title}
+                      </h1>
+                      <p className="mt-2 text-xl font-semibold tabular-nums text-white/95 drop-shadow sm:text-2xl">
+                        ${priceDisplay}
+                      </p>
+                    </div>
                   </div>
-                  {isColorOptionName(option.name) ? (
-                    <p className="text-xs text-muted-foreground">
-                      Selected:{" "}
-                      <span className="font-medium text-foreground">
-                        {selectedVariant?.selectedOptions.find((o) => o.name === option.name)?.value ?? option.values[0]}
-                      </span>
-                    </p>
-                  ) : null}
+                  {heroThumbnails}
                 </div>
-              );
-            })}
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Quantity</label>
-              <div className="flex items-center gap-3">
-                <Button variant="outline" size="icon" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-                  <Minus className="w-4 h-4" />
-                </Button>
-                <span className="w-12 text-center text-lg font-medium text-foreground">{quantity}</span>
-                <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
-                  <Plus className="w-4 h-4" />
-                </Button>
+                <div className="flex flex-col gap-6 rounded-2xl border border-border/80 bg-card/50 p-5 shadow-sm backdrop-blur-sm sm:p-6 lg:col-span-5 xl:col-span-4">
+                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">Choose options</p>
+                  {optionPickersAndPurchase}
+                </div>
               </div>
+            </section>
+
+            <section className="mt-14 sm:mt-16">
+              <CosmoPdpBenefits />
+            </section>
+
+            {cosmoYoutubeId ? (
+              <section className="mt-14 sm:mt-16">
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Watch</h2>
+                <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+                  See how it opens flat, packs fast, and keeps everything visible.
+                </p>
+                <div className="relative mt-6 aspect-video overflow-hidden rounded-2xl border border-border bg-muted shadow-lg">
+                  <iframe
+                    title="Cosmo product video"
+                    src={`https://www.youtube.com/embed/${cosmoYoutubeId}?rel=0`}
+                    className="absolute inset-0 h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+              </section>
+            ) : null}
+          </>
+        ) : (
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
+            <div className="space-y-4">
+              <div className="aspect-square overflow-hidden rounded-lg border border-border bg-card">
+                {mainHeroImage}
+              </div>
+              {heroThumbnails}
             </div>
 
-            <Button
-              size="lg"
-              onClick={handleAddToCart}
-              disabled={isLoading || !selectedVariant?.availableForSale}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-base"
-            >
-              {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  <ShoppingCart className="w-5 h-5 mr-2" />
-                  Add to Cart
-                </>
-              )}
-            </Button>
+            <div className="space-y-6">
+              <div>
+                <h1 className="font-heading text-3xl font-bold text-foreground">{product.title}</h1>
+                <p className="mt-2 text-2xl font-bold text-primary">${priceDisplay}</p>
+              </div>
+
+              {descHtml ? (
+                <div
+                  className="space-y-3 text-sm font-medium leading-relaxed text-muted-foreground [&_a]:text-primary [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5"
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                />
+              ) : product.description ? (
+                <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-muted-foreground">
+                  {product.description}
+                </p>
+              ) : null}
+
+              {optionPickersAndPurchase}
+            </div>
           </div>
-        </div>
+        )}
 
         {related.length > 0 ? (
-          <section className="mt-20 border-t border-border pt-12">
+          <section className={cn("border-t border-border pt-12", isCosmoPdp ? "mt-20 sm:mt-24" : "mt-20")}>
             <h2 className="font-heading text-2xl font-bold text-foreground mb-8">Related products</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {related.map((p) => (
@@ -510,4 +592,16 @@ function variantImageSwatchStyle(
     };
   }
   return { backgroundColor: colorToHex(fallbackColor) };
+}
+
+/** Pull first YouTube id from Shopify product HTML (e.g. embedded iframe in description). */
+function extractFirstYoutubeVideoId(html: string): string | null {
+  if (!html) return null;
+  const embed = html.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{6,})/i);
+  if (embed?.[1]) return embed[1];
+  const shorts = html.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{6,})/i);
+  if (shorts?.[1]) return shorts[1];
+  const vParam = html.match(/[?&]v=([a-zA-Z0-9_-]{6,})/);
+  if (vParam?.[1]) return vParam[1];
+  return null;
 }
