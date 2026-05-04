@@ -25,7 +25,7 @@ import {
   getCosmo22InitialSelection,
   isCosmo22Product,
 } from "@/components/Cosmo22ColorSelector";
-import { CosmoPdpBenefits } from "@/components/CosmoPdpBenefits";
+import { CosmoPdpStory } from "@/components/CosmoPdpStory";
 
 const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
@@ -469,27 +469,30 @@ const ProductDetail = () => {
               </div>
             </section>
 
-            <section className="mt-14 sm:mt-16">
-              <CosmoPdpBenefits />
-            </section>
+            <CosmoPdpStory />
 
-            {cosmoYoutubeId ? (
-              <section className="mt-14 sm:mt-16">
-                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Watch</h2>
-                <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-                  See how it opens flat, packs fast, and keeps everything visible.
-                </p>
-                <div className="relative mt-6 aspect-video overflow-hidden rounded-2xl border border-border bg-muted shadow-lg">
+            <section className="mt-14 sm:mt-16" aria-label={cosmoYoutubeId ? "Product video" : "Video placeholder"}>
+              <div className="relative aspect-video overflow-hidden rounded-2xl border border-border bg-muted/40 shadow-inner">
+                {cosmoYoutubeId ? (
                   <iframe
                     title="Cosmo product video"
                     src={`https://www.youtube.com/embed/${cosmoYoutubeId}?rel=0`}
-                    className="absolute inset-0 h-full w-full"
+                    className="absolute inset-0 h-full w-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                   />
-                </div>
-              </section>
-            ) : null}
+                ) : (
+                  <div className="flex h-full min-h-[220px] flex-col items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/35 bg-muted/30 px-6 py-12 text-center">
+                    <span className="font-heading text-xl font-semibold tracking-tight text-muted-foreground">
+                      Video placeholder
+                    </span>
+                    <span className="max-w-sm text-sm text-muted-foreground">
+                      Drop in an embed when you&apos;re ready—the layout is sized for 16×9.
+                    </span>
+                  </div>
+                )}
+              </div>
+            </section>
           </>
         ) : (
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
