@@ -1,104 +1,147 @@
+import { useId } from "react";
+
 /**
- * Editorial storytelling strip below the Cosmo PDP hero (image 1–3 + headlines).
- * Assets: `public/cosmo-pdp/story/image*.png`
+ * Editorial strip below Cosmo PDP hero — flush edges, white field matching photo backs,
+ * dotted arrows drawn over images toward bag details.
  */
 
-function DottedArrowDown({ variant }: { variant: "left" | "right" }) {
-  const id = variant === "left" ? "cosmo-arr-l" : "cosmo-arr-r";
+function ArrowOverlay({
+  variant,
+  markerId,
+}: {
+  variant: "everything" | "packup";
+  markerId: string;
+}) {
   const d =
-    variant === "left"
-      ? "M 18 6 Q 42 52 50 94"
-      : "M 82 6 Q 58 52 50 94";
+    variant === "everything"
+      ? "M 11 22 Q 38 54 52 84"
+      : "M 89 21 Q 62 26 51 34";
 
   return (
     <svg
+      className="pointer-events-none absolute inset-0 z-[5] h-full w-full text-foreground"
       viewBox="0 0 100 100"
-      className="pointer-events-none -my-1 h-[4.5rem] w-full max-w-[220px] text-foreground md:h-[6rem] md:max-w-none"
-      preserveAspectRatio="xMidYMid meet"
+      preserveAspectRatio="none"
       aria-hidden
     >
       <defs>
-        <marker id={id} markerUnits="strokeWidth" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-          <path d="M 0 0 L 6 3 L 0 6 Z" fill="currentColor" />
+        <marker
+          id={markerId}
+          markerUnits="strokeWidth"
+          markerWidth="5"
+          markerHeight="5"
+          refX="4"
+          refY="2.5"
+          orient="auto"
+        >
+          <path d="M 0 0 L 5 2.5 L 0 5 Z" fill="currentColor" />
         </marker>
       </defs>
       <path
         d={d}
         fill="none"
         stroke="currentColor"
-        strokeWidth={2}
-        strokeDasharray="6 10"
+        strokeWidth={0.9}
+        strokeDasharray="3 5"
         strokeLinecap="round"
-        markerEnd={`url(#${id})`}
+        vectorEffect="non-scaling-stroke"
+        markerEnd={`url(#${markerId})`}
       />
     </svg>
   );
 }
 
 export function CosmoPdpStory() {
+  const rawId = useId().replace(/:/g, "");
+  const markerEverything = `cosmo-arr-ev-${rawId}`;
+  const markerPackup = `cosmo-arr-pu-${rawId}`;
+
   return (
-    <section className="mt-14 space-y-14 sm:mt-16 sm:space-y-16 lg:space-y-20" aria-labelledby="cosmo-story-intro">
-      {/* Block 1 — image 1 + headline */}
-      <div className="grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-12">
-        <div className="w-full max-w-[240px] justify-self-center overflow-hidden rounded-2xl border border-border bg-muted/20 shadow-lg sm:max-w-[300px] lg:max-w-[340px] lg:justify-self-start">
+    <section
+      className="relative left-1/2 -ml-[50vw] w-screen bg-white text-foreground"
+      aria-labelledby="cosmo-story-intro"
+    >
+      {/* Block 1 — image 1 flush left edge of viewport; headline + bullet subtext beside */}
+      <div className="flex flex-row flex-nowrap items-start gap-3 py-10 sm:gap-5 sm:py-12 md:gap-8 lg:py-14">
+        <div className="w-[clamp(112px,26vw,260px)] shrink-0">
           <img
             src="/cosmo-pdp/story/image1.png"
             alt=""
-            className="h-auto w-full object-cover"
+            className="block h-auto w-full max-w-none"
             loading="lazy"
           />
         </div>
-        <p
-          id="cosmo-story-intro"
-          className="font-heading text-balance text-2xl font-bold uppercase leading-[1.15] tracking-wide text-foreground sm:text-3xl md:text-4xl lg:py-4 lg:text-[2.35rem] lg:leading-[1.12]"
-        >
-          Forget everything you knew about a makeup bag.
-        </p>
+        <div className="min-w-0 flex-1 pr-4 sm:pr-8">
+          <p
+            id="cosmo-story-intro"
+            className="font-heading text-[clamp(1.35rem,5.8vw,4rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground lg:text-[clamp(1.75rem,5vw,4.75rem)] lg:leading-[0.9]"
+          >
+            Forget everything you knew about a makeup bag.
+          </p>
+          <ul className="mt-4 max-w-2xl list-disc space-y-2 pl-4 text-xs leading-snug text-neutral-600 marker:text-neutral-400 sm:mt-5 sm:pl-5 sm:text-sm md:text-[0.9375rem] md:leading-relaxed">
+            <li>
+              <span className="font-medium text-neutral-700">Fast, mess-free cleanup:</span> Lay it flat for full
+              visibility, then cinch it closed in seconds so there is no more digging or clutter
+            </li>
+            <li>
+              <span className="font-medium text-neutral-700">Smart travel organization:</span> Built-in pockets,
+              brush loops, and raised edges keep everything secure and in place on the go
+            </li>
+            <li>
+              <span className="font-medium text-neutral-700">Durable, water-resistant and machine washable:</span>{" "}
+              Made to handle daily use and easy to clean, just toss it in the wash
+            </li>
+            <li>
+              <span className="font-medium text-neutral-700">Perfect gift option:</span> Stylish, practical, and a
+              thoughtful choice for any occasion
+            </li>
+            <li>
+              <span className="font-medium text-neutral-700">Designed for everyday use:</span> Holds full-size makeup,
+              brushes, skincare, and toiletries with ease
+            </li>
+          </ul>
+        </div>
       </div>
 
-      {/* Blocks 2 & 3 — side by side */}
-      <div className="grid gap-12 md:grid-cols-2 md:gap-10 lg:gap-14">
-        <article className="flex flex-col">
-          <div className="space-y-2 px-0.5">
-            <h2 className="font-heading text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+      {/* Blocks 2 & 3 — full width, images flush outer edges (column gutters none at lg) */}
+      <div className="grid gap-0 md:grid-cols-2">
+        <article className="relative bg-white">
+          <div className="pointer-events-none absolute left-3 top-4 z-10 max-w-[min(92%,320px)] sm:left-6 sm:top-6 md:max-w-[48%]">
+            <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground sm:text-xl md:text-2xl">
               Everything in view.
             </h2>
-            <p className="max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
+            <p className="mt-1 text-xs leading-snug text-neutral-700 sm:text-sm md:text-base">
               Light and flat—see every brush, balm, and bauble at once.
             </p>
           </div>
-          <div className="flex justify-center md:justify-start lg:pl-[min(12vw,4rem)]">
-            <DottedArrowDown variant="left" />
-          </div>
-          <div className="mt-1 overflow-hidden rounded-2xl border border-border bg-muted/15 shadow-md">
+          <div className="relative w-full">
             <img
               src="/cosmo-pdp/story/image2.png"
               alt=""
-              className="h-auto w-full object-cover"
+              className="block h-auto w-full max-w-none object-contain object-bottom"
               loading="lazy"
             />
+            <ArrowOverlay variant="everything" markerId={markerEverything} />
           </div>
         </article>
 
-        <article className="flex flex-col">
-          <div className="space-y-2 px-0.5 md:text-right">
-            <h2 className="font-heading text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+        <article className="relative bg-white">
+          <div className="pointer-events-none absolute right-3 top-4 z-10 max-w-[min(92%,320px)] text-right sm:right-6 sm:top-6 md:max-w-[48%]">
+            <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground sm:text-xl md:text-2xl">
               Pack up in seconds.
             </h2>
-            <p className="max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base md:ml-auto md:text-right">
+            <p className="mt-1 text-xs leading-snug text-neutral-700 sm:text-sm md:text-base">
               Cinch the cord and you&apos;re out the door. No digging, no dumping.
             </p>
           </div>
-          <div className="flex justify-center md:justify-end lg:pr-[min(12vw,4rem)]">
-            <DottedArrowDown variant="right" />
-          </div>
-          <div className="mt-1 overflow-hidden rounded-2xl border border-border bg-muted/15 shadow-md">
+          <div className="relative w-full">
             <img
               src="/cosmo-pdp/story/image3.png"
               alt=""
-              className="h-auto w-full object-cover"
+              className="block h-auto w-full max-w-none object-contain object-bottom"
               loading="lazy"
             />
+            <ArrowOverlay variant="packup" markerId={markerPackup} />
           </div>
         </article>
       </div>

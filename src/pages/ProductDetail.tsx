@@ -190,13 +190,13 @@ const ProductDetail = () => {
     <img
       src={cosmo22HeroUrls[Math.min(cosmo22GalleryIndex, cosmo22HeroUrls.length - 1)]}
       alt={product.title}
-      className="h-full w-full object-cover"
+      className="h-full w-full max-h-full object-contain"
     />
   ) : isCosmo20Product(product.handle) && cosmo20HeroUrls.length > 0 ? (
     <img
       src={cosmo20HeroUrls[Math.min(cosmo20GalleryIndex, cosmo20HeroUrls.length - 1)]}
       alt={product.title}
-      className="h-full w-full object-cover"
+      className="h-full w-full max-h-full object-contain"
     />
   ) : orderedImages[selectedImage]?.node ? (
     <img
@@ -218,11 +218,11 @@ const ProductDetail = () => {
               type="button"
               onClick={() => setCosmo22GalleryIndex(i)}
               className={cn(
-                "h-16 w-16 shrink-0 overflow-hidden rounded-md transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                i === cosmo22GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-0",
+                "flex h-16 w-16 shrink-0 items-center justify-center bg-muted/15 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                i === cosmo22GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
               )}
             >
-              <img src={url} alt="" className="h-full w-full object-cover" />
+              <img src={url} alt="" className="max-h-full max-w-full object-contain" />
             </button>
           ))}
         </div>
@@ -235,11 +235,11 @@ const ProductDetail = () => {
               type="button"
               onClick={() => setCosmo20GalleryIndex(i)}
               className={cn(
-                "h-16 w-16 shrink-0 overflow-hidden rounded-md transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                i === cosmo20GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-0",
+                "flex h-16 w-16 shrink-0 items-center justify-center bg-muted/15 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                i === cosmo20GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
               )}
             >
-              <img src={url} alt="" className="h-full w-full object-cover" />
+              <img src={url} alt="" className="max-h-full max-w-full object-contain" />
             </button>
           ))}
         </div>
@@ -400,7 +400,7 @@ const ProductDetail = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className={cn("min-h-screen flex flex-col", isCosmoPdp ? "bg-white" : "bg-background")}>
       <Header />
       <div className="container py-8 flex-1">
         <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6">
@@ -440,16 +440,16 @@ const ProductDetail = () => {
               </h1>
             </header>
 
-            <section className="-mx-4 rounded-3xl bg-gradient-to-b from-muted/40 via-background to-background px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
+            <section className="-mx-4 bg-white px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
               <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
                 <div className="space-y-4">
-                  <div className="aspect-square overflow-hidden rounded-2xl bg-transparent shadow-none">
+                  <div className="relative flex aspect-square w-full items-center justify-center bg-white lg:mx-auto lg:max-h-[min(92vh,920px)]">
                     {mainHeroImage}
                   </div>
                   {heroThumbnails}
                 </div>
 
-                <div className="flex flex-col gap-6 rounded-2xl border border-border/80 bg-card/60 p-5 shadow-sm sm:p-6">
+                <div className="flex flex-col gap-6 px-0 py-0">
                   <div>
                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Choose colors</p>
                     <div className="mt-3">{optionPickersOnly}</div>
@@ -457,7 +457,7 @@ const ProductDetail = () => {
 
                   {quantityPicker}
 
-                  <div className="border-t border-border/60 pt-2">
+                  <div className="pt-2">
                     <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Price</p>
                     <p className="mt-1 font-heading text-3xl font-bold tabular-nums text-primary sm:text-4xl">
                       ${priceDisplay}

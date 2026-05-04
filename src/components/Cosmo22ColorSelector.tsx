@@ -110,8 +110,8 @@ export function Cosmo22ColorSelector({ product, selectedVariantIdx, onVariantCha
                   onVariantChange(variantIdx);
                 }}
                 className={cn(
-                  "relative h-9 w-9 shrink-0 rounded-full border border-foreground/20 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] transition-[box-shadow,transform,opacity] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                  isSelected && "ring-2 ring-foreground ring-offset-2 ring-offset-background",
+                  "relative h-9 w-9 shrink-0 rounded-full bg-muted/25 transition-[transform,opacity] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                  isSelected && "ring-2 ring-foreground ring-offset-2 ring-offset-white",
                   unavailable && "cursor-not-allowed opacity-45 grayscale",
                   !unavailable && "hover:scale-[1.04]",
                 )}
@@ -143,8 +143,9 @@ function getCosmo22SwatchStyle(def: Cosmo22SwatchDef | undefined, shopifyColor: 
   if (def?.swatchImageUrl) {
     return {
       backgroundImage: `url(${def.swatchImageUrl})`,
-      backgroundSize: "cover",
+      backgroundSize: "contain",
       backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
     };
   }
   return { backgroundColor: colorNameToApproximateHex(shopifyColor) };
