@@ -15,12 +15,12 @@ function ArrowOverlay({
   markerId: string;
 }) {
   /* Paths in 0–100 coords (stretch with photo via preserveAspectRatio="none").
-   * "everything": starts ~after “Everything in view.” ends; ends ~rim midpoint between mirrors.
-   * "packup": starts under centered headline; ends ~drawstring / cinch line. */
+   * "everything": after “view.” → wide sweep past subtext (“brush, balm…”) → straight to top-center of photo.
+   * "packup": from headline band down to drawstring / cinch (top of bag in frame). */
   const d =
     variant === "everything"
-      ? "M 44 12 Q 44 54 50 83"
-      : "M 50 19 Q 51 28 50 36";
+      ? "M 47 9 C 8 14, 2 32, 10 44 L 50 25"
+      : "M 50 15 Q 53 24 50 33";
 
   return (
     <svg
@@ -49,6 +49,7 @@ function ArrowOverlay({
         strokeWidth={0.9}
         strokeDasharray="3 5"
         strokeLinecap="round"
+        strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
         markerEnd={`url(#${markerId})`}
       />
@@ -145,7 +146,7 @@ export function CosmoPdpStory() {
           </div>
         </article>
 
-        <article className="relative bg-white">
+        <article className="relative flex w-full flex-col bg-white md:items-end">
           <div className="pointer-events-none absolute left-1/2 top-4 z-10 w-[min(94%,380px)] -translate-x-1/2 text-center sm:top-6">
             <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground sm:text-xl md:text-2xl">
               Pack up in seconds.
@@ -154,13 +155,13 @@ export function CosmoPdpStory() {
               Cinch the cord and you&apos;re out the door. No digging, no dumping.
             </p>
           </div>
-          {/* Image 3 intentionally small (esp. vs image 2); mobile hugs right edge */}
-          <div className="flex w-full justify-center md:justify-center max-md:justify-end">
-            <div className="relative mx-auto w-full max-md:mx-0 max-md:ml-auto max-md:max-w-[min(38vw,152px)] md:max-w-[220px] lg:max-w-[240px]">
+          {/* Image 3: ~50% larger than prior tiny cap; flush to viewport right (same idea as image1 flush left) */}
+          <div className="flex w-full justify-end self-end pr-0">
+            <div className="relative ml-auto mr-0 w-full max-md:max-w-[min(54vw,226px)] md:max-w-[min(48vw,332px)] lg:max-w-[360px]">
               <img
                 src="/cosmo-pdp/story/image3.png"
                 alt=""
-                className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(12vh,104px)] md:max-h-[min(28vh,220px)] lg:max-h-[240px]"
+                className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(17vh,156px)] md:max-h-[min(38vh,312px)] lg:max-h-[336px]"
                 loading="lazy"
               />
               <ArrowOverlay variant="packup" markerId={markerPackup} />
