@@ -261,7 +261,7 @@ const ProductDetail = () => {
     </>
   );
 
-  const optionPickersAndPurchase: ReactNode = (
+  const optionPickersOnly: ReactNode = (
     <>
       {(product.options ?? []).map((option, optIdx) => {
         if (option.values.length <= 1) return null;
@@ -355,35 +355,47 @@ const ProductDetail = () => {
           </div>
         );
       })}
+    </>
+  );
 
-      <div className="space-y-2">
-        <label className="text-sm font-medium text-foreground">Quantity</label>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="icon" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-            <Minus className="h-4 w-4" />
-          </Button>
-          <span className="w-12 text-center text-lg font-medium text-foreground">{quantity}</span>
-          <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
-            <Plus className="h-4 w-4" />
-          </Button>
-        </div>
+  const quantityPicker: ReactNode = (
+    <div className="space-y-2">
+      <label className="text-sm font-medium text-foreground">Quantity</label>
+      <div className="flex items-center gap-3">
+        <Button variant="outline" size="icon" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
+          <Minus className="h-4 w-4" />
+        </Button>
+        <span className="w-12 text-center text-lg font-medium text-foreground">{quantity}</span>
+        <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
+          <Plus className="h-4 w-4" />
+        </Button>
       </div>
+    </div>
+  );
 
-      <Button
-        size="lg"
-        onClick={handleAddToCart}
-        disabled={isLoading || !selectedVariant?.availableForSale}
-        className="w-full bg-primary text-base text-primary-foreground hover:bg-primary/90"
-      >
-        {isLoading ? (
-          <Loader2 className="h-5 w-5 animate-spin" />
-        ) : (
-          <>
-            <ShoppingCart className="mr-2 h-5 w-5" />
-            Add to Cart
-          </>
-        )}
-      </Button>
+  const addToCartButton: ReactNode = (
+    <Button
+      size="lg"
+      onClick={handleAddToCart}
+      disabled={isLoading || !selectedVariant?.availableForSale}
+      className="w-full bg-primary text-base text-primary-foreground hover:bg-primary/90"
+    >
+      {isLoading ? (
+        <Loader2 className="h-5 w-5 animate-spin" />
+      ) : (
+        <>
+          <ShoppingCart className="mr-2 h-5 w-5" />
+          Add to Cart
+        </>
+      )}
+    </Button>
+  );
+
+  const optionPickersAndPurchase: ReactNode = (
+    <>
+      {optionPickersOnly}
+      {quantityPicker}
+      {addToCartButton}
     </>
   );
 
@@ -422,29 +434,37 @@ const ProductDetail = () => {
 
         {isCosmoPdp ? (
           <>
-            <section className="-mx-4 rounded-3xl bg-gradient-to-b from-muted/45 via-background to-background px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
-              <div className="grid gap-8 lg:grid-cols-12 lg:items-start lg:gap-10">
-                <div className="space-y-4 lg:col-span-7 xl:col-span-8">
-                  <div className="relative aspect-[4/5] max-h-[min(88vh,920px)] overflow-hidden rounded-2xl border border-border bg-card shadow-xl sm:aspect-square">
+            <header className="mb-8 text-center sm:mb-10">
+              <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-[2.25rem] md:leading-tight">
+                {product.title}
+              </h1>
+            </header>
+
+            <section className="-mx-4 rounded-3xl bg-gradient-to-b from-muted/40 via-background to-background px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
+              <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
+                <div className="space-y-4">
+                  <div className="aspect-square overflow-hidden rounded-2xl border border-border bg-card shadow-md">
                     {mainHeroImage}
-                    <div
-                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent"
-                      aria-hidden
-                    />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 p-5 sm:p-8">
-                      <h1 className="font-heading text-2xl font-bold tracking-tight text-white drop-shadow-md sm:text-4xl sm:leading-tight">
-                        {product.title}
-                      </h1>
-                      <p className="mt-2 text-xl font-semibold tabular-nums text-white/95 drop-shadow sm:text-2xl">
-                        ${priceDisplay}
-                      </p>
-                    </div>
                   </div>
                   {heroThumbnails}
                 </div>
-                <div className="flex flex-col gap-6 rounded-2xl border border-border/80 bg-card/50 p-5 shadow-sm backdrop-blur-sm sm:p-6 lg:col-span-5 xl:col-span-4">
-                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">Choose options</p>
-                  {optionPickersAndPurchase}
+
+                <div className="flex flex-col gap-6 rounded-2xl border border-border/80 bg-card/60 p-5 shadow-sm sm:p-6">
+                  <div>
+                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Choose colors</p>
+                    <div className="mt-3">{optionPickersOnly}</div>
+                  </div>
+
+                  {quantityPicker}
+
+                  <div className="border-t border-border/60 pt-2">
+                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Price</p>
+                    <p className="mt-1 font-heading text-3xl font-bold tabular-nums text-primary sm:text-4xl">
+                      ${priceDisplay}
+                    </p>
+                  </div>
+
+                  {addToCartButton}
                 </div>
               </div>
             </section>
