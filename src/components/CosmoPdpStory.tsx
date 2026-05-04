@@ -1,27 +1,18 @@
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
+import { readCosmoStoryArrowPath } from "@/data/cosmoPdpStoryArrows";
 
 /**
  * Editorial strip below Cosmo PDP hero — flush edges, white field matching photo backs,
  * dotted arrows drawn over images toward bag details.
+ *
+ * Arrow paths: edit `src/data/cosmoPdpStoryArrows.ts`, or use the interactive tool at `/dev/cosmo-arrows`
+ * (drag handles → Save to this browser to preview on Cosmo PDPs).
  */
 
 const COSMO_STORY_HEADLINE = "Forget everything you knew about a makeup bag.";
 
-function ArrowOverlay({
-  variant,
-  markerId,
-}: {
-  variant: "everything" | "packup";
-  markerId: string;
-}) {
-  /* Paths in 0–100 coords (stretch with photo via preserveAspectRatio="none").
-   * "everything": after “view.” → wide sweep past subtext (“brush, balm…”) → straight to top-center of photo.
-   * "packup": from headline band down to drawstring / cinch (top of bag in frame). */
-  const d =
-    variant === "everything"
-      ? "M 47 9 C 8 14, 2 32, 10 44 L 50 25"
-      : "M 50 15 Q 53 24 50 33";
-
+/** Dotted arrow; `pathD` is SVG path in 0–100 viewBox (see `src/data/cosmoPdpStoryArrows.ts` and `/dev/cosmo-arrows`). */
+function ArrowOverlay({ pathD, markerId }: { pathD: string; markerId: string }) {
   return (
     <svg
       className="pointer-events-none absolute inset-0 z-[5] h-full w-full text-foreground"
@@ -43,7 +34,7 @@ function ArrowOverlay({
         </marker>
       </defs>
       <path
-        d={d}
+        d={pathD}
         fill="none"
         stroke="currentColor"
         strokeWidth={0.9}
@@ -57,7 +48,33 @@ function ArrowOverlay({
   );
 }
 
+function useCosmoStoryArrowPaths() {
+  const [paths, setPaths] = useState(() => ({
+    everything: readCosmoStoryArrowPath("everything"),
+    packup: readCosmoStoryArrowPath("packup"),
+  }));
+
+  useEffect(() => {
+    const sync = () => {
+      setPaths({
+        everything: readCosmoStoryArrowPath("everything"),
+        packup: readCosmoStoryArrowPath("packup"),
+      });
+    };
+    sync();
+    window.addEventListener("cosmo-arrows-updated", sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("cosmo-arrows-updated", sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
+
+  return paths;
+}
+
 export function CosmoPdpStory() {
+  const arrowPaths = useCosmoStoryArrowPaths();
   const rawId = useId().replace(/:/g, "");
   const markerEverything = `cosmo-arr-ev-${rawId}`;
   const markerPackup = `cosmo-arr-pu-${rawId}`;
@@ -141,14 +158,14 @@ export function CosmoPdpStory() {
                 className="block h-auto w-full object-contain object-bottom max-md:max-h-[min(72vh,560px)] md:max-h-[min(68vh,540px)]"
                 loading="lazy"
               />
-              <ArrowOverlay variant="everything" markerId={markerEverything} />
+              <ArrowOverlay pathD={arrowPaths.everything} markerId={markerEverything} />
             </div>
           </div>
         </article>
 
         <article className="relative flex w-full flex-col bg-white md:items-end">
-          <div className="pointer-events-none absolute left-1/2 top-4 z-10 w-[min(94%,380px)] -translate-x-1/2 text-center sm:top-6">
-            <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground sm:text-xl md:text-2xl">
+          <div className="pointer-events-none absolute left-3 top-4 z-20 max-w-[11rem] text-left sm:left-4 sm:top-5 sm:max-w-[13rem] md:left-4 md:top-6 md:max-w-[15rem] lg:max-w-[17rem]">
+            <h2 className="font-heading text-lg font-semibold leading-tight tracking-tight text-foreground sm:text-xl md:text-2xl">
               Pack up in seconds.
             </h2>
             <p className="mt-1 text-xs leading-snug text-neutral-700 sm:text-sm md:text-base">
@@ -164,7 +181,7 @@ export function CosmoPdpStory() {
                 className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(17vh,156px)] md:max-h-[min(38vh,312px)] lg:max-h-[336px]"
                 loading="lazy"
               />
-              <ArrowOverlay variant="packup" markerId={markerPackup} />
+              <ArrowOverlay pathD={arrowPaths.packup} markerId={markerPackup} />
             </div>
           </div>
         </article>

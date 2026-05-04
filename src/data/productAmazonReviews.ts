@@ -83,14 +83,6 @@ export const COSMO_20_AMAZON_REVIEWS: ProductAmazonReview[] = [
     variantNote: "Verified Purchase · 20\" · Pink",
   },
   {
-    headline: "Useful but very pricey",
-    quote:
-      "Pros: weighs next to nothing; clean contained surface so things stay put; useful zipper pocket; washable; silver quilting looks great. Cons: less storage than it looks when cinched; drawstring doesn’t close 100%; spill risk if powders break in your purse; pricey—for me the value didn’t match the price. Works, but I wouldn’t rebuy at over $30.",
-    author: "YesandNo",
-    rating: 3,
-    variantNote: "Verified Purchase · 20\" · Metallic Silver",
-  },
-  {
     headline: "I Love This Bag!",
     quote:
       "I love this make up bag! I travel a lot for work and use this everyday. It's nice to not have to dig for items and that you can lie this out and see everything at once. I got the black boucle type fabric and it's actually so cute. I would definitely re-purchase.",

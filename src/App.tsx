@@ -22,6 +22,7 @@ import PressSubpage from "./pages/static/PressSubpage.tsx";
 import ReturnPolicy from "./pages/static/ReturnPolicy.tsx";
 import SmallBusinesses from "./pages/static/SmallBusinesses.tsx";
 import Wholesale from "./pages/static/Wholesale.tsx";
+import CosmoArrowPlayground from "./pages/CosmoArrowPlayground.tsx";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,8 @@ const AppContent = () => {
 
         <Route path="/product/:handle" element={<ProductDetail />} />
         <Route path="/products/:handle" element={<ProductUrlRedirect />} />
+
+        <Route path="/dev/cosmo-arrows" element={<CosmoArrowPlayground />} />
 
         <Route path="/pages/about-us" element={<AboutUs />} />
         <Route path="/pages/business-license-certification" element={<BusinessLicense />} />
