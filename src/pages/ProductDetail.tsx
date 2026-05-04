@@ -26,6 +26,8 @@ import {
   isCosmo22Product,
 } from "@/components/Cosmo22ColorSelector";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
+import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
+import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
 
 const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
@@ -131,6 +133,11 @@ const ProductDetail = () => {
   const cosmoYoutubeId = useMemo(
     () => (product ? extractFirstYoutubeVideoId(product.description || "") : null),
     [product?.description],
+  );
+
+  const amazonReviewsBundle = useMemo(
+    () => (product ? getAmazonReviewsForProduct(product.handle) : { reviews: [], amazonListingUrl: undefined }),
+    [product],
   );
 
   if (loading) {
@@ -524,6 +531,13 @@ const ProductDetail = () => {
             </div>
           </div>
         )}
+
+        {amazonReviewsBundle.reviews.length > 0 ? (
+          <ProductAmazonReviews
+            reviews={amazonReviewsBundle.reviews}
+            amazonListingUrl={amazonReviewsBundle.amazonListingUrl}
+          />
+        ) : null}
 
         {related.length > 0 ? (
           <section className={cn("border-t border-border pt-12", isCosmoPdp ? "mt-20 sm:mt-24" : "mt-20")}>

@@ -5,6 +5,8 @@ import { useId } from "react";
  * dotted arrows drawn over images toward bag details.
  */
 
+const COSMO_STORY_HEADLINE = "Forget everything you knew about a makeup bag.";
+
 function ArrowOverlay({
   variant,
   markerId,
@@ -64,45 +66,58 @@ export function CosmoPdpStory() {
       className="relative left-1/2 -ml-[50vw] w-screen bg-white text-foreground"
       aria-labelledby="cosmo-story-intro"
     >
-      {/* Block 1 — larger image 1 flush left; text column vertically centered for easier pairing */}
-      <div className="flex flex-row flex-nowrap items-center gap-4 py-10 sm:gap-6 sm:py-12 md:gap-9 lg:gap-10 lg:py-14">
-        <div className="w-[clamp(148px,34vw,340px)] shrink-0">
-          <img
-            src="/cosmo-pdp/story/image1.png"
-            alt=""
-            className="block h-auto w-full max-w-none"
-            loading="lazy"
-          />
-        </div>
-        <div className="min-w-0 flex-1 pr-4 sm:pr-8">
-          <p
-            id="cosmo-story-intro"
-            className="font-heading text-[clamp(1.35rem,5.8vw,4rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground lg:text-[clamp(1.75rem,5vw,4.75rem)] lg:leading-[0.9]"
-          >
-            Forget everything you knew about a makeup bag.
-          </p>
-          <ul className="mt-4 max-w-2xl list-disc space-y-2 pl-4 text-xs leading-snug text-neutral-600 marker:text-neutral-400 sm:mt-5 sm:pl-5 sm:text-sm md:text-[0.9375rem] md:leading-relaxed">
-            <li>
-              <span className="font-medium text-neutral-700">Fast, mess-free cleanup:</span> Lay it flat for full
-              visibility, then cinch it closed in seconds so there is no more digging or clutter
-            </li>
-            <li>
-              <span className="font-medium text-neutral-700">Smart travel organization:</span> Built-in pockets,
-              brush loops, and raised edges keep everything secure and in place on the go
-            </li>
-            <li>
-              <span className="font-medium text-neutral-700">Durable, water-resistant and machine washable:</span>{" "}
-              Made to handle daily use and easy to clean, just toss it in the wash
-            </li>
-            <li>
-              <span className="font-medium text-neutral-700">Perfect gift option:</span> Stylish, practical, and a
-              thoughtful choice for any occasion
-            </li>
-            <li>
-              <span className="font-medium text-neutral-700">Designed for everyday use:</span> Holds full-size makeup,
-              brushes, skincare, and toiletries with ease
-            </li>
-          </ul>
+      {/* Block 1 — mobile: headline full bleed width; desktop: image | headline + bullets */}
+      <div className="py-10 sm:py-12 md:flex md:flex-row md:flex-nowrap md:items-center md:gap-9 lg:gap-10 lg:py-14">
+        <p id="cosmo-story-intro" className="sr-only">
+          {COSMO_STORY_HEADLINE}
+        </p>
+        {/* Mobile-only: headline uses full row width (large type scales with viewport) */}
+        <p
+          className="px-4 text-center font-heading text-[clamp(1.85rem,9vw,3.65rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground md:hidden"
+          aria-hidden
+        >
+          {COSMO_STORY_HEADLINE}
+        </p>
+
+        <div className="mt-6 flex flex-row flex-nowrap items-center gap-4 px-4 sm:gap-6 md:mt-0 md:flex-1 md:gap-9 md:px-0 lg:gap-10">
+          <div className="w-[clamp(132px,38vw,220px)] shrink-0 md:w-[clamp(148px,34vw,340px)]">
+            <img
+              src="/cosmo-pdp/story/image1.png"
+              alt=""
+              className="block h-auto w-full max-w-none"
+              loading="lazy"
+            />
+          </div>
+          <div className="min-w-0 flex-1 md:pr-8">
+            <p
+              className="hidden font-heading text-[clamp(1.35rem,5.8vw,4rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground lg:text-[clamp(1.75rem,5vw,4.75rem)] lg:leading-[0.9] md:block"
+              aria-hidden
+            >
+              {COSMO_STORY_HEADLINE}
+            </p>
+            <ul className="mt-0 max-w-2xl list-disc space-y-2 pl-4 text-xs leading-snug text-neutral-600 marker:text-neutral-400 max-md:pl-3 md:mt-4 sm:pl-5 sm:text-sm md:text-[0.9375rem] md:leading-relaxed">
+              <li>
+                <span className="font-medium text-neutral-700">Fast, mess-free cleanup:</span> Lay it flat for full
+                visibility, then cinch it closed in seconds so there is no more digging or clutter
+              </li>
+              <li>
+                <span className="font-medium text-neutral-700">Smart travel organization:</span> Built-in pockets,
+                brush loops, and raised edges keep everything secure and in place on the go
+              </li>
+              <li>
+                <span className="font-medium text-neutral-700">Durable, water-resistant and machine washable:</span>{" "}
+                Made to handle daily use and easy to clean, just toss it in the wash
+              </li>
+              <li>
+                <span className="font-medium text-neutral-700">Perfect gift option:</span> Stylish, practical, and a
+                thoughtful choice for any occasion
+              </li>
+              <li>
+                <span className="font-medium text-neutral-700">Designed for everyday use:</span> Holds full-size makeup,
+                brushes, skincare, and toiletries with ease
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -139,12 +154,13 @@ export function CosmoPdpStory() {
               Cinch the cord and you&apos;re out the door. No digging, no dumping.
             </p>
           </div>
-          <div className="flex w-full justify-center">
-            <div className="relative mx-auto w-full max-w-[min(100%,620px)]">
+          {/* Mobile: much smaller graphic, hugging viewport right edge */}
+          <div className="flex w-full justify-center md:justify-center max-md:justify-end">
+            <div className="relative w-full max-w-[min(100%,620px)] md:mx-auto max-md:mx-0 max-md:ml-auto max-md:w-[58%] max-md:max-w-[260px]">
               <img
                 src="/cosmo-pdp/story/image3.png"
                 alt=""
-                className="block h-auto w-full object-contain object-bottom max-md:max-h-[min(72vh,560px)] md:max-h-[min(68vh,540px)]"
+                className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(28vh,200px)] md:max-h-[min(68vh,540px)]"
                 loading="lazy"
               />
               <ArrowOverlay variant="packup" markerId={markerPackup} />
