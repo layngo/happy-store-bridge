@@ -154,13 +154,13 @@ export function CosmoPdpStory() {
               Cinch the cord and you&apos;re out the door. No digging, no dumping.
             </p>
           </div>
-          {/* Mobile: much smaller graphic, hugging viewport right edge */}
+          {/* Image 3 intentionally small (esp. vs image 2); mobile hugs right edge */}
           <div className="flex w-full justify-center md:justify-center max-md:justify-end">
-            <div className="relative w-full max-w-[min(100%,620px)] md:mx-auto max-md:mx-0 max-md:ml-auto max-md:w-[58%] max-md:max-w-[260px]">
+            <div className="relative mx-auto w-full max-md:mx-0 max-md:ml-auto max-md:max-w-[min(38vw,152px)] md:max-w-[220px] lg:max-w-[240px]">
               <img
                 src="/cosmo-pdp/story/image3.png"
                 alt=""
-                className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(28vh,200px)] md:max-h-[min(68vh,540px)]"
+                className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(12vh,104px)] md:max-h-[min(28vh,220px)] lg:max-h-[240px]"
                 loading="lazy"
               />
               <ArrowOverlay variant="packup" markerId={markerPackup} />
