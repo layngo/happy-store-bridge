@@ -12,10 +12,13 @@ function ArrowOverlay({
   variant: "everything" | "packup";
   markerId: string;
 }) {
+  /* Paths in 0–100 coords (stretch with photo via preserveAspectRatio="none").
+   * "everything": starts ~after “Everything in view.” ends; ends ~rim midpoint between mirrors.
+   * "packup": starts under centered headline; ends ~drawstring / cinch line. */
   const d =
     variant === "everything"
-      ? "M 11 22 Q 38 54 52 84"
-      : "M 89 21 Q 62 26 51 34";
+      ? "M 44 12 Q 44 54 50 83"
+      : "M 50 19 Q 51 28 50 36";
 
   return (
     <svg
@@ -61,9 +64,9 @@ export function CosmoPdpStory() {
       className="relative left-1/2 -ml-[50vw] w-screen bg-white text-foreground"
       aria-labelledby="cosmo-story-intro"
     >
-      {/* Block 1 — image 1 flush left edge of viewport; headline + bullet subtext beside */}
-      <div className="flex flex-row flex-nowrap items-start gap-3 py-10 sm:gap-5 sm:py-12 md:gap-8 lg:py-14">
-        <div className="w-[clamp(112px,26vw,260px)] shrink-0">
+      {/* Block 1 — larger image 1 flush left; text column vertically centered for easier pairing */}
+      <div className="flex flex-row flex-nowrap items-center gap-4 py-10 sm:gap-6 sm:py-12 md:gap-9 lg:gap-10 lg:py-14">
+        <div className="w-[clamp(148px,34vw,340px)] shrink-0">
           <img
             src="/cosmo-pdp/story/image1.png"
             alt=""
@@ -111,22 +114,24 @@ export function CosmoPdpStory() {
               Everything in view.
             </h2>
             <p className="mt-1 text-xs leading-snug text-neutral-700 sm:text-sm md:text-base">
-              Light and flat—see every brush, balm, and bauble at once.
+              Light and flat. See every brush, balm, and bauble at once.
             </p>
           </div>
-          <div className="relative w-full">
-            <img
-              src="/cosmo-pdp/story/image2.png"
-              alt=""
-              className="block h-auto w-full max-w-none object-contain object-bottom"
-              loading="lazy"
-            />
-            <ArrowOverlay variant="everything" markerId={markerEverything} />
+          <div className="flex w-full justify-center">
+            <div className="relative mx-auto w-full max-w-[min(100%,620px)]">
+              <img
+                src="/cosmo-pdp/story/image2.png"
+                alt=""
+                className="block h-auto w-full object-contain object-bottom max-md:max-h-[min(72vh,560px)] md:max-h-[min(68vh,540px)]"
+                loading="lazy"
+              />
+              <ArrowOverlay variant="everything" markerId={markerEverything} />
+            </div>
           </div>
         </article>
 
         <article className="relative bg-white">
-          <div className="pointer-events-none absolute right-3 top-4 z-10 max-w-[min(92%,320px)] text-right sm:right-6 sm:top-6 md:max-w-[48%]">
+          <div className="pointer-events-none absolute left-1/2 top-4 z-10 w-[min(94%,380px)] -translate-x-1/2 text-center sm:top-6">
             <h2 className="font-heading text-lg font-semibold tracking-tight text-foreground sm:text-xl md:text-2xl">
               Pack up in seconds.
             </h2>
@@ -134,14 +139,16 @@ export function CosmoPdpStory() {
               Cinch the cord and you&apos;re out the door. No digging, no dumping.
             </p>
           </div>
-          <div className="relative w-full">
-            <img
-              src="/cosmo-pdp/story/image3.png"
-              alt=""
-              className="block h-auto w-full max-w-none object-contain object-bottom"
-              loading="lazy"
-            />
-            <ArrowOverlay variant="packup" markerId={markerPackup} />
+          <div className="flex w-full justify-center">
+            <div className="relative mx-auto w-full max-w-[min(100%,620px)]">
+              <img
+                src="/cosmo-pdp/story/image3.png"
+                alt=""
+                className="block h-auto w-full object-contain object-bottom max-md:max-h-[min(72vh,560px)] md:max-h-[min(68vh,540px)]"
+                loading="lazy"
+              />
+              <ArrowOverlay variant="packup" markerId={markerPackup} />
+            </div>
           </div>
         </article>
       </div>
