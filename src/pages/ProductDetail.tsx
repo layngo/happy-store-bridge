@@ -218,8 +218,8 @@ const ProductDetail = () => {
               type="button"
               onClick={() => setCosmo22GalleryIndex(i)}
               className={cn(
-                "h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border-2 transition-colors",
-                i === cosmo22GalleryIndex ? "border-primary" : "border-border",
+                "h-16 w-16 shrink-0 overflow-hidden rounded-md transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                i === cosmo22GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-0",
               )}
             >
               <img src={url} alt="" className="h-full w-full object-cover" />
@@ -235,8 +235,8 @@ const ProductDetail = () => {
               type="button"
               onClick={() => setCosmo20GalleryIndex(i)}
               className={cn(
-                "h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border-2 transition-colors",
-                i === cosmo20GalleryIndex ? "border-primary" : "border-border",
+                "h-16 w-16 shrink-0 overflow-hidden rounded-md transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                i === cosmo20GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-0",
               )}
             >
               <img src={url} alt="" className="h-full w-full object-cover" />
@@ -443,7 +443,7 @@ const ProductDetail = () => {
             <section className="-mx-4 rounded-3xl bg-gradient-to-b from-muted/40 via-background to-background px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
               <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
                 <div className="space-y-4">
-                  <div className="aspect-square overflow-hidden rounded-2xl border border-border bg-card shadow-md">
+                  <div className="aspect-square overflow-hidden rounded-2xl bg-transparent shadow-none">
                     {mainHeroImage}
                   </div>
                   {heroThumbnails}

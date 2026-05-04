@@ -40,7 +40,7 @@ export function CosmoPdpStory() {
     <section className="mt-14 space-y-14 sm:mt-16 sm:space-y-16 lg:space-y-20" aria-labelledby="cosmo-story-intro">
       {/* Block 1 — image 1 + headline */}
       <div className="grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-12">
-        <div className="overflow-hidden rounded-2xl border border-border bg-muted/20 shadow-lg lg:order-none">
+        <div className="w-full max-w-[240px] justify-self-center overflow-hidden rounded-2xl border border-border bg-muted/20 shadow-lg sm:max-w-[300px] lg:max-w-[340px] lg:justify-self-start">
           <img
             src="/cosmo-pdp/story/image1.png"
             alt=""
