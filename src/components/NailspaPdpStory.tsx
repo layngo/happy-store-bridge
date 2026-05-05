@@ -88,7 +88,7 @@ export function NailspaPdpStory() {
         <img
           src="/nailspa-pdp/story/image2.png"
           alt=""
-          className="block max-h-[min(88vh,920px)] w-full object-cover object-center rotate-180"
+          className="block h-auto w-full rotate-180"
           loading="lazy"
         />
 
