@@ -2,8 +2,7 @@
  * Editorial strip below NAILSPA PDP hero — matches Cosmo full-bleed white story rhythm.
  */
 
-import { useMemo, useState } from "react";
-
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const HEADLINE = "THE NAIL BAG THAT ACTUALLY GETS IT.";
@@ -16,8 +15,10 @@ type Point = { x: number; y: number };
 type ArrowGeom = { viewBox: string; start: Point; control: Point; end: Point };
 type ArrowKey = "mesh" | "lipRight" | "cord" | "carry" | "nailMat";
 type ArrowMap = Record<ArrowKey, ArrowGeom>;
+type ArrowPointKey = keyof Pick<ArrowGeom, "start" | "control" | "end">;
 
-const INITIAL_ARROWS: ArrowMap = {
+// Reverted to pre-drag coordinates.
+const ARROWS: ArrowMap = {
   mesh: {
     viewBox: "0 0 120 48",
     start: { x: 8, y: 40 },
@@ -50,31 +51,51 @@ const INITIAL_ARROWS: ArrowMap = {
   },
 };
 
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v1";
+
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
 function parseViewBox(viewBox: string) {
   const [minX, minY, width, height] = viewBox.split(" ").map(Number);
   return { minX, minY, width, height };
 }
 
-function pointFromClient(svg: SVGSVGElement, clientX: number, clientY: number) {
-  const { minX, minY, width, height } = parseViewBox(svg.viewBox.baseVal.toString() || svg.getAttribute("viewBox") || "0 0 100 100");
-  const rect = svg.getBoundingClientRect();
-  const x = ((clientX - rect.left) / rect.width) * width + minX;
-  const y = ((clientY - rect.top) / rect.height) * height + minY;
-  return { x, y };
+function pointToPct(point: Point, viewBox: string) {
+  const { minX, minY, width, height } = parseViewBox(viewBox);
+  return {
+    x: clamp(((point.x - minX) / width) * 100, 0, 100),
+    y: clamp(((point.y - minY) / height) * 100, 0, 100),
+  };
 }
 
-function DraggableArrow({
+function pctToPoint(xPct: number, yPct: number, viewBox: string) {
+  const { minX, minY, width, height } = parseViewBox(viewBox);
+  return {
+    x: minX + (xPct / 100) * width,
+    y: minY + (yPct / 100) * height,
+  };
+}
+
+function loadArrowsFromStorage(): ArrowMap | null {
+  try {
+    const raw = localStorage.getItem(ARROW_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as ArrowMap;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function RenderArrow({
   className,
   geom,
-  editMode,
-  onChange,
 }: {
   className?: string;
   geom: ArrowGeom;
-  editMode: boolean;
-  onChange?: (next: ArrowGeom) => void;
 }) {
-  const [dragging, setDragging] = useState<keyof Pick<ArrowGeom, "start" | "control" | "end"> | null>(null);
   const { start, control, end, viewBox } = geom;
   const dx = end.x - control.x;
   const dy = end.y - control.y;
@@ -87,21 +108,7 @@ function DraggableArrow({
   const right = { x: end.x - ux * size + uy * spread, y: end.y - uy * size - ux * spread };
 
   return (
-    <svg
-      className={cn(className, editMode ? "pointer-events-auto" : "")}
-      viewBox={viewBox}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-      onPointerMove={(e) => {
-        if (!dragging || !onChange) return;
-        const target = e.currentTarget;
-        const point = pointFromClient(target, e.clientX, e.clientY);
-        onChange({ ...geom, [dragging]: point });
-      }}
-      onPointerUp={() => setDragging(null)}
-      onPointerLeave={() => setDragging(null)}
-    >
+    <svg className={className} viewBox={viewBox} fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
       <path
         d={`M${start.x} ${start.y} Q${control.x} ${control.y} ${end.x} ${end.y}`}
         stroke="currentColor"
@@ -111,47 +118,88 @@ function DraggableArrow({
         className="text-neutral-800/85"
       />
       <path d={`M${end.x} ${end.y} L${left.x} ${left.y} L${right.x} ${right.y} Z`} fill="currentColor" className="text-neutral-800/85" />
-      {editMode ? (
-        <>
-          <circle
-            cx={start.x}
-            cy={start.y}
-            r={2.8}
-            className="cursor-grab fill-blue-500 stroke-white stroke-[0.9]"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setDragging("start");
-              e.currentTarget.ownerSVGElement?.setPointerCapture(e.pointerId);
-            }}
-          />
-          <circle
-            cx={control.x}
-            cy={control.y}
-            r={2.8}
-            className="cursor-grab fill-emerald-500 stroke-white stroke-[0.9]"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setDragging("control");
-              e.currentTarget.ownerSVGElement?.setPointerCapture(e.pointerId);
-            }}
-          />
-          <circle
-            cx={end.x}
-            cy={end.y}
-            r={2.8}
-            className="cursor-grab fill-rose-500 stroke-white stroke-[0.9]"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setDragging("end");
-              e.currentTarget.ownerSVGElement?.setPointerCapture(e.pointerId);
-            }}
-          />
-        </>
-      ) : null}
     </svg>
+  );
+}
+
+function ArrowEditorHandles({
+  geom,
+  setGeom,
+}: {
+  geom: ArrowGeom;
+  setGeom: (next: ArrowGeom) => void;
+}) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [dragKey, setDragKey] = useState<ArrowPointKey | null>(null);
+
+  const move = useCallback(
+    (ev: React.PointerEvent) => {
+      if (!dragKey || !boxRef.current) return;
+      const r = boxRef.current.getBoundingClientRect();
+      const xPct = clamp(((ev.clientX - r.left) / r.width) * 100, 0, 100);
+      const yPct = clamp(((ev.clientY - r.top) / r.height) * 100, 0, 100);
+      setGeom({ ...geom, [dragKey]: pctToPoint(xPct, yPct, geom.viewBox) });
+    },
+    [dragKey, geom, setGeom],
+  );
+
+  const startPct = pointToPct(geom.start, geom.viewBox);
+  const controlPct = pointToPct(geom.control, geom.viewBox);
+  const endPct = pointToPct(geom.end, geom.viewBox);
+  const points = [
+    { key: "start" as const, pt: startPct, color: "bg-blue-500", label: "Start" },
+    { key: "control" as const, pt: controlPct, color: "bg-emerald-500", label: "Curve" },
+    { key: "end" as const, pt: endPct, color: "bg-rose-500", label: "Tip" },
+  ];
+
+  return (
+    <div
+      ref={boxRef}
+      className="pointer-events-none absolute inset-0 z-20"
+      onPointerMove={move}
+      onPointerUp={() => setDragKey(null)}
+      onPointerCancel={() => setDragKey(null)}
+      onPointerLeave={() => setDragKey(null)}
+    >
+      {points.map(({ key, pt, color, label }) => (
+        <button
+          key={key}
+          type="button"
+          title={label}
+          aria-label={`Move ${label}`}
+          className={cn(
+            "pointer-events-auto absolute z-30 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-md cursor-grab touch-none active:cursor-grabbing",
+            color,
+          )}
+          style={{ left: `${pt.x}%`, top: `${pt.y}%` }}
+          onPointerDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.currentTarget.setPointerCapture(e.pointerId);
+            setDragKey(key);
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function EditableArrow({
+  className,
+  geom,
+  editorMode,
+  onChange,
+}: {
+  className?: string;
+  geom: ArrowGeom;
+  editorMode?: boolean;
+  onChange?: (next: ArrowGeom) => void;
+}) {
+  return (
+    <div className={cn("relative", className)}>
+      <RenderArrow className="h-full w-full" geom={geom} />
+      {editorMode && onChange ? <ArrowEditorHandles geom={geom} setGeom={onChange} /> : null}
+    </div>
   );
 }
 
@@ -159,23 +207,23 @@ function CalloutArrow({
   className,
   variant,
   arrows,
-  editMode,
+  editorMode,
   onArrowChange,
 }: {
   className?: string;
   variant: "mesh" | "lipRight" | "cord";
   arrows: ArrowMap;
-  editMode: boolean;
-  onArrowChange: (key: ArrowKey, next: ArrowGeom) => void;
+  editorMode?: boolean;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
 }) {
   if (variant === "mesh") {
-    return <DraggableArrow className={className} geom={arrows.mesh} editMode={editMode} onChange={(next) => onArrowChange("mesh", next)} />;
+    return <EditableArrow className={className} geom={arrows.mesh} editorMode={editorMode} onChange={(next) => onArrowChange?.("mesh", next)} />;
   }
   if (variant === "lipRight") {
-    return <DraggableArrow className={className} geom={arrows.lipRight} editMode={editMode} onChange={(next) => onArrowChange("lipRight", next)} />;
+    return <EditableArrow className={className} geom={arrows.lipRight} editorMode={editorMode} onChange={(next) => onArrowChange?.("lipRight", next)} />;
   }
   if (variant === "cord") {
-    return <DraggableArrow className={className} geom={arrows.cord} editMode={editMode} onChange={(next) => onArrowChange("cord", next)} />;
+    return <EditableArrow className={className} geom={arrows.cord} editorMode={editorMode} onChange={(next) => onArrowChange?.("cord", next)} />;
   }
   return null;
 }
@@ -183,13 +231,13 @@ function CalloutArrow({
 function MainImageCallouts({
   className,
   arrows,
-  editMode,
+  editorMode,
   onArrowChange,
 }: {
   className?: string;
   arrows: ArrowMap;
-  editMode: boolean;
-  onArrowChange: (key: ArrowKey, next: ArrowGeom) => void;
+  editorMode?: boolean;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
 }) {
   return (
     <div className={className}>
@@ -206,9 +254,9 @@ function MainImageCallouts({
         <CalloutArrow
           variant="mesh"
           arrows={arrows}
-          editMode={editMode}
+          editorMode={editorMode}
           onArrowChange={onArrowChange}
-          className="mt-1 ml-6 h-10 w-24 shrink-0 sm:ml-10 sm:h-12 sm:w-28 md:ml-14"
+          className="mt-1 ml-6 h-16 w-40 shrink-0 sm:ml-10 sm:h-[4.8rem] sm:w-[11.2rem] md:ml-14"
         />
       </div>
 
@@ -225,9 +273,9 @@ function MainImageCallouts({
         <CalloutArrow
           variant="lipRight"
           arrows={arrows}
-          editMode={editMode}
+          editorMode={editorMode}
           onArrowChange={onArrowChange}
-          className="mt-2 mr-8 h-12 w-28 shrink-0 sm:mr-12 sm:h-14 sm:w-32 md:mr-14"
+          className="mt-2 mr-8 h-[4.8rem] w-44 shrink-0 sm:mr-12 sm:h-[5.6rem] sm:w-[12.8rem] md:mr-14"
         />
       </div>
 
@@ -244,24 +292,23 @@ function MainImageCallouts({
         <CalloutArrow
           variant="cord"
           arrows={arrows}
-          editMode={editMode}
+          editorMode={editorMode}
           onArrowChange={onArrowChange}
-          className="mt-2 mr-6 h-12 w-28 shrink-0 sm:mr-10 sm:h-14 sm:w-32 md:mr-12"
+          className="mt-2 mr-6 h-[4.8rem] w-44 shrink-0 sm:mr-10 sm:h-[5.6rem] sm:w-[12.8rem] md:mr-12"
         />
       </div>
     </div>
   );
 }
 
-/** Curved arrow + label over the closed-bag photo. Tweak path in SVG when adjusting. */
 function CarryingHandleOverlay({
   arrows,
-  editMode,
+  editorMode,
   onArrowChange,
 }: {
   arrows: ArrowMap;
-  editMode: boolean;
-  onArrowChange: (key: ArrowKey, next: ArrowGeom) => void;
+  editorMode?: boolean;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
 }) {
   return (
     <div className="pointer-events-none absolute inset-0 z-20 overflow-visible" aria-hidden>
@@ -270,11 +317,11 @@ function CarryingHandleOverlay({
           Carrying handle for easy travel
         </p>
       </div>
-      <DraggableArrow
+      <EditableArrow
         className="absolute inset-0 size-full text-neutral-900"
         geom={arrows.carry}
-        editMode={editMode}
-        onChange={(next) => onArrowChange("carry", next)}
+        editorMode={editorMode}
+        onChange={(next) => onArrowChange?.("carry", next)}
       />
     </div>
   );
@@ -283,13 +330,13 @@ function CarryingHandleOverlay({
 function BottomProductImage({
   className,
   arrows,
-  editMode,
+  editorMode,
   onArrowChange,
 }: {
   className?: string;
   arrows: ArrowMap;
-  editMode: boolean;
-  onArrowChange: (key: ArrowKey, next: ArrowGeom) => void;
+  editorMode?: boolean;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
 }) {
   return (
     <div
@@ -304,59 +351,65 @@ function BottomProductImage({
           draggable={false}
           loading="lazy"
         />
-        <CarryingHandleOverlay arrows={arrows} editMode={editMode} onArrowChange={onArrowChange} />
+        <CarryingHandleOverlay arrows={arrows} editorMode={editorMode} onArrowChange={onArrowChange} />
       </div>
     </div>
   );
 }
 
 export function NailspaPdpStory() {
-  const [liveEdit, setLiveEdit] = useState(false);
-  const [arrows, setArrows] = useState<ArrowMap>(INITIAL_ARROWS);
-  const arrowsJson = useMemo(() => JSON.stringify(arrows, null, 2), [arrows]);
+  const [arrows, setArrows] = useState<ArrowMap>(ARROWS);
+  const [editorMode, setEditorMode] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const enabled = params.get("editArrows") === "1";
+    setEditorMode(enabled);
+    if (enabled) {
+      setArrows(loadArrowsFromStorage() ?? ARROWS);
+    }
+  }, []);
 
   const updateArrow = (key: ArrowKey, next: ArrowGeom) => {
-    setArrows((prev) => ({
-      ...prev,
-      [key]: next,
-    }));
+    setArrows((prev) => ({ ...prev, [key]: next }));
   };
 
-  const copyArrowJson = async () => {
+  const save = () => {
     try {
-      await navigator.clipboard.writeText(arrowsJson);
+      localStorage.setItem(ARROW_STORAGE_KEY, JSON.stringify(arrows));
+      window.dispatchEvent(new Event("nailspa-arrows-updated"));
     } catch {
-      // no-op: if clipboard is blocked, user can still copy from the textarea below
+      // no-op
     }
   };
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(arrows, null, 2));
+    } catch {
+      // no-op
+    }
+  };
+
+  const done = () => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete("editArrows");
+    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+    setEditorMode(false);
+  };
+
+  const arrowJson = useMemo(() => JSON.stringify(arrows, null, 2), [arrows]);
 
   return (
     <section
       className="relative left-1/2 -ml-[50vw] w-screen bg-white pt-10 text-foreground sm:pt-12 md:pt-14"
       aria-labelledby="nailspa-story-headline"
     >
-      <div className="fixed left-3 top-3 z-[120] flex items-center gap-2">
-        <button
-          type="button"
-          onClick={() => setLiveEdit((v) => !v)}
-          className="rounded-md bg-black px-3 py-1.5 text-xs font-semibold text-white"
-        >
-          {liveEdit ? "Stop Dragging Arrows" : "Drag Arrows"}
-        </button>
-        {liveEdit ? (
-          <button
-            type="button"
-            onClick={copyArrowJson}
-            className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-900"
-          >
-            Copy Coordinates
-          </button>
-        ) : null}
-      </div>
-      {liveEdit ? (
-        <div className="fixed bottom-3 right-3 z-[120] w-[min(94vw,420px)] rounded-lg border border-neutral-200 bg-white/95 p-2 shadow-xl backdrop-blur">
-          <p className="mb-1 text-xs font-semibold text-neutral-700">Drag blue(start), green(curve), red(end), then copy JSON</p>
-          <textarea readOnly value={arrowsJson} className="h-32 w-full rounded border border-neutral-300 p-2 font-mono text-[11px]" />
+      {editorMode ? (
+        <div className="sticky top-0 z-[250] border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
+          <strong>Arrow edit mode</strong> - drag dots on arrows, then Save/Copy.
         </div>
       ) : null}
       <div className="px-5 pb-8 sm:px-8 sm:pb-10 md:pb-12">
@@ -373,10 +426,10 @@ export function NailspaPdpStory() {
         <div className="relative mx-auto max-w-[min(100%,1120px)]">
           <img src={IMG_MAIN} alt="" className="relative z-0 block h-auto w-full" loading="lazy" draggable={false} />
           <MainImageCallouts
+            className={cn("absolute inset-0 z-10 max-md:hidden", editorMode ? "pointer-events-auto" : "pointer-events-none")}
             arrows={arrows}
-            editMode={liveEdit}
+            editorMode={editorMode}
             onArrowChange={updateArrow}
-            className={cn("absolute inset-0 z-10 max-md:hidden", liveEdit ? "pointer-events-auto" : "pointer-events-none")}
           />
         </div>
 
@@ -409,29 +462,50 @@ export function NailspaPdpStory() {
       <div className="px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-12 md:px-10 lg:px-14">
         <div className="mx-auto flex max-w-[min(100%,1200px)] flex-col gap-10 md:flex-row md:items-start md:gap-10 lg:gap-12">
           <div className="w-full shrink-0 md:w-[min(58%,720px)] lg:w-[min(60%,780px)]">
-            <BottomProductImage arrows={arrows} editMode={liveEdit} onArrowChange={updateArrow} />
+            <BottomProductImage
+              arrows={arrows}
+              editorMode={editorMode}
+              onArrowChange={updateArrow}
+            />
           </div>
 
           <div className="flex flex-1 flex-col md:justify-center md:pt-4">
             <div className="flex items-start gap-3 sm:gap-4">
-              <DraggableArrow
-                className="mt-2 h-6 w-[4.5rem] shrink-0 text-neutral-800 sm:h-7 sm:w-24 md:mt-3"
+              <EditableArrow
+                className="mt-2 h-10 w-[7.25rem] shrink-0 text-neutral-800 sm:h-11 sm:w-[9.6rem] md:mt-3"
                 geom={arrows.nailMat}
-                editMode={liveEdit}
+                editorMode={editorMode}
                 onChange={(next) => updateArrow("nailMat", next)}
               />
               <div>
-              <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
-                High quality nail mat
-              </h3>
-              <p className="mt-2 max-w-prose text-sm leading-snug text-neutral-700 sm:text-base">
-                The Nailspa is machine washable and wipeable.
-              </p>
+                <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
+                  High quality nail mat
+                </h3>
+                <p className="mt-2 max-w-prose text-sm leading-snug text-neutral-700 sm:text-base">
+                  The Nailspa is machine washable and wipeable.
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
+      {editorMode ? (
+        <div className="fixed bottom-0 left-0 right-0 z-[300] border-t border-neutral-200 bg-white/95 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-sm md:left-1/2 md:right-auto md:mx-auto md:w-[min(100%,42rem)] md:-translate-x-1/2 md:rounded-t-xl md:border-x md:border-t">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <button type="button" onClick={save} className="rounded-md bg-black px-3 py-1.5 text-xs font-semibold text-white">
+              Save to this browser
+            </button>
+            <button type="button" onClick={copy} className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-900">
+              Copy Coordinates
+            </button>
+            <button type="button" onClick={done} className="rounded-md border border-neutral-300 bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-900">
+              Done editing
+            </button>
+          </div>
+          <p className="mt-2 text-center text-[11px] text-muted-foreground">Use `?editArrows=1` in URL, drag dots, then Save or Copy.</p>
+          <textarea readOnly value={arrowJson} className="mt-2 h-24 w-full rounded border border-neutral-300 p-2 font-mono text-[10px]" />
+        </div>
+      ) : null}
     </section>
   );
 }
