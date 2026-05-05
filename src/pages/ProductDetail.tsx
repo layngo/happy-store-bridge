@@ -147,13 +147,14 @@ const ProductDetail = () => {
     return getNailspa18HeroImageUrls(color, v);
   }, [product, selectedVariantIdx]);
 
-  /** Same chrome as Cosmo PDP (grid, typography, buy box); includes Nailspa. */
+  /** Same chrome as Cosmo PDP (grid, typography, buy box); includes Nailspa and classic play mats (LITE, LARGE, …). */
   const isCosmoPdp = Boolean(
     product &&
       (isCosmo20Product(product.handle) ||
         isCosmo22Product(product.handle) ||
         isCosmoMini16Product(product.handle, product.title) ||
-        isNailspa18Product(product.handle)),
+        isNailspa18Product(product.handle) ||
+        isLayNGoPlayMatCosmoLayoutProduct(product.handle)),
   );
 
   /** Editorial story strip + arrow editor — Cosmo bags only, not Nailspa. */
@@ -162,6 +163,14 @@ const ProductDetail = () => {
       (isCosmo20Product(product.handle) ||
         isCosmo22Product(product.handle) ||
         isCosmoMini16Product(product.handle, product.title)),
+  );
+
+  const showCosmoDescriptionBelowHero = Boolean(
+    product &&
+      isCosmoPdp &&
+      !isNailspa18Product(product.handle) &&
+      !isCosmoStoryPdp &&
+      Boolean(product.description?.trim()),
   );
 
   const [searchParams] = useSearchParams();
@@ -250,6 +259,12 @@ const ProductDetail = () => {
       alt={product.title}
       className="h-full w-full max-h-full object-contain"
     />
+  ) : isLayNGoPlayMatCosmoLayoutProduct(product.handle) && orderedImages[selectedImage]?.node ? (
+    <img
+      src={orderedImages[selectedImage].node.url}
+      alt={orderedImages[selectedImage].node.altText || product.title}
+      className="h-full w-full max-h-full object-contain"
+    />
   ) : orderedImages[selectedImage]?.node ? (
     <img
       src={orderedImages[selectedImage].node.url}
@@ -317,15 +332,30 @@ const ProductDetail = () => {
       !isCosmo20Product(product.handle) &&
       !isNailspa18Product(product.handle) &&
       orderedImages.length > 1 ? (
-        <div className="flex gap-2 overflow-x-auto">
+        <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Product photo gallery">
           {orderedImages.map((img, i) => (
             <button
               key={i}
               type="button"
               onClick={() => setSelectedImage(i)}
-              className={`h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border-2 transition-colors ${i === selectedImage ? "border-primary" : "border-border"}`}
+              className={cn(
+                "flex h-16 w-16 shrink-0 items-center justify-center transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                isCosmoPdp
+                  ? cn(
+                      "bg-muted/15 focus-visible:ring-offset-white",
+                      i === selectedImage ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
+                    )
+                  : cn(
+                      "flex-shrink-0 overflow-hidden rounded-md border-2",
+                      i === selectedImage ? "border-primary" : "border-border",
+                    ),
+              )}
             >
-              <img src={img.node.url} alt={img.node.altText || ""} className="h-full w-full object-cover" />
+              <img
+                src={img.node.url}
+                alt={img.node.altText || ""}
+                className={isCosmoPdp ? "max-h-full max-w-full object-contain" : "h-full w-full object-cover"}
+              />
             </button>
           ))}
         </div>
@@ -589,6 +619,21 @@ const ProductDetail = () => {
               </div>
             </section>
 
+            {showCosmoDescriptionBelowHero ? (
+              <section className="mx-auto mt-12 max-w-3xl sm:mt-14" aria-label="Product details">
+                {descHtml ? (
+                  <div
+                    className="space-y-3 text-sm font-medium leading-relaxed text-neutral-600 [&_a]:text-primary [&_iframe]:hidden [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5"
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                  />
+                ) : (
+                  <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-neutral-600">
+                    {product.description}
+                  </p>
+                )}
+              </section>
+            ) : null}
+
             {isNailspa18Product(product.handle) ? <NailspaPdpStory /> : null}
 
             {isCosmoStoryPdp ? <CosmoPdpStory editorMode={cosmoStoryArrowEditMode} /> : null}
@@ -671,6 +716,17 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
+
+/** LITE, LARGE, and related play mat PDPs — Cosmo-style hero and buy box; imagery stays from Shopify. */
+function isLayNGoPlayMatCosmoLayoutProduct(handle: string): boolean {
+  const h = handle.toLowerCase();
+  return (
+    h === "lay-n-go-lite-18" ||
+    h === "lay-n-go-large-60" ||
+    h === "lay-n-go-lifestyle-44" ||
+    h === "lay-n-go-defender-mini-16"
+  );
+}
 
 function isCosmoMini16Product(handle: string, title: string): boolean {
   const h = handle.toLowerCase();
