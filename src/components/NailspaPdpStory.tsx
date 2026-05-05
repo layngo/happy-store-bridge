@@ -25,7 +25,7 @@ function CalloutArrow({
   variant,
 }: {
   className?: string;
-  variant: "mesh" | "lipRight" | "cord" | "pointLeft";
+  variant: "mesh" | "lipRight" | "cord";
 }) {
   if (variant === "mesh") {
     return (
@@ -72,19 +72,7 @@ function CalloutArrow({
       </svg>
     );
   }
-  return (
-    <svg className={className} viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-      <path
-        d="M110 16 L12 16"
-        stroke="currentColor"
-        strokeWidth={1.25}
-        strokeDasharray="3 4"
-        strokeLinecap="round"
-        className="text-neutral-800/85"
-      />
-      <path d="M12 16 L22 11 L22 21 Z" fill="currentColor" className="text-neutral-800/85" />
-    </svg>
-  );
+  return null;
 }
 
 function MainImageCallouts({ className }: { className?: string }) {
@@ -132,6 +120,39 @@ function MainImageCallouts({ className }: { className?: string }) {
   );
 }
 
+/** Curved arrow + label over the carousel (slide B — handle visible). Tweak path in SVG when adjusting. */
+function CarryingHandleOverlay({ visible }: { visible: boolean }) {
+  if (!visible) return null;
+  return (
+    <div className="pointer-events-none absolute inset-0 z-20 overflow-visible" aria-hidden>
+      {/* Label — lower left; arrow rides over the photo toward the webbing loop (top-center / upper-mid). */}
+      <div className="absolute bottom-[6%] left-[4%] max-w-[min(78%,280px)] rounded-md bg-white/93 px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-sm sm:bottom-[8%] sm:max-w-[300px] sm:px-4 sm:py-2.5 md:bottom-[10%] md:left-[5%]">
+        <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base md:text-lg">
+          Carrying handle for easy travel
+        </p>
+      </div>
+      <svg
+        className="absolute inset-0 size-full text-neutral-900"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M 22 82 Q 42 58 50 38 Q 54 26 53 18"
+          stroke="currentColor"
+          strokeWidth={0.85}
+          strokeDasharray="2 3"
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          className="opacity-[0.92]"
+        />
+        <path d="M52 17 L54 21 L56 17 Z" fill="currentColor" className="opacity-[0.92]" />
+      </svg>
+    </div>
+  );
+}
+
 function BottomImageCarousel({ className }: { className?: string }) {
   const [slide, setSlide] = useState(0);
 
@@ -144,12 +165,8 @@ function BottomImageCarousel({ className }: { className?: string }) {
   }, []);
 
   return (
-    <div
-      className={cn("relative overflow-hidden rounded-lg bg-neutral-50 shadow-md shadow-black/[0.07]", className)}
-      aria-live="polite"
-      aria-label="Product detail photos"
-    >
-      <div className="relative aspect-[3/4] w-full sm:aspect-[4/5] md:aspect-[5/6]">
+    <div className={cn("relative w-full overflow-visible border-0 bg-transparent shadow-none ring-0", className)} aria-live="polite" aria-label="Product detail photos">
+      <div className="relative min-h-[min(52vh,440px)] w-full sm:min-h-[min(54vh,480px)] md:min-h-[min(56vh,560px)] lg:min-h-[min(58vh,620px)]">
         <img
           src={IMG_BOTTOM_A}
           alt=""
@@ -168,6 +185,7 @@ function BottomImageCarousel({ className }: { className?: string }) {
           )}
           draggable={false}
         />
+        <CarryingHandleOverlay visible={slide === 1} />
       </div>
     </div>
   );
@@ -242,32 +260,21 @@ export function NailspaPdpStory() {
         </div>
       </div>
 
-      {/* Bottom — rotating images + copy */}
-      <div className="border-t border-neutral-100 px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-12 md:px-10 lg:px-14">
-        <div className="mx-auto flex max-w-[min(100%,1120px)] flex-col gap-10 md:flex-row md:items-start md:gap-12 lg:gap-16">
-          <div className="w-full shrink-0 md:w-[min(42%,440px)] lg:w-[min(40%,480px)]">
+      {/* Bottom — rotating images + nail mat copy (carrying-handle callout overlays slide B on the image). */}
+      <div className="px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-12 md:px-10 lg:px-14">
+        <div className="mx-auto flex max-w-[min(100%,1200px)] flex-col gap-10 md:flex-row md:items-start md:gap-10 lg:gap-12">
+          <div className="w-full shrink-0 md:w-[min(58%,720px)] lg:w-[min(60%,780px)]">
             <BottomImageCarousel />
           </div>
 
-          <div className="flex flex-1 flex-col gap-9 md:justify-center md:pt-4 lg:gap-10">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <CalloutArrow variant="pointLeft" className="mt-2 h-6 w-[4.5rem] shrink-0 text-neutral-800 sm:h-7 sm:w-24 md:mt-3" />
-              <div>
-                <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
-                  Carrying handle for easy travel
-                </h3>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 sm:gap-4">
-              <CalloutArrow variant="pointLeft" className="mt-2 h-6 w-[4.5rem] shrink-0 text-neutral-800 sm:h-7 sm:w-24 md:mt-3" />
-              <div>
-                <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
-                  High quality nail mat
-                </h3>
-                <p className="mt-2 max-w-prose text-sm leading-snug text-neutral-700 sm:text-base">
-                  The Nailspa is machine washable and wipeable.
-                </p>
-              </div>
+          <div className="flex flex-1 flex-col md:justify-center md:pt-4">
+            <div>
+              <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
+                High quality nail mat
+              </h3>
+              <p className="mt-2 max-w-prose text-sm leading-snug text-neutral-700 sm:text-base">
+                The Nailspa is machine washable and wipeable.
+              </p>
             </div>
           </div>
         </div>
