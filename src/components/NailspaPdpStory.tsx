@@ -2,24 +2,34 @@
  * Editorial strip below NAILSPA PDP hero — matches Cosmo full-bleed white story rhythm.
  */
 
-const HEADLINE = "THE NAIL BAG THAT FINALLY GETS IT";
+import { useEffect, useState } from "react";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import { cn } from "@/lib/utils";
+
+const HEADLINE = "THE NAIL BAG THAT ACTUALLY GETS IT.";
+const IMG_MAIN = "/nailspa-pdp/story/image1.png";
+const IMG_BOTTOM_A = "/nailspa-pdp/story/bottom-a.png";
+const IMG_BOTTOM_B = "/nailspa-pdp/story/bottom-b.png";
+
+const CAROUSEL_MS = 3000;
 
 function CalloutArrow({
   className,
   variant,
 }: {
   className?: string;
-  variant: "mesh" | "lip";
+  variant: "mesh" | "lipRight" | "cord" | "pointLeft";
 }) {
   if (variant === "mesh") {
     return (
-      <svg
-        className={className}
-        viewBox="0 0 120 48"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden
-      >
+      <svg className={className} viewBox="0 0 120 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
         <path
           d="M8 40 L88 12"
           stroke="currentColor"
@@ -32,24 +42,134 @@ function CalloutArrow({
       </svg>
     );
   }
+  if (variant === "lipRight") {
+    return (
+      <svg className={className} viewBox="0 0 120 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+        <path
+          d="M112 12 L28 42"
+          stroke="currentColor"
+          strokeWidth={1.25}
+          strokeDasharray="3 4"
+          strokeLinecap="round"
+          className="text-neutral-800/85"
+        />
+        <path d="M28 42 L30 34 L36 46 Z" fill="currentColor" className="text-neutral-800/85" />
+      </svg>
+    );
+  }
+  if (variant === "cord") {
+    return (
+      <svg className={className} viewBox="0 0 120 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+        <path
+          d="M112 46 L22 14"
+          stroke="currentColor"
+          strokeWidth={1.25}
+          strokeDasharray="3 4"
+          strokeLinecap="round"
+          className="text-neutral-800/85"
+        />
+        <path d="M22 14 L18 22 L28 18 Z" fill="currentColor" className="text-neutral-800/85" />
+      </svg>
+    );
+  }
   return (
-    <svg
-      className={className}
-      viewBox="0 0 120 56"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-    >
+    <svg className={className} viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
       <path
-        d="M12 8 L96 44"
+        d="M110 16 L12 16"
         stroke="currentColor"
         strokeWidth={1.25}
         strokeDasharray="3 4"
         strokeLinecap="round"
         className="text-neutral-800/85"
       />
-      <path d="M96 44 L94 36 L88 46 Z" fill="currentColor" className="text-neutral-800/85" />
+      <path d="M12 16 L22 11 L22 21 Z" fill="currentColor" className="text-neutral-800/85" />
     </svg>
+  );
+}
+
+function MainImageCallouts({ className }: { className?: string }) {
+  return (
+    <div className={className}>
+      {/* Mesh — left */}
+      <div className="absolute left-[1%] top-[14%] z-10 flex max-w-[min(48%,220px)] flex-col items-start sm:left-[3%] sm:top-[12%] sm:max-w-[240px] md:left-[4%] md:top-[14%] md:max-w-[260px] lg:max-w-[280px]">
+        <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm sm:px-4 sm:py-3">
+          <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
+            Mesh pockets
+          </h2>
+          <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
+            Eight elastic mesh pockets to hold your favorite polishes.
+          </p>
+        </div>
+        <CalloutArrow variant="mesh" className="mt-1 ml-6 h-10 w-24 shrink-0 sm:ml-10 sm:h-12 sm:w-28 md:ml-14" />
+      </div>
+
+      {/* Containment lip — right */}
+      <div className="absolute right-[1%] top-[10%] z-10 flex max-w-[min(50%,240px)] flex-col items-end sm:right-[2%] sm:max-w-[260px] md:right-[3%] md:max-w-[280px] lg:max-w-[300px]">
+        <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm sm:px-4 sm:py-3">
+          <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
+            Convenient containment lip
+          </h2>
+          <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
+            The raised lip keeps polish and tools from falling off the counter.
+          </p>
+        </div>
+        <CalloutArrow variant="lipRight" className="mt-2 mr-8 h-12 w-28 shrink-0 sm:mr-12 sm:h-14 sm:w-32 md:mr-14" />
+      </div>
+
+      {/* Cord lock — lower right */}
+      <div className="absolute bottom-[8%] right-[2%] z-10 flex max-w-[min(54%,260px)] flex-col items-end sm:bottom-[10%] sm:max-w-[280px] md:bottom-[12%] md:right-[4%] md:max-w-[300px]">
+        <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm sm:px-4 sm:py-3">
+          <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
+            Sliding cord lock and cord pocket
+          </h2>
+          <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
+            Pull the drawstring cord and Lay-n-Go NAILSPA cinches completely closed. Grab the handle on the go.
+          </p>
+        </div>
+        <CalloutArrow variant="cord" className="mt-2 mr-6 h-12 w-28 shrink-0 sm:mr-10 sm:h-14 sm:w-32 md:mr-12" />
+      </div>
+    </div>
+  );
+}
+
+function BottomImageCarousel({ className }: { className?: string }) {
+  const [slide, setSlide] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return undefined;
+    const id = window.setInterval(() => setSlide((s) => (s + 1) % 2), CAROUSEL_MS);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return (
+    <div
+      className={cn("relative overflow-hidden rounded-lg bg-neutral-50 shadow-md shadow-black/[0.07]", className)}
+      aria-live="polite"
+      aria-label="Product detail photos"
+    >
+      <div className="relative aspect-[3/4] w-full sm:aspect-[4/5] md:aspect-[5/6]">
+        <img
+          src={IMG_BOTTOM_A}
+          alt=""
+          className={cn(
+            "absolute inset-0 size-full object-contain object-center transition-opacity duration-700 ease-in-out",
+            slide === 0 ? "z-10 opacity-100" : "z-0 opacity-0",
+          )}
+          draggable={false}
+        />
+        <img
+          src={IMG_BOTTOM_B}
+          alt=""
+          className={cn(
+            "absolute inset-0 size-full object-contain object-center transition-opacity duration-700 ease-in-out",
+            slide === 1 ? "z-10 opacity-100" : "z-0 opacity-0",
+          )}
+          draggable={false}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -59,64 +179,96 @@ export function NailspaPdpStory() {
       className="relative left-1/2 -ml-[50vw] w-screen bg-white pt-10 text-foreground sm:pt-12 md:pt-14"
       aria-labelledby="nailspa-story-headline"
     >
-      <p id="nailspa-story-headline" className="sr-only">
-        {HEADLINE}
-      </p>
+      <div className="px-5 pb-8 sm:px-8 sm:pb-10 md:pb-12">
+        <p
+          id="nailspa-story-headline"
+          className="text-center font-heading text-[clamp(2rem,7.5vw,4.75rem)] font-black uppercase leading-[1.02] tracking-tight text-foreground md:text-[clamp(2.35rem,5.5vw,5.25rem)] md:leading-[1.03]"
+        >
+          {HEADLINE}
+        </p>
+      </div>
 
-      {/* Row 1 — image left (edge-aligned), headline right; Cosmo-style bold uppercase */}
-      <div className="flex flex-col md:flex-row md:items-stretch">
-        <div className="relative min-h-[220px] w-full shrink-0 md:w-[min(46vw,560px)] lg:w-[min(44vw,620px)]">
-          <img
-            src="/nailspa-pdp/story/image1.png"
-            alt=""
-            className="block h-full min-h-[220px] w-full object-cover object-center md:min-h-[300px]"
-            loading="lazy"
-          />
-        </div>
-        <div className="flex flex-1 items-center justify-center px-5 py-10 sm:px-8 md:justify-start md:py-14 md:pl-8 lg:pl-12 lg:pr-16">
-          <p
-            className="max-w-[22ch] text-center font-heading text-[clamp(1.45rem,4.2vw,3.35rem)] font-black uppercase leading-[1.02] tracking-tight text-foreground sm:max-w-none md:text-left md:text-[clamp(1.65rem,3.5vw,3.75rem)] md:leading-[1.05] xl:whitespace-nowrap"
-            aria-hidden
-          >
-            {HEADLINE}
-          </p>
+      {/* Main hero — image 1 + three callouts */}
+      <div className="relative px-4 pb-12 sm:px-6 sm:pb-14 md:px-10 md:pb-16 lg:px-14">
+        <Dialog>
+          <div className="relative mx-auto max-w-[min(100%,1120px)]">
+            <DialogTrigger asChild>
+              <button
+                type="button"
+                className="group relative z-0 block w-full cursor-zoom-in overflow-hidden rounded-lg border-0 bg-transparent p-0 text-left shadow-md shadow-black/[0.07] ring-offset-background transition-shadow hover:shadow-lg hover:shadow-black/[0.1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              >
+                <span className="sr-only">Open larger product photo</span>
+                <img
+                  src={IMG_MAIN}
+                  alt=""
+                  className="relative z-0 block h-auto w-full transition-transform duration-500 ease-out group-hover:scale-[1.035] group-focus-visible:scale-[1.02]"
+                  loading="lazy"
+                  draggable={false}
+                />
+              </button>
+            </DialogTrigger>
+
+            <MainImageCallouts className="pointer-events-none absolute inset-0 z-10 max-md:hidden" />
+
+            <DialogContent className="max-h-[95vh] max-w-[min(96vw,1200px)] border-0 bg-transparent p-2 shadow-none sm:max-w-[min(96vw,1200px)] [&>button]:text-white [&>button]:drop-shadow-md">
+              <DialogTitle className="sr-only">Nail bag product photo</DialogTitle>
+              <img src={IMG_MAIN} alt="" className="mx-auto max-h-[88vh] w-full max-w-full object-contain" />
+            </DialogContent>
+          </div>
+        </Dialog>
+
+        {/* Mobile: stacked callouts under hero (tap targets stay clear) */}
+        <div className="mx-auto mt-6 max-w-[min(100%,1120px)] space-y-4 md:hidden">
+          <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm">
+            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Mesh pockets</h2>
+            <p className="mt-1 text-xs leading-snug text-neutral-700">
+              Eight elastic mesh pockets to hold your favorite polishes.
+            </p>
+          </div>
+          <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm">
+            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Convenient containment lip</h2>
+            <p className="mt-1 text-xs leading-snug text-neutral-700">
+              The raised lip keeps polish and tools from falling off the counter.
+            </p>
+          </div>
+          <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm">
+            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">
+              Sliding cord lock and cord pocket
+            </h2>
+            <p className="mt-1 text-xs leading-snug text-neutral-700">
+              Pull the drawstring cord and Lay-n-Go NAILSPA cinches completely closed. Grab the handle on the go.
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Row 2 — hero shot rotated 180°; left-column width (smaller than full-bleed); callouts */}
-      <div className="relative w-full shrink-0 md:w-[min(46vw,560px)] lg:w-[min(44vw,620px)]">
-        <img
-          src="/nailspa-pdp/story/image2.png"
-          alt=""
-          className="block h-auto w-full rotate-180"
-          loading="lazy"
-        />
-
-        <div className="pointer-events-none absolute inset-0 z-10">
-          {/* Mesh pockets — upper-left */}
-          <div className="absolute left-[2%] top-[6%] flex max-w-[min(46%,240px)] flex-col items-start sm:left-[4%] sm:top-[8%] sm:max-w-[260px] md:left-[5%] md:top-[10%] md:max-w-[280px]">
-            <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm sm:px-4 sm:py-3">
-              <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
-                Mesh pockets
-              </h2>
-              <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
-                Eight elastic mesh pockets to hold your favorite polishes.
-              </p>
-            </div>
-            <CalloutArrow variant="mesh" className="mt-1 ml-8 h-10 w-24 shrink-0 text-neutral-800 sm:ml-12 sm:h-12 sm:w-28 md:ml-16" />
+      {/* Bottom — rotating images + copy */}
+      <div className="border-t border-neutral-100 px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-12 md:px-10 lg:px-14">
+        <div className="mx-auto flex max-w-[min(100%,1120px)] flex-col gap-10 md:flex-row md:items-start md:gap-12 lg:gap-16">
+          <div className="w-full shrink-0 md:w-[min(42%,440px)] lg:w-[min(40%,480px)]">
+            <BottomImageCarousel />
           </div>
 
-          {/* Containment lip — lower-left curve */}
-          <div className="absolute bottom-[14%] left-[3%] flex max-w-[min(52%,280px)] flex-col items-start sm:bottom-[16%] sm:left-[4%] md:bottom-[18%] md:left-[6%] md:max-w-[300px]">
-            <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm sm:px-4 sm:py-3">
-              <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
-                Convenient containment lip
-              </h2>
-              <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
-                The raised lip keeps polish and tools from rolling off the counter.
-              </p>
+          <div className="flex flex-1 flex-col gap-9 md:justify-center md:pt-4 lg:gap-10">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <CalloutArrow variant="pointLeft" className="mt-2 h-6 w-[4.5rem] shrink-0 text-neutral-800 sm:h-7 sm:w-24 md:mt-3" />
+              <div>
+                <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
+                  Carrying handle for easy travel
+                </h3>
+              </div>
             </div>
-            <CalloutArrow variant="lip" className="mt-2 ml-6 h-12 w-28 shrink-0 sm:ml-10 sm:h-14 sm:w-32 md:ml-14" />
+            <div className="flex items-start gap-3 sm:gap-4">
+              <CalloutArrow variant="pointLeft" className="mt-2 h-6 w-[4.5rem] shrink-0 text-neutral-800 sm:h-7 sm:w-24 md:mt-3" />
+              <div>
+                <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
+                  High quality nail mat
+                </h3>
+                <p className="mt-2 max-w-prose text-sm leading-snug text-neutral-700 sm:text-base">
+                  The Nailspa is machine washable and wipeable.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
