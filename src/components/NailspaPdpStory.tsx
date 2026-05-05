@@ -2,6 +2,8 @@
  * Editorial strip below NAILSPA PDP hero — matches Cosmo full-bleed white story rhythm.
  */
 
+import { useMemo, useState } from "react";
+
 import { cn } from "@/lib/utils";
 
 const HEADLINE = "THE NAIL BAG THAT ACTUALLY GETS IT.";
@@ -22,6 +24,9 @@ const ARROWS = {
   },
   nailMat: { path: "M112 20 L10 20", head: "M10 20 L20 15 L20 25 Z", viewBox: "0 0 120 40" },
 } as const;
+type ArrowKey = keyof typeof ARROWS;
+type ArrowSpec = { path: string; head: string; viewBox: string };
+type ArrowMap = Record<ArrowKey, ArrowSpec>;
 
 function EditableArrow({
   className,
@@ -49,26 +54,72 @@ function EditableArrow({
   );
 }
 
+function ArrowEditor({
+  arrows,
+  onChange,
+}: {
+  arrows: ArrowMap;
+  onChange: (key: ArrowKey, field: keyof ArrowSpec, value: string) => void;
+}) {
+  return (
+    <div className="fixed right-3 top-3 z-[120] max-h-[85vh] w-[min(94vw,360px)] overflow-auto rounded-lg border border-neutral-200 bg-white/95 p-3 shadow-xl backdrop-blur">
+      <p className="font-heading text-sm font-bold tracking-tight">Arrow editor</p>
+      <p className="mt-1 text-xs text-neutral-600">Edit `path`, `head`, `viewBox` live on page.</p>
+      {(Object.keys(arrows) as ArrowKey[]).map((key) => (
+        <div key={key} className="mt-3 rounded-md border border-neutral-200 p-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-neutral-700">{key}</p>
+          <label className="mt-1 block text-[11px] text-neutral-700">
+            path
+            <textarea
+              className="mt-1 h-14 w-full rounded border border-neutral-300 px-1.5 py-1 font-mono text-[11px]"
+              value={arrows[key].path}
+              onChange={(e) => onChange(key, "path", e.target.value)}
+            />
+          </label>
+          <label className="mt-1 block text-[11px] text-neutral-700">
+            head
+            <textarea
+              className="mt-1 h-10 w-full rounded border border-neutral-300 px-1.5 py-1 font-mono text-[11px]"
+              value={arrows[key].head}
+              onChange={(e) => onChange(key, "head", e.target.value)}
+            />
+          </label>
+          <label className="mt-1 block text-[11px] text-neutral-700">
+            viewBox
+            <input
+              className="mt-1 w-full rounded border border-neutral-300 px-1.5 py-1 font-mono text-[11px]"
+              value={arrows[key].viewBox}
+              onChange={(e) => onChange(key, "viewBox", e.target.value)}
+            />
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function CalloutArrow({
   className,
   variant,
+  arrows,
 }: {
   className?: string;
   variant: "mesh" | "lipRight" | "cord";
+  arrows: ArrowMap;
 }) {
   if (variant === "mesh") {
-    return <EditableArrow className={className} path={ARROWS.mesh.path} head={ARROWS.mesh.head} viewBox={ARROWS.mesh.viewBox} />;
+    return <EditableArrow className={className} path={arrows.mesh.path} head={arrows.mesh.head} viewBox={arrows.mesh.viewBox} />;
   }
   if (variant === "lipRight") {
-    return <EditableArrow className={className} path={ARROWS.lipRight.path} head={ARROWS.lipRight.head} viewBox={ARROWS.lipRight.viewBox} />;
+    return <EditableArrow className={className} path={arrows.lipRight.path} head={arrows.lipRight.head} viewBox={arrows.lipRight.viewBox} />;
   }
   if (variant === "cord") {
-    return <EditableArrow className={className} path={ARROWS.cord.path} head={ARROWS.cord.head} viewBox={ARROWS.cord.viewBox} />;
+    return <EditableArrow className={className} path={arrows.cord.path} head={arrows.cord.head} viewBox={arrows.cord.viewBox} />;
   }
   return null;
 }
 
-function MainImageCallouts({ className }: { className?: string }) {
+function MainImageCallouts({ className, arrows }: { className?: string; arrows: ArrowMap }) {
   return (
     <div className={className}>
       {/* Mesh — left */}
@@ -81,7 +132,7 @@ function MainImageCallouts({ className }: { className?: string }) {
             Eight elastic mesh pockets to hold your favorite polishes.
           </p>
         </div>
-        <CalloutArrow variant="mesh" className="mt-1 ml-6 h-10 w-24 shrink-0 sm:ml-10 sm:h-12 sm:w-28 md:ml-14" />
+        <CalloutArrow variant="mesh" arrows={arrows} className="mt-1 ml-6 h-10 w-24 shrink-0 sm:ml-10 sm:h-12 sm:w-28 md:ml-14" />
       </div>
 
       {/* Containment lip — right */}
@@ -94,7 +145,7 @@ function MainImageCallouts({ className }: { className?: string }) {
             The raised lip keeps polish and tools from falling off the counter.
           </p>
         </div>
-        <CalloutArrow variant="lipRight" className="mt-2 mr-8 h-12 w-28 shrink-0 sm:mr-12 sm:h-14 sm:w-32 md:mr-14" />
+        <CalloutArrow variant="lipRight" arrows={arrows} className="mt-2 mr-8 h-12 w-28 shrink-0 sm:mr-12 sm:h-14 sm:w-32 md:mr-14" />
       </div>
 
       {/* Cord lock — lower right */}
@@ -107,14 +158,14 @@ function MainImageCallouts({ className }: { className?: string }) {
             Pull the drawstring cord and Lay-n-Go NAILSPA cinches completely closed. Grab the handle on the go.
           </p>
         </div>
-        <CalloutArrow variant="cord" className="mt-2 mr-6 h-12 w-28 shrink-0 sm:mr-10 sm:h-14 sm:w-32 md:mr-12" />
+        <CalloutArrow variant="cord" arrows={arrows} className="mt-2 mr-6 h-12 w-28 shrink-0 sm:mr-10 sm:h-14 sm:w-32 md:mr-12" />
       </div>
     </div>
   );
 }
 
 /** Curved arrow + label over the closed-bag photo. Tweak path in SVG when adjusting. */
-function CarryingHandleOverlay() {
+function CarryingHandleOverlay({ arrows }: { arrows: ArrowMap }) {
   return (
     <div className="pointer-events-none absolute inset-0 z-20 overflow-visible" aria-hidden>
       <div className="absolute bottom-[6%] right-[4%] max-w-[min(78%,280px)] rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:bottom-[8%] sm:max-w-[300px] sm:px-4 sm:py-2.5 md:bottom-[10%] md:right-[5%]">
@@ -124,15 +175,15 @@ function CarryingHandleOverlay() {
       </div>
       <EditableArrow
         className="absolute inset-0 size-full text-neutral-900"
-        path={ARROWS.carry.path}
-        head={ARROWS.carry.head}
-        viewBox={ARROWS.carry.viewBox}
+        path={arrows.carry.path}
+        head={arrows.carry.head}
+        viewBox={arrows.carry.viewBox}
       />
     </div>
   );
 }
 
-function BottomProductImage({ className }: { className?: string }) {
+function BottomProductImage({ className, arrows }: { className?: string; arrows: ArrowMap }) {
   return (
     <div
       className={cn("relative w-full overflow-visible border-0 bg-transparent shadow-none ring-0", className)}
@@ -146,18 +197,67 @@ function BottomProductImage({ className }: { className?: string }) {
           draggable={false}
           loading="lazy"
         />
-        <CarryingHandleOverlay />
+        <CarryingHandleOverlay arrows={arrows} />
       </div>
     </div>
   );
 }
 
 export function NailspaPdpStory() {
+  const [liveEdit, setLiveEdit] = useState(false);
+  const [arrows, setArrows] = useState<ArrowMap>(ARROWS);
+  const arrowsJson = useMemo(() => JSON.stringify(arrows, null, 2), [arrows]);
+
+  const updateArrow = (key: ArrowKey, field: keyof ArrowSpec, value: string) => {
+    setArrows((prev) => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        [field]: value,
+      },
+    }));
+  };
+
+  const copyArrowJson = async () => {
+    try {
+      await navigator.clipboard.writeText(arrowsJson);
+    } catch {
+      // no-op: if clipboard is blocked, user can still copy from the textarea below
+    }
+  };
+
   return (
     <section
       className="relative left-1/2 -ml-[50vw] w-screen bg-white pt-10 text-foreground sm:pt-12 md:pt-14"
       aria-labelledby="nailspa-story-headline"
     >
+      <div className="fixed left-3 top-3 z-[120] flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setLiveEdit((v) => !v)}
+          className="rounded-md bg-black px-3 py-1.5 text-xs font-semibold text-white"
+        >
+          {liveEdit ? "Hide Arrow Editor" : "Edit Arrows"}
+        </button>
+        {liveEdit ? (
+          <button
+            type="button"
+            onClick={copyArrowJson}
+            className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-900"
+          >
+            Copy Coordinates
+          </button>
+        ) : null}
+      </div>
+      {liveEdit ? (
+        <ArrowEditor arrows={arrows} onChange={updateArrow} />
+      ) : null}
+      {liveEdit ? (
+        <div className="fixed bottom-3 right-3 z-[120] w-[min(94vw,420px)] rounded-lg border border-neutral-200 bg-white/95 p-2 shadow-xl backdrop-blur">
+          <p className="mb-1 text-xs font-semibold text-neutral-700">Submit this JSON to me</p>
+          <textarea readOnly value={arrowsJson} className="h-32 w-full rounded border border-neutral-300 p-2 font-mono text-[11px]" />
+        </div>
+      ) : null}
       <div className="px-5 pb-8 sm:px-8 sm:pb-10 md:pb-12">
         <p
           id="nailspa-story-headline"
@@ -171,7 +271,7 @@ export function NailspaPdpStory() {
       <div className="relative px-4 pb-12 sm:px-6 sm:pb-14 md:px-10 md:pb-16 lg:px-14">
         <div className="relative mx-auto max-w-[min(100%,1120px)]">
           <img src={IMG_MAIN} alt="" className="relative z-0 block h-auto w-full" loading="lazy" draggable={false} />
-          <MainImageCallouts className="pointer-events-none absolute inset-0 z-10 max-md:hidden" />
+          <MainImageCallouts arrows={arrows} className="pointer-events-none absolute inset-0 z-10 max-md:hidden" />
         </div>
 
         {/* Mobile: stacked callouts under hero (tap targets stay clear) */}
@@ -203,16 +303,16 @@ export function NailspaPdpStory() {
       <div className="px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-12 md:px-10 lg:px-14">
         <div className="mx-auto flex max-w-[min(100%,1200px)] flex-col gap-10 md:flex-row md:items-start md:gap-10 lg:gap-12">
           <div className="w-full shrink-0 md:w-[min(58%,720px)] lg:w-[min(60%,780px)]">
-            <BottomProductImage />
+            <BottomProductImage arrows={arrows} />
           </div>
 
           <div className="flex flex-1 flex-col md:justify-center md:pt-4">
             <div className="flex items-start gap-3 sm:gap-4">
               <EditableArrow
                 className="mt-2 h-6 w-[4.5rem] shrink-0 text-neutral-800 sm:h-7 sm:w-24 md:mt-3"
-                path={ARROWS.nailMat.path}
-                head={ARROWS.nailMat.head}
-                viewBox={ARROWS.nailMat.viewBox}
+                path={arrows.nailMat.path}
+                head={arrows.nailMat.head}
+                viewBox={arrows.nailMat.viewBox}
               />
               <div>
               <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
