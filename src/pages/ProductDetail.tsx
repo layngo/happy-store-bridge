@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
-import { useParams, Link, useSearchParams, useLocation } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import {
   fetchProductByHandle,
   fetchRelatedProducts,
@@ -25,6 +25,12 @@ import {
   getCosmo22InitialSelection,
   isCosmo22Product,
 } from "@/components/Cosmo22ColorSelector";
+import {
+  Nailspa18ColorSelector,
+  getNailspa18HeroImageUrls,
+  getNailspa18InitialSelection,
+  isNailspa18Product,
+} from "@/components/Nailspa18ColorSelector";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
 import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
@@ -56,6 +62,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [cosmo20GalleryIndex, setCosmo20GalleryIndex] = useState(0);
   const [cosmo22GalleryIndex, setCosmo22GalleryIndex] = useState(0);
+  const [nailspa18GalleryIndex, setNailspa18GalleryIndex] = useState(0);
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
 
@@ -80,6 +87,7 @@ const ProductDetail = () => {
     setQuantity(1);
     setCosmo20GalleryIndex(0);
     setCosmo22GalleryIndex(0);
+    setNailspa18GalleryIndex(0);
   }, [product?.id]);
 
   useEffect(() => {
@@ -95,8 +103,15 @@ const ProductDetail = () => {
   }, [product?.id, product?.handle]);
 
   useEffect(() => {
+    if (!product || !isNailspa18Product(product.handle)) return;
+    const init = getNailspa18InitialSelection(product);
+    if (init) setSelectedVariantIdx(init.variantIdx);
+  }, [product?.id, product?.handle]);
+
+  useEffect(() => {
     setCosmo20GalleryIndex(0);
     setCosmo22GalleryIndex(0);
+    setNailspa18GalleryIndex(0);
   }, [selectedVariantIdx]);
 
   const backHref = collectionHandle ? `/collections/${collectionHandle}` : "/collections";
@@ -123,24 +138,35 @@ const ProductDetail = () => {
     return getCosmo22HeroImageUrls(color, v);
   }, [product, selectedVariantIdx]);
 
+  const nailspa18HeroUrls = useMemo(() => {
+    if (!product || !isNailspa18Product(product.handle)) return [];
+    const v = product.variants.edges[selectedVariantIdx]?.node;
+    const color = v?.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value;
+    if (!color) return [];
+    return getNailspa18HeroImageUrls(color, v);
+  }, [product, selectedVariantIdx]);
+
+  /** Same chrome as Cosmo PDP (grid, typography, buy box); includes Nailspa. */
   const isCosmoPdp = Boolean(
+    product &&
+      (isCosmo20Product(product.handle) ||
+        isCosmo22Product(product.handle) ||
+        isCosmoMini16Product(product.handle, product.title) ||
+        isNailspa18Product(product.handle)),
+  );
+
+  /** Editorial story strip + arrow editor — Cosmo bags only, not Nailspa. */
+  const isCosmoStoryPdp = Boolean(
     product &&
       (isCosmo20Product(product.handle) ||
         isCosmo22Product(product.handle) ||
         isCosmoMini16Product(product.handle, product.title)),
   );
 
-  const location = useLocation();
   const [searchParams] = useSearchParams();
   const cosmoStoryArrowEditMode =
-    isCosmoPdp &&
+    isCosmoStoryPdp &&
     (searchParams.get("editArrows") === "1" || searchParams.get("editArrows") === "true");
-
-  const cosmoArrowEditHref = useMemo(() => {
-    const p = new URLSearchParams(location.search);
-    p.set("editArrows", "1");
-    return `${location.pathname}?${p.toString()}`;
-  }, [location.pathname, location.search]);
 
   const cosmoYoutubeId = useMemo(
     () => (product ? extractFirstYoutubeVideoId(product.description || "") : null),
@@ -217,6 +243,12 @@ const ProductDetail = () => {
       alt={product.title}
       className="h-full w-full max-h-full object-contain"
     />
+  ) : isNailspa18Product(product.handle) && nailspa18HeroUrls.length > 0 ? (
+    <img
+      src={nailspa18HeroUrls[Math.min(nailspa18GalleryIndex, nailspa18HeroUrls.length - 1)]}
+      alt={product.title}
+      className="h-full w-full max-h-full object-contain"
+    />
   ) : orderedImages[selectedImage]?.node ? (
     <img
       src={orderedImages[selectedImage].node.url}
@@ -263,7 +295,27 @@ const ProductDetail = () => {
           ))}
         </div>
       ) : null}
-      {!isCosmo22Product(product.handle) && !isCosmo20Product(product.handle) && orderedImages.length > 1 ? (
+      {isNailspa18Product(product.handle) && nailspa18HeroUrls.length > 1 ? (
+        <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Variant photo gallery">
+          {nailspa18HeroUrls.map((url, i) => (
+            <button
+              key={`${url}-${i}`}
+              type="button"
+              onClick={() => setNailspa18GalleryIndex(i)}
+              className={cn(
+                "flex h-16 w-16 shrink-0 items-center justify-center bg-muted/15 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+                i === nailspa18GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
+              )}
+            >
+              <img src={url} alt="" className="max-h-full max-w-full object-contain" />
+            </button>
+          ))}
+        </div>
+      ) : null}
+      {!isCosmo22Product(product.handle) &&
+      !isCosmo20Product(product.handle) &&
+      !isNailspa18Product(product.handle) &&
+      orderedImages.length > 1 ? (
         <div className="flex gap-2 overflow-x-auto">
           {orderedImages.map((img, i) => (
             <button
@@ -300,6 +352,18 @@ const ProductDetail = () => {
         if (isCosmo20Product(product.handle) && isColorOption) {
           return (
             <Cosmo20ColorSelector
+              key={optIdx}
+              product={product}
+              selectedVariantIdx={selectedVariantIdx}
+              onVariantChange={(variantIndex) => {
+                setSelectedVariantIdx(variantIndex);
+              }}
+            />
+          );
+        }
+        if (isNailspa18Product(product.handle) && isColorOption) {
+          return (
+            <Nailspa18ColorSelector
               key={optIdx}
               product={product}
               selectedVariantIdx={selectedVariantIdx}
@@ -509,7 +573,7 @@ const ProductDetail = () => {
                   <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5 border-b border-neutral-200/80 pb-6">
                     <div>
                       <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500">Price</p>
-                      <p className="font-cosmo-price mt-1 text-3xl font-semibold tabular-nums text-neutral-800 sm:text-[2.125rem]">
+                      <p className="font-cosmo-cta mt-1 text-3xl font-semibold tabular-nums text-neutral-800 sm:text-[2.125rem]">
                         ${priceDisplay}
                       </p>
                     </div>
@@ -524,32 +588,13 @@ const ProductDetail = () => {
               </div>
             </section>
 
-            <CosmoPdpStory editorMode={cosmoStoryArrowEditMode} />
-
-            <p className="mt-4 text-center text-xs text-neutral-500">
-              <span className="block sm:inline">
-                <Link
-                  to={cosmoArrowEditHref}
-                  className="text-primary underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-800"
-                >
-                  Edit arrows on this page
-                </Link>{" "}
-                (adds <code className="rounded bg-neutral-100 px-1 font-mono text-[10px]">?editArrows=1</code>
-                ) ·{" "}
-              </span>
-              <Link
-                to="/dev/cosmo-arrows"
-                className="underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-800"
-              >
-                or open the grid editor
-              </Link>
-            </p>
+            {isCosmoStoryPdp ? <CosmoPdpStory editorMode={cosmoStoryArrowEditMode} /> : null}
 
             <section className="mt-14 sm:mt-16" aria-label={cosmoYoutubeId ? "Product video" : "Video placeholder"}>
               <div className="relative aspect-video overflow-hidden rounded-2xl border border-border bg-muted/40 shadow-inner">
                 {cosmoYoutubeId ? (
                   <iframe
-                    title="Cosmo product video"
+                    title="Product video"
                     src={`https://www.youtube.com/embed/${cosmoYoutubeId}?rel=0`}
                     className="absolute inset-0 h-full w-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

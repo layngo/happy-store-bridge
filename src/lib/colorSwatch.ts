@@ -27,6 +27,11 @@ export function colorNameToApproximateHex(value: string): string {
     leopard: "#b8956a",
     paisley: "#2d4a6f",
     "tan check": "#c4b59a",
+    "violet femme": "#7A89E8",
+    "dorothys slipper": "#DC2626",
+    "dorothy's slipper (red)": "#DC2626",
+    "what a doll": "#E6007E",
+    "what a doll (pink)": "#E6007E",
   };
   if (map[key]) return map[key];
   const first = key.split(/[\s(/]+/)[0];
