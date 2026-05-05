@@ -424,7 +424,7 @@ function CarryingHandleOverlay({
       >
         {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
         <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base md:text-lg">
-          Carrying handle for easy travel
+          High quality nail mat
         </p>
       </div>
       <EditableArrow
@@ -526,7 +526,7 @@ function NailMatCalloutEditor({
         <div className={CALLOUT_PANEL}>
           {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
           <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
-            High quality nail mat
+            Carrying handle for easy travel
           </h3>
           <p className="mt-2 text-sm leading-snug text-neutral-700 sm:text-base">
             The Nailspa is machine washable and wipeable.
