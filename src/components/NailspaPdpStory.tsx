@@ -164,8 +164,8 @@ function ArrowEditorHandles({
     (ev: React.PointerEvent) => {
       if (!dragKey || !boxRef.current) return;
       const r = boxRef.current.getBoundingClientRect();
-      const xPct = clamp(((ev.clientX - r.left) / r.width) * 100, 0, 100);
-      const yPct = clamp(((ev.clientY - r.top) / r.height) * 100, 0, 100);
+      const xPct = ((ev.clientX - r.left) / r.width) * 100;
+      const yPct = ((ev.clientY - r.top) / r.height) * 100;
       setGeom({ ...geom, [dragKey]: pctToPoint(xPct, yPct, geom.viewBox) });
     },
     [dragKey, geom, setGeom],
@@ -187,7 +187,6 @@ function ArrowEditorHandles({
       onPointerMove={move}
       onPointerUp={() => setDragKey(null)}
       onPointerCancel={() => setDragKey(null)}
-      onPointerLeave={() => setDragKey(null)}
     >
       {points.map(({ key, pt, color, label }) => (
         <button
@@ -203,7 +202,7 @@ function ArrowEditorHandles({
           onPointerDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            e.currentTarget.setPointerCapture(e.pointerId);
+            boxRef.current?.setPointerCapture(e.pointerId);
             setDragKey(key);
           }}
         />
@@ -278,9 +277,9 @@ function MainImageCallouts({
     (ev: React.PointerEvent) => {
       if (!editorMode || !dragCordBox || !boxRef.current) return;
       const r = boxRef.current.getBoundingClientRect();
-      const xPct = clamp(((ev.clientX - r.left) / r.width) * 100, 0, 100);
-      const yPct = clamp(((ev.clientY - r.top) / r.height) * 100, 0, 100);
-      onCordBoxPosChange({ right: clamp(100 - xPct, 0, 96), bottom: clamp(100 - yPct, 0, 96) });
+      const xPct = ((ev.clientX - r.left) / r.width) * 100;
+      const yPct = ((ev.clientY - r.top) / r.height) * 100;
+      onCordBoxPosChange({ right: 100 - xPct, bottom: 100 - yPct });
     },
     [dragCordBox, editorMode, onCordBoxPosChange],
   );
@@ -292,7 +291,6 @@ function MainImageCallouts({
       onPointerMove={moveCordBox}
       onPointerUp={() => setDragCordBox(false)}
       onPointerCancel={() => setDragCordBox(false)}
-      onPointerLeave={() => setDragCordBox(false)}
     >
       {/* Mesh — left */}
       <div className="absolute left-[1%] top-[14%] z-10 flex max-w-[min(48%,220px)] flex-col items-start sm:left-[3%] sm:top-[12%] sm:max-w-[240px] md:left-[4%] md:top-[14%] md:max-w-[260px] lg:max-w-[280px]">
@@ -345,7 +343,7 @@ function MainImageCallouts({
               onPointerDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                e.currentTarget.setPointerCapture(e.pointerId);
+                boxRef.current?.setPointerCapture(e.pointerId);
                 setDragCordBox(true);
               }}
             >
@@ -391,9 +389,9 @@ function CarryingHandleOverlay({
     (ev: React.PointerEvent) => {
       if (!editorMode || !dragCarryBox || !boxRef.current) return;
       const r = boxRef.current.getBoundingClientRect();
-      const xPct = clamp(((ev.clientX - r.left) / r.width) * 100, 0, 100);
-      const yPct = clamp(((ev.clientY - r.top) / r.height) * 100, 0, 100);
-      onCarryBoxPosChange({ x: clamp(xPct, 0, 92), y: clamp(yPct, 0, 94) });
+      const xPct = ((ev.clientX - r.left) / r.width) * 100;
+      const yPct = ((ev.clientY - r.top) / r.height) * 100;
+      onCarryBoxPosChange({ x: xPct, y: yPct });
     },
     [dragCarryBox, editorMode, onCarryBoxPosChange],
   );
@@ -409,7 +407,6 @@ function CarryingHandleOverlay({
       onPointerMove={moveCarryBox}
       onPointerUp={() => setDragCarryBox(false)}
       onPointerCancel={() => setDragCarryBox(false)}
-      onPointerLeave={() => setDragCarryBox(false)}
     >
       <div
         className="absolute max-w-[min(78%,280px)] rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:max-w-[300px] sm:px-4 sm:py-2.5"
@@ -422,7 +419,7 @@ function CarryingHandleOverlay({
             onPointerDown={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              e.currentTarget.setPointerCapture(e.pointerId);
+                boxRef.current?.setPointerCapture(e.pointerId);
               setDragCarryBox(true);
             }}
           >
@@ -503,9 +500,9 @@ function NailMatCalloutEditor({
     (ev: React.PointerEvent) => {
       if (!editorMode || !dragBox || !wrapRef.current) return;
       const r = wrapRef.current.getBoundingClientRect();
-      const xPct = clamp(((ev.clientX - r.left) / r.width) * 100, 0, 100);
-      const yPct = clamp(((ev.clientY - r.top) / r.height) * 100, 0, 100);
-      onNailMatBoxPosChange({ x: clamp(xPct, 5, 95), y: clamp(yPct, 8, 92) });
+      const xPct = ((ev.clientX - r.left) / r.width) * 100;
+      const yPct = ((ev.clientY - r.top) / r.height) * 100;
+      onNailMatBoxPosChange({ x: xPct, y: yPct });
     },
     [dragBox, editorMode, onNailMatBoxPosChange],
   );
@@ -517,7 +514,6 @@ function NailMatCalloutEditor({
       onPointerMove={moveBox}
       onPointerUp={() => setDragBox(false)}
       onPointerCancel={() => setDragBox(false)}
-      onPointerLeave={() => setDragBox(false)}
     >
       <div
         className="absolute w-[min(90%,360px)]"
@@ -531,7 +527,7 @@ function NailMatCalloutEditor({
               onPointerDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                e.currentTarget.setPointerCapture(e.pointerId);
+                wrapRef.current?.setPointerCapture(e.pointerId);
                 setDragBox(true);
               }}
             >
