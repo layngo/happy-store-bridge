@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -37,6 +37,10 @@ const AppContent = () => {
 
         <Route path="/collections/:collectionHandle/products/:productHandle" element={<ProductDetail />} />
         <Route path="/collections/:handle/:filterSlug" element={<Collection />} />
+        <Route
+          path="/collections/nail-solutions"
+          element={<Navigate to="/product/lay-n-go-nailspa-18" replace />}
+        />
         <Route path="/collections/:handle" element={<Collection />} />
         <Route path="/collections" element={<CollectionsIndex />} />
 

@@ -2,7 +2,7 @@ export const SHOP_ACCOUNT_URL = "https://www.layngo.com/account/login";
 
 export const shopCollectionLinks = [
   { to: "/collections/cosmetic-bags", label: "Cosmetic Bags" },
-  { to: "/collections/nail-solutions", label: "Nail Solutions" },
+  { to: "/product/lay-n-go-nailspa-18", label: "Nail Solutions" },
   { to: "/collections/play", label: "Play" },
   { to: "/collections/technology", label: "Tech & Travel" },
   { to: "/collections/pet-solutions", label: "Pet Solutions" },

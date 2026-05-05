@@ -7,7 +7,9 @@ interface CollectionCardProps {
   variant?: "default" | "home";
 }
 
-const HOME_VIDEO_CARDS: Record<string, { videoId: string; hoverSrc: string; label: string }> = {
+const NAILSPA_PRODUCT_PATH = "/product/lay-n-go-nailspa-18";
+
+const HOME_VIDEO_CARDS: Record<string, { videoId: string; hoverSrc: string; label: string; linkTo?: string }> = {
   "cosmetic-bags": {
     videoId: "1188306142",
     hoverSrc: "https://www.layngo.com/cdn/shop/products/B00B04V3PQ.PT01_1200x1200.jpg?v=1670376558",
@@ -17,6 +19,7 @@ const HOME_VIDEO_CARDS: Record<string, { videoId: string; hoverSrc: string; labe
     videoId: "1188306129",
     hoverSrc: "https://www.layngo.com/cdn/shop/products/B082LQ788D.PT01_1200x1200.jpg?v=1626120523",
     label: "Nail Solutions",
+    linkTo: NAILSPA_PRODUCT_PATH,
   },
   "military-first-responder": {
     videoId: "1188297111",
@@ -60,8 +63,11 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
     );
   }
 
+  const defaultHref =
+    collection.handle === "nail-solutions" ? NAILSPA_PRODUCT_PATH : `/collections/${collection.handle}`;
+
   return (
-    <Link to={`/collections/${collection.handle}`} className="group block">
+    <Link to={defaultHref} className="group block">
       <div className="overflow-hidden rounded-lg bg-card border border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
         <div className="aspect-[4/3] relative overflow-hidden bg-muted">
           {img ? (

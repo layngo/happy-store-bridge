@@ -22,7 +22,7 @@ export const NAILSPA_18_SWATCHES: Nailspa18SwatchDef[] = [
     selectedLabel: "Violet Femme",
     tooltip: "Violet Femme",
     bagImageUrl: "https://m.media-amazon.com/images/I/81ozPQRqXIL._AC_SX679_.jpg",
-    swatchHex: "#7A89E8",
+    swatchImageUrl: "/swatches/nailspa-18-violet-femme.png",
   },
   {
     /** Archive Shopify option: `Dorothys Slipper` (no apostrophe). */
