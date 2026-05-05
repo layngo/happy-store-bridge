@@ -41,6 +41,9 @@ import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPl
 const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
 
+const LAY_N_GO_LARGE_VIMEO_EMBED_SRC =
+  "https://player.vimeo.com/video/1189557207?badge=0&autopause=0&player_id=0&app_id=58479";
+
 function getOrderedImagesForProduct(product: ShopifyProduct["node"]) {
   const imgs = product.images.edges;
   if (!isCosmoMini16Product(product.handle, product.title) || imgs.length < 4) return imgs;
@@ -222,6 +225,7 @@ const ProductDetail = () => {
   const priceDisplay = parseFloat(
     selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount,
   ).toFixed(2);
+  const isLayNGoLarge60 = product.handle.toLowerCase() === "lay-n-go-large-60";
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
@@ -644,9 +648,26 @@ const ProductDetail = () => {
 
             {isCosmoStoryPdp ? <CosmoPdpStory editorMode={cosmoStoryArrowEditMode} /> : null}
 
-            <section className="mt-14 sm:mt-16" aria-label={cosmoYoutubeId ? "Product video" : "Video placeholder"}>
-              <div className="relative aspect-video overflow-hidden rounded-2xl border border-border bg-muted/40 shadow-inner">
-                {cosmoYoutubeId ? (
+            <section
+              className="mt-14 sm:mt-16"
+              aria-label={isLayNGoLarge60 || cosmoYoutubeId ? "Product video" : "Video placeholder"}
+            >
+              <div
+                className={cn(
+                  "relative w-full overflow-hidden rounded-2xl border border-border bg-muted/40 shadow-inner",
+                  isLayNGoLarge60 ? "pt-[56.34%]" : "aspect-video",
+                )}
+              >
+                {isLayNGoLarge60 ? (
+                  <iframe
+                    title="Lay-n-Go Large demo video"
+                    src={LAY_N_GO_LARGE_VIMEO_EMBED_SRC}
+                    className="absolute inset-0 h-full w-full border-0"
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                    allowFullScreen
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
+                ) : cosmoYoutubeId ? (
                   <iframe
                     title="Product video"
                     src={`https://www.youtube.com/embed/${cosmoYoutubeId}?rel=0`}
@@ -655,7 +676,7 @@ const ProductDetail = () => {
                     allowFullScreen
                   />
                 ) : (
-                  <div className="flex h-full min-h-[220px] flex-col items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/35 bg-muted/30 px-6 py-12 text-center">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/35 bg-muted/30 px-6 py-12 text-center">
                     <span className="font-heading text-xl font-semibold tracking-tight text-muted-foreground">
                       Video placeholder
                     </span>
