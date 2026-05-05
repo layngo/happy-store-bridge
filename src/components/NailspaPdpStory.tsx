@@ -83,8 +83,8 @@ export function NailspaPdpStory() {
         </div>
       </div>
 
-      {/* Row 2 — hero shot rotated 180° so outer lip meets top edge; callouts */}
-      <div className="relative">
+      {/* Row 2 — hero shot rotated 180°; left-column width (smaller than full-bleed); callouts */}
+      <div className="relative w-full shrink-0 md:w-[min(46vw,560px)] lg:w-[min(44vw,620px)]">
         <img
           src="/nailspa-pdp/story/image2.png"
           alt=""
