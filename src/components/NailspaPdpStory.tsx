@@ -46,7 +46,7 @@ const ARROWS: ArrowMap = {
     end: { x: 53, y: 19 },
   },
   nailMat: {
-    viewBox: "-120 -80 360 220",
+    viewBox: "0 0 120 40",
     start: { x: 112, y: 20 },
     control: { x: 60, y: 20 },
     end: { x: 10, y: 20 },
@@ -332,13 +332,13 @@ function MainImageCallouts({
 
       {/* Cord lock — lower right */}
       <div
-        className="absolute z-10 flex max-w-[min(54%,260px)] flex-col items-end sm:max-w-[280px] md:max-w-[300px]"
+        className="absolute z-10 flex max-w-[min(54%,260px)] cursor-move touch-none flex-col items-end sm:max-w-[280px] md:max-w-[300px]"
         style={{ bottom: `${cordBoxPos.bottom}%`, right: `${cordBoxPos.right}%` }}
         onPointerDown={(e) => {
           if (!editorMode) return;
           e.preventDefault();
           e.stopPropagation();
-          boxRef.current?.setPointerCapture(e.pointerId);
+          e.currentTarget.setPointerCapture(e.pointerId);
           setDragCordBox(true);
         }}
       >
@@ -403,13 +403,13 @@ function CarryingHandleOverlay({
       onPointerCancel={() => setDragCarryBox(false)}
     >
       <div
-        className="absolute max-w-[min(78%,280px)] rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:max-w-[300px] sm:px-4 sm:py-2.5"
+        className="absolute max-w-[min(78%,280px)] cursor-move touch-none rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:max-w-[300px] sm:px-4 sm:py-2.5"
         style={{ left: `${carryBoxPos.x}%`, top: `${carryBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
         onPointerDown={(e) => {
           if (!editorMode) return;
           e.preventDefault();
           e.stopPropagation();
-          boxRef.current?.setPointerCapture(e.pointerId);
+          e.currentTarget.setPointerCapture(e.pointerId);
           setDragCarryBox(true);
         }}
       >
@@ -504,13 +504,13 @@ function NailMatCalloutEditor({
       onPointerCancel={() => setDragBox(false)}
     >
       <div
-        className="absolute w-[min(90%,360px)]"
+        className="absolute w-[min(90%,360px)] cursor-move touch-none"
         style={{ left: `${nailMatBoxPos.x}%`, top: `${nailMatBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
         onPointerDown={(e) => {
           if (!editorMode) return;
           e.preventDefault();
           e.stopPropagation();
-          wrapRef.current?.setPointerCapture(e.pointerId);
+          e.currentTarget.setPointerCapture(e.pointerId);
           setDragBox(true);
         }}
       >
