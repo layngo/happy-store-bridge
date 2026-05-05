@@ -311,7 +311,13 @@ function CarryingHandleOverlay({
   onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
 }) {
   return (
-    <div className="pointer-events-none absolute inset-0 z-20 overflow-visible" aria-hidden>
+    <div
+      className={cn(
+        "absolute inset-0 z-20 overflow-visible",
+        editorMode ? "pointer-events-auto" : "pointer-events-none",
+      )}
+      aria-hidden
+    >
       <div className="absolute bottom-[6%] right-[4%] max-w-[min(78%,280px)] rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:bottom-[8%] sm:max-w-[300px] sm:px-4 sm:py-2.5 md:bottom-[10%] md:right-[5%]">
         <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base md:text-lg">
           Carrying handle for easy travel
@@ -407,6 +413,15 @@ export function NailspaPdpStory() {
       className="relative left-1/2 -ml-[50vw] w-screen bg-white pt-10 text-foreground sm:pt-12 md:pt-14"
       aria-labelledby="nailspa-story-headline"
     >
+      <div className="fixed right-3 top-3 z-[320]">
+        <button
+          type="button"
+          onClick={() => setEditorMode((v) => !v)}
+          className="rounded-md border border-neutral-300 bg-white/95 px-3 py-1.5 text-xs font-semibold text-neutral-900 shadow-sm backdrop-blur-sm"
+        >
+          {editorMode ? "Stop editing arrows" : "Edit arrows"}
+        </button>
+      </div>
       {editorMode ? (
         <div className="sticky top-0 z-[250] border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
           <strong>Arrow edit mode</strong> - drag dots on arrows, then Save/Copy.
@@ -426,7 +441,7 @@ export function NailspaPdpStory() {
         <div className="relative mx-auto max-w-[min(100%,1120px)]">
           <img src={IMG_MAIN} alt="" className="relative z-0 block h-auto w-full" loading="lazy" draggable={false} />
           <MainImageCallouts
-            className={cn("absolute inset-0 z-10 max-md:hidden", editorMode ? "pointer-events-auto" : "pointer-events-none")}
+            className={cn("absolute inset-0 z-10", editorMode ? "pointer-events-auto" : "pointer-events-none max-md:hidden")}
             arrows={arrows}
             editorMode={editorMode}
             onArrowChange={updateArrow}
