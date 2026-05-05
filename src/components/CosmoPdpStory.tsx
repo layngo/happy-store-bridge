@@ -292,11 +292,11 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
               </p>
             </div>
             <div className="flex w-full justify-end self-end pr-0">
-              <div className="relative ml-auto mr-0 w-full max-md:max-w-[min(54vw,226px)] md:max-w-[min(48vw,332px)] lg:max-w-[360px]">
+              <div className="relative ml-auto mr-0 w-full max-md:max-w-[min(76vw,340px)] md:max-w-[min(62vw,520px)] lg:max-w-[560px]">
                 <img
                   src="/cosmo-pdp/story/image3.png"
                   alt=""
-                  className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(17vh,156px)] md:max-h-[min(38vh,312px)] lg:max-h-[336px]"
+                  className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(34vh,320px)] md:max-h-[min(60vh,560px)] lg:max-h-[620px]"
                   loading="lazy"
                 />
                 <ArrowOverlay pathD={arrowPaths.packup} markerId={markerPackup} emphasize={editorMode} />
