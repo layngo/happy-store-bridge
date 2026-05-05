@@ -2,10 +2,10 @@
  * Cosmo PDP story dotted-arrow SVG paths (`d` attribute).
  * Coordinates are in a 0–100 viewBox (stretched with each photo).
  *
- * Customize:
- * 1. Edit the defaults below and deploy, or
- * 2. Open `/dev/cosmo-arrows`, drag the handles, click **Save to this browser** — overrides
- *    `localStorage` until cleared (same device only).
+ * **Where to tune arrows (drag handles):** open this site at **`/dev/cosmo-arrows`**
+ * (full URL: `https://yoursite.com/dev/cosmo-arrows`). On Cosmo product pages there is also a link
+ * under the story strip. Drag the dots → **Save both to this browser** to preview on PDPs; for
+ * permanent paths, copy the `d` strings into `COSMO_STORY_ARROW_PATH_DEFAULT` below.
  */
 
 export const COSMO_STORY_ARROW_PATH_DEFAULT = {

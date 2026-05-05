@@ -365,18 +365,32 @@ const ProductDetail = () => {
     </>
   );
 
+  const quantityStepper: ReactNode = (
+    <div className="flex items-center gap-2 sm:gap-3">
+      <Button
+        variant="outline"
+        size="icon"
+        className="border-neutral-300 text-neutral-800 hover:bg-neutral-100"
+        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+      >
+        <Minus className="h-4 w-4" />
+      </Button>
+      <span className="w-10 text-center text-lg font-medium tabular-nums text-neutral-900 sm:w-12">{quantity}</span>
+      <Button
+        variant="outline"
+        size="icon"
+        className="border-neutral-300 text-neutral-800 hover:bg-neutral-100"
+        onClick={() => setQuantity(quantity + 1)}
+      >
+        <Plus className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+
   const quantityPicker: ReactNode = (
     <div className="space-y-2">
       <label className="text-sm font-medium text-foreground">Quantity</label>
-      <div className="flex items-center gap-3">
-        <Button variant="outline" size="icon" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
-          <Minus className="h-4 w-4" />
-        </Button>
-        <span className="w-12 text-center text-lg font-medium text-foreground">{quantity}</span>
-        <Button variant="outline" size="icon" onClick={() => setQuantity(quantity + 1)}>
-          <Plus className="h-4 w-4" />
-        </Button>
-      </div>
+      {quantityStepper}
     </div>
   );
 
@@ -393,6 +407,24 @@ const ProductDetail = () => {
         <>
           <ShoppingCart className="mr-2 h-5 w-5" />
           Add to Cart
+        </>
+      )}
+    </Button>
+  );
+
+  const addToCartButtonCosmo: ReactNode = (
+    <Button
+      size="lg"
+      onClick={handleAddToCart}
+      disabled={isLoading || !selectedVariant?.availableForSale}
+      className="w-full rounded-md border border-neutral-700 bg-[#2c2c2c] font-serif text-base font-medium tracking-wide text-neutral-50 shadow-none hover:bg-[#1f1f1f] disabled:opacity-50"
+    >
+      {isLoading ? (
+        <Loader2 className="h-5 w-5 animate-spin" />
+      ) : (
+        <>
+          <ShoppingCart className="mr-2 h-5 w-5 opacity-90" />
+          Add to cart
         </>
       )}
     </Button>
@@ -462,21 +494,38 @@ const ProductDetail = () => {
                     <div className="mt-3">{optionPickersOnly}</div>
                   </div>
 
-                  {quantityPicker}
-
-                  <div className="pt-2">
-                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Price</p>
-                    <p className="mt-1 font-heading text-3xl font-bold tabular-nums text-primary sm:text-4xl">
-                      ${priceDisplay}
-                    </p>
+                  <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5 border-b border-neutral-200/80 pb-6">
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500">Price</p>
+                      <p className="mt-1 font-serif text-3xl font-semibold tabular-nums text-neutral-800 sm:text-[2.125rem]">
+                        ${priceDisplay}
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500">Quantity</label>
+                      {quantityStepper}
+                    </div>
                   </div>
 
-                  {addToCartButton}
+                  {addToCartButtonCosmo}
                 </div>
               </div>
             </section>
 
             <CosmoPdpStory />
+
+            <p className="mt-4 text-center">
+              <Link
+                to="/dev/cosmo-arrows"
+                className="text-xs text-neutral-500 underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-800"
+              >
+                Story arrows — drag points here, then Save (or paste paths into{" "}
+                <code className="rounded bg-neutral-100 px-1 py-0.5 font-mono text-[10px] text-neutral-700">
+                  cosmoPdpStoryArrows.ts
+                </code>
+                )
+              </Link>
+            </p>
 
             <section className="mt-14 sm:mt-16" aria-label={cosmoYoutubeId ? "Product video" : "Video placeholder"}>
               <div className="relative aspect-video overflow-hidden rounded-2xl border border-border bg-muted/40 shadow-inner">

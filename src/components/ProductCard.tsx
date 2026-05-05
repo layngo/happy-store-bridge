@@ -5,8 +5,14 @@ import { Loader2 } from "lucide-react";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { getCosmo20SwatchBackgroundStyle, isCosmo20Product } from "@/components/Cosmo20ColorSelector";
-import { COSMO_22_SWATCHES, isCosmo22Product } from "@/components/Cosmo22ColorSelector";
+import {
+  COSMO_20_SWATCHES,
+  getCosmo20HeroImageUrls,
+  getCosmo20SwatchBackgroundStyle,
+  isCosmo20Product,
+  resolveCosmo20SwatchDef,
+} from "@/components/Cosmo20ColorSelector";
+import { COSMO_22_SWATCHES, getCosmo22HeroImageUrls, isCosmo22Product } from "@/components/Cosmo22ColorSelector";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 
 interface ProductCardProps {
@@ -25,21 +31,50 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
   const isLoading = useCartStore(state => state.isLoading);
 
   const cosmoMiniVariants = useMemo(() => orderCosmoMiniColorVariants(node), [node]);
+  const cosmo20CardVariants = useMemo(() => orderCosmo20CardVariants(node), [node]);
+  const cosmo22CardVariants = useMemo(() => orderCosmo22CardVariants(node), [node]);
+
   const isCosmoMiniInteractive = isCosmoMini16Product(node.handle, node.title) && cosmoMiniVariants.length >= 2;
+  const isCosmo20Interactive = isCosmo20Product(node.handle) && cosmo20CardVariants.length >= 2;
+  const isCosmo22Interactive = isCosmo22Product(node.handle) && cosmo22CardVariants.length >= 2;
 
   const [selectedCosmoIdx, setSelectedCosmoIdx] = useState(0);
 
   useEffect(() => {
+    if (isCosmoMiniInteractive) {
+      setSelectedCosmoIdx(0);
+      return;
+    }
+    if (isCosmo20Interactive) {
+      const i = cosmo20CardVariants.findIndex((v) => isCosmoBlackVariant(v));
+      setSelectedCosmoIdx(i >= 0 ? i : 0);
+      return;
+    }
+    if (isCosmo22Interactive) {
+      const i = cosmo22CardVariants.findIndex((v) => isCosmoBlackVariant(v));
+      setSelectedCosmoIdx(i >= 0 ? i : 0);
+      return;
+    }
     setSelectedCosmoIdx(0);
-  }, [node.id]);
+  }, [node.id, isCosmoMiniInteractive, isCosmo20Interactive, isCosmo22Interactive, cosmo20CardVariants, cosmo22CardVariants]);
 
-  const cosmo22DefaultVariant = useMemo(() => selectCosmo22CardVariant(node), [node]);
+  const interactiveCosmoVariants = isCosmoMiniInteractive
+    ? cosmoMiniVariants
+    : isCosmo20Interactive
+      ? cosmo20CardVariants
+      : isCosmo22Interactive
+        ? cosmo22CardVariants
+        : [];
 
   const selectedVariant = isCosmoMiniInteractive
-    ? cosmoMiniVariants[selectedCosmoIdx]
-    : isCosmo22Product(node.handle)
-      ? cosmo22DefaultVariant
-      : node.variants.edges[0]?.node;
+    ? cosmoMiniVariants[Math.min(selectedCosmoIdx, cosmoMiniVariants.length - 1)]
+    : isCosmo20Interactive
+      ? cosmo20CardVariants[Math.min(selectedCosmoIdx, cosmo20CardVariants.length - 1)]
+      : isCosmo22Interactive
+        ? cosmo22CardVariants[Math.min(selectedCosmoIdx, cosmo22CardVariants.length - 1)]
+        : isCosmo22Product(node.handle)
+          ? selectCosmo22CardVariant(node)
+          : node.variants.edges[0]?.node;
 
   const defaultImage = node.images.edges[0]?.node;
   const hoverImage = node.images.edges[1]?.node ?? defaultImage;
@@ -61,11 +96,36 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
       const idx = Math.min(selectedCosmoIdx, node.images.edges.length - 1);
       return node.images.edges[idx]?.node ?? defaultImage;
     }
+    if (isCosmo20Interactive && selectedVariant) {
+      const color = getVariantColorValue(selectedVariant) ?? "";
+      const urls = getCosmo20HeroImageUrls(color, selectedVariant);
+      const url = urls[0] ?? selectedVariant.image?.url ?? defaultImage?.url;
+      if (url) {
+        return { url, altText: selectedVariant.image?.altText ?? node.title };
+      }
+    }
+    if (isCosmo22Interactive && selectedVariant) {
+      const color = getVariantColorValue(selectedVariant) ?? "";
+      const urls = getCosmo22HeroImageUrls(color, selectedVariant);
+      const url = urls[0] ?? selectedVariant.image?.url ?? defaultImage?.url;
+      if (url) {
+        return { url, altText: selectedVariant.image?.altText ?? node.title };
+      }
+    }
     return defaultImage;
-  }, [isCosmoMiniInteractive, selectedVariant, selectedCosmoIdx, node.images.edges, node.title, defaultImage]);
+  }, [
+    isCosmoMiniInteractive,
+    isCosmo20Interactive,
+    isCosmo22Interactive,
+    selectedVariant,
+    selectedCosmoIdx,
+    node.images.edges,
+    node.title,
+    defaultImage,
+  ]);
 
   const priceAmount =
-    (isCosmoMiniInteractive || isCosmo22Product(node.handle)) && selectedVariant
+    (isCosmoMiniInteractive || isCosmo20Interactive || isCosmo22Interactive) && selectedVariant
       ? selectedVariant.price.amount
       : node.priceRange.minVariantPrice.amount;
 
@@ -131,13 +191,21 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
     <article className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
       <Link
         to={`/product/${node.handle}`}
-        className="group relative block aspect-square w-full shrink-0 overflow-hidden bg-muted"
+        className={cn(
+          "group relative block aspect-square w-full shrink-0 overflow-hidden",
+          isCosmo20Interactive || isCosmo22Interactive ? "bg-white" : "bg-muted",
+        )}
       >
         {displayImage ? (
           <img
             src={displayImage.url}
             alt={displayImage.altText || node.title}
-            className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+            className={cn(
+              "h-full w-full transition-transform duration-500 group-hover:scale-[1.02]",
+              isCosmo20Interactive || isCosmo22Interactive
+                ? "object-contain object-center p-3 sm:p-4"
+                : "object-cover object-center",
+            )}
             loading="lazy"
           />
         ) : (
@@ -159,12 +227,14 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
         </div>
 
         <div className="flex min-h-7 flex-wrap items-center gap-2">
-          {isCosmoMiniInteractive ? (
-            <div className="flex items-center gap-2" role="radiogroup" aria-label="Color">
-              {cosmoMiniVariants.slice(0, 2).map((v, i) => {
+          {isCosmoMiniInteractive || isCosmo20Interactive || isCosmo22Interactive ? (
+            <div className="flex flex-wrap items-center gap-2" role="radiogroup" aria-label="Color">
+              {interactiveCosmoVariants.slice(0, 8).map((v, i) => {
                 const colorLabel = getVariantColorValue(v) ?? v.title;
                 const selected = i === selectedCosmoIdx;
-                const swatch = cosmoMiniSwatchStyle(v);
+                const swatch = isCosmoMiniInteractive
+                  ? cosmoMiniSwatchStyle(v)
+                  : collectionSwatchStyleFromVariant(node, v);
                 return (
                   <button
                     key={v.id}
@@ -178,13 +248,20 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
                       setSelectedCosmoIdx(i);
                     }}
                     className={cn(
-                      "h-7 w-7 shrink-0 rounded-full border border-foreground/25 bg-center bg-no-repeat outline-none shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] transition-[box-shadow,transform] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                      "h-7 w-7 shrink-0 rounded-full border border-foreground/25 bg-center bg-no-repeat outline-none transition-[box-shadow,transform] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                      isCosmoMiniInteractive && "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]",
+                      (isCosmo20Interactive || isCosmo22Interactive) && "bg-muted/30",
                       selected && "ring-2 ring-foreground ring-offset-2 ring-offset-background",
                     )}
                     style={swatch}
                   />
                 );
               })}
+              {interactiveCosmoVariants.length > 8 ? (
+                <Link to={`/product/${node.handle}`} className="text-xs font-medium text-primary hover:underline">
+                  +{interactiveCosmoVariants.length - 8} more
+                </Link>
+              ) : null}
             </div>
           ) : colorValues.length > 0 ? (
             <>
@@ -298,8 +375,9 @@ function collectionSwatchStyle(product: ShopifyProduct["node"], colorValue: stri
     if (def?.swatchImageUrl) {
       return {
         backgroundImage: `url(${def.swatchImageUrl})`,
-        backgroundSize: "cover",
+        backgroundSize: "contain",
         backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       };
     }
   }
@@ -310,6 +388,48 @@ function collectionSwatchStyle(product: ShopifyProduct["node"], colorValue: stri
     return getCosmo20SwatchBackgroundStyle(colorValue, variantImg);
   }
   return { backgroundColor: colorNameToApproximateHex(colorValue) };
+}
+
+function collectionSwatchStyleFromVariant(product: ShopifyProduct["node"], v: VariantNode): CSSProperties {
+  const c = getVariantColorValue(v);
+  if (!c) return { backgroundColor: "#e5e5e5" };
+  return collectionSwatchStyle(product, c);
+}
+
+function orderCosmo20CardVariants(product: ShopifyProduct["node"]): VariantNode[] {
+  const out: VariantNode[] = [];
+  const used = new Set<string>();
+  for (const sw of COSMO_20_SWATCHES) {
+    const m = product.variants.edges.find(({ node }) => {
+      const c = getVariantColorValue(node);
+      if (!c) return false;
+      const def = resolveCosmo20SwatchDef(c);
+      if (def?.shopifyColor === sw.shopifyColor) return true;
+      return c === sw.shopifyColor;
+    });
+    if (m) {
+      out.push(m.node);
+      const c = getVariantColorValue(m.node);
+      if (c) used.add(c);
+    }
+  }
+  for (const { node } of product.variants.edges) {
+    const c = getVariantColorValue(node);
+    if (c && !used.has(c)) {
+      out.push(node);
+      used.add(c);
+    }
+  }
+  return out;
+}
+
+function orderCosmo22CardVariants(product: ShopifyProduct["node"]): VariantNode[] {
+  const out: VariantNode[] = [];
+  for (const sw of COSMO_22_SWATCHES) {
+    const m = product.variants.edges.find(({ node }) => getVariantColorValue(node) === sw.shopifyColor);
+    if (m) out.push(m.node);
+  }
+  return out;
 }
 
 function getColorValues(product: ShopifyProduct["node"]): string[] {
