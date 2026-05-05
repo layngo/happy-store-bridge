@@ -46,7 +46,7 @@ const ARROWS: ArrowMap = {
     end: { x: 53, y: 19 },
   },
   nailMat: {
-    viewBox: "0 0 120 40",
+    viewBox: "-120 -80 360 220",
     start: { x: 112, y: 20 },
     control: { x: 60, y: 20 },
     end: { x: 10, y: 20 },
@@ -334,22 +334,16 @@ function MainImageCallouts({
       <div
         className="absolute z-10 flex max-w-[min(54%,260px)] flex-col items-end sm:max-w-[280px] md:max-w-[300px]"
         style={{ bottom: `${cordBoxPos.bottom}%`, right: `${cordBoxPos.right}%` }}
+        onPointerDown={(e) => {
+          if (!editorMode) return;
+          e.preventDefault();
+          e.stopPropagation();
+          boxRef.current?.setPointerCapture(e.pointerId);
+          setDragCordBox(true);
+        }}
       >
         <div className={CALLOUT_PANEL}>
-          {editorMode ? (
-            <button
-              type="button"
-              className="mb-1 rounded border border-neutral-300 bg-white/85 px-1.5 py-0.5 text-[10px] font-semibold text-neutral-700"
-              onPointerDown={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                boxRef.current?.setPointerCapture(e.pointerId);
-                setDragCordBox(true);
-              }}
-            >
-              Drag box
-            </button>
-          ) : null}
+          {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Sliding cord lock and cord pocket
           </h2>
@@ -411,21 +405,15 @@ function CarryingHandleOverlay({
       <div
         className="absolute max-w-[min(78%,280px)] rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:max-w-[300px] sm:px-4 sm:py-2.5"
         style={{ left: `${carryBoxPos.x}%`, top: `${carryBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
+        onPointerDown={(e) => {
+          if (!editorMode) return;
+          e.preventDefault();
+          e.stopPropagation();
+          boxRef.current?.setPointerCapture(e.pointerId);
+          setDragCarryBox(true);
+        }}
       >
-        {editorMode ? (
-          <button
-            type="button"
-            className="mb-1 rounded border border-neutral-300 bg-white/85 px-1.5 py-0.5 text-[10px] font-semibold text-neutral-700"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-                boxRef.current?.setPointerCapture(e.pointerId);
-              setDragCarryBox(true);
-            }}
-          >
-            Drag box
-          </button>
-        ) : null}
+        {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
         <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base md:text-lg">
           Carrying handle for easy travel
         </p>
@@ -518,22 +506,16 @@ function NailMatCalloutEditor({
       <div
         className="absolute w-[min(90%,360px)]"
         style={{ left: `${nailMatBoxPos.x}%`, top: `${nailMatBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
+        onPointerDown={(e) => {
+          if (!editorMode) return;
+          e.preventDefault();
+          e.stopPropagation();
+          wrapRef.current?.setPointerCapture(e.pointerId);
+          setDragBox(true);
+        }}
       >
         <div className={CALLOUT_PANEL}>
-          {editorMode ? (
-            <button
-              type="button"
-              className="mb-1 rounded border border-neutral-300 bg-white/85 px-1.5 py-0.5 text-[10px] font-semibold text-neutral-700"
-              onPointerDown={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                wrapRef.current?.setPointerCapture(e.pointerId);
-                setDragBox(true);
-              }}
-            >
-              Drag box
-            </button>
-          ) : null}
+          {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
           <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
             High quality nail mat
           </h3>
