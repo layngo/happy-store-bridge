@@ -20,6 +20,7 @@ import {
   NAILSPA_18_SWATCHES,
 } from "@/components/Nailspa18ColorSelector";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
+import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPlayMat";
 
 interface ProductCardProps {
   product: ShopifyProduct;
@@ -428,6 +429,9 @@ function collectionSwatchStyle(product: ShopifyProduct["node"], colorValue: stri
       node.selectedOptions.some((o) => /color|colour/i.test(o.name) && o.value === colorValue),
     )?.node.image?.url;
     return getNailspa18SwatchBackgroundStyle(colorValue, variantImg);
+  }
+  if (isLayNGoPlayMatProduct(product.handle)) {
+    return layNGoPlayMatSwatchStyle(colorValue);
   }
   return { backgroundColor: colorNameToApproximateHex(colorValue) };
 }

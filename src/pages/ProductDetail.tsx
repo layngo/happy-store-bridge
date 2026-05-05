@@ -33,8 +33,10 @@ import {
 } from "@/components/Nailspa18ColorSelector";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
+import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
 import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
+import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPlayMat";
 
 const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
@@ -154,7 +156,7 @@ const ProductDetail = () => {
         isCosmo22Product(product.handle) ||
         isCosmoMini16Product(product.handle, product.title) ||
         isNailspa18Product(product.handle) ||
-        isLayNGoPlayMatCosmoLayoutProduct(product.handle)),
+        isLayNGoPlayMatProduct(product.handle)),
   );
 
   /** Editorial story strip + arrow editor — Cosmo bags only, not Nailspa. */
@@ -259,7 +261,7 @@ const ProductDetail = () => {
       alt={product.title}
       className="h-full w-full max-h-full object-contain"
     />
-  ) : isLayNGoPlayMatCosmoLayoutProduct(product.handle) && orderedImages[selectedImage]?.node ? (
+  ) : isLayNGoPlayMatProduct(product.handle) && orderedImages[selectedImage]?.node ? (
     <img
       src={orderedImages[selectedImage].node.url}
       alt={orderedImages[selectedImage].node.altText || product.title}
@@ -446,7 +448,9 @@ const ProductDetail = () => {
                       isColor
                         ? isCosmoMini16
                           ? cosmoMiniSwatchStyle(v.node)
-                          : variantImageSwatchStyle(v.node, optValue || "")
+                          : isLayNGoPlayMatProduct(product.handle)
+                            ? layNGoPlayMatSwatchStyle(optValue || "")
+                            : variantImageSwatchStyle(v.node, optValue || "")
                         : undefined
                     }
                     disabled={!v.node.availableForSale}
@@ -619,6 +623,8 @@ const ProductDetail = () => {
               </div>
             </section>
 
+            {product.handle.toLowerCase() === "lay-n-go-large-60" ? <LayNGoLargePdpPlayStrip /> : null}
+
             {showCosmoDescriptionBelowHero ? (
               <section className="mx-auto mt-12 max-w-3xl sm:mt-14" aria-label="Product details">
                 {descHtml ? (
@@ -716,17 +722,6 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
-
-/** LITE, LARGE, and related play mat PDPs — Cosmo-style hero and buy box; imagery stays from Shopify. */
-function isLayNGoPlayMatCosmoLayoutProduct(handle: string): boolean {
-  const h = handle.toLowerCase();
-  return (
-    h === "lay-n-go-lite-18" ||
-    h === "lay-n-go-large-60" ||
-    h === "lay-n-go-lifestyle-44" ||
-    h === "lay-n-go-defender-mini-16"
-  );
-}
 
 function isCosmoMini16Product(handle: string, title: string): boolean {
   const h = handle.toLowerCase();
