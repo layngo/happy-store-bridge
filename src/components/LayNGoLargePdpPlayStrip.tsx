@@ -54,13 +54,13 @@ function LargeFeatureArrow({ className }: { className?: string }) {
 function FeatureConnector({ label }: { label: string }) {
   return (
     <div
-      className="flex w-[min(5.5rem,18vw)] shrink-0 flex-col items-center justify-center gap-2 self-center py-2 sm:w-32 md:w-36 lg:w-40"
+      className="flex w-16 shrink-0 flex-col items-center justify-center gap-1.5 self-center py-1 sm:w-24 sm:gap-2 md:w-32 lg:w-36"
       role="presentation"
     >
-      <p className="max-w-[11rem] text-center font-heading text-[0.65rem] font-bold uppercase leading-tight tracking-wide text-neutral-900 sm:max-w-[13rem] sm:text-xs md:text-sm lg:text-[0.95rem]">
+      <p className="w-full max-w-[9rem] text-center font-heading text-[0.58rem] font-bold uppercase leading-tight tracking-wide text-neutral-900 sm:max-w-[11rem] sm:text-xs md:max-w-[13rem] md:text-sm lg:text-[0.95rem]">
         {label}
       </p>
-      <LargeFeatureArrow className="h-[3.25rem] w-full min-w-[4.5rem] max-w-[10rem] sm:h-14 md:h-[3.75rem]" />
+      <LargeFeatureArrow className="h-9 w-full max-w-full sm:h-12 md:h-[3.5rem]" />
     </div>
   );
 }
@@ -130,12 +130,12 @@ export function LayNGoLargePdpPlayStrip() {
         className="mx-auto mt-14 max-w-[min(100%,90rem)] border-t border-neutral-200/80 pt-12 sm:mt-16 sm:pt-14"
         aria-label="How Lay-n-Go Large works in three steps"
       >
-        <div className="flex flex-row items-center justify-center gap-1 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:thin] sm:gap-2 md:gap-3 lg:gap-4 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-neutral-300">
-          <div className="flex w-[min(78vw,260px)] shrink-0 justify-center sm:w-[min(72vw,300px)] md:w-[min(34%,320px)] md:max-w-[360px]">
+        <div className="flex w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:gap-1 md:gap-2 lg:gap-3">
+          <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
             <img
               src={FEATURE_OPEN}
               alt="Lay-n-Go Large open with toys; easy access to play and start cleanup"
-              className="h-auto max-h-[min(52vh,380px)] w-full object-contain md:max-h-[min(48vh,420px)] lg:max-h-[460px]"
+              className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
               loading="lazy"
               decoding="async"
             />
@@ -143,11 +143,11 @@ export function LayNGoLargePdpPlayStrip() {
 
           <FeatureConnector label="Easy access and cleanup" />
 
-          <div className="flex w-[min(78vw,260px)] shrink-0 justify-center sm:w-[min(72vw,300px)] md:w-[min(34%,320px)] md:max-w-[360px]">
+          <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
             <img
               src={FEATURE_CINCH}
               alt="Cinching the Lay-n-Go Large drawstring to gather the mat closed"
-              className="h-auto max-h-[min(52vh,380px)] w-full object-contain md:max-h-[min(48vh,420px)] lg:max-h-[460px]"
+              className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
               loading="lazy"
               decoding="async"
             />
@@ -155,11 +155,11 @@ export function LayNGoLargePdpPlayStrip() {
 
           <FeatureConnector label="Wide strap for easy travel and storage" />
 
-          <div className="flex w-[min(78vw,260px)] shrink-0 justify-center sm:w-[min(72vw,300px)] md:w-[min(34%,320px)] md:max-w-[360px]">
+          <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
             <img
               src={FEATURE_CARRY}
               alt="Carrying the closed Lay-n-Go Large bag with the wide shoulder strap"
-              className="h-auto max-h-[min(52vh,380px)] w-full object-contain md:max-h-[min(48vh,420px)] lg:max-h-[460px]"
+              className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
               loading="lazy"
               decoding="async"
             />
