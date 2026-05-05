@@ -9,7 +9,7 @@ const CALLOUT_CORD = "/products/lay-n-go-large-pdp/callout-cord-pocket.png";
 const CALLOUT_MESH = "/products/lay-n-go-large-pdp/callout-mesh-pockets.png";
 const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 
-const STORAGE_KEY = "lay-n-go-large-callout-layout-v4";
+const STORAGE_KEY = "lay-n-go-large-callout-layout-v5";
 
 type CalloutKey = "cord" | "lip" | "mesh";
 
@@ -24,12 +24,12 @@ const DEFAULT_LAYOUT: LayoutState = {
   dots: {
     cord: { x: 50, y: 23 },
     lip: { x: 29, y: 49 },
-    mesh: { x: 52, y: 66 },
+    mesh: { x: 52, y: 64 },
   },
   anchors: {
     cord: { x: 50, y: 10 },
     lip: { x: 12, y: 48 },
-    mesh: { x: 90, y: 74 },
+    mesh: { x: 90, y: 54 },
   },
 };
 
@@ -408,7 +408,7 @@ export function LayNGoLargeCalloutDiagram() {
           ))}
         </div>
 
-        <div className="mx-auto -mt-8 w-[min(94vw,920px)] pt-2 sm:-mt-10">
+        <div className="mx-auto -mt-16 w-[min(94vw,920px)] pt-0 sm:-mt-20 md:-mt-24">
           <DimensionSixtyInch />
         </div>
       </div>
