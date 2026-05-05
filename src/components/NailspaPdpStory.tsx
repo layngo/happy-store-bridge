@@ -2,8 +2,6 @@
  * Editorial strip below NAILSPA PDP hero — matches Cosmo full-bleed white story rhythm.
  */
 
-import { useEffect, useState } from "react";
-
 import {
   Dialog,
   DialogContent,
@@ -15,10 +13,9 @@ import { cn } from "@/lib/utils";
 
 const HEADLINE = "THE NAIL BAG THAT ACTUALLY GETS IT.";
 const IMG_MAIN = "/nailspa-pdp/story/image1.png";
-const IMG_BOTTOM_A = "/nailspa-pdp/story/bottom-a.png";
-const IMG_BOTTOM_B = "/nailspa-pdp/story/bottom-b.png";
+const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png";
 
-const CAROUSEL_MS = 3000;
+const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:px-4 sm:py-3";
 
 function CalloutArrow({
   className,
@@ -80,7 +77,7 @@ function MainImageCallouts({ className }: { className?: string }) {
     <div className={className}>
       {/* Mesh — left */}
       <div className="absolute left-[1%] top-[14%] z-10 flex max-w-[min(48%,220px)] flex-col items-start sm:left-[3%] sm:top-[12%] sm:max-w-[240px] md:left-[4%] md:top-[14%] md:max-w-[260px] lg:max-w-[280px]">
-        <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm sm:px-4 sm:py-3">
+        <div className={CALLOUT_PANEL}>
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Mesh pockets
           </h2>
@@ -93,7 +90,7 @@ function MainImageCallouts({ className }: { className?: string }) {
 
       {/* Containment lip — right */}
       <div className="absolute right-[1%] top-[10%] z-10 flex max-w-[min(50%,240px)] flex-col items-end sm:right-[2%] sm:max-w-[260px] md:right-[3%] md:max-w-[280px] lg:max-w-[300px]">
-        <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm sm:px-4 sm:py-3">
+        <div className={CALLOUT_PANEL}>
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Convenient containment lip
           </h2>
@@ -106,7 +103,7 @@ function MainImageCallouts({ className }: { className?: string }) {
 
       {/* Cord lock — lower right */}
       <div className="absolute bottom-[8%] right-[2%] z-10 flex max-w-[min(54%,260px)] flex-col items-end sm:bottom-[10%] sm:max-w-[280px] md:bottom-[12%] md:right-[4%] md:max-w-[300px]">
-        <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm sm:px-4 sm:py-3">
+        <div className={CALLOUT_PANEL}>
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Sliding cord lock and cord pocket
           </h2>
@@ -120,13 +117,11 @@ function MainImageCallouts({ className }: { className?: string }) {
   );
 }
 
-/** Curved arrow + label over the carousel (slide B — handle visible). Tweak path in SVG when adjusting. */
-function CarryingHandleOverlay({ visible }: { visible: boolean }) {
-  if (!visible) return null;
+/** Curved arrow + label over the closed-bag photo. Tweak path in SVG when adjusting. */
+function CarryingHandleOverlay() {
   return (
     <div className="pointer-events-none absolute inset-0 z-20 overflow-visible" aria-hidden>
-      {/* Label — lower left; arrow rides over the photo toward the webbing loop (top-center / upper-mid). */}
-      <div className="absolute bottom-[6%] left-[4%] max-w-[min(78%,280px)] rounded-md bg-white/93 px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-sm sm:bottom-[8%] sm:max-w-[300px] sm:px-4 sm:py-2.5 md:bottom-[10%] md:left-[5%]">
+      <div className="absolute bottom-[6%] left-[4%] max-w-[min(78%,280px)] rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:bottom-[8%] sm:max-w-[300px] sm:px-4 sm:py-2.5 md:bottom-[10%] md:left-[5%]">
         <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base md:text-lg">
           Carrying handle for easy travel
         </p>
@@ -153,39 +148,21 @@ function CarryingHandleOverlay({ visible }: { visible: boolean }) {
   );
 }
 
-function BottomImageCarousel({ className }: { className?: string }) {
-  const [slide, setSlide] = useState(0);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return undefined;
-    const id = window.setInterval(() => setSlide((s) => (s + 1) % 2), CAROUSEL_MS);
-    return () => window.clearInterval(id);
-  }, []);
-
+function BottomProductImage({ className }: { className?: string }) {
   return (
-    <div className={cn("relative w-full overflow-visible border-0 bg-transparent shadow-none ring-0", className)} aria-live="polite" aria-label="Product detail photos">
+    <div
+      className={cn("relative w-full overflow-visible border-0 bg-transparent shadow-none ring-0", className)}
+      aria-label="Lay-n-Go NAILSPA closed with carry handle"
+    >
       <div className="relative min-h-[min(52vh,440px)] w-full sm:min-h-[min(54vh,480px)] md:min-h-[min(56vh,560px)] lg:min-h-[min(58vh,620px)]">
         <img
-          src={IMG_BOTTOM_A}
+          src={IMG_BOTTOM}
           alt=""
-          className={cn(
-            "absolute inset-0 size-full object-contain object-center transition-opacity duration-700 ease-in-out",
-            slide === 0 ? "z-10 opacity-100" : "z-0 opacity-0",
-          )}
+          className="absolute inset-0 size-full object-contain object-center"
           draggable={false}
+          loading="lazy"
         />
-        <img
-          src={IMG_BOTTOM_B}
-          alt=""
-          className={cn(
-            "absolute inset-0 size-full object-contain object-center transition-opacity duration-700 ease-in-out",
-            slide === 1 ? "z-10 opacity-100" : "z-0 opacity-0",
-          )}
-          draggable={false}
-        />
-        <CarryingHandleOverlay visible={slide === 1} />
+        <CarryingHandleOverlay />
       </div>
     </div>
   );
@@ -237,19 +214,19 @@ export function NailspaPdpStory() {
 
         {/* Mobile: stacked callouts under hero (tap targets stay clear) */}
         <div className="mx-auto mt-6 max-w-[min(100%,1120px)] space-y-4 md:hidden">
-          <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm">
+          <div className={CALLOUT_PANEL}>
             <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Mesh pockets</h2>
             <p className="mt-1 text-xs leading-snug text-neutral-700">
               Eight elastic mesh pockets to hold your favorite polishes.
             </p>
           </div>
-          <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm">
+          <div className={CALLOUT_PANEL}>
             <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Convenient containment lip</h2>
             <p className="mt-1 text-xs leading-snug text-neutral-700">
               The raised lip keeps polish and tools from falling off the counter.
             </p>
           </div>
-          <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm">
+          <div className={CALLOUT_PANEL}>
             <h2 className="font-heading text-base font-bold tracking-tight text-foreground">
               Sliding cord lock and cord pocket
             </h2>
@@ -260,11 +237,11 @@ export function NailspaPdpStory() {
         </div>
       </div>
 
-      {/* Bottom — rotating images + nail mat copy (carrying-handle callout overlays slide B on the image). */}
+      {/* Bottom — closed bag photo + nail mat copy */}
       <div className="px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-12 md:px-10 lg:px-14">
         <div className="mx-auto flex max-w-[min(100%,1200px)] flex-col gap-10 md:flex-row md:items-start md:gap-10 lg:gap-12">
           <div className="w-full shrink-0 md:w-[min(58%,720px)] lg:w-[min(60%,780px)]">
-            <BottomImageCarousel />
+            <BottomProductImage />
           </div>
 
           <div className="flex flex-1 flex-col md:justify-center md:pt-4">
