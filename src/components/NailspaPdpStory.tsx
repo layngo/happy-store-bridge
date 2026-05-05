@@ -426,6 +426,9 @@ function CarryingHandleOverlay({
         <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base md:text-lg">
           High quality nail mat
         </p>
+        <p className="mt-2 text-xs leading-snug text-neutral-700 sm:text-sm">
+          Machine washable and wipeable. spilled polish? no problem, just clean it off with polish remover
+        </p>
       </div>
       <EditableArrow
         className="absolute inset-0 size-full text-neutral-900"
@@ -464,6 +467,13 @@ function BottomProductImage({
           className="absolute inset-0 size-full object-contain object-center"
           draggable={false}
           loading="lazy"
+        />
+        <div
+          className="pointer-events-none absolute inset-0 z-[1]"
+          style={{
+            background:
+              "linear-gradient(to right, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.98) 100%), linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.98) 100%)",
+          }}
         />
         <CarryingHandleOverlay
           arrows={arrows}
@@ -653,6 +663,13 @@ export function NailspaPdpStory() {
       <div className="relative px-4 pb-12 sm:px-6 sm:pb-14 md:px-10 md:pb-16 lg:px-14">
         <div className="relative mx-auto max-w-[min(100%,1120px)]">
           <img src={IMG_MAIN} alt="" className="relative z-0 block h-auto w-full" loading="lazy" draggable={false} />
+          <div
+            className="pointer-events-none absolute inset-0 z-[1]"
+            style={{
+              background:
+                "linear-gradient(to right, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.98) 100%), linear-gradient(to bottom, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.96) 100%)",
+            }}
+          />
           <MainImageCallouts
             className={cn("absolute inset-0 z-10", editorMode ? "pointer-events-auto" : "pointer-events-none max-md:hidden")}
             arrows={arrows}
