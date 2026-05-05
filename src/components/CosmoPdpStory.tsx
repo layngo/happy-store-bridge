@@ -45,20 +45,20 @@ function ArrowOverlay({
         <marker
           id={markerId}
           markerUnits="strokeWidth"
-          markerWidth="5"
-          markerHeight="5"
-          refX="4"
-          refY="2.5"
+          markerWidth="7"
+          markerHeight="7"
+          refX="5.4"
+          refY="3.5"
           orient="auto"
         >
-          <path d="M 0 0 L 5 2.5 L 0 5 Z" fill="currentColor" />
+          <path d="M 0 0 L 7 3.5 L 0 7 Z" fill="currentColor" />
         </marker>
       </defs>
       <path
         d={pathD}
         fill="none"
         stroke="currentColor"
-        strokeWidth={emphasize ? 1.15 : 0.9}
+        strokeWidth={emphasize ? 1.85 : 1.45}
         strokeDasharray="3 5"
         strokeLinecap="round"
         strokeLinejoin="round"
