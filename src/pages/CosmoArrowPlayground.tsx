@@ -112,6 +112,7 @@ function LiveEditorPanel({
           if (key === "c1") next.c1 = { x: nx, y: ny };
           if (key === "c2") next.c2 = { x: nx, y: ny };
           if (key === "ce") next.ce = { x: nx, y: ny };
+          if (key === "s2") next.s2 = { x: nx, y: ny };
           if (key === "end") next.end = { x: nx, y: ny };
           return next;
         });
@@ -153,10 +154,21 @@ function LiveEditorPanel({
 
   const handles =
     variant === "everything"
-      ? (["m", "c1", "c2", "ce", "end"] as const).map((key) => ({
+      ? (["m", "c1", "c2", "ce", "s2", "end"] as const).map((key) => ({
           key,
           pt: everything[key],
-          label: key === "m" ? "Start" : key === "c1" ? "C1" : key === "c2" ? "C2" : key === "ce" ? "C end" : "Arrow tip",
+          label:
+            key === "m"
+              ? "Start"
+              : key === "c1"
+                ? "C1"
+                : key === "c2"
+                  ? "C2"
+                  : key === "ce"
+                    ? "C end"
+                    : key === "s2"
+                      ? "Tail bend"
+                      : "Arrow tip",
         }))
       : (["m", "q", "end"] as const).map((key) => ({
           key,
