@@ -17,6 +17,7 @@ type ArrowKey = "mesh" | "lipRight" | "cord" | "carry" | "nailMat";
 type ArrowMap = Record<ArrowKey, ArrowGeom>;
 type ArrowPointKey = keyof Pick<ArrowGeom, "start" | "control" | "end">;
 type CordBoxPos = { right: number; bottom: number };
+type BoxPos = { x: number; y: number };
 
 // Reverted to pre-drag coordinates.
 const ARROWS: ArrowMap = {
@@ -34,9 +35,9 @@ const ARROWS: ArrowMap = {
   },
   cord: {
     viewBox: "0 0 120 52",
-    start: { x: 112, y: 46 },
-    control: { x: 72, y: 30 },
-    end: { x: 12.23620965896086, y: 52 },
+    start: { x: 81.57602163461539, y: 0 },
+    control: { x: 60.98257211538461, y: 28.715496778569005 },
+    end: { x: 89.48617788461539, y: 50.33014581213971 },
   },
   carry: {
     viewBox: "0 0 100 100",
@@ -54,7 +55,11 @@ const ARROWS: ArrowMap = {
 
 const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v1";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
-const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 2, bottom: 8 };
+const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
+const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
+const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 68.19598858173077, bottom: 5.593950320512818 };
+const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 58, y: 78 };
+const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 18, y: 34 };
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -97,6 +102,16 @@ function loadCordBoxFromStorage(): CordBoxPos | null {
     const raw = localStorage.getItem(CORD_BOX_STORAGE_KEY);
     if (!raw) return null;
     return JSON.parse(raw) as CordBoxPos;
+  } catch {
+    return null;
+  }
+}
+
+function loadBoxPosFromStorage(key: string): BoxPos | null {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    return JSON.parse(raw) as BoxPos;
   } catch {
     return null;
   }
@@ -360,20 +375,60 @@ function CarryingHandleOverlay({
   arrows,
   editorMode,
   onArrowChange,
+  carryBoxPos,
+  onCarryBoxPosChange,
 }: {
   arrows: ArrowMap;
   editorMode?: boolean;
   onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  carryBoxPos: BoxPos;
+  onCarryBoxPosChange: (next: BoxPos) => void;
 }) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [dragCarryBox, setDragCarryBox] = useState(false);
+
+  const moveCarryBox = useCallback(
+    (ev: React.PointerEvent) => {
+      if (!editorMode || !dragCarryBox || !boxRef.current) return;
+      const r = boxRef.current.getBoundingClientRect();
+      const xPct = clamp(((ev.clientX - r.left) / r.width) * 100, 0, 100);
+      const yPct = clamp(((ev.clientY - r.top) / r.height) * 100, 0, 100);
+      onCarryBoxPosChange({ x: clamp(xPct, 0, 92), y: clamp(yPct, 0, 94) });
+    },
+    [dragCarryBox, editorMode, onCarryBoxPosChange],
+  );
+
   return (
     <div
+      ref={boxRef}
       className={cn(
         "absolute inset-0 z-20 overflow-visible",
         editorMode ? "pointer-events-auto" : "pointer-events-none",
       )}
       aria-hidden
+      onPointerMove={moveCarryBox}
+      onPointerUp={() => setDragCarryBox(false)}
+      onPointerCancel={() => setDragCarryBox(false)}
+      onPointerLeave={() => setDragCarryBox(false)}
     >
-      <div className="absolute bottom-[6%] right-[4%] max-w-[min(78%,280px)] rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:bottom-[8%] sm:max-w-[300px] sm:px-4 sm:py-2.5 md:bottom-[10%] md:right-[5%]">
+      <div
+        className="absolute max-w-[min(78%,280px)] rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:max-w-[300px] sm:px-4 sm:py-2.5"
+        style={{ left: `${carryBoxPos.x}%`, top: `${carryBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
+      >
+        {editorMode ? (
+          <button
+            type="button"
+            className="mb-1 rounded border border-neutral-300 bg-white/85 px-1.5 py-0.5 text-[10px] font-semibold text-neutral-700"
+            onPointerDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.currentTarget.setPointerCapture(e.pointerId);
+              setDragCarryBox(true);
+            }}
+          >
+            Drag box
+          </button>
+        ) : null}
         <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base md:text-lg">
           Carrying handle for easy travel
         </p>
@@ -393,11 +448,15 @@ function BottomProductImage({
   arrows,
   editorMode,
   onArrowChange,
+  carryBoxPos,
+  onCarryBoxPosChange,
 }: {
   className?: string;
   arrows: ArrowMap;
   editorMode?: boolean;
   onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  carryBoxPos: BoxPos;
+  onCarryBoxPosChange: (next: BoxPos) => void;
 }) {
   return (
     <div
@@ -412,7 +471,86 @@ function BottomProductImage({
           draggable={false}
           loading="lazy"
         />
-        <CarryingHandleOverlay arrows={arrows} editorMode={editorMode} onArrowChange={onArrowChange} />
+        <CarryingHandleOverlay
+          arrows={arrows}
+          editorMode={editorMode}
+          onArrowChange={onArrowChange}
+          carryBoxPos={carryBoxPos}
+          onCarryBoxPosChange={onCarryBoxPosChange}
+        />
+      </div>
+    </div>
+  );
+}
+
+function NailMatCalloutEditor({
+  arrows,
+  editorMode,
+  onArrowChange,
+  nailMatBoxPos,
+  onNailMatBoxPosChange,
+}: {
+  arrows: ArrowMap;
+  editorMode?: boolean;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  nailMatBoxPos: BoxPos;
+  onNailMatBoxPosChange: (next: BoxPos) => void;
+}) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [dragBox, setDragBox] = useState(false);
+
+  const moveBox = useCallback(
+    (ev: React.PointerEvent) => {
+      if (!editorMode || !dragBox || !wrapRef.current) return;
+      const r = wrapRef.current.getBoundingClientRect();
+      const xPct = clamp(((ev.clientX - r.left) / r.width) * 100, 0, 100);
+      const yPct = clamp(((ev.clientY - r.top) / r.height) * 100, 0, 100);
+      onNailMatBoxPosChange({ x: clamp(xPct, 5, 95), y: clamp(yPct, 8, 92) });
+    },
+    [dragBox, editorMode, onNailMatBoxPosChange],
+  );
+
+  return (
+    <div
+      ref={wrapRef}
+      className={cn("relative min-h-[220px] w-full", editorMode ? "pointer-events-auto" : "pointer-events-none")}
+      onPointerMove={moveBox}
+      onPointerUp={() => setDragBox(false)}
+      onPointerCancel={() => setDragBox(false)}
+      onPointerLeave={() => setDragBox(false)}
+    >
+      <div
+        className="absolute w-[min(90%,360px)]"
+        style={{ left: `${nailMatBoxPos.x}%`, top: `${nailMatBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
+      >
+        <div className={CALLOUT_PANEL}>
+          {editorMode ? (
+            <button
+              type="button"
+              className="mb-1 rounded border border-neutral-300 bg-white/85 px-1.5 py-0.5 text-[10px] font-semibold text-neutral-700"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.currentTarget.setPointerCapture(e.pointerId);
+                setDragBox(true);
+              }}
+            >
+              Drag box
+            </button>
+          ) : null}
+          <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
+            High quality nail mat
+          </h3>
+          <p className="mt-2 text-sm leading-snug text-neutral-700 sm:text-base">
+            The Nailspa is machine washable and wipeable.
+          </p>
+        </div>
+        <EditableArrow
+          className="mt-2 h-10 w-[7.25rem] text-neutral-800 sm:h-11 sm:w-[9.6rem]"
+          geom={arrows.nailMat}
+          editorMode={editorMode}
+          onChange={(next) => onArrowChange?.("nailMat", next)}
+        />
       </div>
     </div>
   );
@@ -422,6 +560,8 @@ export function NailspaPdpStory() {
   const [arrows, setArrows] = useState<ArrowMap>(ARROWS);
   const [editorMode, setEditorMode] = useState(false);
   const [cordBoxPos, setCordBoxPos] = useState<CordBoxPos>(DEFAULT_CORD_BOX_POS);
+  const [carryBoxPos, setCarryBoxPos] = useState<BoxPos>(DEFAULT_CARRY_BOX_POS);
+  const [nailMatBoxPos, setNailMatBoxPos] = useState<BoxPos>(DEFAULT_NAIL_MAT_BOX_POS);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -431,6 +571,8 @@ export function NailspaPdpStory() {
     if (enabled) {
       setArrows(loadArrowsFromStorage() ?? ARROWS);
       setCordBoxPos(loadCordBoxFromStorage() ?? DEFAULT_CORD_BOX_POS);
+      setCarryBoxPos(loadBoxPosFromStorage(CARRY_BOX_STORAGE_KEY) ?? DEFAULT_CARRY_BOX_POS);
+      setNailMatBoxPos(loadBoxPosFromStorage(NAIL_MAT_BOX_STORAGE_KEY) ?? DEFAULT_NAIL_MAT_BOX_POS);
     }
   }, []);
 
@@ -442,6 +584,8 @@ export function NailspaPdpStory() {
     try {
       localStorage.setItem(ARROW_STORAGE_KEY, JSON.stringify(arrows));
       localStorage.setItem(CORD_BOX_STORAGE_KEY, JSON.stringify(cordBoxPos));
+      localStorage.setItem(CARRY_BOX_STORAGE_KEY, JSON.stringify(carryBoxPos));
+      localStorage.setItem(NAIL_MAT_BOX_STORAGE_KEY, JSON.stringify(nailMatBoxPos));
       window.dispatchEvent(new Event("nailspa-arrows-updated"));
     } catch {
       // no-op
@@ -455,6 +599,8 @@ export function NailspaPdpStory() {
           {
             arrows,
             cordBoxPos,
+            carryBoxPos,
+            nailMatBoxPos,
           },
           null,
           2,
@@ -479,11 +625,13 @@ export function NailspaPdpStory() {
         {
           arrows,
           cordBoxPos,
+            carryBoxPos,
+            nailMatBoxPos,
         },
         null,
         2,
       ),
-    [arrows, cordBoxPos],
+    [arrows, cordBoxPos, carryBoxPos, nailMatBoxPos],
   );
 
   return (
@@ -561,26 +709,19 @@ export function NailspaPdpStory() {
               arrows={arrows}
               editorMode={editorMode}
               onArrowChange={updateArrow}
+              carryBoxPos={carryBoxPos}
+              onCarryBoxPosChange={setCarryBoxPos}
             />
           </div>
 
           <div className="flex flex-1 flex-col md:justify-center md:pt-4">
-            <div className="flex items-start gap-3 sm:gap-4">
-              <EditableArrow
-                className="mt-2 h-10 w-[7.25rem] shrink-0 text-neutral-800 sm:h-11 sm:w-[9.6rem] md:mt-3"
-                geom={arrows.nailMat}
-                editorMode={editorMode}
-                onChange={(next) => updateArrow("nailMat", next)}
-              />
-              <div>
-                <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
-                  High quality nail mat
-                </h3>
-                <p className="mt-2 max-w-prose text-sm leading-snug text-neutral-700 sm:text-base">
-                  The Nailspa is machine washable and wipeable.
-                </p>
-              </div>
-            </div>
+            <NailMatCalloutEditor
+              arrows={arrows}
+              editorMode={editorMode}
+              onArrowChange={updateArrow}
+              nailMatBoxPos={nailMatBoxPos}
+              onNailMatBoxPosChange={setNailMatBoxPos}
+            />
           </div>
         </div>
       </div>
