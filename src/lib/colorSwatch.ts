@@ -32,6 +32,7 @@ export function colorNameToApproximateHex(value: string): string {
     "dorothy's slipper (red)": "#DC2626",
     "what a doll": "#E6007E",
     "what a doll (pink)": "#E6007E",
+    "pretty in paisley": "#b84d8e",
   };
   if (map[key]) return map[key];
   const first = key.split(/[\s(/]+/)[0];

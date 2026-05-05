@@ -47,6 +47,15 @@ export const NAILSPA_18_SWATCHES: Nailspa18SwatchDef[] = [
     bagImageUrl: "https://m.media-amazon.com/images/I/81XoiKB+gYL._AC_SX679_.jpg",
     swatchHex: "#E6007E",
   },
+  {
+    /** Often OOS in storefront — still needs a proper circle swatch when disabled. */
+    shopifyColor: "Pretty in Paisley",
+    selectedLabel: "Pretty in Paisley",
+    tooltip: "Pretty in Paisley",
+    bagImageUrl:
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/lay-n-go-nailspa-18nailspa-18lay-n-golayngo-new-28937728.jpg?v=1626120447",
+    swatchImageUrl: "/swatches/nailspa-18-pretty-in-paisley.png",
+  },
 ];
 
 /** Normalize legacy / shorthand option labels to Shopify’s canonical Color value. */

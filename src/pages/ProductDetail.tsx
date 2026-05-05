@@ -31,6 +31,7 @@ import {
   getNailspa18InitialSelection,
   isNailspa18Product,
 } from "@/components/Nailspa18ColorSelector";
+import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
 import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
@@ -587,6 +588,8 @@ const ProductDetail = () => {
                 </div>
               </div>
             </section>
+
+            {isNailspa18Product(product.handle) ? <NailspaPdpStory /> : null}
 
             {isCosmoStoryPdp ? <CosmoPdpStory editorMode={cosmoStoryArrowEditMode} /> : null}
 
