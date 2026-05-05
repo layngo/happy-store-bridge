@@ -23,13 +23,13 @@ type LayoutState = {
 const DEFAULT_LAYOUT: LayoutState = {
   dots: {
     cord: { x: 50, y: 23 },
-    lip: { x: 29, y: 49 },
-    mesh: { x: 52, y: 64 },
+    lip: { x: 27, y: 49 },
+    mesh: { x: 52, y: 70 },
   },
   anchors: {
     cord: { x: 50, y: 10 },
     lip: { x: 12, y: 48 },
-    mesh: { x: 90, y: 54 },
+    mesh: { x: 80, y: 54 },
   },
 };
 
@@ -129,13 +129,15 @@ function FloatingCallout({
   );
 
   const thumb = (
-    <img
-      src={imageSrc}
-      alt={imageAlt}
-      className="h-[7.25rem] w-[7.25rem] shrink-0 rounded-full object-cover shadow-md ring-2 ring-white sm:h-32 sm:w-32 md:h-40 md:w-40"
-      loading="lazy"
-      decoding="async"
-    />
+    <div className="aspect-square h-[7.25rem] w-[7.25rem] shrink-0 overflow-hidden rounded-full ring-2 ring-white sm:h-32 sm:w-32 md:h-40 md:w-40">
+      <img
+        src={imageSrc}
+        alt={imageAlt}
+        className="h-full w-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
   );
 
   return (
@@ -312,24 +314,26 @@ export function LayNGoLargeCalloutDiagram() {
           loading="lazy"
           decoding="async"
         />
+        <DimensionSixtyInch className="w-full max-w-lg" />
         {(["cord", "mesh", "lip"] as CalloutKey[]).map((k) => {
           const m = CALLOUT_META[k];
           return (
             <div key={k} className="flex flex-col items-center gap-2 px-2">
-              <img
-                src={m.imageSrc}
-                alt={m.imageAlt}
-                className="h-32 w-32 rounded-full object-cover shadow-md ring-2 ring-neutral-100"
-                loading="lazy"
-                decoding="async"
-              />
+              <div className="aspect-square h-32 w-32 shrink-0 overflow-hidden rounded-full ring-2 ring-neutral-100">
+                <img
+                  src={m.imageSrc}
+                  alt={m.imageAlt}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
               <p className="max-w-xs text-center font-heading text-xs font-bold uppercase leading-snug text-neutral-900">
                 {m.label}
               </p>
             </div>
           );
         })}
-        <DimensionSixtyInch className="mt-2 w-full max-w-lg" />
       </div>
 
       {/* Desktop */}
@@ -342,7 +346,7 @@ export function LayNGoLargeCalloutDiagram() {
           onPointerCancel={editorMode ? (e) => endDrag(e) : undefined}
         >
           <svg
-            className="pointer-events-none absolute inset-0 z-[12] h-full w-full text-neutral-800/70"
+            className="pointer-events-none absolute inset-0 z-[12] h-full w-full text-neutral-900/85"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             aria-hidden
@@ -355,7 +359,7 @@ export function LayNGoLargeCalloutDiagram() {
                 x2={x2}
                 y2={y2}
                 stroke="currentColor"
-                strokeWidth="0.28"
+                strokeWidth={k === "mesh" ? "0.42" : "0.34"}
                 strokeLinecap="round"
                 vectorEffect="non-scaling-stroke"
               />
@@ -366,7 +370,7 @@ export function LayNGoLargeCalloutDiagram() {
             <img
               src={HERO_CALLOUT_MAIN}
               alt="Lay-n-Go Large 60 inch activity mat from above, filled with building blocks"
-              className="relative z-10 w-full object-contain drop-shadow-sm"
+              className="relative z-10 w-full object-contain"
               loading="lazy"
               decoding="async"
             />
