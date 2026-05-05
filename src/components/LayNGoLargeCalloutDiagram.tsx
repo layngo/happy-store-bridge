@@ -9,7 +9,7 @@ const CALLOUT_CORD = "/products/lay-n-go-large-pdp/callout-cord-pocket.png";
 const CALLOUT_MESH = "/products/lay-n-go-large-pdp/callout-mesh-pockets.png";
 const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 
-const STORAGE_KEY = "lay-n-go-large-callout-layout-v2";
+const STORAGE_KEY = "lay-n-go-large-callout-layout-v3";
 
 type CalloutKey = "cord" | "lip" | "mesh";
 
@@ -22,14 +22,14 @@ type LayoutState = {
 
 const DEFAULT_LAYOUT: LayoutState = {
   dots: {
-    cord: { x: 50, y: 30 },
-    lip: { x: 31, y: 49 },
-    mesh: { x: 48, y: 68 },
+    cord: { x: 50, y: 23 },
+    lip: { x: 23, y: 49 },
+    mesh: { x: 52, y: 68 },
   },
   anchors: {
     cord: { x: 50, y: 10 },
     lip: { x: 12, y: 48 },
-    mesh: { x: 40, y: 86 },
+    mesh: { x: 90, y: 84 },
   },
 };
 

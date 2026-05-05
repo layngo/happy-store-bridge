@@ -41,8 +41,9 @@ import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPl
 const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
 
+/** Minimal Vimeo chrome: standard controls only (play/pause, etc.) — no title, byline, or portrait. */
 const LAY_N_GO_LARGE_VIMEO_EMBED_SRC =
-  "https://player.vimeo.com/video/1189557207?badge=0&autopause=0&player_id=0&app_id=58479";
+  "https://player.vimeo.com/video/1189557207?badge=0&autopause=0&title=0&byline=0&portrait=0&controls=1";
 
 function getOrderedImagesForProduct(product: ShopifyProduct["node"]) {
   const imgs = product.images.edges;
@@ -654,13 +655,15 @@ const ProductDetail = () => {
             >
               <div
                 className={cn(
-                  "relative w-full overflow-hidden rounded-2xl border border-border bg-muted/40 shadow-inner",
-                  isLayNGoLarge60 ? "pt-[56.34%]" : "aspect-video",
+                  "relative w-full overflow-hidden rounded-2xl",
+                  isLayNGoLarge60
+                    ? "border-0 bg-black pt-[56.34%] shadow-none"
+                    : "border border-border bg-muted/40 shadow-inner aspect-video",
                 )}
               >
                 {isLayNGoLarge60 ? (
                   <iframe
-                    title="Lay-n-Go Large demo video"
+                    title="Video"
                     src={LAY_N_GO_LARGE_VIMEO_EMBED_SRC}
                     className="absolute inset-0 h-full w-full border-0"
                     allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"

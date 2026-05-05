@@ -11,25 +11,25 @@ const FEATURE_OPEN = "/products/lay-n-go-large-pdp/feature-3-open.png";
 const FEATURE_CINCH = "/products/lay-n-go-large-pdp/feature-4-cinch.png";
 const FEATURE_CARRY = "/products/lay-n-go-large-pdp/feature-5-carry.png";
 
-/** Same visual language as `NailspaPdpStory` `RenderArrow`: dashed quadratic stroke + solid chevron tip. */
+/** Dashed curve + solid tip (Nailspa family), always drawn left → right; stroke scaled up for stage-to-stage strip. */
 function LargeFeatureArrow({ className }: { className?: string }) {
-  const viewBox = "0 0 120 44";
-  const start = { x: 4, y: 22 };
-  const control = { x: 58, y: 12 };
-  const end = { x: 112, y: 22 };
+  const viewBox = "0 0 140 52";
+  const start = { x: 6, y: 28 };
+  const control = { x: 72, y: 10 };
+  const end = { x: 128, y: 28 };
   const dx = end.x - control.x;
   const dy = end.y - control.y;
   const len = Math.hypot(dx, dy) || 1;
   const ux = dx / len;
   const uy = dy / len;
-  const size = 6;
-  const spread = 3.8;
+  const size = 9;
+  const spread = 5.5;
   const left = { x: end.x - ux * size - uy * spread, y: end.y - uy * size + ux * spread };
   const right = { x: end.x - ux * size + uy * spread, y: end.y - uy * size - ux * spread };
 
   return (
     <svg
-      className={cn("block shrink-0 text-neutral-800/85", className)}
+      className={cn("block shrink-0 text-neutral-900", className)}
       viewBox={viewBox}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -38,9 +38,10 @@ function LargeFeatureArrow({ className }: { className?: string }) {
       <path
         d={`M${start.x} ${start.y} Q${control.x} ${control.y} ${end.x} ${end.y}`}
         stroke="currentColor"
-        strokeWidth={1.25}
-        strokeDasharray="3 4"
+        strokeWidth={2.85}
+        strokeDasharray="5 7"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d={`M${end.x} ${end.y} L${left.x} ${left.y} L${right.x} ${right.y} Z`}
@@ -53,13 +54,13 @@ function LargeFeatureArrow({ className }: { className?: string }) {
 function FeatureConnector({ label }: { label: string }) {
   return (
     <div
-      className="flex w-full shrink-0 flex-col items-center justify-center gap-3 py-3 md:w-[min(100%,8rem)] lg:w-36"
+      className="flex w-[min(5.5rem,18vw)] shrink-0 flex-col items-center justify-center gap-2 self-center py-2 sm:w-32 md:w-36 lg:w-40"
       role="presentation"
     >
-      <p className="max-w-[16rem] text-center font-heading text-sm font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-base md:max-w-[13rem] md:text-[0.95rem] lg:text-lg">
+      <p className="max-w-[11rem] text-center font-heading text-[0.65rem] font-bold uppercase leading-tight tracking-wide text-neutral-900 sm:max-w-[13rem] sm:text-xs md:text-sm lg:text-[0.95rem]">
         {label}
       </p>
-      <LargeFeatureArrow className="h-12 w-[min(100%,7rem)] rotate-90 md:h-11 md:w-32 lg:w-36" />
+      <LargeFeatureArrow className="h-[3.25rem] w-full min-w-[4.5rem] max-w-[10rem] sm:h-14 md:h-[3.75rem]" />
     </div>
   );
 }
@@ -129,12 +130,12 @@ export function LayNGoLargePdpPlayStrip() {
         className="mx-auto mt-14 max-w-[min(100%,90rem)] border-t border-neutral-200/80 pt-12 sm:mt-16 sm:pt-14"
         aria-label="How Lay-n-Go Large works in three steps"
       >
-        <div className="flex flex-col items-stretch md:flex-row md:items-center md:justify-center md:gap-1 lg:gap-2">
-          <div className="flex min-w-0 flex-1 justify-center md:basis-0">
+        <div className="flex flex-row items-center justify-center gap-1 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:thin] sm:gap-2 md:gap-3 lg:gap-4 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-neutral-300">
+          <div className="flex w-[min(78vw,260px)] shrink-0 justify-center sm:w-[min(72vw,300px)] md:w-[min(34%,320px)] md:max-w-[360px]">
             <img
               src={FEATURE_OPEN}
               alt="Lay-n-Go Large open with toys; easy access to play and start cleanup"
-              className="h-auto max-h-[min(52vh,380px)] w-full max-w-sm object-contain md:max-h-[min(48vh,420px)] lg:max-h-[460px]"
+              className="h-auto max-h-[min(52vh,380px)] w-full object-contain md:max-h-[min(48vh,420px)] lg:max-h-[460px]"
               loading="lazy"
               decoding="async"
             />
@@ -142,11 +143,11 @@ export function LayNGoLargePdpPlayStrip() {
 
           <FeatureConnector label="Easy access and cleanup" />
 
-          <div className="flex min-w-0 flex-1 justify-center md:basis-0">
+          <div className="flex w-[min(78vw,260px)] shrink-0 justify-center sm:w-[min(72vw,300px)] md:w-[min(34%,320px)] md:max-w-[360px]">
             <img
               src={FEATURE_CINCH}
               alt="Cinching the Lay-n-Go Large drawstring to gather the mat closed"
-              className="h-auto max-h-[min(52vh,380px)] w-full max-w-sm object-contain md:max-h-[min(48vh,420px)] lg:max-h-[460px]"
+              className="h-auto max-h-[min(52vh,380px)] w-full object-contain md:max-h-[min(48vh,420px)] lg:max-h-[460px]"
               loading="lazy"
               decoding="async"
             />
@@ -154,11 +155,11 @@ export function LayNGoLargePdpPlayStrip() {
 
           <FeatureConnector label="Wide strap for easy travel and storage" />
 
-          <div className="flex min-w-0 flex-1 justify-center md:basis-0">
+          <div className="flex w-[min(78vw,260px)] shrink-0 justify-center sm:w-[min(72vw,300px)] md:w-[min(34%,320px)] md:max-w-[360px]">
             <img
               src={FEATURE_CARRY}
               alt="Carrying the closed Lay-n-Go Large bag with the wide shoulder strap"
-              className="h-auto max-h-[min(52vh,380px)] w-full max-w-sm object-contain md:max-h-[min(48vh,420px)] lg:max-h-[460px]"
+              className="h-auto max-h-[min(52vh,380px)] w-full object-contain md:max-h-[min(48vh,420px)] lg:max-h-[460px]"
               loading="lazy"
               decoding="async"
             />
