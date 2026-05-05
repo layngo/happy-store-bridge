@@ -472,7 +472,7 @@ function BottomProductImage({
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              "linear-gradient(to right, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.98) 100%), linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.98) 100%)",
+              "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.98) 100%)",
           }}
         />
         <CarryingHandleOverlay
@@ -523,7 +523,7 @@ function NailMatCalloutEditor({
       onPointerCancel={() => setDragBox(false)}
     >
       <div
-        className="absolute w-[min(90%,360px)] cursor-move touch-none"
+        className="absolute w-[min(96%,560px)] cursor-move touch-none"
         style={{ left: `${nailMatBoxPos.x}%`, top: `${nailMatBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
         onPointerDown={(e) => {
           if (!editorMode) return;
