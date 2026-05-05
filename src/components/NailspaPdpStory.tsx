@@ -16,26 +16,27 @@ type ArrowGeom = { viewBox: string; start: Point; control: Point; end: Point };
 type ArrowKey = "mesh" | "lipRight" | "cord" | "carry" | "nailMat";
 type ArrowMap = Record<ArrowKey, ArrowGeom>;
 type ArrowPointKey = keyof Pick<ArrowGeom, "start" | "control" | "end">;
+type CordBoxPos = { right: number; bottom: number };
 
 // Reverted to pre-drag coordinates.
 const ARROWS: ArrowMap = {
   mesh: {
     viewBox: "0 0 120 48",
-    start: { x: 8, y: 40 },
-    control: { x: 50, y: 24 },
-    end: { x: 88, y: 12 },
+    start: { x: 51.10607315690805, y: 1.1182095625635808 },
+    control: { x: 61.828486724506256, y: 48 },
+    end: { x: 120, y: 48 },
   },
   lipRight: {
     viewBox: "0 0 120 56",
-    start: { x: 112, y: 12 },
-    control: { x: 70, y: 25 },
-    end: { x: 28, y: 42 },
+    start: { x: 88.21240558480201, y: 0 },
+    control: { x: 109.49416342412451, y: 22.980118590861533 },
+    end: { x: 101.21309224078736, y: 56 },
   },
   cord: {
     viewBox: "0 0 120 52",
     start: { x: 112, y: 46 },
     control: { x: 72, y: 30 },
-    end: { x: 22, y: 14 },
+    end: { x: 12.23620965896086, y: 52 },
   },
   carry: {
     viewBox: "0 0 100 100",
@@ -52,6 +53,8 @@ const ARROWS: ArrowMap = {
 };
 
 const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v1";
+const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
+const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 2, bottom: 8 };
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -84,6 +87,16 @@ function loadArrowsFromStorage(): ArrowMap | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as ArrowMap;
     return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function loadCordBoxFromStorage(): CordBoxPos | null {
+  try {
+    const raw = localStorage.getItem(CORD_BOX_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as CordBoxPos;
   } catch {
     return null;
   }
@@ -233,14 +246,39 @@ function MainImageCallouts({
   arrows,
   editorMode,
   onArrowChange,
+  cordBoxPos,
+  onCordBoxPosChange,
 }: {
   className?: string;
   arrows: ArrowMap;
   editorMode?: boolean;
   onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  cordBoxPos: CordBoxPos;
+  onCordBoxPosChange: (next: CordBoxPos) => void;
 }) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [dragCordBox, setDragCordBox] = useState(false);
+
+  const moveCordBox = useCallback(
+    (ev: React.PointerEvent) => {
+      if (!editorMode || !dragCordBox || !boxRef.current) return;
+      const r = boxRef.current.getBoundingClientRect();
+      const xPct = clamp(((ev.clientX - r.left) / r.width) * 100, 0, 100);
+      const yPct = clamp(((ev.clientY - r.top) / r.height) * 100, 0, 100);
+      onCordBoxPosChange({ right: clamp(100 - xPct, 0, 96), bottom: clamp(100 - yPct, 0, 96) });
+    },
+    [dragCordBox, editorMode, onCordBoxPosChange],
+  );
+
   return (
-    <div className={className}>
+    <div
+      ref={boxRef}
+      className={className}
+      onPointerMove={moveCordBox}
+      onPointerUp={() => setDragCordBox(false)}
+      onPointerCancel={() => setDragCordBox(false)}
+      onPointerLeave={() => setDragCordBox(false)}
+    >
       {/* Mesh — left */}
       <div className="absolute left-[1%] top-[14%] z-10 flex max-w-[min(48%,220px)] flex-col items-start sm:left-[3%] sm:top-[12%] sm:max-w-[240px] md:left-[4%] md:top-[14%] md:max-w-[260px] lg:max-w-[280px]">
         <div className={CALLOUT_PANEL}>
@@ -280,8 +318,25 @@ function MainImageCallouts({
       </div>
 
       {/* Cord lock — lower right */}
-      <div className="absolute bottom-[8%] right-[2%] z-10 flex max-w-[min(54%,260px)] flex-col items-end sm:bottom-[10%] sm:max-w-[280px] md:bottom-[12%] md:right-[4%] md:max-w-[300px]">
+      <div
+        className="absolute z-10 flex max-w-[min(54%,260px)] flex-col items-end sm:max-w-[280px] md:max-w-[300px]"
+        style={{ bottom: `${cordBoxPos.bottom}%`, right: `${cordBoxPos.right}%` }}
+      >
         <div className={CALLOUT_PANEL}>
+          {editorMode ? (
+            <button
+              type="button"
+              className="mb-1 rounded border border-neutral-300 bg-white/85 px-1.5 py-0.5 text-[10px] font-semibold text-neutral-700"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.currentTarget.setPointerCapture(e.pointerId);
+                setDragCordBox(true);
+              }}
+            >
+              Drag box
+            </button>
+          ) : null}
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Sliding cord lock and cord pocket
           </h2>
@@ -294,7 +349,7 @@ function MainImageCallouts({
           arrows={arrows}
           editorMode={editorMode}
           onArrowChange={onArrowChange}
-          className="mt-2 mr-6 h-[4.8rem] w-44 shrink-0 sm:mr-10 sm:h-[5.6rem] sm:w-[12.8rem] md:mr-12"
+          className="mt-2 mr-6 h-[6.6rem] w-[18rem] shrink-0 sm:mr-10 sm:h-[7.2rem] sm:w-[19.5rem] md:mr-12"
         />
       </div>
     </div>
@@ -366,6 +421,7 @@ function BottomProductImage({
 export function NailspaPdpStory() {
   const [arrows, setArrows] = useState<ArrowMap>(ARROWS);
   const [editorMode, setEditorMode] = useState(false);
+  const [cordBoxPos, setCordBoxPos] = useState<CordBoxPos>(DEFAULT_CORD_BOX_POS);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -374,6 +430,7 @@ export function NailspaPdpStory() {
     setEditorMode(enabled);
     if (enabled) {
       setArrows(loadArrowsFromStorage() ?? ARROWS);
+      setCordBoxPos(loadCordBoxFromStorage() ?? DEFAULT_CORD_BOX_POS);
     }
   }, []);
 
@@ -384,6 +441,7 @@ export function NailspaPdpStory() {
   const save = () => {
     try {
       localStorage.setItem(ARROW_STORAGE_KEY, JSON.stringify(arrows));
+      localStorage.setItem(CORD_BOX_STORAGE_KEY, JSON.stringify(cordBoxPos));
       window.dispatchEvent(new Event("nailspa-arrows-updated"));
     } catch {
       // no-op
@@ -392,7 +450,16 @@ export function NailspaPdpStory() {
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(JSON.stringify(arrows, null, 2));
+      await navigator.clipboard.writeText(
+        JSON.stringify(
+          {
+            arrows,
+            cordBoxPos,
+          },
+          null,
+          2,
+        ),
+      );
     } catch {
       // no-op
     }
@@ -406,7 +473,18 @@ export function NailspaPdpStory() {
     setEditorMode(false);
   };
 
-  const arrowJson = useMemo(() => JSON.stringify(arrows, null, 2), [arrows]);
+  const arrowJson = useMemo(
+    () =>
+      JSON.stringify(
+        {
+          arrows,
+          cordBoxPos,
+        },
+        null,
+        2,
+      ),
+    [arrows, cordBoxPos],
+  );
 
   return (
     <section
@@ -445,6 +523,8 @@ export function NailspaPdpStory() {
             arrows={arrows}
             editorMode={editorMode}
             onArrowChange={updateArrow}
+            cordBoxPos={cordBoxPos}
+            onCordBoxPosChange={setCordBoxPos}
           />
         </div>
 
