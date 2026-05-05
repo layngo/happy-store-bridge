@@ -30,7 +30,7 @@ const LABELS_EVERYTHING: Record<keyof EverythingPts, string> = {
   c1: "Curve 1",
   c2: "Curve 2",
   ce: "Curve end",
-  s2: "Tail bend",
+  tq: "Tail curve",
   end: "Arrow tip",
 };
 
@@ -54,7 +54,7 @@ export function CosmoEverythingArrowHandles({
 
   const move = usePctDrag(boxRef, dragKey, apply);
 
-  const keys = (["m", "c1", "c2", "ce", "s2", "end"] as const).map((k) => ({
+  const keys = (["m", "c1", "c2", "ce", "tq", "end"] as const).map((k) => ({
     key: k,
     pt: pts[k],
     label: LABELS_EVERYTHING[k],
