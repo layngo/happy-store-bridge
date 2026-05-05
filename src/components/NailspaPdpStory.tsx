@@ -58,7 +58,7 @@ const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
 const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 68.19598858173077, bottom: 5.593950320512818 };
-const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 58, y: 78 };
+const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 80, y: 76 };
 const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 18, y: 34 };
 
 function clamp(n: number, min: number, max: number) {
