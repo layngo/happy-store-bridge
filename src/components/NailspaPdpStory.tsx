@@ -403,7 +403,7 @@ function CarryingHandleOverlay({
       onPointerCancel={() => setDragCarryBox(false)}
     >
       <div
-        className="absolute max-w-[min(78%,280px)] cursor-move touch-none rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:max-w-[300px] sm:px-4 sm:py-2.5"
+        className="absolute w-[min(96vw,760px)] max-w-none cursor-move touch-none rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:w-[min(92vw,840px)] sm:px-4 sm:py-2.5 md:w-[min(78vw,980px)]"
         style={{ left: `${carryBoxPos.x}%`, top: `${carryBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
         onPointerDown={(e) => {
           if (!editorMode) return;
@@ -523,7 +523,7 @@ function NailMatCalloutEditor({
       onPointerCancel={() => setDragBox(false)}
     >
       <div
-        className="absolute w-[min(96vw,760px)] max-w-none cursor-move touch-none sm:w-[min(92vw,840px)] md:w-[min(78vw,980px)]"
+        className="absolute w-[min(90%,360px)] cursor-move touch-none"
         style={{ left: `${nailMatBoxPos.x}%`, top: `${nailMatBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
         onPointerDown={(e) => {
           if (!editorMode) return;
