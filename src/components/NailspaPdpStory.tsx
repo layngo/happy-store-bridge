@@ -84,7 +84,7 @@ export function NailspaPdpStory() {
       </div>
 
       {/* Row 2 — hero shot rotated 180° so outer lip meets top edge; callouts */}
-      <div className="relative border-t border-neutral-100">
+      <div className="relative">
         <img
           src="/nailspa-pdp/story/image2.png"
           alt=""
@@ -95,7 +95,7 @@ export function NailspaPdpStory() {
         <div className="pointer-events-none absolute inset-0 z-10">
           {/* Mesh pockets — upper-left */}
           <div className="absolute left-[2%] top-[6%] flex max-w-[min(46%,240px)] flex-col items-start sm:left-[4%] sm:top-[8%] sm:max-w-[260px] md:left-[5%] md:top-[10%] md:max-w-[280px]">
-            <div className="rounded-md border border-neutral-200/90 bg-white/95 px-3 py-2.5 shadow-md backdrop-blur-[2px] sm:px-4 sm:py-3">
+            <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm sm:px-4 sm:py-3">
               <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
                 Mesh pockets
               </h2>
@@ -108,7 +108,7 @@ export function NailspaPdpStory() {
 
           {/* Containment lip — lower-left curve */}
           <div className="absolute bottom-[14%] left-[3%] flex max-w-[min(52%,280px)] flex-col items-start sm:bottom-[16%] sm:left-[4%] md:bottom-[18%] md:left-[6%] md:max-w-[300px]">
-            <div className="rounded-md border border-neutral-200/90 bg-white/95 px-3 py-2.5 shadow-md backdrop-blur-[2px] sm:px-4 sm:py-3">
+            <div className="rounded-md bg-white/92 px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-sm sm:px-4 sm:py-3">
               <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
                 Convenient containment lip
               </h2>
