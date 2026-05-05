@@ -8,37 +8,15 @@ import {
   clearCosmoStoryArrowOverrides,
   type CosmoStoryArrowVariant,
 } from "@/data/cosmoPdpStoryArrows";
-
-type Pt = { x: number; y: number };
-
-function clamp(n: number, lo: number, hi: number) {
-  return Math.max(lo, Math.min(hi, n));
-}
-
-type EverythingPts = { m: Pt; c1: Pt; c2: Pt; ce: Pt; end: Pt };
-type PackupPts = { m: Pt; q: Pt; end: Pt };
-
-const DEFAULT_EVERYTHING: EverythingPts = {
-  m: { x: 47, y: 9 },
-  c1: { x: 8, y: 14 },
-  c2: { x: 2, y: 32 },
-  ce: { x: 10, y: 44 },
-  end: { x: 50, y: 25 },
-};
-
-const DEFAULT_PACKUP: PackupPts = {
-  m: { x: 50, y: 15 },
-  q: { x: 53, y: 24 },
-  end: { x: 50, y: 33 },
-};
-
-function everythingToD(p: EverythingPts) {
-  return `M ${p.m.x} ${p.m.y} C ${p.c1.x} ${p.c1.y}, ${p.c2.x} ${p.c2.y}, ${p.ce.x} ${p.ce.y} L ${p.end.x} ${p.end.y}`;
-}
-
-function packupToD(p: PackupPts) {
-  return `M ${p.m.x} ${p.m.y} Q ${p.q.x} ${p.q.y}, ${p.end.x} ${p.end.y}`;
-}
+import {
+  clamp,
+  DEFAULT_EVERYTHING_PTS,
+  DEFAULT_PACKUP_PTS,
+  everythingPathFromPts,
+  packupPathFromPts,
+  type EverythingPts,
+  type PackupPts,
+} from "@/data/cosmoArrowEditorModel";
 
 /**
  * Dev tool: drag arrow handles, save to localStorage, see results on any Cosmo PDP in this browser.
@@ -61,10 +39,10 @@ export default function CosmoArrowPlayground() {
           </p>
           <p className="text-sm">
             <Link
-              to="/collections/all/products/lay-n-go-cosmo-20"
+              to="/product/lay-n-go-cosmo-20?editArrows=1"
               className="text-primary underline-offset-4 hover:underline"
             >
-              Example: Cosmo 20″ PDP
+              Example: Cosmo 20″ PDP (arrow edit mode)
             </Link>
           </p>
         </div>
@@ -109,12 +87,13 @@ function LiveEditorPanel({
   onPathChange: (d: string) => void;
 }) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const [everything, setEverything] = useState<EverythingPts>(DEFAULT_EVERYTHING);
-  const [packup, setPackup] = useState<PackupPts>(DEFAULT_PACKUP);
+  const [everything, setEverything] = useState<EverythingPts>(DEFAULT_EVERYTHING_PTS);
+  const [packup, setPackup] = useState<PackupPts>(DEFAULT_PACKUP_PTS);
   const [drag, setDrag] = useState<{ key: string } | null>(null);
 
   const pathD = useMemo(
-    () => (variant === "everything" ? everythingToD(everything) : packupToD(packup)),
+    () =>
+      variant === "everything" ? everythingPathFromPts(everything) : packupPathFromPts(packup),
     [variant, everything, packup],
   );
 

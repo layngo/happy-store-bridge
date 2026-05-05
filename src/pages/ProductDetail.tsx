@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams, useLocation } from "react-router-dom";
 import {
   fetchProductByHandle,
   fetchRelatedProducts,
@@ -129,6 +129,18 @@ const ProductDetail = () => {
         isCosmo22Product(product.handle) ||
         isCosmoMini16Product(product.handle, product.title)),
   );
+
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const cosmoStoryArrowEditMode =
+    isCosmoPdp &&
+    (searchParams.get("editArrows") === "1" || searchParams.get("editArrows") === "true");
+
+  const cosmoArrowEditHref = useMemo(() => {
+    const p = new URLSearchParams(location.search);
+    p.set("editArrows", "1");
+    return `${location.pathname}?${p.toString()}`;
+  }, [location.pathname, location.search]);
 
   const cosmoYoutubeId = useMemo(
     () => (product ? extractFirstYoutubeVideoId(product.description || "") : null),
@@ -417,7 +429,7 @@ const ProductDetail = () => {
       size="lg"
       onClick={handleAddToCart}
       disabled={isLoading || !selectedVariant?.availableForSale}
-      className="w-full rounded-md border border-neutral-700 bg-[#2c2c2c] font-serif text-base font-medium tracking-wide text-neutral-50 shadow-none hover:bg-[#1f1f1f] disabled:opacity-50"
+      className="font-cosmo-cta w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-base font-semibold tracking-wide text-neutral-50 shadow-none hover:bg-[#1f1f1f] disabled:opacity-50"
     >
       {isLoading ? (
         <Loader2 className="h-5 w-5 animate-spin" />
@@ -497,7 +509,7 @@ const ProductDetail = () => {
                   <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5 border-b border-neutral-200/80 pb-6">
                     <div>
                       <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500">Price</p>
-                      <p className="mt-1 font-serif text-3xl font-semibold tabular-nums text-neutral-800 sm:text-[2.125rem]">
+                      <p className="font-cosmo-price mt-1 text-3xl font-semibold tabular-nums text-neutral-800 sm:text-[2.125rem]">
                         ${priceDisplay}
                       </p>
                     </div>
@@ -512,18 +524,24 @@ const ProductDetail = () => {
               </div>
             </section>
 
-            <CosmoPdpStory />
+            <CosmoPdpStory editorMode={cosmoStoryArrowEditMode} />
 
-            <p className="mt-4 text-center">
+            <p className="mt-4 text-center text-xs text-neutral-500">
+              <span className="block sm:inline">
+                <Link
+                  to={cosmoArrowEditHref}
+                  className="text-primary underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-800"
+                >
+                  Edit arrows on this page
+                </Link>{" "}
+                (adds <code className="rounded bg-neutral-100 px-1 font-mono text-[10px]">?editArrows=1</code>
+                ) ·{" "}
+              </span>
               <Link
                 to="/dev/cosmo-arrows"
-                className="text-xs text-neutral-500 underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-800"
+                className="underline decoration-neutral-300 underline-offset-2 transition-colors hover:text-neutral-800"
               >
-                Story arrows — drag points here, then Save (or paste paths into{" "}
-                <code className="rounded bg-neutral-100 px-1 py-0.5 font-mono text-[10px] text-neutral-700">
-                  cosmoPdpStoryArrows.ts
-                </code>
-                )
+                or open the grid editor
               </Link>
             </p>
 

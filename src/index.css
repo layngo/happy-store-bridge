@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@500;600;700&family=League+Spartan:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -38,6 +38,8 @@
 
     --font-heading: "League Spartan", ui-sans-serif, system-ui, sans-serif;
     --font-body: "League Spartan", ui-sans-serif, system-ui, sans-serif;
+    --font-cosmo-price: "Cormorant Garamond", ui-serif, Georgia, serif;
+    --font-cosmo-cta: "DM Sans", ui-sans-serif, system-ui, sans-serif;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 220 16% 10%;
@@ -167,5 +169,15 @@
   }
   100% {
     transform: translateX(0);
+  }
+}
+
+@layer utilities {
+  .font-cosmo-price {
+    font-family: var(--font-cosmo-price);
+  }
+
+  .font-cosmo-cta {
+    font-family: var(--font-cosmo-cta);
   }
 }
