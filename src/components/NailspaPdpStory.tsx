@@ -412,6 +412,15 @@ function CarryingHandleOverlay({
           e.currentTarget.setPointerCapture(e.pointerId);
           setDragCarryBox(true);
         }}
+        onPointerMove={(e) => {
+          if (!editorMode || !dragCarryBox || !boxRef.current) return;
+          const r = boxRef.current.getBoundingClientRect();
+          const xPct = ((e.clientX - r.left) / r.width) * 100;
+          const yPct = ((e.clientY - r.top) / r.height) * 100;
+          onCarryBoxPosChange({ x: xPct, y: yPct });
+        }}
+        onPointerUp={() => setDragCarryBox(false)}
+        onPointerCancel={() => setDragCarryBox(false)}
       >
         {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
         <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base md:text-lg">
