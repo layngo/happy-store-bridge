@@ -523,7 +523,7 @@ function NailMatCalloutEditor({
       onPointerCancel={() => setDragBox(false)}
     >
       <div
-        className="absolute w-[min(96%,640px)] cursor-move touch-none md:w-[min(140%,980px)]"
+        className="absolute w-[min(96vw,760px)] max-w-none cursor-move touch-none sm:w-[min(92vw,840px)] md:w-[min(78vw,980px)]"
         style={{ left: `${nailMatBoxPos.x}%`, top: `${nailMatBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
         onPointerDown={(e) => {
           if (!editorMode) return;
