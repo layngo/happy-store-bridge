@@ -122,7 +122,6 @@ const ProductDetail = () => {
   }, [selectedVariantIdx]);
 
   const backHref = collectionHandle ? `/collections/${collectionHandle}` : "/collections";
-  const displayTitle = normalizeProductTitle(product?.title ?? "");
 
   const isCosmoMini16 = product ? isCosmoMini16Product(product.handle, product.title) : false;
   const orderedImages = useMemo(() => {
@@ -269,7 +268,7 @@ const ProductDetail = () => {
   const mainHeroImage: ReactNode = isCosmoMini16 && selectedVariant && !isCosmoBlackVariant(selectedVariant) ? (
     <img
       src={COSMO_MINI_CROSSMARKS_HERO}
-      alt={`${product.title} (Crossmarks)`}
+      alt={`${product.title} (CrossMarks)`}
       className="h-full w-full object-contain p-6"
     />
   ) : isCosmo22Product(product.handle) && cosmo22HeroUrls.length > 0 ? (
@@ -602,7 +601,7 @@ const ProductDetail = () => {
             </>
           ) : null}
           <ChevronRight className="w-4 h-4 shrink-0" />
-          <span className="text-foreground font-medium line-clamp-1">{displayTitle}</span>
+          <span className="text-foreground font-medium line-clamp-1">{product.title}</span>
         </nav>
 
         <Link
@@ -617,7 +616,7 @@ const ProductDetail = () => {
           <>
             <header className="mb-8 text-center sm:mb-10">
               <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-[2.25rem] md:leading-tight">
-                {displayTitle}
+                {product.title}
               </h1>
             </header>
 
@@ -750,7 +749,7 @@ const ProductDetail = () => {
 
             <div className="space-y-6">
               <div>
-                <h1 className="font-heading text-3xl font-bold text-foreground">{displayTitle}</h1>
+                <h1 className="font-heading text-3xl font-bold text-foreground">{product.title}</h1>
                 <p className="mt-2 text-2xl font-bold text-primary">${priceDisplay}</p>
               </div>
 
@@ -885,8 +884,4 @@ function extractFirstYoutubeVideoId(html: string): string | null {
   const vParam = html.match(/[?&]v=([a-zA-Z0-9_-]{6,})/);
   if (vParam?.[1]) return vParam[1];
   return null;
-}
-
-function normalizeProductTitle(title: string): string {
-  return title.replace(/\bcrossmarks\b/gi, "Crossmarks");
 }
