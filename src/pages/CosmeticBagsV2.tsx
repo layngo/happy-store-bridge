@@ -14,10 +14,12 @@ const IMG_20 = "/cosmetic-bags-v2/cosmo-20.png";
 const IMG_22 = "/cosmetic-bags-v2/cosmo-22.png";
 
 /** Largest circle (22″) width; 16″ and 20″ derive from 16:20:22. */
-const COSMO_CIRCLE_BASE_REM = 17;
+const COSMO_CIRCLE_BASE_REM = 18.25;
 
 type SizeSpec = {
   inches: 16 | 20 | 22;
+  /** Upper overlay on the circle — matches Cosmo PDP story headline typography. */
+  shortName: string;
   imageSrc: string;
   imageAlt: string;
   match: (handle: string, title: string) => boolean;
@@ -26,6 +28,7 @@ type SizeSpec = {
 const SIZE_SPECS: SizeSpec[] = [
   {
     inches: 16,
+    shortName: "Cosmo Mini",
     imageSrc: IMG_16,
     imageAlt: "Lay-n-Go Cosmo Mini 16 inch open flat",
     match: (handle, title) => {
@@ -36,6 +39,7 @@ const SIZE_SPECS: SizeSpec[] = [
   },
   {
     inches: 20,
+    shortName: "Cosmo",
     imageSrc: IMG_20,
     imageAlt: "Lay-n-Go Cosmo 20 inch open flat",
     match: (handle, title) => {
@@ -46,6 +50,7 @@ const SIZE_SPECS: SizeSpec[] = [
   },
   {
     inches: 22,
+    shortName: "Cosmo Deluxe",
     imageSrc: IMG_22,
     imageAlt: "Lay-n-Go Cosmo Deluxe 22 inch open flat",
     match: (handle, title) => {
@@ -100,7 +105,7 @@ const CosmeticBagsV2 = () => {
     const cols = sizedProducts.map(({ spec, product }) => {
       // Cap the 22″ diameter at one grid column so min() never uses equal cell % widths
       // (which made 16/20/22 circles identical). Ratios stay 16:20:22 via inches/22.
-      const cap = `min(${COSMO_CIRCLE_BASE_REM}rem, (100cqw - 0.5rem) / 3)`;
+      const cap = `min(${COSMO_CIRCLE_BASE_REM}rem, (100cqw - 1.5rem) / 3)`;
       const circleWidth = `calc((${spec.inches} / 22) * ${cap})`;
       return {
         spec,
@@ -186,12 +191,20 @@ const CosmeticBagsV2 = () => {
                 to={`/product/${product.handle}`}
                 className={cn(
                   "group relative flex min-h-0 min-w-0 flex-1 cursor-pointer flex-col items-center gap-0 px-0.5 pb-1 pt-0 sm:px-1.5 sm:pb-2 sm:pt-0 md:px-2",
-                  "rounded-xl outline-none ring-1 ring-transparent transition-[background-color,box-shadow,ring-color] duration-200",
-                  "hover:bg-muted/50 hover:shadow-[inset_0_0_0_1px_hsl(var(--primary)_/_0.22)] hover:ring-primary/35",
-                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                  "rounded-xl outline-none transition-colors duration-200",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0",
                 )}
-                aria-label={`${product.title} — ${spec.inches} inch. Opens product page.`}
+                aria-label={`${spec.shortName}, ${spec.inches} inch — ${product.title}. Opens product page.`}
               >
+                <p
+                  className={cn(
+                    "pointer-events-none mb-1 flex min-h-[2.75rem] w-full max-w-[min(100%,14rem)] items-center justify-center px-0.5 text-pretty text-center sm:mb-1.5 sm:min-h-[3rem]",
+                    "font-heading font-black uppercase leading-[0.92] tracking-tight text-foreground",
+                    "text-[clamp(0.5625rem,2.5cqw+0.45rem,0.875rem)] sm:text-[clamp(0.625rem,2.2cqw+0.45rem,1rem)]",
+                  )}
+                >
+                  {spec.shortName}
+                </p>
                 {/*
                   Same min-height for every column so circles share one baseline (swatch height
                   no longer shifts disks vertically). Bottom-align disks in this band.
@@ -200,20 +213,26 @@ const CosmeticBagsV2 = () => {
                   className="-mt-0.5 flex w-full flex-col items-center justify-end sm:-mt-1"
                   style={{ minHeight: `${COSMO_CIRCLE_BASE_REM}rem` }}
                 >
+                  {/*
+                    Fixed square disks (aspect 1) so 16″:20″:22″ widths read as real size steps.
+                    Black matte + object-cover matches lay-flat art and avoids gray/white letterboxing.
+                  */}
                   <div
                     className={cn(
-                      "relative max-w-full overflow-hidden rounded-full bg-white transition-[box-shadow] duration-300",
-                      "group-hover:shadow-[0_0_0_2px_hsl(var(--primary)_/_0.5),0_0_18px_hsl(var(--primary)_/_0.28)]",
+                      "mx-auto max-w-full transition-transform duration-200 ease-out will-change-transform",
+                      "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
                     )}
                     style={{ width: circleWidth, aspectRatio: "1" }}
                   >
-                    <img
-                      src={spec.imageSrc}
-                      alt={spec.imageAlt}
-                      className="h-full w-full object-cover object-center"
-                      loading="lazy"
-                      decoding="async"
-                    />
+                    <div className="h-full w-full overflow-hidden rounded-full bg-black">
+                      <img
+                        src={spec.imageSrc}
+                        alt={spec.imageAlt}
+                        className="block h-full w-full object-cover object-center"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
                   </div>
                 </div>
 
