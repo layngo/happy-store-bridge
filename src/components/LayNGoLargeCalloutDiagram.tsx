@@ -246,8 +246,8 @@ export function LayNGoLargeCalloutDiagram() {
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
       if (k === "mesh") {
-        const meshUpperStart = { x: d.x - 0.5, y: d.y - 4.4 };
-        const meshLowerStart = { x: d.x - 0.5, y: d.y + 4.4 };
+        const meshUpperStart = { x: d.x - 2.2, y: d.y - 16.8 };
+        const meshLowerStart = { x: d.x + 1.2, y: d.y + 6.8 };
         return {
           k,
           x1: d.x,
@@ -407,9 +407,8 @@ export function LayNGoLargeCalloutDiagram() {
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
                   />
-                  <circle cx={meshUpperStart!.x} cy={meshUpperStart!.y} r="0.95" fill="white" stroke="black" strokeWidth="0.28" />
-                  <circle cx={meshLowerStart!.x} cy={meshLowerStart!.y} r="0.95" fill="white" stroke="black" strokeWidth="0.28" />
-                  <circle cx={x2} cy={y2} r="0.95" fill="white" stroke="black" strokeWidth="0.28" />
+                  <circle cx={meshUpperStart!.x} cy={meshUpperStart!.y} r="1.1" fill="white" stroke="black" strokeWidth="0.36" />
+                  <circle cx={meshLowerStart!.x} cy={meshLowerStart!.y} r="1.1" fill="white" stroke="black" strokeWidth="0.36" />
                 </g>
               ) : (
                 <line
@@ -443,6 +442,7 @@ export function LayNGoLargeCalloutDiagram() {
               "absolute z-[25] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-md ring-1 ring-white",
               editorMode ? "h-4 w-4 cursor-grab ring-2 ring-amber-400 touch-none active:cursor-grabbing" : "h-3 w-3",
             );
+            if (k === "mesh" && !editorMode) return null;
             return editorMode ? (
               <button
                 key={k}
