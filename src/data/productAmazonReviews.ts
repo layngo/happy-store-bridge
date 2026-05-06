@@ -25,14 +25,6 @@ export const COSMO_16_AMAZON_REVIEWS: ProductAmazonReview[] = [
     variantNote: "Verified Purchase · 16\" · Crossmark",
   },
   {
-    headline: "Make traveling less of a headache",
-    quote:
-      "Super cute and convenient way to travel with your essentials. Only dislike is it’s overpriced and there’s no good way of closing it.",
-    author: "Cassidy",
-    rating: 4,
-    variantNote: "Verified Purchase · 16\" · Crossmark",
-  },
-  {
     headline: "Convenient and Spacious Makeup Organizer for Travel",
     quote:
       "Lay-flat design provides full visibility of contents… Holds makeup brushes, bottles, and small tools comfortably… Machine-washable material made cleaning effortless… A great choice for convenience and portability, despite minor drawbacks like its soft structure.",
