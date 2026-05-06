@@ -71,6 +71,15 @@ const Wholesale = () => {
         season.&rdquo;
         <footer className="not-italic text-sm text-foreground mt-2">— Specialty boutique buyer, Mid-Atlantic</footer>
       </blockquote>
+
+      <div className="not-prose mt-10">
+        <img
+          src="/wholesale-provisional-drawings-page-4.png"
+          alt="Lay-n-Go Convertible provisional patent drawing (page 4)"
+          loading="lazy"
+          className="mx-auto w-full max-w-3xl rounded-xl border border-border bg-white shadow-sm"
+        />
+      </div>
     </StaticPageLayout>
   );
 };
