@@ -514,3 +514,64 @@ function getColorValues(product: ShopifyProduct["node"]): string[] {
   return [...fromVariants];
 }
 
+/** Swatch row matching default collection `ProductCard`: up to 8 variant swatches (+N) or 4 color dots (+N). */
+export function getCollectionGridSwatchPreview(node: ShopifyProduct["node"]): {
+  swatches: { style: CSSProperties; label: string; key: string }[];
+  remaining: number;
+  interactive: boolean;
+  cosmoMiniInteractive: boolean;
+  cosmoOtherInteractive: boolean;
+} {
+  const cosmoMiniVariants = orderCosmoMiniColorVariants(node);
+  const cosmo20CardVariants = orderCosmo20CardVariants(node);
+  const cosmo22CardVariants = orderCosmo22CardVariants(node);
+  const nailspa18CardVariants = orderNailspa18CardVariants(node);
+
+  const isCosmoMiniInteractive = isCosmoMini16Product(node.handle, node.title) && cosmoMiniVariants.length >= 2;
+  const isCosmo20Interactive = isCosmo20Product(node.handle) && cosmo20CardVariants.length >= 2;
+  const isCosmo22Interactive = isCosmo22Product(node.handle) && cosmo22CardVariants.length >= 2;
+  const isNailspa18Interactive = isNailspa18Product(node.handle) && nailspa18CardVariants.length >= 2;
+
+  if (isCosmoMiniInteractive || isCosmo20Interactive || isCosmo22Interactive || isNailspa18Interactive) {
+    const variants = isCosmoMiniInteractive
+      ? cosmoMiniVariants
+      : isCosmo20Interactive
+        ? cosmo20CardVariants
+        : isCosmo22Interactive
+          ? cosmo22CardVariants
+          : nailspa18CardVariants;
+    const visible = variants.slice(0, 8);
+    const swatches = visible.map((v) => ({
+      style: isCosmoMiniInteractive ? cosmoMiniSwatchStyle(v) : collectionSwatchStyleFromVariant(node, v),
+      label: getVariantColorValue(v) ?? v.title,
+      key: v.id,
+    }));
+    return {
+      swatches,
+      remaining: Math.max(0, variants.length - visible.length),
+      interactive: true,
+      cosmoMiniInteractive: isCosmoMiniInteractive,
+      cosmoOtherInteractive: isCosmo20Interactive || isCosmo22Interactive || isNailspa18Interactive,
+    };
+  }
+
+  let colorValues = getColorValues(node);
+  if (isCosmo22Product(node.handle)) {
+    const allow = new Set(COSMO_22_SWATCHES.map((s) => s.shopifyColor));
+    colorValues = colorValues.filter((c) => allow.has(c));
+  }
+  const visible = colorValues.slice(0, 4);
+  const swatches = visible.map((color) => ({
+    style: collectionSwatchStyle(node, color),
+    label: color,
+    key: color,
+  }));
+  return {
+    swatches,
+    remaining: Math.max(0, colorValues.length - visible.length),
+    interactive: false,
+    cosmoMiniInteractive: false,
+    cosmoOtherInteractive: false,
+  };
+}
+

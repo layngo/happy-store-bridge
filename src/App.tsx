@@ -23,6 +23,7 @@ import ReturnPolicy from "./pages/static/ReturnPolicy.tsx";
 import SmallBusinesses from "./pages/static/SmallBusinesses.tsx";
 import Wholesale from "./pages/static/Wholesale.tsx";
 import CosmoArrowPlayground from "./pages/CosmoArrowPlayground.tsx";
+import CosmeticBagsV2 from "./pages/CosmeticBagsV2.tsx";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,8 @@ const AppContent = () => {
         />
         <Route path="/collections/:handle" element={<Collection />} />
         <Route path="/collections" element={<CollectionsIndex />} />
+
+        <Route path="/shop/cosmetic-bags-v2" element={<CosmeticBagsV2 />} />
 
         <Route path="/product/:handle" element={<ProductDetail />} />
         <Route path="/products/:handle" element={<ProductUrlRedirect />} />
