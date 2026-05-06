@@ -29,7 +29,7 @@ const DEFAULT_LAYOUT: LayoutState = {
   anchors: {
     cord: { x: 50, y: 10 },
     lip: { x: 12, y: 48 },
-    mesh: { x: 80, y: 58 },
+    mesh: { x: 72, y: 56 },
   },
 };
 
@@ -351,19 +351,44 @@ export function LayNGoLargeCalloutDiagram() {
             preserveAspectRatio="none"
             aria-hidden
           >
-            {lineEnds.map(({ k, x1, y1, x2, y2 }) => (
-              <line
-                key={k}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="currentColor"
-                strokeWidth={k === "mesh" ? "0.42" : "0.34"}
-                strokeLinecap="round"
-                vectorEffect="non-scaling-stroke"
-              />
-            ))}
+            {lineEnds.map(({ k, x1, y1, x2, y2 }) =>
+              k === "mesh" ? (
+                <g key={k}>
+                  <line
+                    x1={x1}
+                    y1={y1}
+                    x2={x2}
+                    y2={y2}
+                    stroke="black"
+                    strokeWidth="0.6"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <line
+                    x1={x1}
+                    y1={y1}
+                    x2={x2}
+                    y2={y2}
+                    stroke="white"
+                    strokeWidth="0.34"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </g>
+              ) : (
+                <line
+                  key={k}
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
+                  stroke="currentColor"
+                  strokeWidth="0.34"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ),
+            )}
           </svg>
 
           <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 w-[min(94vw,920px)] -translate-x-1/2 -translate-y-1/2">
