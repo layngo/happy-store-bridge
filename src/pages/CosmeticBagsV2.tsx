@@ -13,6 +13,9 @@ const IMG_16 = "/cosmetic-bags-v2/cosmo-16.png";
 const IMG_20 = "/cosmetic-bags-v2/cosmo-20.png";
 const IMG_22 = "/cosmetic-bags-v2/cosmo-22.png";
 
+/** Largest circle (22″) width; 16″ and 20″ derive from 16:20:22. */
+const COSMO_CIRCLE_BASE_REM = 17.5;
+
 type SizeSpec = {
   inches: 16 | 20 | 22;
   imageSrc: string;
@@ -86,6 +89,24 @@ const CosmeticBagsV2 = () => {
     }).filter((x): x is { spec: SizeSpec; product: ShopifyCollectionDetail["products"][number]["node"] } => Boolean(x));
   }, [collection]);
 
+  const sizeColumns = useMemo(() => {
+    const cols = sizedProducts.map(({ spec, product }) => {
+      // Cap the 22″ diameter at one grid column so min() never uses equal cell % widths
+      // (which made 16/20/22 circles identical). Ratios stay 16:20:22 via inches/22.
+      const cap = `min(${COSMO_CIRCLE_BASE_REM}rem, (100cqw - 3rem) / 3)`;
+      const circleWidth = `calc((${spec.inches} / 22) * ${cap})`;
+      return {
+        spec,
+        product,
+        preview: getCollectionGridSwatchPreview(product),
+        circleWidth,
+      };
+    });
+    return cols.sort((a, b) => a.spec.inches - b.spec.inches);
+  }, [sizedProducts]);
+
+  const gridGap = "gap-x-2 sm:gap-x-4 md:gap-x-6";
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
@@ -147,68 +168,85 @@ const CosmeticBagsV2 = () => {
           className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-3 py-8 sm:px-6 sm:py-10"
           aria-label="Cosmo size selector"
         >
-          <div className="mx-auto flex w-full max-w-3xl flex-row items-center justify-center gap-2 sm:gap-5 md:gap-8">
-            {sizedProducts.map(({ spec, product }) => {
-              const preview = getCollectionGridSwatchPreview(product);
-              const flexClass = spec.inches === 16 ? "flex-[16]" : spec.inches === 20 ? "flex-[20]" : "flex-[22]";
-              const maxCircle = spec.inches === 16 ? "max-w-[11.5rem]" : spec.inches === 20 ? "max-w-[14.25rem]" : "max-w-[15.75rem]";
-              return (
-                <div key={product.id} className={`flex min-w-0 ${flexClass} flex-col items-center`}>
-                  <Link
-                    to={`/product/${product.handle}`}
-                    className="group flex w-full flex-col items-center outline-none focus-visible:outline-none"
-                    aria-label={`${product.title} — ${spec.inches} inch`}
+          <div
+            className="mx-auto w-full max-w-3xl space-y-4 sm:space-y-5"
+            style={{ containerType: "inline-size" }}
+          >
+            {/* Row 1: circles share one baseline (bottom-aligned) so height differences read clearly */}
+            <div className={cn("grid w-full grid-cols-3 items-end justify-items-center", gridGap)}>
+              {sizeColumns.map(({ spec, product, circleWidth }) => (
+                <Link
+                  key={product.id}
+                  to={`/product/${product.handle}`}
+                  className="group mx-auto block max-w-full outline-none focus-visible:outline-none"
+                  style={{ width: circleWidth }}
+                  aria-label={`${product.title} — ${spec.inches} inch`}
+                >
+                  <div
+                    className={cn(
+                      "relative aspect-square w-full overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-black/5 transition-[box-shadow,ring] duration-300",
+                      "group-hover:shadow-[0_0_0_2px_hsl(var(--primary)_/_0.55),0_0_22px_hsl(var(--primary)_/_0.35)]",
+                      "group-focus-visible:ring-2 group-focus-visible:ring-ring",
+                    )}
                   >
-                    <div
-                      className={cn(
-                        "relative aspect-square w-full overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-black/5 transition-[box-shadow,ring] duration-300",
-                        maxCircle,
-                        "group-hover:shadow-[0_0_0_2px_hsl(var(--primary)_/_0.55),0_0_22px_hsl(var(--primary)_/_0.35)]",
-                        "group-focus-visible:ring-2 group-focus-visible:ring-ring",
-                      )}
-                    >
-                      <img
-                        src={spec.imageSrc}
-                        alt={spec.imageAlt}
-                        className="h-full w-full object-cover object-center"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </div>
-                    <DiameterScale inches={spec.inches} />
-                  </Link>
-                  <div className="mt-2 flex min-h-7 flex-wrap items-center justify-center gap-2">
-                    {preview.swatches.map((s) => (
-                      <span
-                        key={s.key}
-                        className={cn(
-                          preview.interactive
-                            ? cn(
-                                "shrink-0 rounded-full border border-foreground/25 bg-center bg-no-repeat",
-                                "h-7 w-7",
-                                preview.cosmoMiniInteractive &&
-                                  "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]",
-                                preview.cosmoOtherInteractive && "bg-muted/30",
-                              )
-                            : "h-6 w-6 shrink-0 rounded-full border border-foreground/20 bg-muted bg-cover bg-center shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]",
-                        )}
-                        style={s.style}
-                        title={s.label}
-                        aria-label={s.label}
-                      />
-                    ))}
-                    {preview.remaining > 0 ? (
-                      <Link
-                        to={`/product/${product.handle}`}
-                        className="text-xs font-medium text-primary hover:underline"
-                      >
-                        +{preview.remaining} more
-                      </Link>
-                    ) : null}
+                    <img
+                      src={spec.imageSrc}
+                      alt={spec.imageAlt}
+                      className="h-full w-full object-cover object-center"
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </div>
+                </Link>
+              ))}
+            </div>
+
+            {/* Row 2: diameter scales — same column tracks */}
+            <div className={cn("grid w-full grid-cols-3 justify-items-center", gridGap)}>
+              {sizeColumns.map(({ spec, product }) => (
+                <div key={`d-${product.id}`} className="w-full max-w-[min(100%,11rem)] sm:max-w-[13rem]">
+                  <DiameterScale inches={spec.inches} className="!mt-0" />
                 </div>
-              );
-            })}
+              ))}
+            </div>
+
+            {/* Row 3: swatches — same column tracks */}
+            <div className={cn("grid w-full grid-cols-3 justify-items-center", gridGap)}>
+              {sizeColumns.map(({ product, preview }) => (
+                <div
+                  key={`s-${product.id}`}
+                  className="flex min-h-7 w-full max-w-[min(100%,18rem)] flex-wrap items-center justify-center gap-2"
+                >
+                  {preview.swatches.map((s) => (
+                    <span
+                      key={s.key}
+                      className={cn(
+                        preview.interactive
+                          ? cn(
+                              "shrink-0 rounded-full border border-foreground/25 bg-center bg-no-repeat",
+                              "h-7 w-7",
+                              preview.cosmoMiniInteractive &&
+                                "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]",
+                              preview.cosmoOtherInteractive && "bg-muted/30",
+                            )
+                          : "h-6 w-6 shrink-0 rounded-full border border-foreground/20 bg-muted bg-cover bg-center shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]",
+                      )}
+                      style={s.style}
+                      title={s.label}
+                      aria-label={s.label}
+                    />
+                  ))}
+                  {preview.remaining > 0 ? (
+                    <Link
+                      to={`/product/${product.handle}`}
+                      className="text-xs font-medium text-primary hover:underline"
+                    >
+                      +{preview.remaining} more
+                    </Link>
+                  ) : null}
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       </div>
