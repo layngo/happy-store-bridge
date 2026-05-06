@@ -31,29 +31,20 @@ function TravelerDetailCalloutSection() {
           decoding="async"
         />
 
-        <svg className="pointer-events-none absolute inset-0 z-10 h-full w-full text-neutral-900/85" viewBox="0 0 100 100" aria-hidden>
-          <line x1="23" y1="55" x2="13" y2="70" stroke="currentColor" strokeWidth="0.35" strokeLinecap="round" />
-          <circle cx="23" cy="55" r="1.2" fill="#fff" stroke="currentColor" strokeWidth="0.35" />
+        <svg className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 100 100" aria-hidden>
+          <line x1="23" y1="55" x2="13" y2="70" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
+          <circle cx="23" cy="55" r="1.2" fill="#ffffff" stroke="#ffffff" strokeWidth="0.45" />
 
-          <line x1="19" y1="78" x2="19" y2="25" stroke="currentColor" strokeWidth="0.35" strokeLinecap="round" />
-          <line x1="19" y1="25" x2="11" y2="12" stroke="currentColor" strokeWidth="0.35" strokeLinecap="round" />
-          <circle cx="19" cy="78" r="1.2" fill="#fff" stroke="currentColor" strokeWidth="0.35" />
+          <line x1="19" y1="78" x2="19" y2="25" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
+          <line x1="19" y1="25" x2="11" y2="12" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
+          <circle cx="19" cy="78" r="1.2" fill="#ffffff" stroke="#ffffff" strokeWidth="0.45" />
 
-          <line x1="74" y1="27" x2="84" y2="12" stroke="currentColor" strokeWidth="0.35" strokeLinecap="round" />
-          <circle cx="74" cy="27" r="1.2" fill="#fff" stroke="currentColor" strokeWidth="0.35" />
+          <line x1="74" y1="27" x2="84" y2="12" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
+          <circle cx="74" cy="27" r="1.2" fill="#ffffff" stroke="#ffffff" strokeWidth="0.45" />
         </svg>
 
         <div className="absolute left-[2%] top-[2%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:max-w-[13rem]">
-          <div className="aspect-square w-20 overflow-hidden rounded-full ring-2 ring-white sm:w-24 md:w-28">
-            <img src={TRAVELER_CALLOUT_CORD} alt="Cord lock and handle closeup" className="h-full w-full object-cover" />
-          </div>
-          <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
-            Cord Lock/Pocket + Handle
-          </p>
-        </div>
-
-        <div className="absolute left-[2%] top-[64%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:max-w-[13rem]">
-          <div className="aspect-square w-20 overflow-hidden rounded-full ring-2 ring-white sm:w-24 md:w-28">
+          <div className="aspect-square w-20 overflow-hidden rounded-full sm:w-24 md:w-28">
             <img src={TRAVELER_CALLOUT_ZIPPER} alt="Zipper pocket closeup" className="h-full w-full object-cover" />
           </div>
           <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
@@ -61,8 +52,17 @@ function TravelerDetailCalloutSection() {
           </p>
         </div>
 
+        <div className="absolute left-[2%] top-[64%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:max-w-[13rem]">
+          <div className="aspect-square w-20 overflow-hidden rounded-full sm:w-24 md:w-28">
+            <img src={TRAVELER_CALLOUT_CORD} alt="Cord lock and handle closeup" className="h-full w-full object-cover" />
+          </div>
+          <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
+            Cord Lock/Pocket + Handle
+          </p>
+        </div>
+
         <div className="absolute right-[2%] top-[2%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:max-w-[13rem]">
-          <div className="aspect-square w-20 overflow-hidden rounded-full ring-2 ring-white sm:w-24 md:w-28">
+          <div className="aspect-square w-20 overflow-hidden rounded-full sm:w-24 md:w-28">
             <img src={TRAVELER_CALLOUT_LIP} alt="Containment lip closeup" className="h-full w-full object-cover" />
           </div>
           <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
