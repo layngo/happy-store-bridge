@@ -29,7 +29,7 @@ const DEFAULT_LAYOUT: LayoutState = {
   anchors: {
     cord: { x: 50, y: 10 },
     lip: { x: 12, y: 48 },
-    mesh: { x: 72, y: 50 },
+    mesh: { x: 86, y: 46 },
   },
 };
 
