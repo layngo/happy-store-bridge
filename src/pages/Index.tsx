@@ -138,7 +138,7 @@ const Index = () => {
           Shop by Category
         </h2>
         <p className="text-center text-base font-medium text-foreground/80 max-w-xl mx-auto mb-10 leading-normal tracking-normal">
-          Cosmetic bags, tech &amp; travel, play, pets, outdoor, tactical, and nail solutions
+          Cosmetic bags, tech &amp; travel, play, pets, outdoor, tactical, and nail solutions.
         </p>
         {collectionsLoading ? (
           <div className="flex justify-center py-16">
