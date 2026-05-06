@@ -34,6 +34,7 @@ const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.
 
 export const ProductCard = ({ product, variant = "default" }: ProductCardProps) => {
   const { node } = product;
+  const displayTitle = normalizeProductTitle(node.title);
   const addItem = useCartStore(state => state.addItem);
   const isLoading = useCartStore(state => state.isLoading);
 
@@ -111,7 +112,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
       if (!isCosmoBlackVariant(selectedVariant)) {
         return {
           url: COSMO_MINI_CROSSMARKS_HERO,
-          altText: `${node.title} (Crossmarks)`,
+          altText: `${displayTitle} (Crossmarks)`,
         };
       }
       if (selectedVariant.image?.url) {
@@ -178,7 +179,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
       quantity: 1,
       selectedOptions: selectedVariant.selectedOptions || [],
     });
-    toast.success("Added to cart", { description: node.title, position: "top-center" });
+    toast.success("Added to cart", { description: displayTitle, position: "top-center" });
   };
 
   const colorValues = useMemo(() => {
@@ -215,7 +216,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/0" />
             <div className="absolute inset-x-0 bottom-0 p-4">
-              <h3 className="font-heading text-lg font-bold text-white drop-shadow-md line-clamp-2">{node.title}</h3>
+              <h3 className="font-heading text-lg font-bold text-white drop-shadow-md line-clamp-2">{displayTitle}</h3>
               <p className="mt-1 text-white/90 font-semibold">${parseFloat(node.priceRange.minVariantPrice.amount).toFixed(2)}</p>
             </div>
           </div>
@@ -256,7 +257,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
             to={`/product/${node.handle}`}
             className="font-heading text-[1.05rem] font-medium leading-snug text-foreground line-clamp-2 hover:text-primary min-w-0"
           >
-            {node.title}
+            {displayTitle}
           </Link>
           <span className="shrink-0 text-xl font-semibold tabular-nums text-foreground">
             ${parseFloat(priceAmount).toFixed(2)}
@@ -512,5 +513,9 @@ function getColorValues(product: ShopifyProduct["node"]): string[] {
     });
   });
   return [...fromVariants];
+}
+
+function normalizeProductTitle(title: string): string {
+  return title.replace(/\bcrossmarks\b/gi, "Crossmarks");
 }
 
