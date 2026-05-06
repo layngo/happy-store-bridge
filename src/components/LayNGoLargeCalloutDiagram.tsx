@@ -29,7 +29,7 @@ const DEFAULT_LAYOUT: LayoutState = {
   anchors: {
     cord: { x: 50, y: 10 },
     lip: { x: 12, y: 48 },
-    mesh: { x: 80, y: 58 },
+    mesh: { x: 86, y: 46 },
   },
 };
 
@@ -245,6 +245,19 @@ export function LayNGoLargeCalloutDiagram() {
       const d = layout.dots[k];
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
+      if (k === "mesh") {
+        const meshUpperStart = { x: d.x - 2.2, y: d.y - 16.8 };
+        const meshLowerStart = { x: d.x + 1.2, y: d.y + 6.8 };
+        return {
+          k,
+          x1: d.x,
+          y1: d.y,
+          x2: end.x,
+          y2: end.y,
+          meshUpperStart,
+          meshLowerStart,
+        };
+      }
       return { k, x1: d.x, y1: d.y, x2: end.x, y2: end.y };
     });
   }, [layout]);
@@ -351,19 +364,66 @@ export function LayNGoLargeCalloutDiagram() {
             preserveAspectRatio="none"
             aria-hidden
           >
-            {lineEnds.map(({ k, x1, y1, x2, y2 }) => (
-              <line
-                key={k}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="currentColor"
-                strokeWidth={k === "mesh" ? "0.42" : "0.34"}
-                strokeLinecap="round"
-                vectorEffect="non-scaling-stroke"
-              />
-            ))}
+            {lineEnds.map(({ k, x1, y1, x2, y2, meshUpperStart, meshLowerStart }) =>
+              k === "mesh" ? (
+                <g key={k}>
+                  <line
+                    x1={meshUpperStart!.x}
+                    y1={meshUpperStart!.y}
+                    x2={x2}
+                    y2={y2}
+                    stroke="black"
+                    strokeWidth="1.02"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <line
+                    x1={meshUpperStart!.x}
+                    y1={meshUpperStart!.y}
+                    x2={x2}
+                    y2={y2}
+                    stroke="white"
+                    strokeWidth="0.58"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <line
+                    x1={meshLowerStart!.x}
+                    y1={meshLowerStart!.y}
+                    x2={x2}
+                    y2={y2}
+                    stroke="black"
+                    strokeWidth="1.02"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <line
+                    x1={meshLowerStart!.x}
+                    y1={meshLowerStart!.y}
+                    x2={x2}
+                    y2={y2}
+                    stroke="white"
+                    strokeWidth="0.58"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <circle cx={meshUpperStart!.x} cy={meshUpperStart!.y} r="1.1" fill="white" stroke="black" strokeWidth="0.36" />
+                  <circle cx={meshLowerStart!.x} cy={meshLowerStart!.y} r="1.1" fill="white" stroke="black" strokeWidth="0.36" />
+                </g>
+              ) : (
+                <line
+                  key={k}
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
+                  stroke="currentColor"
+                  strokeWidth="0.34"
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ),
+            )}
           </svg>
 
           <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 w-[min(94vw,920px)] -translate-x-1/2 -translate-y-1/2">
@@ -382,6 +442,7 @@ export function LayNGoLargeCalloutDiagram() {
               "absolute z-[25] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-md ring-1 ring-white",
               editorMode ? "h-4 w-4 cursor-grab ring-2 ring-amber-400 touch-none active:cursor-grabbing" : "h-3 w-3",
             );
+            if (k === "mesh" && !editorMode) return null;
             return editorMode ? (
               <button
                 key={k}

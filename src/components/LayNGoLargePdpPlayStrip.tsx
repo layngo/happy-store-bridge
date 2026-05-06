@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { LayNGoLargeCalloutDiagram } from "@/components/LayNGoLargeCalloutDiagram";
 
 const HEADLINE = "Your whole routine. One pull to pack it up.";
-const HEADLINE_IMAGE = "/products/lay-n-go-large-pdp/traveler-hero.png";
+const HEADLINE_IMAGE = "/products/lay-n-go-large-pdp/play-blue.png";
 const TRAVELER_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/traveler-callout-main.png";
 const TRAVELER_CALLOUT_ZIPPER = "/products/lay-n-go-large-pdp/traveler-callout-zipper.png";
 const TRAVELER_CALLOUT_CORD = "/products/lay-n-go-large-pdp/traveler-callout-cord.png";
@@ -152,7 +152,7 @@ export function LayNGoLargePdpPlayStrip({
       <div className="mx-auto mt-8 max-w-[min(100%,64rem)] sm:mt-10">
         <img
           src={headlineImageSrc}
-          alt="Lay-n-Go Traveler cinched closed next to daily essentials like phone, sunglasses, and watch"
+          alt="Lay-n-Go product hero image"
           className="block h-auto w-full max-w-full object-contain"
           loading="lazy"
           decoding="async"
