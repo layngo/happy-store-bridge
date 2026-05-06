@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
 const stats = [
-  { label: "16+ Years in business", value: "16+" },
+  { label: "IN BUSINESS", value: "16+" },
   { label: "Wholesale partners", value: "200+" },
   { label: "Happy customers", value: "100k+" },
   { label: "Missed deliveries", value: "~0" },
