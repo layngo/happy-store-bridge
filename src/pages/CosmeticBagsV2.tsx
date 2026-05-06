@@ -182,15 +182,18 @@ const CosmeticBagsV2 = () => {
           aria-label="Cosmo size selector"
         >
           <div
-            className="mx-auto flex w-full max-w-7xl flex-row divide-x divide-border/80"
-            style={{ containerType: "inline-size" }}
+            className="mx-auto grid w-full max-w-7xl grid-cols-3 divide-x divide-border/80"
+            style={{
+              containerType: "inline-size",
+              ["--cosmo-disk-band-min" as string]: `${COSMO_CIRCLE_BASE_REM}rem`,
+            }}
           >
             {sizeColumns.map(({ spec, product, preview, circleWidth }) => (
               <Link
                 key={product.id}
                 to={`/product/${product.handle}`}
                 className={cn(
-                  "group relative flex min-h-0 min-w-0 flex-1 cursor-pointer flex-col items-center gap-0 px-0.5 pb-1 pt-0 sm:px-1.5 sm:pb-2 sm:pt-0 md:px-2",
+                  "group relative flex min-h-0 min-w-0 cursor-pointer flex-col items-center gap-0 px-0.5 pb-1 pt-0 sm:pb-2 md:px-1.5 md:pt-0 lg:px-2",
                   "rounded-xl outline-none transition-colors duration-200",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0",
                 )}
@@ -198,24 +201,28 @@ const CosmeticBagsV2 = () => {
               >
                 <p
                   className={cn(
-                    "pointer-events-none mb-1 flex min-h-[2.75rem] w-full max-w-[min(100%,14rem)] items-center justify-center px-0.5 text-pretty text-center sm:mb-1.5 sm:min-h-[3rem]",
+                    "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] items-center justify-center px-0.5 text-pretty text-center max-md:leading-tight",
+                    "md:mb-1.5 md:min-h-[3rem] lg:min-h-[3.5rem]",
                     "font-heading font-black uppercase leading-[0.92] tracking-tight text-foreground",
-                    "text-[clamp(0.5625rem,2.5cqw+0.45rem,0.875rem)] sm:text-[clamp(0.625rem,2.2cqw+0.45rem,1rem)]",
+                    "text-[clamp(0.8125rem,3.2cqw+0.5rem,1.1875rem)] sm:text-[clamp(0.9375rem,2.85cqw+0.55rem,1.4375rem)]",
                   )}
                 >
                   {spec.shortName}
                 </p>
                 {/*
-                  Same min-height for every column so circles share one baseline (swatch height
-                  no longer shifts disks vertically). Bottom-align disks in this band.
+                  Below md: no tall baseline band — labels sit directly above disks so 16/20/22 stay
+                  a tight horizontal trio for size comparison. md+: shared min-height + bottom-align.
                 */}
                 <div
-                  className="-mt-0.5 flex w-full flex-col items-center justify-end sm:-mt-1"
-                  style={{ minHeight: `${COSMO_CIRCLE_BASE_REM}rem` }}
+                  className={cn(
+                    "flex w-full flex-col items-center max-md:min-h-0 max-md:justify-start",
+                    "md:min-h-[var(--cosmo-disk-band-min)] md:justify-end",
+                    "-mt-0.5 md:-mt-1",
+                  )}
                 >
                   {/*
                     Fixed square disks (aspect 1) so 16″:20″:22″ widths read as real size steps.
-                    Black matte + object-cover matches lay-flat art and avoids gray/white letterboxing.
+                    Slight img scale crops baked-in light/dark matting at the file edge inside the circle.
                   */}
                   <div
                     className={cn(
@@ -224,11 +231,11 @@ const CosmeticBagsV2 = () => {
                     )}
                     style={{ width: circleWidth, aspectRatio: "1" }}
                   >
-                    <div className="h-full w-full overflow-hidden rounded-full bg-black">
+                    <div className="relative h-full w-full overflow-hidden rounded-full bg-neutral-950">
                       <img
                         src={spec.imageSrc}
                         alt={spec.imageAlt}
-                        className="block h-full w-full object-cover object-center"
+                        className="block h-full w-full min-h-full min-w-full origin-center scale-[1.14] object-cover object-center"
                         loading="lazy"
                         decoding="async"
                       />
