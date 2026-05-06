@@ -222,7 +222,7 @@ const Index = () => {
       <section className="border-t border-border bg-background py-16">
         <div className="container max-w-xl px-4">
           <h2 className="font-heading text-center text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-            Don&apos;t just take our word for it
+            Don&apos;t just take our word for it.
           </h2>
 
           <div className="relative mx-auto mt-10">
