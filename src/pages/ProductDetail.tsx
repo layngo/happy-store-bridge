@@ -38,7 +38,7 @@ import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
 import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
 import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPlayMat";
 
-const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
+const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero-v2.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
 
 const LAY_N_GO_LARGE_SLIDE_1 = "/products/lay-n-go-large-pdp/video-slide-1.png";
@@ -440,6 +440,7 @@ const ProductDetail = () => {
             <div className="flex flex-wrap gap-2">
               {product.variants.edges.map((v, vIdx) => {
                 const optValue = v.node.selectedOptions.find((o) => o.name === option.name)?.value;
+                const displayOptValue = displayOptionValue(product.handle, optValue || "");
                 const prevSame = product.variants.edges.findIndex(
                   (pv) => pv.node.selectedOptions.find((o) => o.name === option.name)?.value === optValue,
                 );
@@ -484,10 +485,10 @@ const ProductDetail = () => {
                         : undefined
                     }
                     disabled={!v.node.availableForSale}
-                    aria-label={optValue}
-                    title={optValue}
+                    aria-label={displayOptValue}
+                    title={displayOptValue}
                   >
-                    {isColor ? <span className="sr-only">{optValue}</span> : optValue}
+                    {isColor ? <span className="sr-only">{displayOptValue}</span> : displayOptValue}
                   </button>
                 );
               })}
@@ -496,7 +497,10 @@ const ProductDetail = () => {
               <p className="text-xs text-muted-foreground">
                 Selected:{" "}
                 <span className="font-medium text-foreground">
-                  {selectedVariant?.selectedOptions.find((o) => o.name === option.name)?.value ?? option.values[0]}
+                  {displayOptionValue(
+                    product.handle,
+                    selectedVariant?.selectedOptions.find((o) => o.name === option.name)?.value ?? option.values[0],
+                  )}
                 </span>
               </p>
             ) : null}
@@ -825,6 +829,16 @@ function travelerSwatchStyle(optionValue: string): CSSProperties {
   const key = optionValue.trim().toLowerCase();
   if (key.includes("black")) return { backgroundColor: "#1a1a1a" };
   return { backgroundColor: "#6f6f6f" };
+}
+
+function displayOptionValue(handle: string, rawValue: string): string {
+  const value = rawValue.trim();
+  const h = handle.toLowerCase();
+  const isCosmoMini16 = h.includes("cosmo") && h.includes("mini") && h.includes("16");
+  if (isCosmoMini16 && value.toLowerCase() === "crossmarks") {
+    return "CrossMarks";
+  }
+  return value;
 }
 
 function colorToHex(value: string): string {
