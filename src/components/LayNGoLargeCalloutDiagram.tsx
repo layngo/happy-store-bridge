@@ -246,7 +246,7 @@ export function LayNGoLargeCalloutDiagram() {
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
       if (k === "mesh") {
-        const meshUpperStart = { x: d.x - 2.2, y: d.y - 22 };
+        const meshUpperStart = { x: d.x - 2.2, y: d.y - 26 };
         const meshLowerStart = { x: d.x + 1.2, y: d.y - 2 };
         return {
           k,
@@ -407,8 +407,6 @@ export function LayNGoLargeCalloutDiagram() {
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
                   />
-                  <circle cx={meshUpperStart!.x} cy={meshUpperStart!.y} r="1.1" fill="white" stroke="black" strokeWidth="0.36" />
-                  <circle cx={meshLowerStart!.x} cy={meshLowerStart!.y} r="1.1" fill="white" stroke="black" strokeWidth="0.36" />
                 </g>
               ) : (
                 <line
@@ -425,6 +423,23 @@ export function LayNGoLargeCalloutDiagram() {
               ),
             )}
           </svg>
+
+          {lineEnds
+            .filter((seg) => seg.k === "mesh" && seg.meshUpperStart && seg.meshLowerStart)
+            .map((seg) => (
+              <div key="mesh-fork-dots" className="pointer-events-none absolute inset-0 z-[24]">
+                <span
+                  className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white"
+                  style={{ left: `${seg.meshUpperStart!.x}%`, top: `${seg.meshUpperStart!.y}%` }}
+                  aria-hidden
+                />
+                <span
+                  className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white"
+                  style={{ left: `${seg.meshLowerStart!.x}%`, top: `${seg.meshLowerStart!.y}%` }}
+                  aria-hidden
+                />
+              </div>
+            ))}
 
           <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 w-[min(94vw,920px)] -translate-x-1/2 -translate-y-1/2">
             <img
