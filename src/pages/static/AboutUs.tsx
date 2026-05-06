@@ -106,7 +106,7 @@ const AboutUs = () => (
 
       <section className="space-y-3">
         <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground">OUR TEAM</h2>
-        <p>Where we are heading...</p>
+        <p>Where we are Heading...</p>
         <h3 className="font-heading text-2xl font-bold text-foreground">Check Out Our Products</h3>
         <Link
           to="/collections"
