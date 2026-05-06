@@ -6,20 +6,17 @@ import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CollectionCard } from "@/components/CollectionCard";
 import { Loader2, ChevronRight, Home } from "lucide-react";
-import { shopCollectionLinks } from "@/lib/siteNav";
 
 const CollectionsIndex = () => {
   const [collections, setCollections] = useState<ShopifyCollectionSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const handleOrder = useMemo(() => shopCollectionLinks.map((l) => l.to.replace("/collections/", "")), []);
-
-  const displayCollections = useMemo(
-    () =>
-      handleOrder
-        .map((handle) => collections.find((c) => c.handle === handle))
-        .filter((c): c is ShopifyCollectionSummary => Boolean(c)),
-    [collections, handleOrder],
-  );
+  const displayCollections = useMemo(() => {
+    return collections.filter((c) => {
+      const handle = c.handle.toLowerCase();
+      const title = c.title.toLowerCase();
+      return handle !== "frontpage" && handle !== "homepage" && title !== "homepage";
+    });
+  }, [collections]);
 
   useEffect(() => {
     fetchCollections(50)
