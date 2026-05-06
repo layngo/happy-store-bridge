@@ -226,7 +226,10 @@ const ProductDetail = () => {
   const priceDisplay = parseFloat(
     selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount,
   ).toFixed(2);
-  const isLayNGoLarge60 = product.handle.toLowerCase() === "lay-n-go-large-60";
+  const layNGoHandle = product.handle.toLowerCase();
+  const isLayNGoLarge60 = layNGoHandle === "lay-n-go-large-60";
+  const hasLayNGoLargeStoryLayout =
+    layNGoHandle === "lay-n-go-large-60" || layNGoHandle === "lay-n-go-lifestyle-44" || layNGoHandle === "lay-n-go-lite-18";
 
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
@@ -628,7 +631,7 @@ const ProductDetail = () => {
               </div>
             </section>
 
-            {product.handle.toLowerCase() === "lay-n-go-large-60" ? <LayNGoLargePdpPlayStrip /> : null}
+            {hasLayNGoLargeStoryLayout ? <LayNGoLargePdpPlayStrip /> : null}
 
             {showCosmoDescriptionBelowHero ? (
               <section className="mx-auto mt-12 max-w-3xl sm:mt-14" aria-label="Product details">
