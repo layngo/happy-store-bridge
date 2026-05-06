@@ -160,7 +160,8 @@ const ProductDetail = () => {
         isCosmo22Product(product.handle) ||
         isCosmoMini16Product(product.handle, product.title) ||
         isNailspa18Product(product.handle) ||
-        isLayNGoPlayMatProduct(product.handle)),
+        isLayNGoPlayMatProduct(product.handle) ||
+        product.handle.toLowerCase() === "lay-n-go-traveler-20"),
   );
 
   /** Editorial story strip + arrow editor — Cosmo bags only, not Nailspa. */
