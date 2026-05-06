@@ -205,6 +205,7 @@ const ProductDetail = () => {
     layNGoHandle.includes("traveler") ||
     layNGoHandle.includes("travel") ||
     layNGoHandle.includes("tech");
+  const isLayNGoTraveler20 = layNGoHandle === "lay-n-go-traveler-20";
 
   useEffect(() => {
     setLayNGoLargeSlideIndex(0);
@@ -475,9 +476,11 @@ const ProductDetail = () => {
                       isColor
                         ? isCosmoMini16
                           ? cosmoMiniSwatchStyle(v.node)
-                          : isLayNGoPlayMatProduct(product.handle)
-                            ? layNGoPlayMatSwatchStyle(optValue || "")
-                            : variantImageSwatchStyle(v.node, optValue || "")
+                          : product.handle.toLowerCase() === "lay-n-go-traveler-20"
+                            ? travelerSwatchStyle(optValue || "")
+                            : isLayNGoPlayMatProduct(product.handle)
+                              ? layNGoPlayMatSwatchStyle(optValue || "")
+                              : variantImageSwatchStyle(v.node, optValue || "")
                         : undefined
                     }
                     disabled={!v.node.availableForSale}
@@ -650,7 +653,15 @@ const ProductDetail = () => {
               </div>
             </section>
 
-            {hasLayNGoLargeStoryLayout ? <LayNGoLargePdpPlayStrip /> : null}
+            {hasLayNGoLargeStoryLayout ? (
+              <LayNGoLargePdpPlayStrip
+                forceHeadlineSingleLine={isLayNGoTraveler20}
+                showLowerSections={!isLayNGoTraveler20}
+                headlineImageSrc={
+                  isLayNGoTraveler20 ? "/products/lay-n-go-large-pdp/traveler-hero.png" : undefined
+                }
+              />
+            ) : null}
 
             {showCosmoDescriptionBelowHero ? (
               <section className="mx-auto mt-12 max-w-3xl sm:mt-14" aria-label="Product details">
@@ -807,6 +818,12 @@ function cosmoMiniSwatchStyle(
     backgroundSize: "cover",
     backgroundPosition: "center",
   };
+}
+
+function travelerSwatchStyle(optionValue: string): CSSProperties {
+  const key = optionValue.trim().toLowerCase();
+  if (key.includes("black")) return { backgroundColor: "#1a1a1a" };
+  return { backgroundColor: "#6f6f6f" };
 }
 
 function colorToHex(value: string): string {

@@ -8,6 +8,12 @@ const FEATURE_OPEN = "/products/lay-n-go-large-pdp/feature-3-open.png";
 const FEATURE_CINCH = "/products/lay-n-go-large-pdp/feature-4-cinch.png";
 const FEATURE_CARRY = "/products/lay-n-go-large-pdp/feature-5-carry.png";
 
+type LayNGoLargePdpPlayStripProps = {
+  headlineImageSrc?: string;
+  showLowerSections?: boolean;
+  forceHeadlineSingleLine?: boolean;
+};
+
 /** Dashed curve + solid tip (Nailspa family), always drawn left → right; stroke scaled up for stage-to-stage strip. */
 function LargeFeatureArrow({ className }: { className?: string }) {
   const viewBox = "0 0 140 52";
@@ -62,7 +68,11 @@ function FeatureConnector({ label }: { label: string }) {
   );
 }
 
-export function LayNGoLargePdpPlayStrip() {
+export function LayNGoLargePdpPlayStrip({
+  headlineImageSrc = HEADLINE_IMAGE,
+  showLowerSections = true,
+  forceHeadlineSingleLine = false,
+}: LayNGoLargePdpPlayStripProps) {
   return (
     <section
       className="relative left-1/2 -ml-[50vw] w-screen overflow-x-clip bg-white px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8"
@@ -70,14 +80,17 @@ export function LayNGoLargePdpPlayStrip() {
     >
       <h2
         id="lay-n-go-large-play-strip-heading"
-        className="mx-auto max-w-5xl px-2 text-center font-heading text-[clamp(1.85rem,7.5vw,3.65rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground sm:px-4"
+        className={cn(
+          "mx-auto max-w-5xl px-2 text-center font-heading text-[clamp(1.85rem,7.5vw,3.65rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground sm:px-4",
+          forceHeadlineSingleLine && "max-w-none whitespace-nowrap text-[clamp(1rem,4.8vw,3.65rem)]",
+        )}
       >
         {HEADLINE}
       </h2>
 
       <div className="mx-auto mt-8 max-w-[min(100%,64rem)] sm:mt-10">
         <img
-          src={HEADLINE_IMAGE}
+          src={headlineImageSrc}
           alt="Lay-n-Go Traveler cinched closed next to daily essentials like phone, sunglasses, and watch"
           className="block h-auto w-full max-w-full object-contain"
           loading="lazy"
@@ -85,48 +98,52 @@ export function LayNGoLargePdpPlayStrip() {
         />
       </div>
 
-      <div
-        className="mx-auto mt-14 max-w-[min(100%,90rem)] border-t border-neutral-200/80 pt-12 sm:mt-16 sm:pt-14"
-        aria-label="How Lay-n-Go Large works in three steps"
-      >
-        <div className="flex w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:gap-1 md:gap-2 lg:gap-3">
-          <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
-            <img
-              src={FEATURE_OPEN}
-              alt="Lay-n-Go Large open with toys; easy access to play and start cleanup"
-              className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
-              loading="lazy"
-              decoding="async"
-            />
+      {showLowerSections ? (
+        <>
+          <div
+            className="mx-auto mt-14 max-w-[min(100%,90rem)] border-t border-neutral-200/80 pt-12 sm:mt-16 sm:pt-14"
+            aria-label="How Lay-n-Go Large works in three steps"
+          >
+            <div className="flex w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:gap-1 md:gap-2 lg:gap-3">
+              <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
+                <img
+                  src={FEATURE_OPEN}
+                  alt="Lay-n-Go Large open with toys; easy access to play and start cleanup"
+                  className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+
+              <FeatureConnector label="Easy access and cleanup" />
+
+              <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
+                <img
+                  src={FEATURE_CINCH}
+                  alt="Cinching the Lay-n-Go Large drawstring to gather the mat closed"
+                  className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+
+              <FeatureConnector label="Wide strap for easy travel and storage" />
+
+              <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
+                <img
+                  src={FEATURE_CARRY}
+                  alt="Carrying the closed Lay-n-Go Large bag with the wide shoulder strap"
+                  className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+            </div>
           </div>
 
-          <FeatureConnector label="Easy access and cleanup" />
-
-          <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
-            <img
-              src={FEATURE_CINCH}
-              alt="Cinching the Lay-n-Go Large drawstring to gather the mat closed"
-              className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-
-          <FeatureConnector label="Wide strap for easy travel and storage" />
-
-          <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
-            <img
-              src={FEATURE_CARRY}
-              alt="Carrying the closed Lay-n-Go Large bag with the wide shoulder strap"
-              className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </div>
-      </div>
-
-      <LayNGoLargeCalloutDiagram />
+          <LayNGoLargeCalloutDiagram />
+        </>
+      ) : null}
     </section>
   );
 }
