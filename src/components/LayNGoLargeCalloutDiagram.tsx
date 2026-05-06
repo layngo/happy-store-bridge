@@ -246,8 +246,8 @@ export function LayNGoLargeCalloutDiagram() {
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
       if (k === "mesh") {
-        const meshUpperStart = { x: d.x - 2.2, y: d.y - 16.8 };
-        const meshLowerStart = { x: d.x + 1.2, y: d.y - 10 };
+        const meshUpperStart = { x: d.x - 2.2, y: d.y - 22 };
+        const meshLowerStart = { x: d.x + 1.2, y: d.y - 2 };
         return {
           k,
           x1: d.x,
