@@ -657,6 +657,7 @@ const ProductDetail = () => {
               <LayNGoLargePdpPlayStrip
                 forceHeadlineSingleLine={isLayNGoTraveler20}
                 showLowerSections={!isLayNGoTraveler20}
+                showTravelerCalloutSection={isLayNGoTraveler20}
                 headlineImageSrc={
                   isLayNGoTraveler20 ? "/products/lay-n-go-large-pdp/traveler-hero.png" : undefined
                 }

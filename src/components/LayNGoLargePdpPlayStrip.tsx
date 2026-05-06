@@ -3,6 +3,10 @@ import { LayNGoLargeCalloutDiagram } from "@/components/LayNGoLargeCalloutDiagra
 
 const HEADLINE = "Your whole routine. One pull to pack it up.";
 const HEADLINE_IMAGE = "/products/lay-n-go-large-pdp/traveler-hero.png";
+const TRAVELER_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/traveler-callout-main.png";
+const TRAVELER_CALLOUT_ZIPPER = "/products/lay-n-go-large-pdp/traveler-callout-zipper.png";
+const TRAVELER_CALLOUT_CORD = "/products/lay-n-go-large-pdp/traveler-callout-cord.png";
+const TRAVELER_CALLOUT_LIP = "/products/lay-n-go-large-pdp/traveler-callout-lip.png";
 
 const FEATURE_OPEN = "/products/lay-n-go-large-pdp/feature-3-open.png";
 const FEATURE_CINCH = "/products/lay-n-go-large-pdp/feature-4-cinch.png";
@@ -12,7 +16,63 @@ type LayNGoLargePdpPlayStripProps = {
   headlineImageSrc?: string;
   showLowerSections?: boolean;
   forceHeadlineSingleLine?: boolean;
+  showTravelerCalloutSection?: boolean;
 };
+
+function TravelerDetailCalloutSection() {
+  return (
+    <section className="mx-auto mt-12 w-full max-w-6xl md:mt-14" aria-label="Traveler feature callouts">
+      <div className="relative mx-auto w-full max-w-5xl">
+        <img
+          src={TRAVELER_CALLOUT_MAIN}
+          alt="Lay-n-Go Traveler opened flat with travel essentials organized inside"
+          className="mx-auto block h-auto w-full max-w-4xl object-contain"
+          loading="lazy"
+          decoding="async"
+        />
+
+        <svg className="pointer-events-none absolute inset-0 z-10 h-full w-full text-neutral-900/85" viewBox="0 0 100 100" aria-hidden>
+          <line x1="23" y1="55" x2="13" y2="70" stroke="currentColor" strokeWidth="0.35" strokeLinecap="round" />
+          <circle cx="23" cy="55" r="1.2" fill="#fff" stroke="currentColor" strokeWidth="0.35" />
+
+          <line x1="19" y1="78" x2="19" y2="25" stroke="currentColor" strokeWidth="0.35" strokeLinecap="round" />
+          <line x1="19" y1="25" x2="11" y2="12" stroke="currentColor" strokeWidth="0.35" strokeLinecap="round" />
+          <circle cx="19" cy="78" r="1.2" fill="#fff" stroke="currentColor" strokeWidth="0.35" />
+
+          <line x1="74" y1="27" x2="84" y2="12" stroke="currentColor" strokeWidth="0.35" strokeLinecap="round" />
+          <circle cx="74" cy="27" r="1.2" fill="#fff" stroke="currentColor" strokeWidth="0.35" />
+        </svg>
+
+        <div className="absolute left-[2%] top-[2%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:max-w-[13rem]">
+          <div className="aspect-square w-20 overflow-hidden rounded-full ring-2 ring-white sm:w-24 md:w-28">
+            <img src={TRAVELER_CALLOUT_CORD} alt="Cord lock and handle closeup" className="h-full w-full object-cover" />
+          </div>
+          <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
+            Cord Lock/Pocket + Handle
+          </p>
+        </div>
+
+        <div className="absolute left-[2%] top-[64%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:max-w-[13rem]">
+          <div className="aspect-square w-20 overflow-hidden rounded-full ring-2 ring-white sm:w-24 md:w-28">
+            <img src={TRAVELER_CALLOUT_ZIPPER} alt="Zipper pocket closeup" className="h-full w-full object-cover" />
+          </div>
+          <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
+            Zipper Pocket
+          </p>
+        </div>
+
+        <div className="absolute right-[2%] top-[2%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:max-w-[13rem]">
+          <div className="aspect-square w-20 overflow-hidden rounded-full ring-2 ring-white sm:w-24 md:w-28">
+            <img src={TRAVELER_CALLOUT_LIP} alt="Containment lip closeup" className="h-full w-full object-cover" />
+          </div>
+          <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
+            Convenient containment lip
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 /** Dashed curve + solid tip (Nailspa family), always drawn left → right; stroke scaled up for stage-to-stage strip. */
 function LargeFeatureArrow({ className }: { className?: string }) {
@@ -72,6 +132,7 @@ export function LayNGoLargePdpPlayStrip({
   headlineImageSrc = HEADLINE_IMAGE,
   showLowerSections = true,
   forceHeadlineSingleLine = false,
+  showTravelerCalloutSection = false,
 }: LayNGoLargePdpPlayStripProps) {
   return (
     <section
@@ -97,6 +158,8 @@ export function LayNGoLargePdpPlayStrip({
           decoding="async"
         />
       </div>
+
+      {showTravelerCalloutSection ? <TravelerDetailCalloutSection /> : null}
 
       {showLowerSections ? (
         <>
