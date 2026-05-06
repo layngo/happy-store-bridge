@@ -29,7 +29,7 @@ const DEFAULT_LAYOUT: LayoutState = {
   anchors: {
     cord: { x: 50, y: 10 },
     lip: { x: 12, y: 48 },
-    mesh: { x: 72, y: 56 },
+    mesh: { x: 72, y: 50 },
   },
 };
 
@@ -245,6 +245,19 @@ export function LayNGoLargeCalloutDiagram() {
       const d = layout.dots[k];
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
+      if (k === "mesh") {
+        const meshUpperStart = { x: d.x - 0.5, y: d.y - 4.4 };
+        const meshLowerStart = { x: d.x - 0.5, y: d.y + 4.4 };
+        return {
+          k,
+          x1: d.x,
+          y1: d.y,
+          x2: end.x,
+          y2: end.y,
+          meshUpperStart,
+          meshLowerStart,
+        };
+      }
       return { k, x1: d.x, y1: d.y, x2: end.x, y2: end.y };
     });
   }, [layout]);
@@ -351,29 +364,52 @@ export function LayNGoLargeCalloutDiagram() {
             preserveAspectRatio="none"
             aria-hidden
           >
-            {lineEnds.map(({ k, x1, y1, x2, y2 }) =>
+            {lineEnds.map(({ k, x1, y1, x2, y2, meshUpperStart, meshLowerStart }) =>
               k === "mesh" ? (
                 <g key={k}>
                   <line
-                    x1={x1}
-                    y1={y1}
+                    x1={meshUpperStart!.x}
+                    y1={meshUpperStart!.y}
                     x2={x2}
                     y2={y2}
                     stroke="black"
-                    strokeWidth="0.6"
+                    strokeWidth="1.02"
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
                   />
                   <line
-                    x1={x1}
-                    y1={y1}
+                    x1={meshUpperStart!.x}
+                    y1={meshUpperStart!.y}
                     x2={x2}
                     y2={y2}
                     stroke="white"
-                    strokeWidth="0.34"
+                    strokeWidth="0.58"
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
                   />
+                  <line
+                    x1={meshLowerStart!.x}
+                    y1={meshLowerStart!.y}
+                    x2={x2}
+                    y2={y2}
+                    stroke="black"
+                    strokeWidth="1.02"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <line
+                    x1={meshLowerStart!.x}
+                    y1={meshLowerStart!.y}
+                    x2={x2}
+                    y2={y2}
+                    stroke="white"
+                    strokeWidth="0.58"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <circle cx={meshUpperStart!.x} cy={meshUpperStart!.y} r="0.95" fill="white" stroke="black" strokeWidth="0.28" />
+                  <circle cx={meshLowerStart!.x} cy={meshLowerStart!.y} r="0.95" fill="white" stroke="black" strokeWidth="0.28" />
+                  <circle cx={x2} cy={y2} r="0.95" fill="white" stroke="black" strokeWidth="0.28" />
                 </g>
               ) : (
                 <line
