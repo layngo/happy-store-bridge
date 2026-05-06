@@ -1,11 +1,8 @@
-import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { LayNGoLargeCalloutDiagram } from "@/components/LayNGoLargeCalloutDiagram";
 
-const HEADLINE = "Clean up less, play more.";
-
-const IMG_BLUE = "/products/lay-n-go-large-pdp/play-blue.png";
-const IMG_GREEN = "/products/lay-n-go-large-pdp/play-green.png";
+const HEADLINE = "Your whole routine. One pull to pack it up.";
+const HEADLINE_IMAGE = "/products/lay-n-go-large-pdp/traveler-hero.png";
 
 const FEATURE_OPEN = "/products/lay-n-go-large-pdp/feature-3-open.png";
 const FEATURE_CINCH = "/products/lay-n-go-large-pdp/feature-4-cinch.png";
@@ -66,23 +63,6 @@ function FeatureConnector({ label }: { label: string }) {
 }
 
 export function LayNGoLargePdpPlayStrip() {
-  const [showBlue, setShowBlue] = useState(true);
-  const [reduceMotion, setReduceMotion] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReduceMotion(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-
-  useEffect(() => {
-    if (reduceMotion) return;
-    const id = window.setInterval(() => setShowBlue((v) => !v), 3000);
-    return () => window.clearInterval(id);
-  }, [reduceMotion]);
-
   return (
     <section
       className="relative left-1/2 -ml-[50vw] w-screen overflow-x-clip bg-white px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8"
@@ -95,35 +75,14 @@ export function LayNGoLargePdpPlayStrip() {
         {HEADLINE}
       </h2>
 
-      <div className="mx-auto mt-8 max-w-[min(100%,46.08rem)] sm:mt-10">
-        {/* Natural photo aspect (no fixed 16:10) — avoids gray letterboxing from object-contain */}
-        <div className="relative w-full bg-white">
-          <img src={IMG_BLUE} alt="" className="invisible block h-auto w-full max-w-full" aria-hidden />
-          <div className="absolute inset-0 overflow-hidden bg-white">
-            <img
-              src={IMG_BLUE}
-              alt="Lay-n-Go Large play mat in royal blue with children playing"
-              className={cn(
-                "absolute inset-0 h-full w-full object-contain object-center",
-                !reduceMotion && "transition-opacity duration-1000 ease-in-out",
-                reduceMotion || showBlue ? "opacity-100" : "opacity-0",
-              )}
-              loading="lazy"
-              decoding="async"
-            />
-            <img
-              src={IMG_GREEN}
-              alt="Lay-n-Go Large play mat in green with children playing"
-              className={cn(
-                "absolute inset-0 h-full w-full object-contain object-center",
-                !reduceMotion && "transition-opacity duration-1000 ease-in-out",
-                reduceMotion ? "opacity-0" : showBlue ? "opacity-0" : "opacity-100",
-              )}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </div>
+      <div className="mx-auto mt-8 max-w-[min(100%,64rem)] sm:mt-10">
+        <img
+          src={HEADLINE_IMAGE}
+          alt="Lay-n-Go Traveler cinched closed next to daily essentials like phone, sunglasses, and watch"
+          className="block h-auto w-full max-w-full object-contain"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
 
       <div

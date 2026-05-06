@@ -41,9 +41,8 @@ import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPl
 const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
 
-/** Minimal Vimeo chrome: standard controls only (play/pause, etc.) — no title, byline, or portrait. */
-const LAY_N_GO_LARGE_VIMEO_EMBED_SRC =
-  "https://player.vimeo.com/video/1189557207?badge=0&autopause=0&title=0&byline=0&portrait=0&controls=1";
+const LAY_N_GO_LARGE_SLIDE_1 = "/products/lay-n-go-large-pdp/video-slide-1.png";
+const LAY_N_GO_LARGE_SLIDE_2 = "/products/lay-n-go-large-pdp/video-slide-2.png";
 
 function getOrderedImagesForProduct(product: ShopifyProduct["node"]) {
   const imgs = product.images.edges;
@@ -70,6 +69,7 @@ const ProductDetail = () => {
   const [cosmo20GalleryIndex, setCosmo20GalleryIndex] = useState(0);
   const [cosmo22GalleryIndex, setCosmo22GalleryIndex] = useState(0);
   const [nailspa18GalleryIndex, setNailspa18GalleryIndex] = useState(0);
+  const [layNGoLargeSlideIndex, setLayNGoLargeSlideIndex] = useState(0);
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
 
@@ -193,6 +193,29 @@ const ProductDetail = () => {
     () => (product ? getAmazonReviewsForProduct(product.handle) : { reviews: [], amazonListingUrl: undefined }),
     [product],
   );
+  const layNGoHandle = product?.handle.toLowerCase() ?? "";
+  const isLayNGoLarge60 = layNGoHandle === "lay-n-go-large-60";
+  const hasLayNGoLargeStoryLayout =
+    layNGoHandle === "lay-n-go-large-60" ||
+    layNGoHandle === "lay-n-go-lifestyle-44" ||
+    layNGoHandle === "lay-n-go-lite-18" ||
+    layNGoHandle === "lay-n-go-defender-mini-16" ||
+    layNGoHandle.includes("wired") ||
+    layNGoHandle.includes("traveler") ||
+    layNGoHandle.includes("travel") ||
+    layNGoHandle.includes("tech");
+
+  useEffect(() => {
+    setLayNGoLargeSlideIndex(0);
+  }, [isLayNGoLarge60, product?.id]);
+
+  useEffect(() => {
+    if (!isLayNGoLarge60) return;
+    const id = window.setInterval(() => {
+      setLayNGoLargeSlideIndex((prev) => (prev + 1) % 2);
+    }, 5000);
+    return () => window.clearInterval(id);
+  }, [isLayNGoLarge60]);
 
   if (loading) {
     return (
@@ -226,11 +249,6 @@ const ProductDetail = () => {
   const priceDisplay = parseFloat(
     selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount,
   ).toFixed(2);
-  const layNGoHandle = product.handle.toLowerCase();
-  const isLayNGoLarge60 = layNGoHandle === "lay-n-go-large-60";
-  const hasLayNGoLargeStoryLayout =
-    layNGoHandle === "lay-n-go-large-60" || layNGoHandle === "lay-n-go-lifestyle-44" || layNGoHandle === "lay-n-go-lite-18";
-
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
     const shopifyProduct: ShopifyProduct = { node: product };
@@ -654,25 +672,38 @@ const ProductDetail = () => {
 
             <section
               className="mt-14 sm:mt-16"
-              aria-label={isLayNGoLarge60 || cosmoYoutubeId ? "Product video" : "Video placeholder"}
+              aria-label={isLayNGoLarge60 ? "Product image showcase" : cosmoYoutubeId ? "Product video" : "Video placeholder"}
             >
               <div
                 className={cn(
                   "relative w-full overflow-hidden rounded-2xl",
                   isLayNGoLarge60
-                    ? "border-0 bg-black pt-[56.34%] shadow-none"
+                    ? "border-0 bg-white pt-[56.34%] shadow-none"
                     : "border border-border bg-muted/40 shadow-inner aspect-video",
                 )}
               >
                 {isLayNGoLarge60 ? (
-                  <iframe
-                    title="Video"
-                    src={LAY_N_GO_LARGE_VIMEO_EMBED_SRC}
-                    className="absolute inset-0 h-full w-full border-0"
-                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-                    allowFullScreen
-                    referrerPolicy="strict-origin-when-cross-origin"
-                  />
+                  <div className="absolute inset-0 overflow-hidden">
+                    <div
+                      className="flex h-full w-[200%] transition-transform duration-700 ease-in-out"
+                      style={{ transform: `translateX(-${layNGoLargeSlideIndex * 50}%)` }}
+                    >
+                      <img
+                        src={LAY_N_GO_LARGE_SLIDE_1}
+                        alt="Lay-n-Go Large blue play mat spread out with family and blocks"
+                        className="h-full w-1/2 shrink-0 object-contain"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <img
+                        src={LAY_N_GO_LARGE_SLIDE_2}
+                        alt="Lay-n-Go Large green play mat in living room with kids and building blocks"
+                        className="h-full w-1/2 shrink-0 object-contain"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
                 ) : cosmoYoutubeId ? (
                   <iframe
                     title="Product video"
