@@ -14,7 +14,7 @@ const IMG_20 = "/cosmetic-bags-v2/cosmo-20.png";
 const IMG_22 = "/cosmetic-bags-v2/cosmo-22.png";
 
 /** Largest circle (22″) width; 16″ and 20″ derive from 16:20:22. */
-const COSMO_CIRCLE_BASE_REM = 17.5;
+const COSMO_CIRCLE_BASE_REM = 17;
 
 type SizeSpec = {
   inches: 16 | 20 | 22;
@@ -56,15 +56,22 @@ const SIZE_SPECS: SizeSpec[] = [
   },
 ];
 
-function DiameterScale({ inches, className }: { inches: number; className?: string }) {
+function DiameterScale({ inches, className, dense }: { inches: number; className?: string; dense?: boolean }) {
   return (
-    <div className={`mt-3 flex w-full flex-col items-center px-1 ${className ?? ""}`}>
+    <div className={cn("mt-3 flex w-full flex-col items-center px-1", className)}>
       <div className="flex w-full items-end justify-center">
-        <div className="h-4 w-px shrink-0 bg-neutral-900" aria-hidden />
+        <div className={cn(dense ? "h-2.5" : "h-4", "w-px shrink-0 bg-neutral-900")} aria-hidden />
         <div className="mb-0 h-px min-w-0 flex-1 bg-neutral-900" aria-hidden />
-        <div className="h-4 w-px shrink-0 bg-neutral-900" aria-hidden />
+        <div className={cn(dense ? "h-2.5" : "h-4", "w-px shrink-0 bg-neutral-900")} aria-hidden />
       </div>
-      <p className="mt-2 font-heading text-base font-semibold tabular-nums text-neutral-900 sm:text-lg">{inches}&quot;</p>
+      <p
+        className={cn(
+          "font-heading font-semibold tabular-nums text-neutral-900",
+          dense ? "mt-1 text-sm sm:text-base" : "mt-2 text-base sm:text-lg",
+        )}
+      >
+        {inches}&quot;
+      </p>
     </div>
   );
 }
@@ -93,19 +100,20 @@ const CosmeticBagsV2 = () => {
     const cols = sizedProducts.map(({ spec, product }) => {
       // Cap the 22″ diameter at one grid column so min() never uses equal cell % widths
       // (which made 16/20/22 circles identical). Ratios stay 16:20:22 via inches/22.
-      const cap = `min(${COSMO_CIRCLE_BASE_REM}rem, (100cqw - 3rem) / 3)`;
+      const cap = `min(${COSMO_CIRCLE_BASE_REM}rem, (100cqw - 0.5rem) / 3)`;
       const circleWidth = `calc((${spec.inches} / 22) * ${cap})`;
       return {
         spec,
         product,
-        preview: getCollectionGridSwatchPreview(product),
+        preview: getCollectionGridSwatchPreview(
+          product,
+          spec.inches === 20 ? { maxInteractiveSwatches: 5 } : undefined,
+        ),
         circleWidth,
       };
     });
     return cols.sort((a, b) => a.spec.inches - b.spec.inches);
   }, [sizedProducts]);
-
-  const gridGap = "gap-x-2 sm:gap-x-4 md:gap-x-6";
 
   if (loading) {
     return (
@@ -159,35 +167,45 @@ const CosmeticBagsV2 = () => {
           <div>
             <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground">{collection.title}</h1>
             <p className="mt-2 max-w-2xl text-sm font-medium text-muted-foreground sm:text-base">
-              Tap a size to open that product — colors for each size are shown below.
+              Tap a column (image through colors) to open that size&apos;s product.
             </p>
           </div>
         </div>
 
         <section
-          className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-3 py-8 sm:px-6 sm:py-10"
+          className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-3 pb-5 pt-3 sm:px-6 sm:pb-7 sm:pt-4"
           aria-label="Cosmo size selector"
         >
           <div
-            className="mx-auto w-full max-w-3xl space-y-4 sm:space-y-5"
+            className="mx-auto flex w-full max-w-7xl flex-row divide-x divide-border/80"
             style={{ containerType: "inline-size" }}
           >
-            {/* Row 1: circles share one baseline (bottom-aligned) so height differences read clearly */}
-            <div className={cn("grid w-full grid-cols-3 items-end justify-items-center", gridGap)}>
-              {sizeColumns.map(({ spec, product, circleWidth }) => (
-                <Link
-                  key={product.id}
-                  to={`/product/${product.handle}`}
-                  className="group mx-auto block max-w-full outline-none focus-visible:outline-none"
-                  style={{ width: circleWidth }}
-                  aria-label={`${product.title} — ${spec.inches} inch`}
+            {sizeColumns.map(({ spec, product, preview, circleWidth }) => (
+              <Link
+                key={product.id}
+                to={`/product/${product.handle}`}
+                className={cn(
+                  "group relative flex min-h-0 min-w-0 flex-1 cursor-pointer flex-col items-center gap-0 px-0.5 pb-1 pt-0 sm:px-1.5 sm:pb-2 sm:pt-0 md:px-2",
+                  "rounded-xl outline-none ring-1 ring-transparent transition-[background-color,box-shadow,ring-color] duration-200",
+                  "hover:bg-muted/50 hover:shadow-[inset_0_0_0_1px_hsl(var(--primary)_/_0.22)] hover:ring-primary/35",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                )}
+                aria-label={`${product.title} — ${spec.inches} inch. Opens product page.`}
+              >
+                {/*
+                  Same min-height for every column so circles share one baseline (swatch height
+                  no longer shifts disks vertically). Bottom-align disks in this band.
+                */}
+                <div
+                  className="-mt-0.5 flex w-full flex-col items-center justify-end sm:-mt-1"
+                  style={{ minHeight: `${COSMO_CIRCLE_BASE_REM}rem` }}
                 >
                   <div
                     className={cn(
-                      "relative aspect-square w-full overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-black/5 transition-[box-shadow,ring] duration-300",
-                      "group-hover:shadow-[0_0_0_2px_hsl(var(--primary)_/_0.55),0_0_22px_hsl(var(--primary)_/_0.35)]",
-                      "group-focus-visible:ring-2 group-focus-visible:ring-ring",
+                      "relative max-w-full overflow-hidden rounded-full bg-white transition-[box-shadow] duration-300",
+                      "group-hover:shadow-[0_0_0_2px_hsl(var(--primary)_/_0.5),0_0_18px_hsl(var(--primary)_/_0.28)]",
                     )}
+                    style={{ width: circleWidth, aspectRatio: "1" }}
                   >
                     <img
                       src={spec.imageSrc}
@@ -197,56 +215,38 @@ const CosmeticBagsV2 = () => {
                       decoding="async"
                     />
                   </div>
-                </Link>
-              ))}
-            </div>
-
-            {/* Row 2: diameter scales — same column tracks */}
-            <div className={cn("grid w-full grid-cols-3 justify-items-center", gridGap)}>
-              {sizeColumns.map(({ spec, product }) => (
-                <div key={`d-${product.id}`} className="w-full max-w-[min(100%,11rem)] sm:max-w-[13rem]">
-                  <DiameterScale inches={spec.inches} className="!mt-0" />
                 </div>
-              ))}
-            </div>
 
-            {/* Row 3: swatches — same column tracks */}
-            <div className={cn("grid w-full grid-cols-3 justify-items-center", gridGap)}>
-              {sizeColumns.map(({ product, preview }) => (
-                <div
-                  key={`s-${product.id}`}
-                  className="flex min-h-7 w-full max-w-[min(100%,18rem)] flex-wrap items-center justify-center gap-2"
-                >
+                <div className="-mt-1.5 w-full max-w-[min(100%,11rem)] sm:-mt-2 sm:max-w-[13rem]">
+                  <DiameterScale inches={spec.inches} className="!mt-0" dense />
+                </div>
+
+                <div className="mt-1.5 flex min-h-7 w-full max-w-[min(100%,18rem)] flex-wrap items-center justify-center gap-2 sm:mt-2">
                   {preview.swatches.map((s) => (
                     <span
                       key={s.key}
                       className={cn(
                         preview.interactive
                           ? cn(
-                              "shrink-0 rounded-full border border-foreground/25 bg-center bg-no-repeat",
+                              "pointer-events-none shrink-0 rounded-full border border-foreground/25 bg-center bg-no-repeat",
                               "h-7 w-7",
                               preview.cosmoMiniInteractive &&
                                 "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]",
                               preview.cosmoOtherInteractive && "bg-muted/30",
                             )
-                          : "h-6 w-6 shrink-0 rounded-full border border-foreground/20 bg-muted bg-cover bg-center shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]",
+                          : "pointer-events-none h-6 w-6 shrink-0 rounded-full border border-foreground/20 bg-muted bg-cover bg-center shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]",
                       )}
                       style={s.style}
                       title={s.label}
-                      aria-label={s.label}
+                      aria-hidden
                     />
                   ))}
                   {preview.remaining > 0 ? (
-                    <Link
-                      to={`/product/${product.handle}`}
-                      className="text-xs font-medium text-primary hover:underline"
-                    >
-                      +{preview.remaining} more
-                    </Link>
+                    <span className="text-xs font-medium text-primary">+{preview.remaining} more</span>
                   ) : null}
                 </div>
-              ))}
-            </div>
+              </Link>
+            ))}
           </div>
         </section>
       </div>

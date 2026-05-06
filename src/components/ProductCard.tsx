@@ -514,8 +514,16 @@ function getColorValues(product: ShopifyProduct["node"]): string[] {
   return [...fromVariants];
 }
 
+export type CollectionGridSwatchPreviewOptions = {
+  /** Default 8. Useful on dense layouts (e.g. Cosmo 20″ column). */
+  maxInteractiveSwatches?: number;
+};
+
 /** Swatch row matching default collection `ProductCard`: up to 8 variant swatches (+N) or 4 color dots (+N). */
-export function getCollectionGridSwatchPreview(node: ShopifyProduct["node"]): {
+export function getCollectionGridSwatchPreview(
+  node: ShopifyProduct["node"],
+  options?: CollectionGridSwatchPreviewOptions,
+): {
   swatches: { style: CSSProperties; label: string; key: string }[];
   remaining: number;
   interactive: boolean;
@@ -540,7 +548,8 @@ export function getCollectionGridSwatchPreview(node: ShopifyProduct["node"]): {
         : isCosmo22Interactive
           ? cosmo22CardVariants
           : nailspa18CardVariants;
-    const visible = variants.slice(0, 8);
+    const interactiveLimit = options?.maxInteractiveSwatches ?? 8;
+    const visible = variants.slice(0, interactiveLimit);
     const swatches = visible.map((v) => ({
       style: isCosmoMiniInteractive ? cosmoMiniSwatchStyle(v) : collectionSwatchStyleFromVariant(node, v),
       label: getVariantColorValue(v) ?? v.title,
