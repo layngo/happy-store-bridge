@@ -226,8 +226,9 @@ const CosmeticBagsV2 = () => {
                   */}
                   <div
                     className={cn(
-                      "mx-auto max-w-full transition-transform duration-200 ease-out will-change-transform",
+                      "mx-auto max-w-full rounded-full transition-[transform,box-shadow] duration-200 ease-out will-change-transform",
                       "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
+                      "shadow-none group-hover:shadow-[0_10px_28px_-6px_rgba(0,0,0,0.2),0_4px_10px_-4px_rgba(0,0,0,0.1)]",
                     )}
                     style={{ width: circleWidth, aspectRatio: "1" }}
                   >
@@ -243,7 +244,7 @@ const CosmeticBagsV2 = () => {
                   </div>
                 </div>
 
-                <div className="-mt-1.5 w-full max-w-[min(100%,11rem)] sm:-mt-2 sm:max-w-[13rem]">
+                <div className="mt-1.5 w-full max-w-[min(100%,11rem)] sm:mt-2 sm:max-w-[13rem]">
                   <DiameterScale inches={spec.inches} className="!mt-0" dense />
                 </div>
 
