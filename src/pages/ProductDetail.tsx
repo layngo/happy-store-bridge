@@ -44,8 +44,16 @@ const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.
 const LAY_N_GO_LARGE_SLIDE_1 = "/products/lay-n-go-large-pdp/video-slide-1.png";
 const LAY_N_GO_LARGE_SLIDE_2 = "/products/lay-n-go-large-pdp/video-slide-2.png";
 
+const TRAVELER_20_BLOCKED_IMAGE_URL =
+  "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/B00F1TI8T0.PT05.jpg?v=1643213779";
+
 function getOrderedImagesForProduct(product: ShopifyProduct["node"]) {
-  const imgs = product.images.edges;
+  let imgs = product.images.edges;
+
+  if (product.handle.toLowerCase() === "lay-n-go-traveler-20") {
+    imgs = imgs.filter((img) => img.node.url !== TRAVELER_20_BLOCKED_IMAGE_URL);
+  }
+
   if (!isCosmoMini16Product(product.handle, product.title) || imgs.length < 4) return imgs;
   const next = [...imgs];
   [next[1], next[3]] = [next[3], next[1]];

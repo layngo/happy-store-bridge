@@ -61,7 +61,7 @@ export const COSMO_20_AMAZON_REVIEWS: ProductAmazonReview[] = [
   },
   {
     headline: "Nice cosmetic bag",
-    quote: "Bought as bd present for relative who takes dance! Perfect for all of her make-up!",
+    quote: "Bought as birthday present for relative who takes dance! Perfect for all of her make-up!",
     author: "Consumer 7",
     rating: 5,
     variantNote: "Verified Purchase · 20\" · Black",
