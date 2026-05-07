@@ -13,6 +13,7 @@ import {
 import { readCosmoStoryArrowPath } from "@/data/cosmoPdpStoryArrows";
 import { Button } from "@/components/ui/button";
 import { CosmoEverythingArrowHandles, CosmoPackupArrowHandles } from "@/components/CosmoStoryArrowEditorHandles";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 /**
  * Editorial strip below Cosmo PDP hero — flush edges, white field matching photo backs,
@@ -23,6 +24,8 @@ import { CosmoEverythingArrowHandles, CosmoPackupArrowHandles } from "@/componen
  */
 
 const COSMO_STORY_HEADLINE = "Forget everything you knew about a makeup bag.";
+const MOBILE_EVERYTHING_ARROW_PATH =
+  "M 38.5 10.6 C 73.8 6.8, 82.6 17.2, 70.4 26.4 Q 56.9 32.6, 55.8 44.8";
 
 /** Dotted arrow; `pathD` is SVG path in 0–100 viewBox (see `src/data/cosmoPdpStoryArrows.ts`). */
 function ArrowOverlay({
@@ -164,6 +167,7 @@ export type CosmoPdpStoryProps = {
 };
 
 export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
+  const isMobile = useIsMobile();
   const livePaths = useCosmoStoryArrowPaths();
   const [editEverythingPts, setEditEverythingPts] = useState(DEFAULT_EVERYTHING_PTS);
   const [editPackupPts, setEditPackupPts] = useState(DEFAULT_PACKUP_PTS);
@@ -180,6 +184,7 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
         packup: packupPathFromPts(editPackupPts),
       }
     : livePaths;
+  const everythingArrowPath = isMobile ? MOBILE_EVERYTHING_ARROW_PATH : arrowPaths.everything;
 
   const rawId = useId().replace(/:/g, "");
   const markerEverything = `cosmo-arr-ev-${rawId}`;
@@ -271,7 +276,7 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
                   loading="lazy"
                 />
                 <ArrowOverlay
-                  pathD={arrowPaths.everything}
+                  pathD={everythingArrowPath}
                   markerId={markerEverything}
                   emphasize={editorMode}
                 />
