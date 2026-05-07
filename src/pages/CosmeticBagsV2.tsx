@@ -202,6 +202,7 @@ const CosmeticBagsV2 = () => {
               <Link
                 key={product.id}
                 to={`/product/${product.handle}`}
+                state={{ fromCosmeticBagsV2: true }}
                 className={cn(
                   "group relative flex min-h-0 min-w-0 cursor-pointer flex-col items-center gap-0 px-0 pb-1 pt-0 sm:px-0.5 sm:pb-2 md:px-1.5 md:pt-0 lg:px-2",
                   "rounded-xl outline-none transition-colors duration-200",

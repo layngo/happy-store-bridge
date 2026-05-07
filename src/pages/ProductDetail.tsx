@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
-import { useParams, Link, useSearchParams } from "react-router-dom";
+import { useParams, Link, useSearchParams, useLocation } from "react-router-dom";
 import {
   fetchProductByHandle,
   fetchRelatedProducts,
@@ -47,6 +47,10 @@ const LAY_N_GO_LARGE_SLIDE_2 = "/products/lay-n-go-large-pdp/video-slide-2.png";
 const TRAVELER_20_BLOCKED_IMAGE_URL =
   "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/B00F1TI8T0.PT05.jpg?v=1643213779";
 
+const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags-v2";
+
+type ProductLocationState = { fromCosmeticBagsV2?: boolean };
+
 function getOrderedImagesForProduct(product: ShopifyProduct["node"]) {
   let imgs = product.images.edges;
 
@@ -66,6 +70,8 @@ const ProductDetail = () => {
     collectionHandle?: string;
     productHandle?: string;
   }>();
+  const location = useLocation();
+  const fromCosmeticBagsV2 = Boolean((location.state as ProductLocationState | null)?.fromCosmeticBagsV2);
   const slug = productHandle ?? handle;
 
   const [product, setProduct] = useState<ShopifyProduct["node"] | null>(null);
@@ -129,7 +135,16 @@ const ProductDetail = () => {
     setNailspa18GalleryIndex(0);
   }, [selectedVariantIdx]);
 
-  const backHref = collectionHandle ? `/collections/${collectionHandle}` : "/collections";
+  const backHref = fromCosmeticBagsV2
+    ? COSMETIC_BAGS_V2_PATH
+    : collectionHandle
+      ? `/collections/${collectionHandle}`
+      : "/collections";
+  const backLabel = fromCosmeticBagsV2
+    ? "Back to Cosmetic Bags V2"
+    : collectionHandle
+      ? "Back to collection"
+      : "Back to collections";
 
   const isCosmoMini16 = product ? isCosmoMini16Product(product.handle, product.title) : false;
   const orderedImages = useMemo(() => {
@@ -604,7 +619,14 @@ const ProductDetail = () => {
           <Link to="/collections" className="hover:text-foreground transition-colors">
             Collections
           </Link>
-          {collectionHandle ? (
+          {fromCosmeticBagsV2 ? (
+            <>
+              <ChevronRight className="w-4 h-4 shrink-0" />
+              <Link to={COSMETIC_BAGS_V2_PATH} className="hover:text-foreground transition-colors">
+                Cosmetic Bags V2
+              </Link>
+            </>
+          ) : collectionHandle ? (
             <>
               <ChevronRight className="w-4 h-4 shrink-0" />
               <Link to={`/collections/${collectionHandle}`} className="hover:text-foreground transition-colors capitalize">
@@ -621,7 +643,7 @@ const ProductDetail = () => {
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm">{collectionHandle ? "Back to collection" : "Back to collections"}</span>
+          <span className="text-sm">{backLabel}</span>
         </Link>
 
         {isCosmoPdp ? (
