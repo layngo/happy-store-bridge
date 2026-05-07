@@ -292,7 +292,7 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
               </p>
             </div>
             <div className="flex w-full justify-end self-end pr-0">
-              <div className="relative ml-auto mr-0 w-full max-md:max-w-[min(76vw,340px)] md:max-w-[min(62vw,520px)] lg:max-w-[560px]">
+              <div className="relative -mt-3 ml-auto mr-0 w-full max-md:max-w-[min(76vw,272px)] md:-mt-5 md:max-w-[min(62vw,416px)] lg:-mt-6 lg:max-w-[448px]">
                 <img
                   src="/cosmo-pdp/story/image3.png"
                   alt=""

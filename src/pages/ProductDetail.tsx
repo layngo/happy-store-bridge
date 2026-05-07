@@ -35,6 +35,7 @@ import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
 import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPlayMat";
 
@@ -43,6 +44,56 @@ const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.
 
 const LAY_N_GO_LARGE_SLIDE_1 = "/products/lay-n-go-large-pdp/video-slide-1.png";
 const LAY_N_GO_LARGE_SLIDE_2 = "/products/lay-n-go-large-pdp/video-slide-2.png";
+const COSMO_AUTOPLAY_YOUTUBE_ID = "G3E80xl9lSM";
+const COSMO_AMAZON_REVIEWS_URL =
+  "https://www.amazon.com/Lay-n-Go-Cosmo-Cosmetic-Bag-Black/dp/B00B04V3PQ/ref=sr_1_2?crid=319SA2P59OD6R&dib=eyJ2IjoiMSJ9.yZpPmIN6c0isZ7qkwNkUWg.XsRHQlPyJ9UrcTBLmVdjiQ0rxRkojK3Ksfzjf7LjOYg&dib_tag=se&keywords=cosmo%2Blayngo&qid=1778181094&sprefix=cosmo%2Blayng%2Caps%2C106&sr=8-2&th=1#averageCustomerReviewsAnchor";
+const COSMO_FAQ_ITEMS = [
+  {
+    question: "What sizes does the Cosmo come in?",
+    answer:
+      'The Cosmo comes in three sizes - the Mini (16"), the original Cosmo (20"), and the Deluxe (22") - so there is a perfect fit for every routine.',
+  },
+  {
+    question: "How does it work?",
+    answer:
+      "Simply pull the drawstring cord and the bag lays completely flat, giving you full access to everything inside. When you're done, pull the cord again and it cinches shut in seconds.",
+  },
+  {
+    question: "What can fit inside?",
+    answer:
+      "The Cosmo holds full-size makeup, brushes, skincare, and toiletries all at once - ideal for travelers, commuters, makeup artists, and anyone tired of digging through a messy pouch.",
+  },
+  {
+    question: "Is it actually machine washable?",
+    answer:
+      "Yes - just toss it in the washing machine. It's also made from water-resistant polyester that wipes clean easily for quick cleanups between washes.",
+  },
+  {
+    question: "Is it water resistant?",
+    answer:
+      "Yes, the Cosmo is made from durable water-resistant polyester fabric that stands up to everyday spills, smudges, and makeup messes.",
+  },
+  {
+    question: "Does it have any pockets?",
+    answer:
+      "Yes - there is a zippered interior pocket for storing smaller items, plus elastic brush loops to keep brushes secure and in place.",
+  },
+  {
+    question: "Is it good for travel?",
+    answer:
+      "Absolutely. It lays flat on any surface so your toiletries never touch a hotel counter or gym sink, and it folds flat to fit into any bag, suitcase, or carry-on.",
+  },
+  {
+    question: "Is it a good gift?",
+    answer:
+      "One of the best - it is practical, stylish, and a thoughtful choice for birthdays, holidays, or any occasion. It is the kind of gift people use every single day and never want to go back from.",
+  },
+  {
+    question: "How is it different from a regular makeup bag?",
+    answer:
+      "A regular bag forces you to dig. The Cosmo lays completely flat so you can see and reach everything at once, then closes in one pull - no dumping, no rummaging, no mess.",
+  },
+] as const;
 
 const TRAVELER_20_BLOCKED_IMAGE_URL =
   "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/B00F1TI8T0.PT05.jpg?v=1643213779";
@@ -208,10 +259,11 @@ const ProductDetail = () => {
     isCosmoStoryPdp &&
     (searchParams.get("editArrows") === "1" || searchParams.get("editArrows") === "true");
 
-  const cosmoYoutubeId = useMemo(
-    () => (product ? extractFirstYoutubeVideoId(product.description || "") : null),
-    [product?.description],
-  );
+  const cosmoYoutubeId = useMemo(() => {
+    if (!product) return null;
+    if (isCosmoStoryPdp) return COSMO_AUTOPLAY_YOUTUBE_ID;
+    return extractFirstYoutubeVideoId(product.description || "");
+  }, [isCosmoStoryPdp, product, product?.description]);
 
   const amazonReviewsBundle = useMemo(
     () => (product ? getAmazonReviewsForProduct(product.handle) : { reviews: [], amazonListingUrl: undefined }),
@@ -754,7 +806,7 @@ const ProductDetail = () => {
                 ) : cosmoYoutubeId ? (
                   <iframe
                     title="Product video"
-                    src={`https://www.youtube.com/embed/${cosmoYoutubeId}?rel=0`}
+                    src={`https://www.youtube.com/embed/${cosmoYoutubeId}?autoplay=1&mute=1&playsinline=1&loop=1&playlist=${cosmoYoutubeId}&rel=0`}
                     className="absolute inset-0 h-full w-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
@@ -771,6 +823,43 @@ const ProductDetail = () => {
                 )}
               </div>
             </section>
+
+            {isCosmoStoryPdp ? (
+              <section className="mx-auto mt-14 w-full max-w-4xl sm:mt-16" aria-label="Cosmo FAQ">
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Cosmo FAQ</h2>
+                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
+                  {COSMO_FAQ_ITEMS.map((item, idx) => (
+                    <AccordionItem key={item.question} value={`cosmo-faq-${idx}`}>
+                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
+            ) : null}
+
+            {isCosmoStoryPdp ? (
+              <section className="mx-auto mt-8 w-full max-w-4xl sm:mt-10" aria-label="Cosmo ratings">
+                <div className="rounded-2xl border border-border bg-white px-5 py-6 sm:px-7 sm:py-7">
+                  <p className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">4.5 out of 5</p>
+                  <p className="mt-2 text-sm font-medium text-muted-foreground sm:text-base">
+                    14,817 global ratings
+                  </p>
+                  <a
+                    href={COSMO_AMAZON_REVIEWS_URL}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="mt-4 inline-flex text-sm font-semibold text-primary underline-offset-4 hover:underline sm:text-base"
+                  >
+                    See reviews
+                  </a>
+                </div>
+              </section>
+            ) : null}
           </>
         ) : (
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
