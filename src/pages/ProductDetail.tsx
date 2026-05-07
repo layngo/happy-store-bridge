@@ -33,6 +33,7 @@ import {
 } from "@/components/Nailspa18ColorSelector";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
+import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -843,6 +844,8 @@ const ProductDetail = () => {
                 )}
               </div>
             </section>
+
+            {isCosmoStoryPdp ? <CosmoPdpVideoGallery /> : null}
 
             {isCosmoStoryPdp ? (
               <section className="mx-auto mt-14 w-full max-w-4xl sm:mt-16" aria-label="Cosmo FAQ">
