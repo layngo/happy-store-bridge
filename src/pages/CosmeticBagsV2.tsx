@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getCollectionGridSwatchPreview } from "@/components/ProductCard";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Loader2, ChevronRight, Home } from "lucide-react";
 
 const COLLECTION_HANDLE = "cosmetic-bags";
@@ -81,9 +82,13 @@ function DiameterScale({ inches, className, dense }: { inches: number; className
   );
 }
 
+const COSMO_20_MAX_SWATCHES_DESKTOP = 5;
+const COSMO_20_MAX_SWATCHES_MOBILE = 3;
+
 const CosmeticBagsV2 = () => {
   const [collection, setCollection] = useState<ShopifyCollectionDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setLoading(true);
@@ -112,13 +117,17 @@ const CosmeticBagsV2 = () => {
         product,
         preview: getCollectionGridSwatchPreview(
           product,
-          spec.inches === 20 ? { maxInteractiveSwatches: 5 } : undefined,
+          spec.inches === 20
+            ? {
+                maxInteractiveSwatches: isMobile ? COSMO_20_MAX_SWATCHES_MOBILE : COSMO_20_MAX_SWATCHES_DESKTOP,
+              }
+            : undefined,
         ),
         circleWidth,
       };
     });
     return cols.sort((a, b) => a.spec.inches - b.spec.inches);
-  }, [sizedProducts]);
+  }, [sizedProducts, isMobile]);
 
   if (loading) {
     return (
@@ -178,14 +187,15 @@ const CosmeticBagsV2 = () => {
         </div>
 
         <section
-          className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-3 pb-5 pt-3 sm:px-6 sm:pb-7 sm:pt-4"
+          className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-2 pb-5 pt-3 sm:px-6 sm:pb-7 sm:pt-4"
           aria-label="Cosmo size selector"
         >
           <div
             className="mx-auto grid w-full max-w-7xl grid-cols-3 divide-x divide-border/80"
             style={{
               containerType: "inline-size",
-              ["--cosmo-disk-band-min" as string]: `${COSMO_CIRCLE_BASE_REM}rem`,
+              // Match JS `circleWidth` cap so 22″ disk height equals band min; 16″/20″ bottom-align on all breakpoints.
+              ["--cosmo-disk-band-min" as string]: `min(${COSMO_CIRCLE_BASE_REM}rem, (100cqw - 1.5rem) / 3)`,
             }}
           >
             {sizeColumns.map(({ spec, product, preview, circleWidth }) => (
@@ -193,30 +203,33 @@ const CosmeticBagsV2 = () => {
                 key={product.id}
                 to={`/product/${product.handle}`}
                 className={cn(
-                  "group relative flex min-h-0 min-w-0 cursor-pointer flex-col items-center gap-0 px-0.5 pb-1 pt-0 sm:pb-2 md:px-1.5 md:pt-0 lg:px-2",
+                  "group relative flex min-h-0 min-w-0 cursor-pointer flex-col items-center gap-0 px-0 pb-1 pt-0 sm:px-0.5 sm:pb-2 md:px-1.5 md:pt-0 lg:px-2",
                   "rounded-xl outline-none transition-colors duration-200",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0",
                 )}
+                style={{ ["--cosmo-circle-w" as string]: circleWidth }}
                 aria-label={`${spec.shortName}, ${spec.inches} inch — ${product.title}. Opens product page.`}
               >
                 <p
                   className={cn(
-                    "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] items-center justify-center px-0.5 text-pretty text-center max-md:leading-tight",
-                    "md:mb-1.5 md:min-h-[3rem] lg:min-h-[3.5rem]",
+                    "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] origin-center items-center justify-center px-0.5 text-pretty text-center max-md:leading-tight",
+                    "min-h-[3.25rem] md:mb-1.5 lg:min-h-[3.5rem]",
                     "font-heading font-black uppercase leading-[0.92] tracking-tight text-foreground",
                     "text-[clamp(0.8125rem,3.2cqw+0.5rem,1.1875rem)] sm:text-[clamp(0.9375rem,2.85cqw+0.55rem,1.4375rem)]",
+                    "transition-transform duration-200 ease-out will-change-transform",
+                    "group-hover:scale-[1.035] motion-reduce:group-hover:scale-100",
                   )}
                 >
                   {spec.shortName}
                 </p>
                 {/*
-                  Below md: no tall baseline band — labels sit directly above disks so 16/20/22 stay
-                  a tight horizontal trio for size comparison. md+: shared min-height + bottom-align.
+                  Shared band height = 22″ diameter (cqw-capped); all disks bottom-align so the trio reads
+                  side-by-side on mobile the same way as desktop.
                 */}
                 <div
                   className={cn(
-                    "flex w-full flex-col items-center max-md:min-h-0 max-md:justify-start",
-                    "md:min-h-[var(--cosmo-disk-band-min)] md:justify-end",
+                    "flex w-full min-w-0 flex-col items-center justify-end",
+                    "min-h-[var(--cosmo-disk-band-min)]",
                     "-mt-0.5 md:-mt-1",
                   )}
                 >
@@ -244,11 +257,17 @@ const CosmeticBagsV2 = () => {
                   </div>
                 </div>
 
-                <div className="mt-1.5 w-full max-w-[min(100%,11rem)] sm:mt-2 sm:max-w-[13rem]">
-                  <DiameterScale inches={spec.inches} className="!mt-0" dense />
+                <div
+                  className={cn(
+                    "mt-1.5 mx-auto shrink-0 sm:mt-2",
+                    // Same width as the disk above: mini < cosmo < deluxe on every breakpoint.
+                    "w-[var(--cosmo-circle-w)] max-w-[var(--cosmo-circle-w)]",
+                  )}
+                >
+                  <DiameterScale inches={spec.inches} className="!mt-0 !px-0" dense />
                 </div>
 
-                <div className="mt-1.5 flex min-h-7 w-full max-w-[min(100%,18rem)] flex-wrap items-center justify-center gap-2 sm:mt-2">
+                <div className="mt-1.5 flex min-h-7 w-full max-w-[min(100%,18rem)] flex-wrap items-center justify-center gap-1 sm:mt-2 sm:gap-2">
                   {preview.swatches.map((s) => (
                     <span
                       key={s.key}
@@ -256,12 +275,12 @@ const CosmeticBagsV2 = () => {
                         preview.interactive
                           ? cn(
                               "pointer-events-none shrink-0 rounded-full border border-foreground/25 bg-center bg-no-repeat",
-                              "h-7 w-7",
+                              "h-6 w-6 sm:h-7 sm:w-7",
                               preview.cosmoMiniInteractive &&
                                 "shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]",
                               preview.cosmoOtherInteractive && "bg-muted/30",
                             )
-                          : "pointer-events-none h-6 w-6 shrink-0 rounded-full border border-foreground/20 bg-muted bg-cover bg-center shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]",
+                          : "pointer-events-none h-5 w-5 shrink-0 rounded-full border border-foreground/20 bg-muted bg-cover bg-center shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)] sm:h-6 sm:w-6",
                       )}
                       style={s.style}
                       title={s.label}
