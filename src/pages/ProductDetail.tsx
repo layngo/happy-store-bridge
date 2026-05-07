@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useParams, Link, useSearchParams, useLocation } from "react-router-dom";
 import {
   fetchProductByHandle,
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
-import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronRight, Home } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronRight, Home, Star } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
@@ -135,6 +135,8 @@ const ProductDetail = () => {
   const [cosmo22GalleryIndex, setCosmo22GalleryIndex] = useState(0);
   const [nailspa18GalleryIndex, setNailspa18GalleryIndex] = useState(0);
   const [layNGoLargeSlideIndex, setLayNGoLargeSlideIndex] = useState(0);
+  const [showStickyAddToCart, setShowStickyAddToCart] = useState(false);
+  const primaryAddToCartRef = useRef<HTMLDivElement | null>(null);
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
 
@@ -293,6 +295,24 @@ const ProductDetail = () => {
     }, 5000);
     return () => window.clearInterval(id);
   }, [isLayNGoLarge60]);
+
+  useEffect(() => {
+    if (!isCosmoStoryPdp) {
+      setShowStickyAddToCart(false);
+      return;
+    }
+    const target = primaryAddToCartRef.current;
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const scrolledPastPrimaryCta = entry.boundingClientRect.top < 0;
+        setShowStickyAddToCart(!entry.isIntersecting && scrolledPastPrimaryCta);
+      },
+      { threshold: 0, rootMargin: "0px 0px -12% 0px" },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [isCosmoStoryPdp, product?.id]);
 
   if (loading) {
     return (
@@ -734,7 +754,7 @@ const ProductDetail = () => {
                     </div>
                   </div>
 
-                  {addToCartButtonCosmo}
+                  <div ref={primaryAddToCartRef}>{addToCartButtonCosmo}</div>
                 </div>
               </div>
             </section>
@@ -844,7 +864,22 @@ const ProductDetail = () => {
 
             {isCosmoStoryPdp ? (
               <section className="mx-auto mt-8 w-full max-w-4xl sm:mt-10" aria-label="Cosmo ratings">
-                <div className="rounded-2xl border border-border bg-white px-5 py-6 sm:px-7 sm:py-7">
+                <div className="px-5 py-2 text-center sm:px-7">
+                  <div className="mx-auto mb-3 flex items-center justify-center gap-1.5" aria-label="4.5 out of 5 stars">
+                    {[0, 1, 2, 3, 4].map((idx) => {
+                      const fillPct = Math.max(0, Math.min(100, (4.5 - idx) * 100));
+                      return (
+                        <span key={idx} className="relative block h-5 w-5 sm:h-6 sm:w-6" aria-hidden>
+                          <Star className="h-full w-full fill-muted stroke-muted-foreground/25" />
+                          {fillPct > 0 ? (
+                            <span className="absolute inset-0 overflow-hidden" style={{ width: `${fillPct}%` }}>
+                              <Star className="h-full w-full fill-[#f4b400] stroke-[#f4b400]" />
+                            </span>
+                          ) : null}
+                        </span>
+                      );
+                    })}
+                  </div>
                   <p className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">4.5 out of 5</p>
                   <p className="mt-2 text-sm font-medium text-muted-foreground sm:text-base">
                     14,817 global ratings
@@ -910,6 +945,27 @@ const ProductDetail = () => {
           </section>
         ) : null}
       </div>
+
+      {isCosmoStoryPdp && showStickyAddToCart ? (
+        <div className="pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center px-4">
+          <Button
+            size="lg"
+            onClick={handleAddToCart}
+            disabled={isLoading || !selectedVariant?.availableForSale}
+            className="pointer-events-auto font-cosmo-cta w-full max-w-sm rounded-md border border-neutral-700 bg-[#2c2c2c] text-base font-semibold tracking-wide text-neutral-50 shadow-[0_10px_28px_-10px_rgba(0,0,0,0.45)] hover:bg-[#1f1f1f] disabled:opacity-50"
+          >
+            {isLoading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <>
+                <ShoppingCart className="mr-2 h-5 w-5 opacity-90" />
+                Add to cart
+              </>
+            )}
+          </Button>
+        </div>
+      ) : null}
+
       <SiteFooter />
     </div>
   );
