@@ -25,7 +25,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const COSMO_STORY_HEADLINE = "Forget everything you knew about a makeup bag.";
 const MOBILE_EVERYTHING_ARROW_PATH =
-  "M 39.4 10.6 C 75.4 6.7, 84.3 17.6, 72.1 27.1 Q 58.4 33.6, 57.1 45.3";
+  "M 40.2 10.4 C 77.2 6.5, 86.1 17.7, 73.9 27.4 Q 59.8 33.2, 58.2 43.7";
 
 /** Dotted arrow; `pathD` is SVG path in 0–100 viewBox (see `src/data/cosmoPdpStoryArrows.ts`). */
 function ArrowOverlay({
