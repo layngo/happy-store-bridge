@@ -37,6 +37,7 @@ import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
 import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPlayMat";
 
@@ -137,6 +138,7 @@ const ProductDetail = () => {
   const [nailspa18GalleryIndex, setNailspa18GalleryIndex] = useState(0);
   const [layNGoLargeSlideIndex, setLayNGoLargeSlideIndex] = useState(0);
   const [showStickyAddToCart, setShowStickyAddToCart] = useState(false);
+  const [stickyConfirmOpen, setStickyConfirmOpen] = useState(false);
   const primaryAddToCartRef = useRef<HTMLDivElement | null>(null);
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
@@ -284,6 +286,30 @@ const ProductDetail = () => {
     layNGoHandle.includes("travel") ||
     layNGoHandle.includes("tech");
   const isLayNGoTraveler20 = layNGoHandle === "lay-n-go-traveler-20";
+  const colorOptionName = useMemo(() => {
+    if (!product) return null;
+    return product.options.find((opt) => isColorOptionName(opt.name))?.name ?? null;
+  }, [product]);
+
+  const colorVariantChoices = useMemo(() => {
+    if (!product || !colorOptionName) return [];
+    const seen = new Set<string>();
+    return product.variants.edges.flatMap((edge, idx) => {
+      const rawValue = edge.node.selectedOptions.find((o) => o.name === colorOptionName)?.value ?? "";
+      if (!rawValue) return [];
+      const key = rawValue.trim().toLowerCase();
+      if (seen.has(key)) return [];
+      seen.add(key);
+      return [
+        {
+          idx,
+          node: edge.node,
+          rawValue,
+          displayValue: displayOptionValue(product.handle, rawValue),
+        },
+      ];
+    });
+  }, [colorOptionName, product]);
 
   useEffect(() => {
     setLayNGoLargeSlideIndex(0);
@@ -359,6 +385,18 @@ const ProductDetail = () => {
       selectedOptions: selectedVariant.selectedOptions || [],
     });
     toast.success("Added to cart", { description: `${product.title} × ${quantity}`, position: "top-center" });
+  };
+
+  const handleVariantSelection = (variantIdx: number) => {
+    setSelectedVariantIdx(variantIdx);
+    const variant = product.variants.edges[variantIdx]?.node;
+    const variantImageUrl = variant?.image?.url;
+    if (variantImageUrl) {
+      const imageIdx = orderedImages.findIndex((img) => img.node.url === variantImageUrl);
+      if (imageIdx >= 0) setSelectedImage(imageIdx);
+    } else if (variant && isCosmoMini16 && !isCosmoBlackVariant(variant)) {
+      setSelectedImage(1);
+    }
   };
 
   const mainHeroImage: ReactNode = isCosmoMini16 && selectedVariant && !isCosmoBlackVariant(selectedVariant) ? (
@@ -546,16 +584,7 @@ const ProductDetail = () => {
                   <button
                     key={vIdx}
                     type="button"
-                    onClick={() => {
-                      setSelectedVariantIdx(vIdx);
-                      const variantImageUrl = v.node.image?.url;
-                      if (variantImageUrl) {
-                        const imageIdx = orderedImages.findIndex((img) => img.node.url === variantImageUrl);
-                        if (imageIdx >= 0) setSelectedImage(imageIdx);
-                      } else if (isCosmoMini16 && !isCosmoBlackVariant(v.node)) {
-                        setSelectedImage(1);
-                      }
-                    }}
+                    onClick={() => handleVariantSelection(vIdx)}
                     className={cn(
                       isColor
                         ? "h-9 w-9 rounded-full border border-foreground/25 bg-cover bg-center bg-no-repeat transition-[box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -950,7 +979,7 @@ const ProductDetail = () => {
         <div className="pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center px-4">
           <Button
             size="lg"
-            onClick={handleAddToCart}
+            onClick={() => setStickyConfirmOpen(true)}
             disabled={isLoading || !selectedVariant?.availableForSale}
             className="pointer-events-auto font-cosmo-cta w-full max-w-sm rounded-md border border-neutral-700 bg-[#2c2c2c] text-base font-semibold tracking-wide text-neutral-50 shadow-[0_10px_28px_-10px_rgba(0,0,0,0.45)] hover:bg-[#1f1f1f] disabled:opacity-50"
           >
@@ -965,6 +994,73 @@ const ProductDetail = () => {
           </Button>
         </div>
       ) : null}
+
+      <Dialog open={stickyConfirmOpen} onOpenChange={setStickyConfirmOpen}>
+        <DialogContent className="w-[min(92vw,32rem)] rounded-xl border border-neutral-200 bg-white p-5 sm:p-6">
+          <DialogHeader className="text-left">
+            <DialogTitle className="font-heading text-xl font-bold text-foreground">Confirm your color</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Selected color:{" "}
+              <span className="font-semibold text-foreground">
+                {displayOptionValue(
+                  product.handle,
+                  selectedVariant?.selectedOptions.find((o) => isColorOptionName(o.name))?.value ?? selectedVariant?.title ?? "",
+                )}
+              </span>
+            </DialogDescription>
+          </DialogHeader>
+
+          {colorVariantChoices.length > 0 ? (
+            <div className="space-y-2">
+              <p className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">Edit color</p>
+              <div className="flex flex-wrap gap-2">
+                {colorVariantChoices.map((choice) => (
+                  <button
+                    key={`${choice.rawValue}-${choice.idx}`}
+                    type="button"
+                    onClick={() => handleVariantSelection(choice.idx)}
+                    className={cn(
+                      "h-9 w-9 rounded-full border border-foreground/25 bg-cover bg-center bg-no-repeat transition-[box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                      choice.idx === selectedVariantIdx ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" : "",
+                      !choice.node.availableForSale ? "line-through opacity-40" : "",
+                    )}
+                    style={isCosmoMini16 ? cosmoMiniSwatchStyle(choice.node) : variantImageSwatchStyle(choice.node, choice.rawValue)}
+                    disabled={!choice.node.availableForSale}
+                    aria-label={choice.displayValue}
+                    title={choice.displayValue}
+                  >
+                    <span className="sr-only">{choice.displayValue}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          <DialogFooter className="mt-2 flex-col gap-2 sm:flex-row sm:justify-end">
+            <Button type="button" variant="outline" onClick={() => setStickyConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={async () => {
+                await handleAddToCart();
+                setStickyConfirmOpen(false);
+              }}
+              disabled={isLoading || !selectedVariant?.availableForSale}
+              className="font-cosmo-cta border border-neutral-700 bg-[#2c2c2c] text-neutral-50 hover:bg-[#1f1f1f]"
+            >
+              {isLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <>
+                  <ShoppingCart className="mr-2 h-5 w-5 opacity-90" />
+                  Add to cart
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <SiteFooter />
     </div>
