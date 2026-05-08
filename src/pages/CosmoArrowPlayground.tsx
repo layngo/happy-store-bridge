@@ -22,8 +22,8 @@ import {
  * Dev tool: drag arrow handles, save to localStorage, see results on any Cosmo PDP in this browser.
  */
 export default function CosmoArrowPlayground() {
-  const [everythingD, setEverythingD] = useState(COSMO_STORY_ARROW_PATH_DEFAULT.everything);
-  const [packupD, setPackupD] = useState(COSMO_STORY_ARROW_PATH_DEFAULT.packup);
+  const [everythingD, setEverythingD] = useState<string>(COSMO_STORY_ARROW_PATH_DEFAULT.everything);
+  const [packupD, setPackupD] = useState<string>(COSMO_STORY_ARROW_PATH_DEFAULT.packup);
 
   return (
     <div className="min-h-screen bg-background">

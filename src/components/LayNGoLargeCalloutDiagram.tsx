@@ -66,8 +66,8 @@ function loadLayout(): LayoutState {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_LAYOUT;
     const parsed = JSON.parse(raw) as Partial<LayoutState>;
-    const dots = parsed.dots ?? {};
-    const anchors = parsed.anchors ?? {};
+    const dots: Partial<Record<CalloutKey, Pt>> = parsed.dots ?? {};
+    const anchors: Partial<Record<CalloutKey, Pt>> = parsed.anchors ?? {};
     return {
       dots: {
         cord: dots.cord ?? DEFAULT_LAYOUT.dots.cord,
