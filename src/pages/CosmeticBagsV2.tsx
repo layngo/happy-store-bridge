@@ -62,6 +62,44 @@ const SIZE_SPECS: SizeSpec[] = [
   },
 ];
 
+/** Wavy outline (objectBoundingBox) so overhead disks read like a real drawstring lip, not a perfect circle. */
+const COSMO_DISK_CLIP_PHASE: Record<SizeSpec["inches"], number> = {
+  16: 0,
+  20: 2.71,
+  22: 5.13,
+};
+
+function buildCosmoDiskRipplePathD(phase: number): string {
+  const cx = 0.5;
+  const cy = 0.5;
+  const segments = 100;
+  let d = "";
+  for (let i = 0; i <= segments; i++) {
+    const theta = (i / segments) * Math.PI * 2;
+    const ripple =
+      0.013 * Math.sin(7 * theta + phase) +
+      0.008 * Math.sin(11 * theta + phase * 1.65 + 0.9) +
+      0.005 * Math.sin(17 * theta + 2.2);
+    const r = 0.472 + ripple;
+    const x = cx + r * Math.cos(theta);
+    const y = cy + r * Math.sin(theta);
+    d += `${i === 0 ? "M" : "L"}${x.toFixed(4)} ${y.toFixed(4)}`;
+  }
+  return `${d} Z`;
+}
+
+const COSMO_DISK_CLIP_PATH_D: Record<SizeSpec["inches"], string> = {
+  16: buildCosmoDiskRipplePathD(COSMO_DISK_CLIP_PHASE[16]),
+  20: buildCosmoDiskRipplePathD(COSMO_DISK_CLIP_PHASE[20]),
+  22: buildCosmoDiskRipplePathD(COSMO_DISK_CLIP_PHASE[22]),
+};
+
+const COSMO_DISK_CLIP_IDS: Record<SizeSpec["inches"], string> = {
+  16: "cosmetic-bags-v2-disk-clip-16",
+  20: "cosmetic-bags-v2-disk-clip-20",
+  22: "cosmetic-bags-v2-disk-clip-22",
+};
+
 function DiameterScale({ inches, className, dense }: { inches: number; className?: string; dense?: boolean }) {
   return (
     <div className={cn("mt-3 flex w-full flex-col items-center px-1", className)}>
@@ -187,9 +225,24 @@ const CosmeticBagsV2 = () => {
         </div>
 
         <section
-          className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-2 pb-5 pt-3 sm:px-6 sm:pb-7 sm:pt-4"
+          className="relative mb-12 rounded-2xl border border-border/80 bg-muted/20 px-2 pb-5 pt-3 sm:px-6 sm:pb-7 sm:pt-4"
           aria-label="Cosmo size selector"
         >
+          <svg
+            width={0}
+            height={0}
+            className="pointer-events-none absolute overflow-hidden"
+            aria-hidden
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              {SIZE_SPECS.map(({ inches }) => (
+                <clipPath key={inches} id={COSMO_DISK_CLIP_IDS[inches]} clipPathUnits="objectBoundingBox">
+                  <path d={COSMO_DISK_CLIP_PATH_D[inches]} />
+                </clipPath>
+              ))}
+            </defs>
+          </svg>
           <div
             className="mx-auto grid w-full max-w-7xl grid-cols-3 divide-x divide-border/80"
             style={{
@@ -236,17 +289,26 @@ const CosmeticBagsV2 = () => {
                 >
                   {/*
                     Fixed square disks (aspect 1) so 16″:20″:22″ widths read as real size steps.
-                    Slight img scale crops baked-in light/dark matting at the file edge inside the circle.
+                    Wavy clip (not a perfect circle) mimics a natural containment lip; img scale unchanged.
                   */}
                   <div
                     className={cn(
-                      "mx-auto max-w-full rounded-full transition-[transform,box-shadow] duration-200 ease-out will-change-transform",
+                      "mx-auto max-w-full transition-[transform,filter] duration-200 ease-out will-change-transform",
                       "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
-                      "shadow-none group-hover:shadow-[0_10px_28px_-6px_rgba(0,0,0,0.2),0_4px_10px_-4px_rgba(0,0,0,0.1)]",
                     )}
                     style={{ width: circleWidth, aspectRatio: "1" }}
                   >
-                    <div className="relative h-full w-full overflow-hidden rounded-full bg-neutral-950">
+                    <div
+                      className={cn(
+                        "relative h-full w-full overflow-hidden bg-neutral-950 transition-[filter] duration-200 ease-out",
+                        "group-hover:[filter:drop-shadow(0_10px_28px_rgba(0,0,0,0.18))_drop-shadow(0_4px_10px_rgba(0,0,0,0.1))]",
+                        "motion-reduce:group-hover:[filter:none]",
+                      )}
+                      style={{
+                        clipPath: `url(#${COSMO_DISK_CLIP_IDS[spec.inches]})`,
+                        WebkitClipPath: `url(#${COSMO_DISK_CLIP_IDS[spec.inches]})`,
+                      }}
+                    >
                       <img
                         src={spec.imageSrc}
                         alt={spec.imageAlt}
