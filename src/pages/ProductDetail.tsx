@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
-import { useParams, Link, useSearchParams } from "react-router-dom";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useParams, Link, useSearchParams, useLocation } from "react-router-dom";
 import {
   fetchProductByHandle,
   fetchRelatedProducts,
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
-import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronRight, Home } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronRight, Home, Star } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
@@ -33,8 +33,10 @@ import {
 } from "@/components/Nailspa18ColorSelector";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
+import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
 import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPlayMat";
 
@@ -43,9 +45,63 @@ const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.
 
 const LAY_N_GO_LARGE_SLIDE_1 = "/products/lay-n-go-large-pdp/video-slide-1.png";
 const LAY_N_GO_LARGE_SLIDE_2 = "/products/lay-n-go-large-pdp/video-slide-2.png";
+const COSMO_AUTOPLAY_YOUTUBE_ID = "G3E80xl9lSM";
+const COSMO_AMAZON_REVIEWS_URL =
+  "https://www.amazon.com/Lay-n-Go-Cosmo-Cosmetic-Bag-Black/dp/B00B04V3PQ/ref=sr_1_2?crid=319SA2P59OD6R&dib=eyJ2IjoiMSJ9.yZpPmIN6c0isZ7qkwNkUWg.XsRHQlPyJ9UrcTBLmVdjiQ0rxRkojK3Ksfzjf7LjOYg&dib_tag=se&keywords=cosmo%2Blayngo&qid=1778181094&sprefix=cosmo%2Blayng%2Caps%2C106&sr=8-2&th=1#averageCustomerReviewsAnchor";
+const COSMO_FAQ_ITEMS = [
+  {
+    question: "What sizes does the Cosmo come in?",
+    answer:
+      'The Cosmo comes in three sizes - the Mini (16"), the original Cosmo (20"), and the Deluxe (22") - so there is a perfect fit for every routine.',
+  },
+  {
+    question: "How does it work?",
+    answer:
+      "Simply pull the drawstring cord and the bag lays completely flat, giving you full access to everything inside. When you're done, pull the cord again and it cinches shut in seconds.",
+  },
+  {
+    question: "What can fit inside?",
+    answer:
+      "The Cosmo holds full-size makeup, brushes, skincare, and toiletries all at once - ideal for travelers, commuters, makeup artists, and anyone tired of digging through a messy pouch.",
+  },
+  {
+    question: "Is it actually machine washable?",
+    answer:
+      "Yes - just toss it in the washing machine. It's also made from water-resistant polyester that wipes clean easily for quick cleanups between washes.",
+  },
+  {
+    question: "Is it water resistant?",
+    answer:
+      "Yes, the Cosmo is made from durable water-resistant polyester fabric that stands up to everyday spills, smudges, and makeup messes.",
+  },
+  {
+    question: "Does it have any pockets?",
+    answer:
+      "Yes - there is a zippered interior pocket for storing smaller items, plus elastic brush loops to keep brushes secure and in place.",
+  },
+  {
+    question: "Is it good for travel?",
+    answer:
+      "Absolutely. It lays flat on any surface so your toiletries never touch a hotel counter or gym sink, and it folds flat to fit into any bag, suitcase, or carry-on.",
+  },
+  {
+    question: "Is it a good gift?",
+    answer:
+      "One of the best - it is practical, stylish, and a thoughtful choice for birthdays, holidays, or any occasion. It is the kind of gift people use every single day and never want to go back from.",
+  },
+  {
+    question: "How is it different from a regular makeup bag?",
+    answer:
+      "A regular bag forces you to dig. The Cosmo lays completely flat so you can see and reach everything at once, then closes in one pull - no dumping, no rummaging, no mess.",
+  },
+] as const;
 
 const TRAVELER_20_BLOCKED_IMAGE_URL =
   "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/B00F1TI8T0.PT05.jpg?v=1643213779";
+
+const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags-v2";
+
+type ProductLocationState = { fromCosmeticBagsV2?: boolean };
 
 function getOrderedImagesForProduct(product: ShopifyProduct["node"]) {
   let imgs = product.images.edges;
@@ -66,6 +122,8 @@ const ProductDetail = () => {
     collectionHandle?: string;
     productHandle?: string;
   }>();
+  const location = useLocation();
+  const fromCosmeticBagsV2 = Boolean((location.state as ProductLocationState | null)?.fromCosmeticBagsV2);
   const slug = productHandle ?? handle;
 
   const [product, setProduct] = useState<ShopifyProduct["node"] | null>(null);
@@ -78,6 +136,8 @@ const ProductDetail = () => {
   const [cosmo22GalleryIndex, setCosmo22GalleryIndex] = useState(0);
   const [nailspa18GalleryIndex, setNailspa18GalleryIndex] = useState(0);
   const [layNGoLargeSlideIndex, setLayNGoLargeSlideIndex] = useState(0);
+  const [showStickyAddToCart, setShowStickyAddToCart] = useState(false);
+  const primaryAddToCartRef = useRef<HTMLDivElement | null>(null);
   const addItem = useCartStore((state) => state.addItem);
   const isLoading = useCartStore((state) => state.isLoading);
 
@@ -129,7 +189,16 @@ const ProductDetail = () => {
     setNailspa18GalleryIndex(0);
   }, [selectedVariantIdx]);
 
-  const backHref = collectionHandle ? `/collections/${collectionHandle}` : "/collections";
+  const backHref = fromCosmeticBagsV2
+    ? COSMETIC_BAGS_V2_PATH
+    : collectionHandle
+      ? `/collections/${collectionHandle}`
+      : "/collections";
+  const backLabel = fromCosmeticBagsV2
+    ? "Back to Cosmetic Bags V2"
+    : collectionHandle
+      ? "Back to collection"
+      : "Back to collections";
 
   const isCosmoMini16 = product ? isCosmoMini16Product(product.handle, product.title) : false;
   const orderedImages = useMemo(() => {
@@ -193,10 +262,11 @@ const ProductDetail = () => {
     isCosmoStoryPdp &&
     (searchParams.get("editArrows") === "1" || searchParams.get("editArrows") === "true");
 
-  const cosmoYoutubeId = useMemo(
-    () => (product ? extractFirstYoutubeVideoId(product.description || "") : null),
-    [product?.description],
-  );
+  const cosmoYoutubeId = useMemo(() => {
+    if (!product) return null;
+    if (isCosmoStoryPdp) return COSMO_AUTOPLAY_YOUTUBE_ID;
+    return extractFirstYoutubeVideoId(product.description || "");
+  }, [isCosmoStoryPdp, product, product?.description]);
 
   const amazonReviewsBundle = useMemo(
     () => (product ? getAmazonReviewsForProduct(product.handle) : { reviews: [], amazonListingUrl: undefined }),
@@ -226,6 +296,24 @@ const ProductDetail = () => {
     }, 5000);
     return () => window.clearInterval(id);
   }, [isLayNGoLarge60]);
+
+  useEffect(() => {
+    if (!isCosmoStoryPdp) {
+      setShowStickyAddToCart(false);
+      return;
+    }
+    const target = primaryAddToCartRef.current;
+    if (!target) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const scrolledPastPrimaryCta = entry.boundingClientRect.top < 0;
+        setShowStickyAddToCart(!entry.isIntersecting && scrolledPastPrimaryCta);
+      },
+      { threshold: 0, rootMargin: "0px 0px -12% 0px" },
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [isCosmoStoryPdp, product?.id]);
 
   if (loading) {
     return (
@@ -604,7 +692,14 @@ const ProductDetail = () => {
           <Link to="/collections" className="hover:text-foreground transition-colors">
             Collections
           </Link>
-          {collectionHandle ? (
+          {fromCosmeticBagsV2 ? (
+            <>
+              <ChevronRight className="w-4 h-4 shrink-0" />
+              <Link to={COSMETIC_BAGS_V2_PATH} className="hover:text-foreground transition-colors">
+                Cosmetic Bags V2
+              </Link>
+            </>
+          ) : collectionHandle ? (
             <>
               <ChevronRight className="w-4 h-4 shrink-0" />
               <Link to={`/collections/${collectionHandle}`} className="hover:text-foreground transition-colors capitalize">
@@ -621,7 +716,7 @@ const ProductDetail = () => {
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm">{collectionHandle ? "Back to collection" : "Back to collections"}</span>
+          <span className="text-sm">{backLabel}</span>
         </Link>
 
         {isCosmoPdp ? (
@@ -660,7 +755,7 @@ const ProductDetail = () => {
                     </div>
                   </div>
 
-                  {addToCartButtonCosmo}
+                  <div ref={primaryAddToCartRef}>{addToCartButtonCosmo}</div>
                 </div>
               </div>
             </section>
@@ -732,7 +827,7 @@ const ProductDetail = () => {
                 ) : cosmoYoutubeId ? (
                   <iframe
                     title="Product video"
-                    src={`https://www.youtube.com/embed/${cosmoYoutubeId}?rel=0`}
+                    src={`https://www.youtube.com/embed/${cosmoYoutubeId}?autoplay=1&mute=1&playsinline=1&loop=1&playlist=${cosmoYoutubeId}&rel=0`}
                     className="absolute inset-0 h-full w-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
@@ -749,6 +844,57 @@ const ProductDetail = () => {
                 )}
               </div>
             </section>
+
+            {isCosmoStoryPdp ? <CosmoPdpVideoGallery /> : null}
+
+            {isCosmoStoryPdp ? (
+              <section className="mx-auto mt-14 w-full max-w-4xl sm:mt-16" aria-label="Cosmo FAQ">
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Cosmo FAQ</h2>
+                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
+                  {COSMO_FAQ_ITEMS.map((item, idx) => (
+                    <AccordionItem key={item.question} value={`cosmo-faq-${idx}`}>
+                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
+            ) : null}
+
+            {isCosmoStoryPdp ? (
+              <section className="mx-auto mt-8 w-full max-w-4xl sm:mt-10" aria-label="Cosmo ratings">
+                <div className="px-5 py-2 text-center sm:px-7">
+                  <div className="mx-auto mb-3 flex items-center justify-center gap-1.5" aria-label="4.5 out of 5 stars">
+                    <Star className="h-5 w-5 fill-[#f4b400] stroke-[#f4b400] sm:h-6 sm:w-6" aria-hidden />
+                    <Star className="h-5 w-5 fill-[#f4b400] stroke-[#f4b400] sm:h-6 sm:w-6" aria-hidden />
+                    <Star className="h-5 w-5 fill-[#f4b400] stroke-[#f4b400] sm:h-6 sm:w-6" aria-hidden />
+                    <Star className="h-5 w-5 fill-[#f4b400] stroke-[#f4b400] sm:h-6 sm:w-6" aria-hidden />
+                    <span className="relative block h-5 w-5 sm:h-6 sm:w-6" aria-hidden>
+                      <Star className="h-full w-full fill-muted stroke-muted-foreground/25" />
+                      <span className="absolute inset-0 overflow-hidden" style={{ width: "50%" }}>
+                        <Star className="h-full w-full fill-[#f4b400] stroke-[#f4b400]" />
+                      </span>
+                    </span>
+                  </div>
+                  <p className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">4.5 out of 5</p>
+                  <p className="mt-2 text-sm font-medium text-muted-foreground sm:text-base">
+                    14,817 global ratings
+                  </p>
+                  <a
+                    href={COSMO_AMAZON_REVIEWS_URL}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="mt-4 inline-flex text-sm font-semibold text-primary underline-offset-4 hover:underline sm:text-base"
+                  >
+                    See reviews
+                  </a>
+                </div>
+              </section>
+            ) : null}
           </>
         ) : (
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
@@ -781,7 +927,7 @@ const ProductDetail = () => {
           </div>
         )}
 
-        {amazonReviewsBundle.reviews.length > 0 ? (
+        {!isCosmoStoryPdp && amazonReviewsBundle.reviews.length > 0 ? (
           <ProductAmazonReviews
             reviews={amazonReviewsBundle.reviews}
             amazonListingUrl={amazonReviewsBundle.amazonListingUrl}
@@ -799,6 +945,27 @@ const ProductDetail = () => {
           </section>
         ) : null}
       </div>
+
+      {isCosmoStoryPdp && showStickyAddToCart ? (
+        <div className="pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center px-4">
+          <Button
+            size="lg"
+            onClick={handleAddToCart}
+            disabled={isLoading || !selectedVariant?.availableForSale}
+            className="pointer-events-auto font-cosmo-cta w-full max-w-sm rounded-md border border-neutral-700 bg-[#2c2c2c] text-base font-semibold tracking-wide text-neutral-50 shadow-[0_10px_28px_-10px_rgba(0,0,0,0.45)] hover:bg-[#1f1f1f] disabled:opacity-50"
+          >
+            {isLoading ? (
+              <Loader2 className="h-5 w-5 animate-spin" />
+            ) : (
+              <>
+                <ShoppingCart className="mr-2 h-5 w-5 opacity-90" />
+                Add to cart
+              </>
+            )}
+          </Button>
+        </div>
+      ) : null}
+
       <SiteFooter />
     </div>
   );

@@ -13,6 +13,7 @@ import {
 import { readCosmoStoryArrowPath } from "@/data/cosmoPdpStoryArrows";
 import { Button } from "@/components/ui/button";
 import { CosmoEverythingArrowHandles, CosmoPackupArrowHandles } from "@/components/CosmoStoryArrowEditorHandles";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 /**
  * Editorial strip below Cosmo PDP hero — flush edges, white field matching photo backs,
@@ -23,6 +24,8 @@ import { CosmoEverythingArrowHandles, CosmoPackupArrowHandles } from "@/componen
  */
 
 const COSMO_STORY_HEADLINE = "Forget everything you knew about a makeup bag.";
+const MOBILE_EVERYTHING_ARROW_PATH =
+  "M 40.2 10.4 C 77.2 6.5, 86.1 17.7, 73.9 27.4 Q 59.8 33.2, 58.2 43.7";
 
 /** Dotted arrow; `pathD` is SVG path in 0–100 viewBox (see `src/data/cosmoPdpStoryArrows.ts`). */
 function ArrowOverlay({
@@ -214,6 +217,7 @@ export type CosmoPdpStoryProps = {
 };
 
 export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
+  const isMobile = useIsMobile();
   const livePaths = useCosmoStoryArrowPaths();
   const [editEverythingPts, setEditEverythingPts] = useState(DEFAULT_EVERYTHING_PTS);
   const [editPackupPts, setEditPackupPts] = useState(DEFAULT_PACKUP_PTS);
@@ -230,6 +234,7 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
         packup: packupPathFromPts(editPackupPts),
       }
     : livePaths;
+  const everythingArrowPath = isMobile ? MOBILE_EVERYTHING_ARROW_PATH : arrowPaths.everything;
 
   const rawId = useId().replace(/:/g, "");
   const markerEverything = `cosmo-arr-ev-${rawId}`;
@@ -323,7 +328,7 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
                   scale={7}
                 />
                 <ArrowOverlay
-                  pathD={arrowPaths.everything}
+                  pathD={everythingArrowPath}
                   markerId={markerEverything}
                   emphasize={editorMode}
                 />
@@ -344,8 +349,13 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
               </p>
             </div>
             <div className="flex w-full justify-end self-end pr-0">
+<<<<<<< HEAD
               <div className="relative ml-auto mr-0 w-full max-md:max-w-[min(76vw,340px)] md:max-w-[min(62vw,520px)] lg:max-w-[560px]">
                 <RippleLipImage
+=======
+              <div className="relative -mt-6 ml-auto mr-0 w-full max-md:max-w-[min(72vw,232px)] md:-mt-10 md:max-w-[min(56vw,360px)] lg:-mt-12 lg:max-w-[388px]">
+                <img
+>>>>>>> d561b94eeb1bbd204a2a4d1694176c1b697ffc10
                   src="/cosmo-pdp/story/image3.png"
                   alt=""
                   className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(34vh,320px)] md:max-h-[min(60vh,560px)] lg:max-h-[620px]"
