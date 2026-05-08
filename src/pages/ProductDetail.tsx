@@ -898,15 +898,13 @@ const ProductDetail = () => {
               <section className="mx-auto mt-8 w-full max-w-4xl sm:mt-10" aria-label="Cosmo ratings">
                 <div className="px-5 py-2 text-center sm:px-7">
                   <div className="mx-auto mb-3 flex items-center justify-center gap-1.5" aria-label="4.5 out of 5 stars">
-                    <Star className="h-5 w-5 fill-[#f4b400] stroke-[#f4b400] sm:h-6 sm:w-6" aria-hidden />
-                    <Star className="h-5 w-5 fill-[#f4b400] stroke-[#f4b400] sm:h-6 sm:w-6" aria-hidden />
-                    <Star className="h-5 w-5 fill-[#f4b400] stroke-[#f4b400] sm:h-6 sm:w-6" aria-hidden />
-                    <Star className="h-5 w-5 fill-[#f4b400] stroke-[#f4b400] sm:h-6 sm:w-6" aria-hidden />
+                    <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
+                    <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
+                    <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
+                    <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
                     <span className="relative block h-5 w-5 sm:h-6 sm:w-6" aria-hidden>
-                      <Star className="h-full w-full fill-muted stroke-muted-foreground/25" />
-                      <span className="absolute left-0 top-0 h-full overflow-hidden" style={{ width: "50%" }}>
-                        <Star className="h-full w-full fill-[#f4b400] stroke-[#f4b400]" />
-                      </span>
+                      <Star className="h-full w-full fill-[#c7c9cf] stroke-none" />
+                      <Star className="absolute inset-0 h-full w-full fill-[#f4b400] stroke-none [clip-path:inset(0_50%_0_0)]" />
                     </span>
                   </div>
                   <p className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">4.5 out of 5</p>
