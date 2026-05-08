@@ -158,6 +158,56 @@ function CosmoStoryArrowEditorToolbar({
   );
 }
 
+function RippleLipImage({
+  src,
+  className,
+  alt = "",
+  loading = "lazy",
+  scale = 6,
+  baseFrequency = 0.012,
+}: {
+  src: string;
+  className?: string;
+  alt?: string;
+  loading?: "lazy" | "eager";
+  /** Higher = more ripple. Keep subtle. */
+  scale?: number;
+  /** Lower = larger ripples. */
+  baseFrequency?: number;
+}) {
+  const rawId = useId().replace(/:/g, "");
+  const filterId = `lip-ripple-${rawId}`;
+  return (
+    <>
+      <svg width="0" height="0" aria-hidden focusable="false">
+        <filter id={filterId} x="-12%" y="-12%" width="124%" height="124%">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency={baseFrequency}
+            numOctaves="2"
+            seed="8"
+            result="noise"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="noise"
+            scale={scale}
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </svg>
+      <img
+        src={src}
+        alt={alt}
+        className={className}
+        loading={loading}
+        style={{ filter: `url(#${filterId})` }}
+      />
+    </>
+  );
+}
+
 export type CosmoPdpStoryProps = {
   /** When true, shows draggable handles on story images + bottom toolbar (`?editArrows=1` on PDP). */
   editorMode?: boolean;
@@ -212,11 +262,12 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
 
           <div className="mt-6 flex flex-row flex-nowrap items-center gap-4 px-4 sm:gap-6 md:mt-0 md:flex-1 md:gap-9 md:px-0 lg:gap-10">
             <div className="w-[clamp(132px,38vw,220px)] shrink-0 md:w-[clamp(148px,34vw,340px)]">
-              <img
+              <RippleLipImage
                 src="/cosmo-pdp/story/image1.png"
                 alt=""
                 className="block h-auto w-full max-w-none"
                 loading="lazy"
+                scale={5}
               />
             </div>
             <div className="min-w-0 flex-1 md:pr-8">
@@ -264,11 +315,12 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
             </div>
             <div className="flex w-full justify-center">
               <div className="relative mx-auto w-full max-w-[min(100%,620px)]">
-                <img
+                <RippleLipImage
                   src="/cosmo-pdp/story/image2.png"
                   alt=""
                   className="block h-auto w-full object-contain object-bottom max-md:max-h-[min(72vh,560px)] md:max-h-[min(68vh,540px)]"
                   loading="lazy"
+                  scale={7}
                 />
                 <ArrowOverlay
                   pathD={arrowPaths.everything}
@@ -293,11 +345,12 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
             </div>
             <div className="flex w-full justify-end self-end pr-0">
               <div className="relative ml-auto mr-0 w-full max-md:max-w-[min(76vw,340px)] md:max-w-[min(62vw,520px)] lg:max-w-[560px]">
-                <img
+                <RippleLipImage
                   src="/cosmo-pdp/story/image3.png"
                   alt=""
                   className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(34vh,320px)] md:max-h-[min(60vh,560px)] lg:max-h-[620px]"
                   loading="lazy"
+                  scale={7}
                 />
                 <ArrowOverlay pathD={arrowPaths.packup} markerId={markerPackup} emphasize={editorMode} />
                 {editorMode ? (
