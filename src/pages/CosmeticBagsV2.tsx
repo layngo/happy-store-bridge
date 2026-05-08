@@ -180,8 +180,8 @@ const CosmeticBagsV2 = () => {
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8">
           <div>
             <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground">{collection.title}</h1>
-            <p className="mt-2 max-w-2xl text-sm font-medium text-muted-foreground sm:text-base">
-              Tap a column (image through colors) to open that size&apos;s product
+            <p className="mt-2 max-w-2xl text-sm font-medium text-primary sm:text-base">
+              Select a size to see all of your color and pattern options!
             </p>
           </div>
         </div>
