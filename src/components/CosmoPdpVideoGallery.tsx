@@ -55,7 +55,7 @@ export function CosmoPdpVideoGallery() {
   useEffect(() => {
     if (!emblaApi) return;
 
-    let intervalId: ReturnType<typeof window.setInterval>;
+    let intervalId: number;
 
     const start = () => {
       window.clearInterval(intervalId);

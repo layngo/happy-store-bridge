@@ -349,13 +349,8 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
               </p>
             </div>
             <div className="flex w-full justify-end self-end pr-0">
-<<<<<<< HEAD
               <div className="relative ml-auto mr-0 w-full max-md:max-w-[min(76vw,340px)] md:max-w-[min(62vw,520px)] lg:max-w-[560px]">
                 <RippleLipImage
-=======
-              <div className="relative -mt-6 ml-auto mr-0 w-full max-md:max-w-[min(72vw,232px)] md:-mt-10 md:max-w-[min(56vw,360px)] lg:-mt-12 lg:max-w-[388px]">
-                <img
->>>>>>> d561b94eeb1bbd204a2a4d1694176c1b697ffc10
                   src="/cosmo-pdp/story/image3.png"
                   alt=""
                   className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(34vh,320px)] md:max-h-[min(60vh,560px)] lg:max-h-[620px]"
