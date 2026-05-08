@@ -904,7 +904,7 @@ const ProductDetail = () => {
                     <Star className="h-5 w-5 fill-[#f4b400] stroke-[#f4b400] sm:h-6 sm:w-6" aria-hidden />
                     <span className="relative block h-5 w-5 sm:h-6 sm:w-6" aria-hidden>
                       <Star className="h-full w-full fill-muted stroke-muted-foreground/25" />
-                      <span className="absolute inset-0 overflow-hidden" style={{ width: "50%" }}>
+                      <span className="absolute left-0 top-0 h-full overflow-hidden" style={{ width: "50%" }}>
                         <Star className="h-full w-full fill-[#f4b400] stroke-[#f4b400]" />
                       </span>
                     </span>
