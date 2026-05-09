@@ -92,7 +92,7 @@ export function FirstVisitDiscountPopup() {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
-          "left-[50%] top-[50%] z-[100] w-fit max-w-[min(96vw,1280px)] translate-x-[-50%] translate-y-[-50%] gap-0 overflow-visible border-0 bg-transparent p-0 shadow-none sm:rounded-2xl",
+          "left-[50%] top-[50%] z-[100] w-fit max-w-[96vw] translate-x-[-50%] translate-y-[-50%] gap-0 overflow-visible border-0 bg-transparent p-0 shadow-none sm:rounded-2xl",
           "[&>button]:right-3 [&>button]:top-3 [&>button]:z-[120] [&>button]:rounded-full [&>button]:border [&>button]:border-neutral-300/80 [&>button]:bg-white/95 [&>button]:p-2 [&>button]:shadow-md [&>button]:hover:bg-white",
         )}
       >
@@ -104,16 +104,18 @@ export function FirstVisitDiscountPopup() {
           <img
             src={HERO_IMAGE}
             alt="Lay-n-Go Cosmo promotional offer"
-            className="block h-auto max-h-[92vh] w-auto max-w-[min(96vw,1280px)] select-none"
+            width={1024}
+            height={804}
+            className="block h-auto max-h-[92vh] w-auto max-w-[96vw] select-none"
             loading="eager"
             decoding="async"
             draggable={false}
           />
 
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-end">
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-end pr-3 sm:pr-6 md:pr-10">
             <div
               className={cn(
-                "pointer-events-auto flex max-h-full w-[min(48%,380px)] min-w-[9.5rem] flex-col justify-center gap-4 overflow-y-auto px-2 py-6 text-center sm:min-w-[11rem] sm:px-4 sm:py-8 md:px-6",
+                "pointer-events-auto flex max-h-full w-[min(55%,440px)] min-w-[10rem] flex-col justify-center gap-4 overflow-y-auto py-6 text-right sm:min-w-[12rem] sm:py-8",
               )}
             >
               <div className="space-y-1.5 sm:space-y-2">
@@ -150,7 +152,7 @@ export function FirstVisitDiscountPopup() {
                       placeholder="Enter your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className={cn(redeemFieldClass, "h-11 text-sm sm:h-12 sm:text-base")}
+                      className={cn(redeemFieldClass, "h-11 text-right text-sm sm:h-12 sm:text-base")}
                       required
                     />
                     <Button
@@ -176,7 +178,7 @@ export function FirstVisitDiscountPopup() {
                       placeholder="Enter your phone number"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className={cn(redeemFieldClass, "h-11 text-sm sm:h-12 sm:text-base")}
+                      className={cn(redeemFieldClass, "h-11 text-right text-sm sm:h-12 sm:text-base")}
                       required
                     />
                     <Button
@@ -190,10 +192,10 @@ export function FirstVisitDiscountPopup() {
                 ) : null}
 
                 {step === "code" ? (
-                  <div className="space-y-2.5 rounded-xl border border-neutral-200/90 bg-white/90 p-3 shadow-md backdrop-blur-sm sm:p-4">
-                    <p className="text-center text-xs font-medium text-neutral-700 sm:text-sm">Your discount code</p>
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                      <code className="flex-1 rounded-md border border-neutral-200 bg-white px-2 py-2 text-center font-mono text-base font-semibold tracking-wide text-foreground sm:text-lg">
+                  <div className="space-y-2.5 rounded-xl border border-neutral-200/90 bg-white/90 p-3 text-right shadow-md backdrop-blur-sm sm:p-4">
+                    <p className="text-xs font-medium text-neutral-700 sm:text-sm">Your discount code</p>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+                      <code className="w-full rounded-md border border-neutral-200 bg-white px-2 py-2 text-center font-mono text-base font-semibold tracking-wide text-foreground sm:flex-1 sm:text-lg sm:text-right">
                         {DISCOUNT_CODE}
                       </code>
                       <Button type="button" variant="outline" size="sm" className="shrink-0" onClick={copyCode}>
