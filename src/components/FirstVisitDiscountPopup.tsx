@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -7,24 +8,17 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
-const STORAGE_KEY = "layngo-first-visit-discount-v1";
+/** On `/`, opens after load (again on every refresh). On any path, add `?showDiscount=1` to preview. */
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
 const DISCOUNT_CODE = "LAYNGO15";
 
 type Step = "intro" | "email" | "phone" | "code";
 
-function markSeen() {
-  try {
-    localStorage.setItem(STORAGE_KEY, "1");
-  } catch {
-    /* ignore */
-  }
-}
-
 const redeemFieldClass =
   "font-cosmo-cta flex h-12 w-full items-center justify-center rounded-md border border-neutral-700 bg-[#2c2c2c] px-4 text-center text-base font-semibold tracking-wide text-neutral-50 placeholder:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
 export function FirstVisitDiscountPopup() {
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("intro");
   const [email, setEmail] = useState("");
@@ -33,25 +27,31 @@ export function FirstVisitDiscountPopup() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("showDiscount") === "1") {
+      setStep("intro");
+      setEmail("");
+      setPhone("");
       setOpen(true);
       return;
     }
-    try {
-      if (localStorage.getItem(STORAGE_KEY)) return;
-    } catch {
-      /* ignore */
+
+    if (location.pathname !== "/") {
+      setOpen(false);
+      return;
     }
+
+    setStep("intro");
+    setEmail("");
+    setPhone("");
     const id = window.setTimeout(() => setOpen(true), 600);
     return () => window.clearTimeout(id);
-  }, []);
+  }, [location.pathname, location.key]);
 
   const dismiss = () => {
-    markSeen();
     setOpen(false);
   };
 
   const handleOpenChange = (next: boolean) => {
-    if (!next) dismiss();
+    if (!next) setOpen(false);
     else setOpen(true);
   };
 
@@ -85,7 +85,6 @@ export function FirstVisitDiscountPopup() {
   };
 
   const finish = () => {
-    markSeen();
     setOpen(false);
   };
 
