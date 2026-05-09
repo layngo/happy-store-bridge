@@ -92,130 +92,137 @@ export function FirstVisitDiscountPopup() {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
-          "left-[50%] top-[50%] z-[100] flex max-h-[92vh] w-[min(94vw,80vw)] max-w-[1320px] translate-x-[-50%] translate-y-[-50%] flex-col gap-0 overflow-y-auto overflow-x-hidden rounded-2xl border border-border p-0 sm:rounded-2xl",
+          "left-[50%] top-[50%] z-[100] w-fit max-w-[min(96vw,1280px)] translate-x-[-50%] translate-y-[-50%] gap-0 overflow-visible border-0 bg-transparent p-0 shadow-none sm:rounded-2xl",
+          "[&>button]:right-3 [&>button]:top-3 [&>button]:z-[120] [&>button]:rounded-full [&>button]:border [&>button]:border-neutral-300/80 [&>button]:bg-white/95 [&>button]:p-2 [&>button]:shadow-md [&>button]:hover:bg-white",
         )}
       >
         <DialogTitle id="first-visit-discount-title" className="sr-only">
           You just won a free discount
         </DialogTitle>
-        <div className="grid min-h-0 flex-1 grid-cols-1 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] sm:items-stretch">
-          <div className="flex min-h-[180px] items-stretch justify-start bg-[#d4d4d8] sm:min-h-[min(88vh,640px)]">
-            <img
-              src={HERO_IMAGE}
-              alt="Lay-n-Go Cosmo bag with cosmetics"
-              className="h-full w-full object-contain object-left max-sm:max-h-[42vh] sm:max-h-[min(88vh,640px)]"
-              loading="eager"
-              decoding="async"
-            />
-          </div>
 
-          <div className="flex flex-col justify-center gap-5 bg-white px-6 py-8 text-center sm:px-8 sm:py-10">
-            <div className="mx-auto w-full max-w-md space-y-2">
-              <h2 className="font-heading text-[clamp(1.25rem,4.2vw,2.35rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground">
-                You just won a free discount
-              </h2>
-              <p className="font-heading text-[clamp(1rem,3vw,1.35rem)] font-semibold uppercase tracking-tight text-foreground">
-                (15% off)
-              </p>
-            </div>
+        <div className="relative overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15">
+          <img
+            src={HERO_IMAGE}
+            alt="Lay-n-Go Cosmo promotional offer"
+            className="block h-auto max-h-[92vh] w-auto max-w-[min(96vw,1280px)] select-none"
+            loading="eager"
+            decoding="async"
+            draggable={false}
+          />
 
-            <div className="mx-auto flex w-full max-w-md flex-col gap-3">
-              {step === "intro" ? (
-                <Button
-                  type="button"
-                  size="lg"
-                  onClick={() => setStep("email")}
-                  className="font-cosmo-cta h-12 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-base font-semibold tracking-wide text-neutral-50 shadow-none hover:bg-[#1f1f1f]"
-                >
-                  Redeem
-                </Button>
-              ) : null}
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-end">
+            <div
+              className={cn(
+                "pointer-events-auto flex max-h-full w-[min(48%,380px)] min-w-[9.5rem] flex-col justify-center gap-4 overflow-y-auto px-2 py-6 text-center sm:min-w-[11rem] sm:px-4 sm:py-8 md:px-6",
+              )}
+            >
+              <div className="space-y-1.5 sm:space-y-2">
+                <h2 className="font-heading text-[clamp(0.85rem,2.8vw,1.85rem)] font-black uppercase leading-[0.92] tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.85)]">
+                  You just won a free discount
+                </h2>
+                <p className="font-heading text-[clamp(0.75rem,2.2vw,1.2rem)] font-semibold uppercase tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.85)]">
+                  (15% off)
+                </p>
+              </div>
 
-              {step === "email" ? (
-                <form onSubmit={submitEmail} className="space-y-2">
-                  <label htmlFor="discount-email" className="sr-only">
-                    Email
-                  </label>
-                  <Input
-                    id="discount-email"
-                    type="email"
-                    inputMode="email"
-                    autoComplete="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className={redeemFieldClass}
-                    required
-                  />
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="font-cosmo-cta h-12 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-base font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f]"
-                  >
-                    Continue
-                  </Button>
-                </form>
-              ) : null}
-
-              {step === "phone" ? (
-                <form onSubmit={submitPhone} className="space-y-2">
-                  <label htmlFor="discount-phone" className="sr-only">
-                    Phone
-                  </label>
-                  <Input
-                    id="discount-phone"
-                    type="tel"
-                    inputMode="tel"
-                    autoComplete="tel"
-                    placeholder="Enter your phone number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className={redeemFieldClass}
-                    required
-                  />
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="font-cosmo-cta h-12 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-base font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f]"
-                  >
-                    Get my code
-                  </Button>
-                </form>
-              ) : null}
-
-              {step === "code" ? (
-                <div className="space-y-3 rounded-xl border border-neutral-200 bg-neutral-50 p-4">
-                  <p className="text-center text-sm font-medium text-neutral-700">Your discount code</p>
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                    <code className="flex-1 rounded-md border border-neutral-200 bg-white px-3 py-2 text-center font-mono text-lg font-semibold tracking-wide text-foreground">
-                      {DISCOUNT_CODE}
-                    </code>
-                    <Button type="button" variant="outline" className="shrink-0" onClick={copyCode}>
-                      Copy
-                    </Button>
-                  </div>
+              <div className="flex flex-col gap-2.5 sm:gap-3">
+                {step === "intro" ? (
                   <Button
                     type="button"
-                    onClick={finish}
-                    className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-neutral-50 hover:bg-[#1f1f1f]"
+                    size="lg"
+                    onClick={() => setStep("email")}
+                    className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 shadow-md hover:bg-[#1f1f1f] sm:h-12 sm:text-base"
                   >
-                    Done
+                    Redeem
                   </Button>
-                </div>
-              ) : null}
+                ) : null}
 
-              {step !== "code" ? (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="lg"
-                  onClick={dismiss}
-                  className="h-12 w-full gap-2 rounded-md bg-red-600 text-base font-semibold text-white hover:bg-red-700"
-                >
-                  <X className="h-5 w-5 shrink-0" aria-hidden />
-                  No, thanks. I&apos;ll pay more.
-                </Button>
-              ) : null}
+                {step === "email" ? (
+                  <form onSubmit={submitEmail} className="space-y-2">
+                    <label htmlFor="discount-email" className="sr-only">
+                      Email
+                    </label>
+                    <Input
+                      id="discount-email"
+                      type="email"
+                      inputMode="email"
+                      autoComplete="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={cn(redeemFieldClass, "h-11 text-sm sm:h-12 sm:text-base")}
+                      required
+                    />
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] sm:h-12 sm:text-base"
+                    >
+                      Continue
+                    </Button>
+                  </form>
+                ) : null}
+
+                {step === "phone" ? (
+                  <form onSubmit={submitPhone} className="space-y-2">
+                    <label htmlFor="discount-phone" className="sr-only">
+                      Phone
+                    </label>
+                    <Input
+                      id="discount-phone"
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      placeholder="Enter your phone number"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className={cn(redeemFieldClass, "h-11 text-sm sm:h-12 sm:text-base")}
+                      required
+                    />
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] sm:h-12 sm:text-base"
+                    >
+                      Get my code
+                    </Button>
+                  </form>
+                ) : null}
+
+                {step === "code" ? (
+                  <div className="space-y-2.5 rounded-xl border border-neutral-200/90 bg-white/90 p-3 shadow-md backdrop-blur-sm sm:p-4">
+                    <p className="text-center text-xs font-medium text-neutral-700 sm:text-sm">Your discount code</p>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                      <code className="flex-1 rounded-md border border-neutral-200 bg-white px-2 py-2 text-center font-mono text-base font-semibold tracking-wide text-foreground sm:text-lg">
+                        {DISCOUNT_CODE}
+                      </code>
+                      <Button type="button" variant="outline" size="sm" className="shrink-0" onClick={copyCode}>
+                        Copy
+                      </Button>
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={finish}
+                      className="font-cosmo-cta h-10 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm text-neutral-50 hover:bg-[#1f1f1f] sm:h-11"
+                    >
+                      Done
+                    </Button>
+                  </div>
+                ) : null}
+
+                {step !== "code" ? (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="lg"
+                    onClick={dismiss}
+                    className="h-11 w-full gap-2 rounded-md bg-red-600 text-sm font-semibold text-white shadow-md hover:bg-red-700 sm:h-12 sm:text-base"
+                  >
+                    <X className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" aria-hidden />
+                    No, thanks. I&apos;ll pay more.
+                  </Button>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
