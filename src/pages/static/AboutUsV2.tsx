@@ -96,7 +96,14 @@ function StoryGridCell({ src, caption }: GridSlot) {
 function StorySection({ block }: { block: SectionBlock }) {
   return (
     <section className="space-y-6">
-      <h2 className="font-heading text-lg font-bold uppercase tracking-wide text-foreground text-balance sm:text-xl md:text-2xl">
+      <h2
+        className={cn(
+          "text-balance text-center font-heading font-black uppercase tracking-tight text-foreground md:text-left",
+          "text-[clamp(1.85rem,9vw,3.65rem)] leading-[0.92]",
+          "md:text-[clamp(1.35rem,5.8vw,4rem)]",
+          "lg:text-[clamp(1.75rem,5vw,4.75rem)] lg:leading-[0.9]",
+        )}
+      >
         {block.heading}
       </h2>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
