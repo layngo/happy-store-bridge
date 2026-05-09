@@ -94,7 +94,7 @@ const SECTIONS: SectionBlock[] = [
     ],
   },
   {
-    heading: "Then and now...our first models",
+    heading: "Then and now...\nour first models",
     groups: [
       {
         title: "Andrew",
@@ -162,7 +162,7 @@ function StorySection({ block }: { block: SectionBlock }) {
     <section className="space-y-4">
       <h2
         className={cn(
-          "text-balance text-center font-heading font-black uppercase tracking-tight text-foreground md:text-left",
+          "whitespace-pre-line text-balance text-center font-heading font-black uppercase tracking-tight text-foreground md:text-left",
           "text-[clamp(1.85rem,9vw,3.65rem)] leading-[0.92]",
           "md:text-[clamp(1.35rem,5.8vw,4rem)]",
           "lg:text-[clamp(1.75rem,5vw,4.75rem)] lg:leading-[0.9]",
