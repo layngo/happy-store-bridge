@@ -92,25 +92,25 @@ export function FirstVisitDiscountPopup() {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
-          "left-[50%] top-[50%] z-[100] flex max-h-[92vh] w-[min(92vw,75vw)] max-w-[1200px] translate-x-[-50%] translate-y-[-50%] flex-col gap-0 overflow-y-auto overflow-x-hidden rounded-2xl border border-border p-0 sm:rounded-2xl",
+          "left-[50%] top-[50%] z-[100] flex max-h-[92vh] w-[min(94vw,80vw)] max-w-[1320px] translate-x-[-50%] translate-y-[-50%] flex-col gap-0 overflow-y-auto overflow-x-hidden rounded-2xl border border-border p-0 sm:rounded-2xl",
         )}
       >
         <DialogTitle id="first-visit-discount-title" className="sr-only">
           You just won a free discount
         </DialogTitle>
-        <div className="grid flex-1 grid-cols-1 md:grid-cols-2 md:items-stretch">
-          <div className="flex items-center justify-center bg-neutral-100 md:min-h-[min(88vh,920px)]">
+        <div className="grid min-h-0 flex-1 grid-cols-1 sm:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] sm:items-stretch">
+          <div className="flex min-h-[180px] items-stretch justify-start bg-[#d4d4d8] sm:min-h-[min(88vh,640px)]">
             <img
               src={HERO_IMAGE}
               alt="Lay-n-Go Cosmo bag with cosmetics"
-              className="h-auto w-full max-w-none object-contain object-center max-h-[min(88vh,920px)]"
+              className="h-full w-full object-contain object-left max-sm:max-h-[42vh] sm:max-h-[min(88vh,640px)]"
               loading="eager"
               decoding="async"
             />
           </div>
 
           <div className="flex flex-col justify-center gap-5 bg-white px-6 py-8 text-center sm:px-8 sm:py-10">
-            <div className="space-y-2">
+            <div className="mx-auto w-full max-w-md space-y-2">
               <h2 className="font-heading text-[clamp(1.25rem,4.2vw,2.35rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground">
                 You just won a free discount
               </h2>
@@ -119,7 +119,7 @@ export function FirstVisitDiscountPopup() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="mx-auto flex w-full max-w-md flex-col gap-3">
               {step === "intro" ? (
                 <Button
                   type="button"
