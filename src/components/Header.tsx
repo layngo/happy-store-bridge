@@ -103,9 +103,30 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           <Link to="/pages/press" className={linkClass}>
             Press
           </Link>
-          <Link to="/pages/about-us" className={linkClass}>
-            About Us
-          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className={cn(
+                  "h-auto px-0 py-0 uppercase tracking-wide font-medium gap-1",
+                  light ? "text-slate-600 hover:text-slate-900 hover:bg-transparent" : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                About Us <ChevronDown className="w-3 h-3 opacity-70" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="center"
+              className="min-w-[14rem] rounded-xl border-slate-200 bg-white p-2 font-sans text-base font-medium tracking-normal shadow-lg"
+            >
+              <DropdownMenuItem className="rounded-lg px-4 py-3 text-slate-800 hover:text-slate-900" asChild>
+                <Link to="/pages/about-us">About Us</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="rounded-lg px-4 py-3 text-slate-800 hover:text-slate-900" asChild>
+                <Link to="/pages/about-usV2">About Us V2</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Link to="/pages/wholesale" className={linkClass}>
             Wholesale
           </Link>
