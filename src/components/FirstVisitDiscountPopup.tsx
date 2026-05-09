@@ -93,33 +93,30 @@ export function FirstVisitDiscountPopup() {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
-          "left-[50%] top-[50%] z-[100] flex max-h-[min(85vh,900px)] w-[min(92vw,75vw)] max-w-[1100px] translate-x-[-50%] translate-y-[-50%] flex-col gap-0 overflow-hidden rounded-2xl border border-border p-0 sm:rounded-2xl",
+          "left-[50%] top-[50%] z-[100] flex max-h-[92vh] w-[min(92vw,75vw)] max-w-[1200px] translate-x-[-50%] translate-y-[-50%] flex-col gap-0 overflow-y-auto overflow-x-hidden rounded-2xl border border-border p-0 sm:rounded-2xl",
         )}
       >
         <DialogTitle id="first-visit-discount-title" className="sr-only">
           You just won a free discount
         </DialogTitle>
-        <div className="grid max-h-[min(85vh,900px)] flex-1 grid-cols-1 overflow-y-auto md:grid-cols-2 md:overflow-hidden">
-          <div className="relative min-h-[200px] bg-neutral-200 md:min-h-0">
+        <div className="grid flex-1 grid-cols-1 md:grid-cols-2 md:items-stretch">
+          <div className="flex items-center justify-center bg-neutral-100 md:min-h-[min(88vh,920px)]">
             <img
               src={HERO_IMAGE}
               alt="Lay-n-Go Cosmo bag with cosmetics"
-              className="h-full w-full object-cover object-center md:absolute md:inset-0 md:min-h-full"
+              className="h-auto w-full max-w-none object-contain object-center max-h-[min(88vh,920px)]"
               loading="eager"
               decoding="async"
             />
           </div>
 
-          <div className="flex flex-col justify-center gap-5 bg-white px-6 py-8 sm:px-8 sm:py-10">
-            <div className="space-y-3 text-center md:text-left">
+          <div className="flex flex-col justify-center gap-5 bg-white px-6 py-8 text-center sm:px-8 sm:py-10">
+            <div className="space-y-2">
               <h2 className="font-heading text-[clamp(1.25rem,4.2vw,2.35rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground">
                 You just won a free discount
               </h2>
               <p className="font-heading text-[clamp(1rem,3vw,1.35rem)] font-semibold uppercase tracking-tight text-foreground">
                 (15% off)
-              </p>
-              <p className="text-xs leading-snug text-neutral-700 sm:text-sm md:text-[0.9375rem] md:leading-relaxed">
-                Enter your email and phone to unlock your exclusive code. One use per customer.
               </p>
             </div>
 
@@ -189,7 +186,7 @@ export function FirstVisitDiscountPopup() {
 
               {step === "code" ? (
                 <div className="space-y-3 rounded-xl border border-neutral-200 bg-neutral-50 p-4">
-                  <p className="text-center text-sm font-medium text-neutral-700 md:text-left">Your discount code</p>
+                  <p className="text-center text-sm font-medium text-neutral-700">Your discount code</p>
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                     <code className="flex-1 rounded-md border border-neutral-200 bg-white px-3 py-2 text-center font-mono text-lg font-semibold tracking-wide text-foreground">
                       {DISCOUNT_CODE}
