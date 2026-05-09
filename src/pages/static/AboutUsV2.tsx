@@ -7,9 +7,10 @@ type GridSlot = {
   caption: string;
 };
 
-type SectionBlock =
-  | { heading: string; images: [GridSlot, GridSlot, GridSlot] }
-  | { heading: string; images: [GridSlot, GridSlot, GridSlot, GridSlot, GridSlot, GridSlot] };
+type SectionBlock = {
+  heading: string;
+  images: GridSlot[];
+};
 
 /** Square placeholder photography (picsum seeds = stable URLs). Replace with brand assets when ready. */
 const PLACEHOLDER = (seed: string) => `https://picsum.photos/seed/${seed}/600/600`;
@@ -56,6 +57,18 @@ const SECTIONS: SectionBlock[] = [
       { src: PLACEHOLDER("lng-about-16"), caption: "Utility patents awarded" },
       { src: PLACEHOLDER("lng-about-17"), caption: "Retail partners nationwide" },
       { src: PLACEHOLDER("lng-about-18"), caption: "Fans worldwide today" },
+      { src: PLACEHOLDER("lng-about-19"), caption: "Early trade-show booth hustle" },
+      { src: PLACEHOLDER("lng-about-20"), caption: "First wholesale catalog spread" },
+      { src: PLACEHOLDER("lng-about-21"), caption: "Machine-wash milestone celebrate" },
+      { src: PLACEHOLDER("lng-about-22"), caption: "Traveler line meets commuters" },
+      { src: PLACEHOLDER("lng-about-23"), caption: "Pet solutions hit the road" },
+      { src: PLACEHOLDER("lng-about-24"), caption: "WIRED tech pouch debut" },
+      { src: PLACEHOLDER("lng-about-25"), caption: "NAILSPA studio-ready kit" },
+      { src: PLACEHOLDER("lng-about-26"), caption: "Defender line field-tested" },
+      { src: PLACEHOLDER("lng-about-27"), caption: "Press tour green-room prep" },
+      { src: PLACEHOLDER("lng-about-28"), caption: "Customer thank-you wall growing" },
+      { src: PLACEHOLDER("lng-about-29"), caption: "International shipping milestone" },
+      { src: PLACEHOLDER("lng-about-30"), caption: "Team photo newest headquarters" },
     ],
   },
 ];
