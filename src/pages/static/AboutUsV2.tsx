@@ -7,10 +7,21 @@ type GridSlot = {
   caption: string;
 };
 
-type SectionBlock = {
+type GridSection = {
   heading: string;
   images: GridSlot[];
 };
+
+type GroupedSection = {
+  heading: string;
+  groups: { title: string; images: GridSlot[] }[];
+};
+
+type SectionBlock = GridSection | GroupedSection;
+
+function isGroupedSection(block: SectionBlock): block is GroupedSection {
+  return "groups" in block;
+}
 
 /** Square placeholder photography (picsum seeds = stable URLs). Replace with brand assets when ready. */
 const PLACEHOLDER = (seed: string) => `https://picsum.photos/seed/${seed}/600/600`;
@@ -71,6 +82,46 @@ const SECTIONS: SectionBlock[] = [
       { src: PLACEHOLDER("lng-about-30"), caption: "Team photo newest headquarters" },
     ],
   },
+  {
+    heading: "They give back",
+    images: [
+      { src: PLACEHOLDER("lng-giveback-01"), caption: "Local charity partner spotlight" },
+      { src: PLACEHOLDER("lng-giveback-02"), caption: "School supply drive drop-off" },
+      { src: PLACEHOLDER("lng-giveback-03"), caption: "Team volunteer day together" },
+      { src: PLACEHOLDER("lng-giveback-04"), caption: "Product donations at events" },
+      { src: PLACEHOLDER("lng-giveback-05"), caption: "Community cleanup weekend" },
+      { src: PLACEHOLDER("lng-giveback-06"), caption: "Supporting families in need" },
+    ],
+  },
+  {
+    heading: "Then and now...our first models",
+    groups: [
+      {
+        title: "Andrew",
+        images: [
+          { src: PLACEHOLDER("lng-models-andrew-1"), caption: "Andrew — early play-mat days" },
+          { src: PLACEHOLDER("lng-models-andrew-2"), caption: "Andrew — testing the cinch" },
+          { src: PLACEHOLDER("lng-models-andrew-3"), caption: "Andrew — today" },
+        ],
+      },
+      {
+        title: "Miles",
+        images: [
+          { src: PLACEHOLDER("lng-models-miles-1"), caption: "Miles — early play-mat days" },
+          { src: PLACEHOLDER("lng-models-miles-2"), caption: "Miles — LEGO cleanup champion" },
+          { src: PLACEHOLDER("lng-models-miles-3"), caption: "Miles — today" },
+        ],
+      },
+      {
+        title: "Caden",
+        images: [
+          { src: PLACEHOLDER("lng-models-caden-1"), caption: "Caden — early play-mat days" },
+          { src: PLACEHOLDER("lng-models-caden-2"), caption: "Caden — weekend adventures" },
+          { src: PLACEHOLDER("lng-models-caden-3"), caption: "Caden — today" },
+        ],
+      },
+    ],
+  },
 ];
 
 function StoryGridCell({ src, caption }: GridSlot) {
@@ -119,11 +170,28 @@ function StorySection({ block }: { block: SectionBlock }) {
       >
         {block.heading}
       </h2>
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-        {block.images.map((slot, i) => (
-          <StoryGridCell key={`${block.heading}-${i}`} {...slot} />
-        ))}
-      </div>
+      {isGroupedSection(block) ? (
+        <div className="space-y-8 md:space-y-9">
+          {block.groups.map((group) => (
+            <div key={group.title} className="space-y-4">
+              <h3 className="font-heading text-xl font-bold tracking-tight text-foreground md:text-2xl">
+                {group.title}
+              </h3>
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                {group.images.map((slot, i) => (
+                  <StoryGridCell key={`${block.heading}-${group.title}-${i}`} {...slot} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+          {block.images.map((slot, i) => (
+            <StoryGridCell key={`${block.heading}-${i}`} {...slot} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
