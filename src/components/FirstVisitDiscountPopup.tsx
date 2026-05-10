@@ -10,6 +10,9 @@ import { cn } from "@/lib/utils";
 
 /** On `/`, opens after load (again on every refresh). On any path, add `?showDiscount=1` to preview. */
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
+/** Intrinsic pixel size of `HERO_IMAGE` (must match file). */
+const HERO_WIDTH = 1024;
+const HERO_HEIGHT = 804;
 const DISCOUNT_CODE = "LAYNGO15";
 
 type Step = "intro" | "email" | "phone" | "code";
@@ -92,7 +95,7 @@ export function FirstVisitDiscountPopup() {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
-          "left-[50%] top-[50%] z-[100] w-fit max-w-[96vw] translate-x-[-50%] translate-y-[-50%] gap-0 overflow-visible border-0 bg-transparent p-0 shadow-none sm:rounded-2xl",
+          "left-[50%] top-[50%] z-[100] w-fit max-h-[100dvh] max-w-none translate-x-[-50%] translate-y-[-50%] gap-0 overflow-x-auto overflow-y-auto border-0 bg-transparent p-0 shadow-none sm:rounded-2xl",
           "[&>button]:right-3 [&>button]:top-3 [&>button]:z-[120] [&>button]:rounded-full [&>button]:border [&>button]:border-neutral-300/80 [&>button]:bg-white/95 [&>button]:p-2 [&>button]:shadow-md [&>button]:hover:bg-white",
         )}
       >
@@ -100,13 +103,16 @@ export function FirstVisitDiscountPopup() {
           You just won a free discount
         </DialogTitle>
 
-        <div className="relative overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15">
+        <div
+          className="relative shrink-0 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15"
+          style={{ width: HERO_WIDTH, height: HERO_HEIGHT }}
+        >
           <img
             src={HERO_IMAGE}
             alt="Lay-n-Go Cosmo promotional offer"
-            width={1024}
-            height={804}
-            className="block h-auto max-h-[92vh] w-auto max-w-[96vw] select-none"
+            width={HERO_WIDTH}
+            height={HERO_HEIGHT}
+            className="block h-full w-full select-none"
             loading="eager"
             decoding="async"
             draggable={false}
