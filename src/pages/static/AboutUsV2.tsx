@@ -38,7 +38,7 @@ const SECTIONS: SectionBlock[] = [
     images: [
       {
         src: aboutUsV2Png("founders-southside-painting.png"),
-        caption: "It was love at first site when Amy walked in room",
+        caption: "It was love at first site when Amy walked in the room",
         storyText:
           "On February 1, 1999, Amy walked into Southside 815 in Alexandria, Virginia, and caught Adam's eye immediately. A mutual friend introduced them, and four hours of conversation went by like it was 20 minutes. Adam walked Amy home that evening — meeting her two golden retrievers, Maggie & Molson — and they made plans to see Gil Scott-Heron at the legendary Blues Alley two days later. Both Amy and Adam had found their missing piece.\n\n22 years later, for Amy's 50th birthday, Adam had famed Alexandria painter and close friend Judy Heiser, memorialize the exact moment before both of their lives changed.",
       },
