@@ -125,7 +125,7 @@ export function FirstVisitDiscountPopup() {
               )}
             >
               <div className="space-y-1.5 sm:space-y-2">
-                <h2 className="font-heading text-[clamp(0.85rem,2.8vw,1.85rem)] font-black uppercase leading-[0.92] tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.85)]">
+                <h2 className="font-heading text-[clamp(2.55rem,8.4vw,5.55rem)] font-black uppercase leading-[0.92] tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.85)]">
                   You just won a free discount
                 </h2>
                 <p className="font-heading text-[clamp(0.75rem,2.2vw,1.2rem)] font-semibold uppercase tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.85)]">
