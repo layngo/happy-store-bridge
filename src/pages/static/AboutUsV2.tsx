@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { cn } from "@/lib/utils";
@@ -5,6 +6,7 @@ import { cn } from "@/lib/utils";
 type GridSlot = {
   src: string;
   caption: string;
+  storyText?: string;
 };
 
 type GridSection = {
@@ -33,6 +35,8 @@ const SECTIONS: SectionBlock[] = [
       {
         src: "/about-us-v2/founders-southside-painting.png",
         caption: "It was love at first site when Amy walked in room",
+        storyText:
+          "On February 1, 1999, Amy walked in the door of Southside 815 in Alexandria, Virginia and caught Adam's eye immediatley. A mutual friend introduced the two and after four hours of being lost in each others conversation, Adam walked Amy home (and got to meet her TWO golden retrievers), they set a date to see Gil Scott Heron at the legendary Blues Alley two days later, and both were pretty sure they might have found their missing piece.",
       },
       { src: PLACEHOLDER("lng-about-02"), caption: "Coffee-shop brainstorm session" },
       { src: PLACEHOLDER("lng-about-03"), caption: "Partner adventure begins" },
@@ -91,9 +95,6 @@ const SECTIONS: SectionBlock[] = [
       { src: PLACEHOLDER("lng-giveback-01"), caption: "Local charity partner spotlight" },
       { src: PLACEHOLDER("lng-giveback-02"), caption: "School supply drive drop-off" },
       { src: PLACEHOLDER("lng-giveback-03"), caption: "Team volunteer day together" },
-      { src: PLACEHOLDER("lng-giveback-04"), caption: "Product donations at events" },
-      { src: PLACEHOLDER("lng-giveback-05"), caption: "Community cleanup weekend" },
-      { src: PLACEHOLDER("lng-giveback-06"), caption: "Supporting families in need" },
     ],
   },
   {
@@ -127,36 +128,83 @@ const SECTIONS: SectionBlock[] = [
   },
 ];
 
-function StoryGridCell({ src, caption }: GridSlot) {
+function AboutTextWindow({ text, onClose }: { text: string; onClose: () => void }) {
   return (
-    <figure className="group flex flex-col">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
       <div
         className={cn(
-          "aspect-square w-full overflow-hidden rounded-lg border border-border bg-muted",
-          "shadow-sm transition-shadow duration-200 group-hover:shadow-md",
+          "relative max-w-lg w-full rounded-2xl px-8 py-7 shadow-2xl",
+          "bg-background/80 backdrop-blur-md border border-border/60",
         )}
+        onClick={(e) => e.stopPropagation()}
       >
-        <img
-          src={src}
-          alt={caption}
-          className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
-          loading="lazy"
-          decoding="async"
-          width={600}
-          height={600}
-        />
-      </div>
-      <figcaption className="mt-2 flex min-h-[2.75rem] items-start justify-center px-0.5">
-        <span
+        <button
+          onClick={onClose}
+          aria-label="Close"
           className={cn(
-            "text-center text-[10px] font-semibold uppercase leading-snug tracking-[0.12em] text-primary",
-            "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+            "absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full",
+            "text-foreground/50 hover:text-foreground transition-colors",
+            "bg-muted/60 hover:bg-muted",
           )}
         >
-          {caption}
-        </span>
-      </figcaption>
-    </figure>
+          ✕
+        </button>
+        <p className="text-sm leading-relaxed text-foreground/90 font-medium pr-4">{text}</p>
+      </div>
+    </div>
+  );
+}
+
+function StoryGridCell({ src, caption, storyText }: GridSlot) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      {open && storyText && (
+        <AboutTextWindow text={storyText} onClose={() => setOpen(false)} />
+      )}
+      <figure className="group flex flex-col">
+        <div
+          className={cn(
+            "aspect-square w-full overflow-hidden rounded-lg border border-border bg-muted",
+            "shadow-sm transition-shadow duration-200 group-hover:shadow-md",
+          )}
+        >
+          <img
+            src={src}
+            alt={caption}
+            className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
+            loading="lazy"
+            decoding="async"
+            width={600}
+            height={600}
+          />
+        </div>
+        <figcaption className="mt-2 flex min-h-[2.75rem] items-start justify-center px-0.5">
+          <span
+            className={cn(
+              "text-center text-[10px] font-semibold uppercase leading-snug tracking-[0.12em] text-primary",
+              "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+            )}
+          >
+            {caption}
+            {storyText && (
+              <>
+                {" "}
+                <button
+                  onClick={() => setOpen(true)}
+                  className="underline underline-offset-2 hover:text-primary/70 transition-colors normal-case tracking-normal font-semibold"
+                >
+                  (Click for more)
+                </button>
+              </>
+            )}
+          </span>
+        </figcaption>
+      </figure>
+    </>
   );
 }
 
