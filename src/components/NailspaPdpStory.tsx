@@ -11,6 +11,10 @@ const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png";
 
 const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:px-4 sm:py-3";
 
+/** Bordered cards for the two stacked NAILSPA copy blocks under the closed-bag still (mobile). */
+const NAILSPA_STACKED_CALLOUT =
+  "rounded-lg border-2 border-neutral-300 bg-white/[0.96] px-3 py-2.5 shadow-md shadow-black/[0.08] backdrop-blur-md sm:px-4 sm:py-3";
+
 const CARRY_CALLOUT_TITLE = "High quality nail mat";
 const CARRY_CALLOUT_BODY =
   "Machine washable and wipeable. spilled polish? no problem, just clean it off with polish remover";
@@ -462,7 +466,7 @@ function BottomProductImage({
       className={cn("relative w-full overflow-visible border-0 bg-transparent shadow-none ring-0", className)}
       aria-label="Lay-n-Go NAILSPA closed with carry handle"
     >
-      <div className="relative min-h-[min(52vh,440px)] w-full sm:min-h-[min(54vh,480px)] md:min-h-[min(56vh,560px)] lg:min-h-[min(58vh,620px)]">
+      <div className="relative min-h-[min(52vh,440px)] w-full overflow-hidden rounded-2xl ring-1 ring-neutral-200/50 sm:min-h-[min(54vh,480px)] md:min-h-[min(56vh,560px)] lg:min-h-[min(58vh,620px)]">
         <img
           src={IMG_BOTTOM}
           alt=""
@@ -470,12 +474,17 @@ function BottomProductImage({
           draggable={false}
           loading="lazy"
         />
-        {/* Vignette on the closed-bag still — softens edges into white rails */}
+        {/* Feather white into the photo from the top so the asset does not read as a hard cut */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-[2] h-[min(28%,9rem)] bg-gradient-to-b from-white via-white/75 to-transparent"
+          aria-hidden
+        />
+        {/* Vignette on the closed-bag still — soft rails + long top blend */}
         <div
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.98) 100%)",
+              "linear-gradient(to bottom, rgba(255,255,255,0.99) 0%, rgba(255,255,255,0.92) 8%, rgba(255,255,255,0.45) 18%, rgba(255,255,255,0) 34%, rgba(255,255,255,0) 78%, rgba(255,255,255,0.97) 100%)",
           }}
         />
         <div className={editorMode ? "contents" : "hidden md:contents"}>
@@ -488,14 +497,6 @@ function BottomProductImage({
           />
         </div>
       </div>
-      {!editorMode ? (
-        <div className="mt-1 w-full px-0.5 md:hidden">
-          <div className={CALLOUT_PANEL}>
-            <p className="font-heading text-sm font-bold tracking-tight text-foreground">{CARRY_CALLOUT_TITLE}</p>
-            <p className="mt-2 text-xs leading-snug text-neutral-700">{CARRY_CALLOUT_BODY}</p>
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }
@@ -567,18 +568,6 @@ function NailMatCalloutEditor({
           />
         </div>
       </div>
-      {!editorMode ? (
-        <div className="mx-auto mt-0 w-full max-w-lg max-md:-mt-1 md:hidden">
-          <div className={CALLOUT_PANEL}>
-            <h3 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">
-              Carrying handle for easy travel
-            </h3>
-            <p className="mt-2 text-xs leading-snug text-neutral-700 sm:text-sm">
-              The Nailspa is machine washable and wipeable.
-            </p>
-          </div>
-        </div>
-      ) : null}
     </>
   );
 }
@@ -753,9 +742,25 @@ export function NailspaPdpStory() {
               carryBoxPos={carryBoxPos}
               onCarryBoxPosChange={setCarryBoxPos}
             />
+            {!editorMode ? (
+              <div className="mx-auto mt-0 flex w-full max-w-lg flex-col gap-3 px-0.5 max-md:-mt-8 md:hidden">
+                <div className={NAILSPA_STACKED_CALLOUT}>
+                  <p className="font-heading text-sm font-bold tracking-tight text-foreground">{CARRY_CALLOUT_TITLE}</p>
+                  <p className="mt-2 text-xs leading-snug text-neutral-700">{CARRY_CALLOUT_BODY}</p>
+                </div>
+                <div className={NAILSPA_STACKED_CALLOUT}>
+                  <h3 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">
+                    Carrying handle for easy travel
+                  </h3>
+                  <p className="mt-2 text-xs leading-snug text-neutral-700 sm:text-sm">
+                    The Nailspa is machine washable and wipeable.
+                  </p>
+                </div>
+              </div>
+            ) : null}
           </div>
 
-          <div className="flex max-md:-mt-1 flex-1 flex-col md:justify-center md:pt-4">
+          <div className="flex flex-1 flex-col md:justify-center md:pt-4">
             <NailMatCalloutEditor
               arrows={arrows}
               editorMode={editorMode}
