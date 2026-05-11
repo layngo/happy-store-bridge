@@ -30,7 +30,10 @@ const SECTIONS: SectionBlock[] = [
   {
     heading: "They meet",
     images: [
-      { src: PLACEHOLDER("lng-about-01"), caption: "Founders in the early days" },
+      {
+        src: "/about-us-v2/founders-southside-painting.png",
+        caption: "It was love at first site when Amy walked in room",
+      },
       { src: PLACEHOLDER("lng-about-02"), caption: "Coffee-shop brainstorm session" },
       { src: PLACEHOLDER("lng-about-03"), caption: "Partner adventure begins" },
     ],
