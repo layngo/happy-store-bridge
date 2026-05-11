@@ -411,7 +411,7 @@ function CarryingHandleOverlay({
       onPointerCancel={() => setDragCarryBox(false)}
     >
       <div
-        className="absolute w-fit max-w-[min(92vw,22rem)] cursor-move touch-none rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:max-w-[24rem] sm:px-4 sm:py-2.5 md:max-w-[26rem]"
+        className="absolute w-fit max-w-[min(94vw,30rem)] cursor-move touch-none rounded-lg bg-white/[0.82] px-4 py-2.5 shadow-md shadow-black/[0.08] backdrop-blur-md sm:max-w-[36rem] sm:px-5 sm:py-3 md:max-w-[min(92%,42rem)] lg:max-w-[44rem]"
         style={{ left: `${carryBoxPos.x}%`, top: `${carryBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
         onPointerDown={(e) => {
           if (!editorMode) return;
@@ -754,7 +754,7 @@ export function NailspaPdpStory() {
               onCarryBoxPosChange={setCarryBoxPos}
             />
             {!editorMode ? (
-              <div className="mx-auto mt-0 flex w-full max-w-lg flex-col gap-3 px-0.5 max-md:-mt-8 md:hidden">
+              <div className="mx-auto mt-0 flex w-full max-w-2xl flex-col gap-3 px-0.5 max-md:-mt-8 md:hidden">
                 <div className={NAILSPA_STACKED_CALLOUT}>
                   <p className="font-heading text-sm font-bold tracking-tight text-foreground">{CARRY_CALLOUT_TITLE}</p>
                   <p className="mt-2 text-xs leading-snug text-neutral-700">{CARRY_CALLOUT_BODY}</p>
