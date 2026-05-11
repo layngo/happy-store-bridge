@@ -474,12 +474,25 @@ function BottomProductImage({
           draggable={false}
           loading="lazy"
         />
-        {/* Same perimeter treatment as main story still (image1): strong white at edges, short fade, clear center */}
+        {/* Gradient wraps around the hand/arm at top-right, fades into white on all edges */}
+        {/* Top: deep fade so hand merges into white */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-[2]"
+          style={{ height: "38%", background: "linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 30%, rgba(255,255,255,0.4) 65%, rgba(255,255,255,0) 100%)" }}
+          aria-hidden
+        />
+        {/* Right: fade so arm/handle on right blends away */}
+        <div
+          className="pointer-events-none absolute inset-y-0 right-0 z-[2]"
+          style={{ width: "30%", background: "linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.7) 35%, rgba(255,255,255,0) 100%)" }}
+          aria-hidden
+        />
+        {/* Left + bottom: tight perimeter rails */}
         <div
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              "linear-gradient(to right, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.98) 100%), linear-gradient(to bottom, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.96) 100%)",
+              "linear-gradient(to right, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 100%), linear-gradient(to top, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 100%)",
           }}
         />
         <div className={editorMode ? "contents" : "hidden md:contents"}>
