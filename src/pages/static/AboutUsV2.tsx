@@ -48,7 +48,12 @@ const SECTIONS: SectionBlock[] = [
         storyText:
           'Before kids, we were able to do a lot of travelling but the two "Lemons" (a nickname from Adam\'s parents who gladly took care of them) always were there to greet us! Our time on the road turned out to be incredible field research for developing products that actually made life easier at home and on travel.',
       },
-      { src: aboutUsV2Png("they-meet-wedding-toast.png"), caption: "Partner adventure begins" },
+      {
+        src: aboutUsV2Png("they-meet-wedding-toast.png"),
+        caption: "It's Official!",
+        storyText:
+          "On April 21, 2001, Amy and Adam tied the knot in Baltimore, Maryland. Surrounded by family and their closest friends, they danced the night away until it was time to leave for the airport. The adventure was underway...they had no idea how crazy it was about to get!",
+      },
     ],
   },
   {
