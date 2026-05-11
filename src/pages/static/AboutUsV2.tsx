@@ -152,7 +152,11 @@ function AboutTextWindow({ text, onClose }: { text: string; onClose: () => void 
         >
           ✕
         </button>
-        <p className="text-sm leading-relaxed text-foreground/90 font-medium pr-4">{text}</p>
+        <div className="space-y-3 pr-4">
+          {text.split("\n\n").map((para, i) => (
+            <p key={i} className="text-sm leading-relaxed text-foreground/90 font-medium">{para}</p>
+          ))}
+        </div>
       </div>
     </div>
   );
