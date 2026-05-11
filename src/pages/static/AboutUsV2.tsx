@@ -202,7 +202,7 @@ const AboutUsV2 = () => (
     <main className="container flex-1 py-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="not-prose text-base font-medium leading-normal text-foreground/88">
         <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-9 md:mb-10">
-          About Us V2
+          About Us Version2
         </h1>
         <div className="space-y-5 md:space-y-6">
           {SECTIONS.map((block) => (
