@@ -832,7 +832,12 @@ const ProductDetail = () => {
                       : "Video placeholder"
               }
             >
-              <div className={cn(isNailspa18Product(product.handle) ? "md:w-1/2" : "w-full")}>
+              <div
+                className={cn(
+                  "w-full",
+                  isNailspa18Product(product.handle) && "mx-auto md:max-w-[50%] md:shrink-0",
+                )}
+              >
               <div
                 className={cn(
                   "relative w-full overflow-hidden rounded-2xl",

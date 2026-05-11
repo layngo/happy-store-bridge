@@ -475,10 +475,13 @@ function BottomProductImage({
           loading="lazy"
         />
         {/* Gradient wraps around the hand/arm at top-right, fades into white on all edges */}
-        {/* Top: deep fade so hand merges into white */}
+        {/* Top: deep fade around hand — band sits lower so less washes the top edge */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-[2]"
-          style={{ height: "38%", background: "linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 30%, rgba(255,255,255,0.4) 65%, rgba(255,255,255,0) 100%)" }}
+          className="pointer-events-none absolute inset-x-0 z-[2] max-md:top-[10%] max-md:h-[34%] md:top-[14%] md:h-[30%]"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.88) 28%, rgba(255,255,255,0.38) 62%, rgba(255,255,255,0) 100%)",
+          }}
           aria-hidden
         />
         {/* Right: fade so arm/handle on right blends away */}
