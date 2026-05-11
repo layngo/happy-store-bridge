@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 const VIMEO_PLAYER_SCRIPT = "https://player.vimeo.com/api/player.js";
 
 const VIMEO_EMBED_SRC =
-  "https://player.vimeo.com/video/1191237502?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1";
+  "https://player.vimeo.com/video/1185281289?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1";
 const OUR_STORY_IMAGES = [
   "/our-story-slide-1.png",
   "/our-story-slide-2.png",
@@ -93,19 +93,42 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header variant="light" />
 
-      {/* Nailspa — chromeless Vimeo, 4:3 responsive frame (75% padding ratio); no hero overlay */}
+      {/* Hero — ~20:9 frame reveals more of the 16:9 Vimeo crop; Cosmo brand film */}
       <section className="relative w-full border-b border-border bg-black">
-        <div className="relative w-full overflow-hidden pt-[75%]">
-          <iframe
-            src={VIMEO_EMBED_SRC}
-            title=""
-            frameBorder={0}
-            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            tabIndex={-1}
-            className="pointer-events-none absolute inset-0 h-full w-full select-none"
+        <div className="relative aspect-[20/9] w-full overflow-hidden">
+          <div className="pointer-events-none absolute left-0 right-0 top-1/2 aspect-video w-full -translate-y-1/2">
+            <iframe
+              src={VIMEO_EMBED_SRC}
+              title="Lay-n-Go"
+              frameBorder={0}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              referrerPolicy="strict-origin-when-cross-origin"
+              tabIndex={-1}
+              className="pointer-events-none absolute inset-0 h-full w-full select-none"
+              aria-hidden
+            />
+          </div>
+          <div
+            className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-black/55 via-black/25 to-black/15"
             aria-hidden
           />
+          <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-5 text-center sm:gap-5 sm:px-8">
+            <h1 className="font-heading text-xl font-bold leading-tight tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)] sm:text-2xl md:text-3xl lg:text-4xl">
+              Organizational Solutions
+              <br />
+              for Life, Play, and Travel
+            </h1>
+            <div className="pointer-events-auto">
+              <Link to="/collections">
+                <button
+                  type="button"
+                  className="bg-primary text-primary-foreground rounded-full px-8 py-2.5 text-sm font-semibold tracking-wide shadow-lg transition-colors hover:bg-primary/90 md:px-9 md:py-3 md:text-base"
+                >
+                  Shop Now
+                </button>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

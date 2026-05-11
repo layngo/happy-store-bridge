@@ -31,6 +31,7 @@ import {
   getNailspa18InitialSelection,
   isNailspa18Product,
 } from "@/components/Nailspa18ColorSelector";
+import { NailspaPdpHeroVideo } from "@/components/NailspaPdpHeroVideo";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
 import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
@@ -417,12 +418,8 @@ const ProductDetail = () => {
       alt={product.title}
       className="h-full w-full max-h-full object-contain"
     />
-  ) : isNailspa18Product(product.handle) && nailspa18HeroUrls.length > 0 ? (
-    <img
-      src={nailspa18HeroUrls[Math.min(nailspa18GalleryIndex, nailspa18HeroUrls.length - 1)]}
-      alt={product.title}
-      className="h-full w-full max-h-full object-contain"
-    />
+  ) : isNailspa18Product(product.handle) ? (
+    <NailspaPdpHeroVideo />
   ) : isLayNGoPlayMatProduct(product.handle) && orderedImages[selectedImage]?.node ? (
     <img
       src={orderedImages[selectedImage].node.url}
@@ -759,9 +756,16 @@ const ProductDetail = () => {
             <section className="-mx-4 bg-white px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
               <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
                 <div className="space-y-4">
-                  <div className="relative flex aspect-square w-full items-center justify-center bg-white lg:mx-auto lg:max-h-[min(92vh,920px)]">
-                    {mainHeroImage}
-                  </div>
+                <div
+                  className={cn(
+                    "relative flex w-full items-center justify-center lg:mx-auto lg:max-h-[min(92vh,920px)]",
+                    isNailspa18Product(product.handle)
+                      ? "min-h-0 bg-transparent"
+                      : "aspect-square bg-white",
+                  )}
+                >
+                  {mainHeroImage}
+                </div>
                   {heroThumbnails}
                 </div>
 
@@ -819,6 +823,7 @@ const ProductDetail = () => {
 
             {isCosmoStoryPdp ? <CosmoPdpStory editorMode={cosmoStoryArrowEditMode} /> : null}
 
+            {!isNailspa18Product(product.handle) ? (
             <section
               className="mt-14 sm:mt-16"
               aria-label={isLayNGoLarge60 ? "Product image showcase" : cosmoYoutubeId ? "Product video" : "Video placeholder"}
@@ -873,6 +878,7 @@ const ProductDetail = () => {
                 )}
               </div>
             </section>
+            ) : null}
 
             {isCosmoStoryPdp ? <CosmoPdpVideoGallery /> : null}
 
