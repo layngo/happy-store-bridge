@@ -411,7 +411,10 @@ function CarryingHandleOverlay({
       onPointerCancel={() => setDragCarryBox(false)}
     >
       <div
-        className="absolute w-fit min-w-[min(100%,18rem)] max-w-[min(98vw,38rem)] cursor-move touch-none rounded-lg bg-white/[0.82] px-4 py-2.5 shadow-md shadow-black/[0.08] backdrop-blur-md sm:min-w-[26rem] sm:max-w-[44rem] sm:px-6 sm:py-3 md:min-w-[30rem] md:max-w-[min(96%,56rem)] md:px-7 lg:max-w-[60rem]"
+        className={cn(
+          "absolute cursor-move touch-none rounded-lg border border-neutral-200/60 bg-white/[0.9] px-5 py-1.5 shadow-md shadow-black/[0.06] backdrop-blur-md sm:px-8 sm:py-2 md:px-10 md:py-2 lg:px-12",
+          "w-[min(calc(100vw-1.5rem),40rem)] sm:w-[min(92vw,48rem)] md:w-[min(92vw,58rem)] lg:w-[min(72rem,calc(100%-2rem))]",
+        )}
         style={{ left: `${carryBoxPos.x}%`, top: `${carryBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
         onPointerDown={(e) => {
           if (!editorMode) return;
@@ -430,11 +433,11 @@ function CarryingHandleOverlay({
         onPointerUp={() => setDragCarryBox(false)}
         onPointerCancel={() => setDragCarryBox(false)}
       >
-        {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
-        <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base md:text-lg lg:text-xl">
+        {editorMode ? <p className="mb-0.5 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
+        <p className="font-heading whitespace-nowrap text-base font-bold tracking-tight text-foreground md:text-lg">
           {CARRY_CALLOUT_TITLE}
         </p>
-        <p className="mt-2 max-w-none text-xs leading-relaxed text-neutral-700 sm:text-sm md:text-[0.95rem] md:leading-relaxed">
+        <p className="mt-1 text-sm leading-snug text-neutral-700 md:mt-1.5 md:text-[0.95rem] md:leading-snug">
           {CARRY_CALLOUT_BODY}
         </p>
       </div>
@@ -757,11 +760,11 @@ export function NailspaPdpStory() {
             />
             {!editorMode ? (
               <div className="mx-auto mt-0 flex w-full max-w-none flex-col gap-3 px-1 max-md:-mt-8 md:hidden">
-                <div className={cn(NAILSPA_STACKED_CALLOUT, "w-full max-w-none sm:px-6")}>
-                  <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base">
+                <div className={cn(NAILSPA_STACKED_CALLOUT, "w-full py-2 sm:px-6 sm:py-2")}>
+                  <p className="font-heading whitespace-nowrap text-base font-bold tracking-tight text-foreground">
                     {CARRY_CALLOUT_TITLE}
                   </p>
-                  <p className="mt-2 text-xs leading-relaxed text-neutral-700 sm:text-sm">{CARRY_CALLOUT_BODY}</p>
+                  <p className="mt-1 text-sm leading-snug text-neutral-700">{CARRY_CALLOUT_BODY}</p>
                 </div>
                 <div className={NAILSPA_STACKED_CALLOUT}>
                   <h3 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">
