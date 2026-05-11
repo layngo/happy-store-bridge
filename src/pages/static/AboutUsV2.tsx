@@ -46,7 +46,7 @@ const SECTIONS: SectionBlock[] = [
         src: aboutUsV2Png("they-meet-world-travelers-maggie-molson.png"),
         caption: "World Travelers Greeted by Maggie & Molson",
         storyText:
-          'Before kids, we were able to do a lot of travelling but the two "Lemons" (a nickname from Adam\'s parents who gladly took care of them) always were there to greet us! Our time on the road turned out to be incredible field research for developing products that actually made life easier at home and on travel.',
+          "Before kids, the Lay-n-Go founders were able to do a lot of travelling, but the dogs were always there to welcome them back. Their time on the road turned out to be incredible field research for developing products that actually made life easier at home and on the go!",
       },
       {
         src: aboutUsV2Png("they-meet-wedding-toast.png"),
