@@ -91,9 +91,6 @@ const SECTIONS: SectionBlock[] = [
       { src: PLACEHOLDER("lng-giveback-01"), caption: "Local charity partner spotlight" },
       { src: PLACEHOLDER("lng-giveback-02"), caption: "School supply drive drop-off" },
       { src: PLACEHOLDER("lng-giveback-03"), caption: "Team volunteer day together" },
-      { src: PLACEHOLDER("lng-giveback-04"), caption: "Product donations at events" },
-      { src: PLACEHOLDER("lng-giveback-05"), caption: "Community cleanup weekend" },
-      { src: PLACEHOLDER("lng-giveback-06"), caption: "Supporting families in need" },
     ],
   },
   {
