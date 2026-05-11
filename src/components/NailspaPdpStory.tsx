@@ -411,7 +411,10 @@ function CarryingHandleOverlay({
       onPointerCancel={() => setDragCarryBox(false)}
     >
       <div
-        className="absolute w-fit max-w-[min(92vw,22rem)] cursor-move touch-none rounded-md bg-white/[0.82] px-3 py-2 shadow-md shadow-black/[0.08] backdrop-blur-md sm:max-w-[24rem] sm:px-4 sm:py-2.5 md:max-w-[26rem]"
+        className={cn(
+          "absolute cursor-move touch-none rounded-lg border border-neutral-200/60 bg-white/[0.9] px-5 py-1.5 shadow-md shadow-black/[0.06] backdrop-blur-md sm:px-8 sm:py-2 md:px-10 md:py-2 lg:px-12",
+          "w-[min(calc(100vw-1.5rem),40rem)] sm:w-[min(92vw,48rem)] md:w-[min(92vw,58rem)] lg:w-[min(72rem,calc(100%-2rem))]",
+        )}
         style={{ left: `${carryBoxPos.x}%`, top: `${carryBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
         onPointerDown={(e) => {
           if (!editorMode) return;
@@ -430,11 +433,13 @@ function CarryingHandleOverlay({
         onPointerUp={() => setDragCarryBox(false)}
         onPointerCancel={() => setDragCarryBox(false)}
       >
-        {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
-        <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base md:text-lg">
+        {editorMode ? <p className="mb-0.5 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
+        <p className="font-heading whitespace-nowrap text-base font-bold tracking-tight text-foreground md:text-lg">
           {CARRY_CALLOUT_TITLE}
         </p>
-        <p className="mt-2 text-xs leading-snug text-neutral-700 sm:text-sm">{CARRY_CALLOUT_BODY}</p>
+        <p className="mt-1 text-sm leading-snug text-neutral-700 md:mt-1.5 md:text-[0.95rem] md:leading-snug">
+          {CARRY_CALLOUT_BODY}
+        </p>
       </div>
       <EditableArrow
         className="absolute inset-0 size-full text-neutral-900"
@@ -475,10 +480,13 @@ function BottomProductImage({
           loading="lazy"
         />
         {/* Gradient wraps around the hand/arm at top-right, fades into white on all edges */}
-        {/* Top: deep fade so hand merges into white */}
+        {/* Top: deep fade around hand — band sits lower so less washes the top edge */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-[2]"
-          style={{ height: "38%", background: "linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.85) 30%, rgba(255,255,255,0.4) 65%, rgba(255,255,255,0) 100%)" }}
+          className="pointer-events-none absolute inset-x-0 z-[2] max-md:top-[10%] max-md:h-[34%] md:top-[14%] md:h-[30%]"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.88) 28%, rgba(255,255,255,0.38) 62%, rgba(255,255,255,0) 100%)",
+          }}
           aria-hidden
         />
         {/* Right: fade so arm/handle on right blends away */}
@@ -739,9 +747,9 @@ export function NailspaPdpStory() {
         aria-hidden
       />
 
-      {/* Bottom — closed bag photo + nail mat copy */}
+      {/* Bottom — closed bag photo + nail mat copy (desktop: cluster centered as one unit) */}
       <div className="px-4 pb-14 pt-4 sm:px-6 sm:pb-16 sm:pt-8 md:px-10 md:pt-12 lg:px-14">
-        <div className="mx-auto flex max-w-[min(100%,1200px)] flex-col gap-2 md:flex-row md:items-start md:gap-10 lg:gap-12">
+        <div className="mx-auto flex w-full max-w-[min(100%,1200px)] flex-col gap-2 md:flex-row md:items-start md:justify-center md:gap-10 lg:gap-12">
           <div className="w-full shrink-0 md:w-[min(46%,560px)] lg:w-[min(48%,600px)]">
             <BottomProductImage
               arrows={arrows}
@@ -751,10 +759,12 @@ export function NailspaPdpStory() {
               onCarryBoxPosChange={setCarryBoxPos}
             />
             {!editorMode ? (
-              <div className="mx-auto mt-0 flex w-full max-w-lg flex-col gap-3 px-0.5 max-md:-mt-8 md:hidden">
-                <div className={NAILSPA_STACKED_CALLOUT}>
-                  <p className="font-heading text-sm font-bold tracking-tight text-foreground">{CARRY_CALLOUT_TITLE}</p>
-                  <p className="mt-2 text-xs leading-snug text-neutral-700">{CARRY_CALLOUT_BODY}</p>
+              <div className="mx-auto mt-0 flex w-full max-w-none flex-col gap-3 px-1 max-md:-mt-8 md:hidden">
+                <div className={cn(NAILSPA_STACKED_CALLOUT, "w-full py-2 sm:px-6 sm:py-2")}>
+                  <p className="font-heading whitespace-nowrap text-base font-bold tracking-tight text-foreground">
+                    {CARRY_CALLOUT_TITLE}
+                  </p>
+                  <p className="mt-1 text-sm leading-snug text-neutral-700">{CARRY_CALLOUT_BODY}</p>
                 </div>
                 <div className={NAILSPA_STACKED_CALLOUT}>
                   <h3 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">
@@ -768,7 +778,7 @@ export function NailspaPdpStory() {
             ) : null}
           </div>
 
-          <div className="flex flex-1 flex-col md:justify-center md:pt-4">
+          <div className="relative flex w-full shrink-0 flex-col md:w-[min(44%,520px)] md:max-w-lg md:justify-center md:pt-4">
             <NailMatCalloutEditor
               arrows={arrows}
               editorMode={editorMode}
