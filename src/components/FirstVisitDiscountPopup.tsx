@@ -95,7 +95,7 @@ export function FirstVisitDiscountPopup() {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
-          "left-[50%] top-[50%] z-[100] w-fit max-h-[100dvh] max-w-none translate-x-[-50%] translate-y-[-50%] gap-0 overflow-x-auto overflow-y-auto border-0 bg-transparent p-0 shadow-none sm:rounded-2xl",
+          "left-[50%] top-[50%] z-[100] mx-auto w-[min(100%,calc(100vw-1rem))] max-h-[100dvh] max-w-[min(1024px,calc(100vw-1rem))] translate-x-[-50%] translate-y-[-50%] gap-0 overflow-x-hidden overflow-y-auto border-0 bg-transparent p-0 shadow-none sm:rounded-2xl",
           "[&>button]:right-3 [&>button]:top-3 [&>button]:z-[120] [&>button]:rounded-full [&>button]:border [&>button]:border-neutral-300/80 [&>button]:bg-white/95 [&>button]:p-2 [&>button]:shadow-md [&>button]:hover:bg-white",
         )}
       >
@@ -104,31 +104,37 @@ export function FirstVisitDiscountPopup() {
         </DialogTitle>
 
         <div
-          className="relative shrink-0 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15"
-          style={{ width: HERO_WIDTH, height: HERO_HEIGHT }}
+          className="relative mx-auto w-full max-w-[min(1024px,calc(100vw-1rem))] shrink-0 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15"
+          style={{ aspectRatio: `${HERO_WIDTH} / ${HERO_HEIGHT}` }}
         >
           <img
             src={HERO_IMAGE}
             alt="Lay-n-Go Cosmo promotional offer"
             width={HERO_WIDTH}
             height={HERO_HEIGHT}
-            className="block h-full w-full select-none"
+            className="block h-full w-full select-none object-cover object-[20%_center] sm:object-center"
             loading="eager"
             decoding="async"
             draggable={false}
           />
 
-          <div className="pointer-events-none absolute inset-0 flex items-center justify-end pr-3 sm:pr-6 md:pr-10">
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-end pr-2 sm:pr-6 md:pr-10">
             <div
               className={cn(
-                "pointer-events-auto flex max-h-full w-[min(55%,440px)] min-w-[10rem] flex-col justify-center gap-4 overflow-y-auto py-6 text-right sm:min-w-[12rem] sm:py-8",
+                "pointer-events-auto flex min-h-0 max-h-full min-w-0 w-[min(55%,440px)] max-sm:w-[min(58%,13.5rem)] flex-col justify-center gap-3 overflow-y-auto overflow-x-hidden py-4 text-right sm:min-w-[12rem] sm:gap-4 sm:py-8",
               )}
             >
-              <div className="space-y-1.5 sm:space-y-2">
-                <h2 className="font-heading text-[clamp(2.55rem,8.4vw,5.55rem)] font-black uppercase leading-[0.92] tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.85)]">
+              <div className="min-w-0 space-y-1.5 sm:space-y-2">
+                <h2
+                  className={cn(
+                    "font-heading font-black uppercase leading-[0.95] tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.85)]",
+                    "text-[clamp(0.7rem,3.4vw,1.12rem)] sm:text-[clamp(0.82rem,3.8vw,1.65rem)] md:text-[clamp(2.55rem,8.4vw,5.55rem)]",
+                    "break-words [word-break:break-word]",
+                  )}
+                >
                   You just won a free discount
                 </h2>
-                <p className="font-heading text-[clamp(0.75rem,2.2vw,1.2rem)] font-semibold uppercase tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.85)]">
+                <p className="font-heading text-[clamp(0.65rem,2.8vw,1rem)] font-semibold uppercase tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.85)] sm:text-[clamp(0.75rem,2.2vw,1.2rem)]">
                   (15% off)
                 </p>
               </div>

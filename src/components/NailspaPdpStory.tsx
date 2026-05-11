@@ -11,6 +11,10 @@ const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png";
 
 const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:px-4 sm:py-3";
 
+const CARRY_CALLOUT_TITLE = "High quality nail mat";
+const CARRY_CALLOUT_BODY =
+  "Machine washable and wipeable. spilled polish? no problem, just clean it off with polish remover";
+
 type Point = { x: number; y: number };
 type ArrowGeom = { viewBox: string; start: Point; control: Point; end: Point };
 type ArrowKey = "mesh" | "lipRight" | "cord" | "carry" | "nailMat";
@@ -424,11 +428,9 @@ function CarryingHandleOverlay({
       >
         {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
         <p className="font-heading text-sm font-bold tracking-tight text-foreground sm:text-base md:text-lg">
-          High quality nail mat
+          {CARRY_CALLOUT_TITLE}
         </p>
-        <p className="mt-2 text-xs leading-snug text-neutral-700 sm:text-sm">
-          Machine washable and wipeable. spilled polish? no problem, just clean it off with polish remover
-        </p>
+        <p className="mt-2 text-xs leading-snug text-neutral-700 sm:text-sm">{CARRY_CALLOUT_BODY}</p>
       </div>
       <EditableArrow
         className="absolute inset-0 size-full text-neutral-900"
@@ -475,14 +477,24 @@ function BottomProductImage({
               "linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.98) 100%)",
           }}
         />
-        <CarryingHandleOverlay
-          arrows={arrows}
-          editorMode={editorMode}
-          onArrowChange={onArrowChange}
-          carryBoxPos={carryBoxPos}
-          onCarryBoxPosChange={onCarryBoxPosChange}
-        />
+        <div className={editorMode ? "contents" : "hidden md:contents"}>
+          <CarryingHandleOverlay
+            arrows={arrows}
+            editorMode={editorMode}
+            onArrowChange={onArrowChange}
+            carryBoxPos={carryBoxPos}
+            onCarryBoxPosChange={onCarryBoxPosChange}
+          />
+        </div>
       </div>
+      {!editorMode ? (
+        <div className="mt-4 w-full px-0.5 md:hidden">
+          <div className={CALLOUT_PANEL}>
+            <p className="font-heading text-sm font-bold tracking-tight text-foreground">{CARRY_CALLOUT_TITLE}</p>
+            <p className="mt-2 text-xs leading-snug text-neutral-700">{CARRY_CALLOUT_BODY}</p>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -515,41 +527,58 @@ function NailMatCalloutEditor({
   );
 
   return (
-    <div
-      ref={wrapRef}
-      className={cn("relative min-h-[220px] w-full", editorMode ? "pointer-events-auto" : "pointer-events-none")}
-      onPointerMove={moveBox}
-      onPointerUp={() => setDragBox(false)}
-      onPointerCancel={() => setDragBox(false)}
-    >
+    <>
       <div
-        className="absolute w-[min(90%,360px)] cursor-move touch-none"
-        style={{ left: `${nailMatBoxPos.x}%`, top: `${nailMatBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
-        onPointerDown={(e) => {
-          if (!editorMode) return;
-          e.preventDefault();
-          e.stopPropagation();
-          e.currentTarget.setPointerCapture(e.pointerId);
-          setDragBox(true);
-        }}
+        ref={wrapRef}
+        className={cn(
+          "relative min-h-[220px] w-full",
+          editorMode ? "pointer-events-auto block" : "pointer-events-none hidden md:block",
+        )}
+        onPointerMove={moveBox}
+        onPointerUp={() => setDragBox(false)}
+        onPointerCancel={() => setDragBox(false)}
       >
-        <div className={CALLOUT_PANEL}>
-          {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
-          <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
-            Carrying handle for easy travel
-          </h3>
-          <p className="mt-2 text-sm leading-snug text-neutral-700 sm:text-base">
-            The Nailspa is machine washable and wipeable.
-          </p>
+        <div
+          className="absolute w-[min(90%,360px)] cursor-move touch-none"
+          style={{ left: `${nailMatBoxPos.x}%`, top: `${nailMatBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
+          onPointerDown={(e) => {
+            if (!editorMode) return;
+            e.preventDefault();
+            e.stopPropagation();
+            e.currentTarget.setPointerCapture(e.pointerId);
+            setDragBox(true);
+          }}
+        >
+          <div className={CALLOUT_PANEL}>
+            {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
+            <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
+              Carrying handle for easy travel
+            </h3>
+            <p className="mt-2 text-sm leading-snug text-neutral-700 sm:text-base">
+              The Nailspa is machine washable and wipeable.
+            </p>
+          </div>
+          <EditableArrow
+            className="mt-2 h-10 w-[7.25rem] text-neutral-800 sm:h-11 sm:w-[9.6rem]"
+            geom={arrows.nailMat}
+            editorMode={editorMode}
+            onChange={(next) => onArrowChange?.("nailMat", next)}
+          />
         </div>
-        <EditableArrow
-          className="mt-2 h-10 w-[7.25rem] text-neutral-800 sm:h-11 sm:w-[9.6rem]"
-          geom={arrows.nailMat}
-          editorMode={editorMode}
-          onChange={(next) => onArrowChange?.("nailMat", next)}
-        />
       </div>
-    </div>
+      {!editorMode ? (
+        <div className="mx-auto mt-2 w-full max-w-lg md:hidden">
+          <div className={CALLOUT_PANEL}>
+            <h3 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">
+              Carrying handle for easy travel
+            </h3>
+            <p className="mt-2 text-xs leading-snug text-neutral-700 sm:text-sm">
+              The Nailspa is machine washable and wipeable.
+            </p>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
 
