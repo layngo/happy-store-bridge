@@ -38,7 +38,12 @@ const SECTIONS: SectionBlock[] = [
         storyText:
           "On February 1, 1999, Amy walked into Southside 815 in Alexandria, Virginia, and caught Adam's eye immediately. A mutual friend introduced them, and four hours of conversation went by like it was 20 minutes. Adam walked Amy home that evening — meeting her two golden retrievers, Maggie & Molson — and they made plans to see Gil Scott-Heron at the legendary Blues Alley two days later. Both Amy and Adam had found their missing piece.\n\n22 years later, for Amy's 50th birthday, Adam had famed Alexandria painter and close friend Judy Heiser, memorialize the exact moment before both of their lives changed.",
       },
-      { src: PLACEHOLDER("lng-about-02"), caption: "Coffee-shop brainstorm session" },
+      {
+        src: "/about-us-v2/they-meet-world-travelers-maggie-molson.png",
+        caption: "World Travelers Greeted by Maggie & Molson",
+        storyText:
+          'Before kids, we were able to do a lot of travelling but the two "Lemons" (a nickname from Adam\'s parents who gladly took care of them) always were there to greet us! Our time on the road turned out to be incredible field research for developing products that actually made life easier at home and on travel.',
+      },
       { src: PLACEHOLDER("lng-about-03"), caption: "Partner adventure begins" },
     ],
   },
@@ -257,7 +262,7 @@ const AboutUsV2 = () => (
     <main className="container flex-1 py-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="not-prose text-base font-medium leading-normal text-foreground/88">
         <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-9 md:mb-10">
-          About Us Version2
+          About Us (V2)
         </h1>
         <div className="space-y-5 md:space-y-6">
           {SECTIONS.map((block) => (
