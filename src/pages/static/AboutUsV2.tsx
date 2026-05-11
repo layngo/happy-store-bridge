@@ -28,18 +28,22 @@ function isGroupedSection(block: SectionBlock): block is GroupedSection {
 /** Square placeholder photography (picsum seeds = stable URLs). Replace with brand assets when ready. */
 const PLACEHOLDER = (seed: string) => `https://picsum.photos/seed/${seed}/600/600`;
 
+/** Bump when you replace a file under `public/about-us-v2/` without renaming it (Lovable + browsers cache static URLs). */
+const ABOUT_US_V2_ASSET_VER = "3";
+const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_US_V2_ASSET_VER}`;
+
 const SECTIONS: SectionBlock[] = [
   {
     heading: "They meet",
     images: [
       {
-        src: "/about-us-v2/founders-southside-painting.png",
+        src: aboutUsV2Png("founders-southside-painting.png"),
         caption: "It was love at first site when Amy walked in room",
         storyText:
           "On February 1, 1999, Amy walked into Southside 815 in Alexandria, Virginia, and caught Adam's eye immediately. A mutual friend introduced them, and four hours of conversation went by like it was 20 minutes. Adam walked Amy home that evening — meeting her two golden retrievers, Maggie & Molson — and they made plans to see Gil Scott-Heron at the legendary Blues Alley two days later. Both Amy and Adam had found their missing piece.\n\n22 years later, for Amy's 50th birthday, Adam had famed Alexandria painter and close friend Judy Heiser, memorialize the exact moment before both of their lives changed.",
       },
       {
-        src: "/about-us-v2/they-meet-world-travelers-maggie-molson.png",
+        src: aboutUsV2Png("they-meet-world-travelers-maggie-molson.png"),
         caption: "World Travelers Greeted by Maggie & Molson",
         storyText:
           'Before kids, we were able to do a lot of travelling but the two "Lemons" (a nickname from Adam\'s parents who gladly took care of them) always were there to greet us! Our time on the road turned out to be incredible field research for developing products that actually made life easier at home and on travel.',
