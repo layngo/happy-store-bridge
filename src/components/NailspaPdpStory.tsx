@@ -466,25 +466,20 @@ function BottomProductImage({
       className={cn("relative w-full overflow-visible border-0 bg-transparent shadow-none ring-0", className)}
       aria-label="Lay-n-Go NAILSPA closed with carry handle"
     >
-      <div className="relative min-h-[min(52vh,440px)] w-full overflow-hidden rounded-2xl ring-1 ring-neutral-200/50 sm:min-h-[min(54vh,480px)] md:min-h-[min(56vh,560px)] lg:min-h-[min(58vh,620px)]">
+      <div className="relative min-h-[min(52vh,440px)] w-full overflow-hidden rounded-2xl sm:min-h-[min(54vh,480px)] md:min-h-[min(56vh,560px)] lg:min-h-[min(58vh,620px)]">
         <img
           src={IMG_BOTTOM}
           alt=""
-          className="absolute inset-0 size-full object-contain object-center"
+          className="absolute inset-0 size-full object-contain object-[30%_center]"
           draggable={false}
           loading="lazy"
         />
-        {/* Feather white into the photo from the top so the asset does not read as a hard cut */}
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-[2] h-[min(28%,9rem)] bg-gradient-to-b from-white via-white/75 to-transparent"
-          aria-hidden
-        />
-        {/* Vignette on the closed-bag still — soft rails + long top blend */}
+        {/* Same perimeter treatment as main story still (image1): strong white at edges, short fade, clear center */}
         <div
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(255,255,255,0.99) 0%, rgba(255,255,255,0.92) 8%, rgba(255,255,255,0.45) 18%, rgba(255,255,255,0) 34%, rgba(255,255,255,0) 78%, rgba(255,255,255,0.97) 100%)",
+              "linear-gradient(to right, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.98) 100%), linear-gradient(to bottom, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.96) 100%)",
           }}
         />
         <div className={editorMode ? "contents" : "hidden md:contents"}>
@@ -734,7 +729,7 @@ export function NailspaPdpStory() {
       {/* Bottom — closed bag photo + nail mat copy */}
       <div className="px-4 pb-14 pt-4 sm:px-6 sm:pb-16 sm:pt-8 md:px-10 md:pt-12 lg:px-14">
         <div className="mx-auto flex max-w-[min(100%,1200px)] flex-col gap-2 md:flex-row md:items-start md:gap-10 lg:gap-12">
-          <div className="w-full shrink-0 md:w-[min(58%,720px)] lg:w-[min(60%,780px)]">
+          <div className="w-full shrink-0 md:w-[min(46%,560px)] lg:w-[min(48%,600px)]">
             <BottomProductImage
               arrows={arrows}
               editorMode={editorMode}
