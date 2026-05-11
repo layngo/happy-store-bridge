@@ -470,6 +470,7 @@ function BottomProductImage({
           draggable={false}
           loading="lazy"
         />
+        {/* Vignette on the closed-bag still — softens edges into white rails */}
         <div
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
@@ -488,7 +489,7 @@ function BottomProductImage({
         </div>
       </div>
       {!editorMode ? (
-        <div className="mt-4 w-full px-0.5 md:hidden">
+        <div className="mt-1 w-full px-0.5 md:hidden">
           <div className={CALLOUT_PANEL}>
             <p className="font-heading text-sm font-bold tracking-tight text-foreground">{CARRY_CALLOUT_TITLE}</p>
             <p className="mt-2 text-xs leading-snug text-neutral-700">{CARRY_CALLOUT_BODY}</p>
@@ -567,7 +568,7 @@ function NailMatCalloutEditor({
         </div>
       </div>
       {!editorMode ? (
-        <div className="mx-auto mt-2 w-full max-w-lg md:hidden">
+        <div className="mx-auto mt-0 w-full max-w-lg max-md:-mt-1 md:hidden">
           <div className={CALLOUT_PANEL}>
             <h3 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">
               Carrying handle for easy travel
@@ -692,6 +693,7 @@ export function NailspaPdpStory() {
       <div className="relative px-4 pb-12 sm:px-6 sm:pb-14 md:px-10 md:pb-16 lg:px-14">
         <div className="relative mx-auto max-w-[min(100%,1120px)]">
           <img src={IMG_MAIN} alt="" className="relative z-0 block h-auto w-full" loading="lazy" draggable={false} />
+          {/* Vignette on the main story still — desktop + mobile */}
           <div
             className="pointer-events-none absolute inset-0 z-[1]"
             style={{
@@ -734,9 +736,15 @@ export function NailspaPdpStory() {
         </div>
       </div>
 
+      {/* Mobile: soft white fade between main story block and closed-bag block (no hard seam) */}
+      <div
+        className="pointer-events-none h-14 w-full shrink-0 bg-gradient-to-b from-white via-neutral-100/85 to-white md:hidden"
+        aria-hidden
+      />
+
       {/* Bottom — closed bag photo + nail mat copy */}
-      <div className="px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-12 md:px-10 lg:px-14">
-        <div className="mx-auto flex max-w-[min(100%,1200px)] flex-col gap-10 md:flex-row md:items-start md:gap-10 lg:gap-12">
+      <div className="px-4 pb-14 pt-4 sm:px-6 sm:pb-16 sm:pt-8 md:px-10 md:pt-12 lg:px-14">
+        <div className="mx-auto flex max-w-[min(100%,1200px)] flex-col gap-2 md:flex-row md:items-start md:gap-10 lg:gap-12">
           <div className="w-full shrink-0 md:w-[min(58%,720px)] lg:w-[min(60%,780px)]">
             <BottomProductImage
               arrows={arrows}
@@ -747,7 +755,7 @@ export function NailspaPdpStory() {
             />
           </div>
 
-          <div className="flex flex-1 flex-col md:justify-center md:pt-4">
+          <div className="flex max-md:-mt-1 flex-1 flex-col md:justify-center md:pt-4">
             <NailMatCalloutEditor
               arrows={arrows}
               editorMode={editorMode}
