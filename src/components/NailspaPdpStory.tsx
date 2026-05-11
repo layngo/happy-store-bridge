@@ -742,9 +742,9 @@ export function NailspaPdpStory() {
         aria-hidden
       />
 
-      {/* Bottom — closed bag photo + nail mat copy */}
+      {/* Bottom — closed bag photo + nail mat copy (desktop: cluster centered as one unit) */}
       <div className="px-4 pb-14 pt-4 sm:px-6 sm:pb-16 sm:pt-8 md:px-10 md:pt-12 lg:px-14">
-        <div className="mx-auto flex max-w-[min(100%,1200px)] flex-col gap-2 md:flex-row md:items-start md:gap-10 lg:gap-12">
+        <div className="mx-auto flex w-full max-w-[min(100%,1200px)] flex-col gap-2 md:flex-row md:items-start md:justify-center md:gap-10 lg:gap-12">
           <div className="w-full shrink-0 md:w-[min(46%,560px)] lg:w-[min(48%,600px)]">
             <BottomProductImage
               arrows={arrows}
@@ -771,7 +771,7 @@ export function NailspaPdpStory() {
             ) : null}
           </div>
 
-          <div className="flex flex-1 flex-col md:justify-center md:pt-4">
+          <div className="relative flex w-full shrink-0 flex-col md:w-[min(44%,520px)] md:max-w-lg md:justify-center md:pt-4">
             <NailMatCalloutEditor
               arrows={arrows}
               editorMode={editorMode}
