@@ -99,11 +99,11 @@ function DimensionSixtyInch({ className }: { className?: string }) {
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
       <div className="flex w-full max-w-md items-end justify-center sm:max-w-lg">
-        <div className="h-5 w-px shrink-0 bg-neutral-900" aria-hidden />
+        <div className="h-3 w-px shrink-0 bg-neutral-900" aria-hidden />
         <div className="mb-0 h-px min-w-0 flex-1 bg-neutral-900" aria-hidden />
-        <div className="h-5 w-px shrink-0 bg-neutral-900" aria-hidden />
+        <div className="h-3 w-px shrink-0 bg-neutral-900" aria-hidden />
       </div>
-      <p className="mt-2 font-heading text-lg font-semibold tabular-nums text-neutral-900 sm:text-xl">60&quot;</p>
+      <p className="mt-1 font-heading text-lg font-semibold tabular-nums text-neutral-900 sm:text-xl">60&quot;</p>
     </div>
   );
 }
@@ -246,7 +246,7 @@ export function LayNGoLargeCalloutDiagram() {
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
       if (k === "mesh") {
-        const meshUpperStart = { x: d.x - 2.2, y: d.y - 26 };
+        const meshUpperStart = { x: d.x + 0.25, y: d.y - 42 };
         const meshLowerStart = { x: d.x + 1.2, y: d.y - 2 };
         return {
           k,
@@ -319,7 +319,7 @@ export function LayNGoLargeCalloutDiagram() {
       ) : null}
 
       {/* Mobile */}
-      <div className="flex flex-col items-center gap-8 md:hidden">
+      <div className="flex flex-col items-center gap-2 md:hidden">
         <img
           src={HERO_CALLOUT_MAIN}
           alt="Lay-n-Go Large 60 inch activity mat from above, filled with building blocks"
@@ -488,7 +488,7 @@ export function LayNGoLargeCalloutDiagram() {
           ))}
         </div>
 
-        <div className="mx-auto -mt-16 w-[min(94vw,920px)] pt-0 sm:-mt-20 md:-mt-24">
+        <div className="mx-auto -mt-[7.5rem] w-[min(94vw,920px)] pt-0 sm:-mt-32 md:-mt-40 lg:-mt-44">
           <DimensionSixtyInch />
         </div>
       </div>

@@ -15,6 +15,10 @@ const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-b
 const NAILSPA_STACKED_CALLOUT =
   "rounded-lg border-2 border-neutral-300 bg-white px-3 py-2.5 shadow-md shadow-black/[0.08] sm:px-4 sm:py-3";
 
+/** Mobile-only: softens the rounded image frame so the border reads less harsh against white. */
+const MOBILE_BOTTOM_HERO_EDGE_FADE =
+  "inset 0 0 0 1px rgba(255,255,255,0.92), inset 0 1.25rem 1.75rem rgba(255,255,255,0.65), inset 0 -1.25rem 1.75rem rgba(255,255,255,0.65), inset 0.85rem 0 1.25rem rgba(255,255,255,0.5), inset -0.85rem 0 1.25rem rgba(255,255,255,0.5)";
+
 const CARRY_CALLOUT_TITLE = "High quality nail mat";
 const CARRY_CALLOUT_BODY =
   "Machine washable and wipeable. spilled polish? no problem, just clean it off with polish remover";
@@ -55,8 +59,8 @@ const ARROWS: ArrowMap = {
   },
   nailMat: {
     viewBox: "-120 -80 360 220",
-    start: { x: 112, y: 20 },
-    control: { x: 60, y: 20 },
+    start: { x: 118, y: 12 },
+    control: { x: 52, y: 28 },
     end: { x: -102.65920651068159, y: 393.37890625 },
   },
 };
@@ -67,8 +71,8 @@ const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
 const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 68.19598858173077, bottom: 5.593950320512818 };
 const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 91, y: 86 };
-/** Centered in the right copy column so translate(-50%,-50%) does not bleed under the image column. */
-const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 50, y: 48 };
+/** Right column; shifted down/left so copy sits closer to the nailMat arrow toward the product photo. */
+const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 44, y: 66 };
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -413,8 +417,8 @@ function CarryingHandleOverlay({
     >
       <div
         className={cn(
-          "absolute cursor-move touch-none rounded-lg border border-neutral-200/60 bg-white/[0.9] px-5 py-1.5 shadow-md shadow-black/[0.06] backdrop-blur-md sm:px-8 sm:py-2 md:px-10 md:py-2 lg:px-12",
-          "w-[min(calc(100vw-1.5rem),40rem)] sm:w-[min(92vw,48rem)] md:w-[min(92vw,58rem)] lg:w-[min(72rem,calc(100%-2rem))]",
+          "absolute cursor-move touch-none rounded-lg border border-neutral-200/60 bg-white/[0.9] px-3 py-2 shadow-md shadow-black/[0.06] backdrop-blur-md sm:px-4 sm:py-2.5",
+          "inline-flex min-w-0 max-w-[min(20rem,calc(100vw-2rem))] flex-col items-start gap-1",
         )}
         style={{ left: `${carryBoxPos.x}%`, top: `${carryBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
         onPointerDown={(e) => {
@@ -435,10 +439,10 @@ function CarryingHandleOverlay({
         onPointerCancel={() => setDragCarryBox(false)}
       >
         {editorMode ? <p className="mb-0.5 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
-        <p className="font-heading whitespace-nowrap text-base font-bold tracking-tight text-foreground md:text-lg">
+        <p className="font-heading text-balance text-base font-bold tracking-tight text-foreground md:text-lg">
           {CARRY_CALLOUT_TITLE}
         </p>
-        <p className="mt-1 text-sm leading-snug text-neutral-700 md:mt-1.5 md:text-[0.95rem] md:leading-snug">
+        <p className="text-pretty text-sm leading-snug text-neutral-700 md:text-[0.95rem] md:leading-snug">
           {CARRY_CALLOUT_BODY}
         </p>
       </div>
@@ -473,11 +477,11 @@ function BottomProductImage({
       aria-label="Lay-n-Go NAILSPA closed with carry handle"
     >
       {/* Clip only art + vignette; callouts sit in a sibling layer so wide panels are not cut off */}
-      <div className="relative min-h-[min(52vh,440px)] w-full overflow-hidden rounded-2xl sm:min-h-[min(54vh,480px)] md:min-h-[min(56vh,560px)] lg:min-h-[min(58vh,620px)]">
+      <div className="relative min-h-[min(38vh,300px)] w-full overflow-hidden rounded-2xl sm:min-h-[min(54vh,480px)] md:min-h-[min(56vh,560px)] lg:min-h-[min(58vh,620px)]">
         <img
           src={IMG_BOTTOM}
           alt=""
-          className="absolute inset-0 size-full object-contain object-[30%_center]"
+          className="absolute inset-0 size-full object-contain object-[30%_center] max-md:object-[32%_center]"
           draggable={false}
           loading="lazy"
         />
@@ -488,6 +492,12 @@ function BottomProductImage({
             background:
               "linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.92) 14%, rgba(255,255,255,0.45) 32%, rgba(255,255,255,0) 100%)",
           }}
+          aria-hidden
+        />
+        {/* Mobile: inset light wash to soften the rounded photo border against the page */}
+        <div
+          className="pointer-events-none absolute inset-0 z-[3] rounded-2xl md:hidden"
+          style={{ boxShadow: MOBILE_BOTTOM_HERO_EDGE_FADE }}
           aria-hidden
         />
         {/* Desktop: top band + right + left/bottom rails (unchanged) */}
@@ -559,7 +569,7 @@ function NailMatCalloutEditor({
       <div
         ref={wrapRef}
         className={cn(
-          "relative min-h-[220px] w-full",
+          "relative min-h-[min(320px,52vh)] w-full",
           editorMode ? "pointer-events-auto block" : "pointer-events-none hidden md:block",
         )}
         onPointerMove={moveBox}
@@ -705,7 +715,7 @@ export function NailspaPdpStory() {
       </div>
 
       {/* Main hero — image 1 + three callouts */}
-      <div className="relative px-4 pb-12 sm:px-6 sm:pb-14 md:px-10 md:pb-16 lg:px-14">
+      <div className="relative px-4 pb-6 sm:px-6 sm:pb-10 md:px-10 md:pb-16 lg:px-14">
         <div className="relative mx-auto max-w-[min(100%,1120px)]">
           <img src={IMG_MAIN} alt="" className="relative z-0 block h-auto w-full" loading="lazy" draggable={false} />
           {/* Vignette on the main story still — desktop + mobile */}
@@ -727,7 +737,7 @@ export function NailspaPdpStory() {
         </div>
 
         {/* Mobile: stacked callouts under hero (tap targets stay clear) */}
-        <div className="mx-auto mt-6 max-w-[min(100%,1120px)] space-y-4 md:hidden">
+        <div className="mx-auto mt-4 max-w-[min(100%,1120px)] space-y-3 md:hidden">
           <div className={CALLOUT_PANEL}>
             <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Mesh pockets</h2>
             <p className="mt-1 text-xs leading-snug text-neutral-700">
@@ -751,15 +761,12 @@ export function NailspaPdpStory() {
         </div>
       </div>
 
-      {/* Mobile: light seam between story blocks (keep short so it does not read into cards) */}
-      <div
-        className="pointer-events-none h-8 w-full shrink-0 bg-gradient-to-b from-white via-white to-white md:hidden"
-        aria-hidden
-      />
+      {/* Mobile: tiny spacer — bottom hero + cards sit closer to cord callouts */}
+      <div className="pointer-events-none h-1 w-full shrink-0 bg-white md:hidden" aria-hidden />
 
       {/* Bottom — closed bag photo + nail mat copy (desktop: cluster centered as one unit) */}
-      <div className="px-4 pb-14 pt-4 sm:px-6 sm:pb-16 sm:pt-8 md:px-10 md:pt-12 lg:px-14">
-        <div className="mx-auto flex w-full max-w-[min(100%,1200px)] flex-col gap-2 overflow-visible md:flex-row md:items-start md:justify-center md:gap-10 lg:gap-12">
+      <div className="px-4 pb-14 pt-0 sm:px-6 sm:pb-16 sm:pt-8 md:px-10 md:pt-12 lg:px-14">
+        <div className="mx-auto flex w-full max-w-[min(100%,1200px)] flex-col gap-1 overflow-visible max-md:-mt-3 md:flex-row md:items-start md:justify-center md:mt-0 md:gap-10 md:pt-0 lg:gap-12">
           <div className="relative z-10 w-full shrink-0 md:w-[min(46%,560px)] lg:w-[min(48%,600px)]">
             <BottomProductImage
               arrows={arrows}
@@ -769,14 +776,14 @@ export function NailspaPdpStory() {
               onCarryBoxPosChange={setCarryBoxPos}
             />
             {!editorMode ? (
-              <div className="relative z-10 mx-auto mt-0 flex w-full max-w-none flex-col gap-3 px-1 pt-2 max-md:mt-2 md:hidden">
-                <div className={cn(NAILSPA_STACKED_CALLOUT, "w-full py-2 sm:px-6 sm:py-2")}>
-                  <p className="font-heading whitespace-nowrap text-base font-bold tracking-tight text-foreground">
+              <div className="relative z-10 mx-auto mt-0 flex w-full max-w-none flex-col gap-2 px-0 pt-1 md:hidden">
+                <div className={cn(NAILSPA_STACKED_CALLOUT, "w-full px-3 py-2")}>
+                  <p className="font-heading text-balance text-base font-bold tracking-tight text-foreground">
                     {CARRY_CALLOUT_TITLE}
                   </p>
-                  <p className="mt-1 text-sm leading-snug text-neutral-700">{CARRY_CALLOUT_BODY}</p>
+                  <p className="mt-1 text-pretty text-sm leading-snug text-neutral-700">{CARRY_CALLOUT_BODY}</p>
                 </div>
-                <div className={NAILSPA_STACKED_CALLOUT}>
+                <div className={cn(NAILSPA_STACKED_CALLOUT, "px-3 py-2")}>
                   <h3 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">
                     Carrying handle for easy travel
                   </h3>

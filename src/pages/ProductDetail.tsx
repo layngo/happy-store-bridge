@@ -48,6 +48,17 @@ const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.
 
 const LAY_N_GO_LARGE_SLIDE_1 = "/products/lay-n-go-large-pdp/video-slide-1.png";
 const LAY_N_GO_LARGE_SLIDE_2 = "/products/lay-n-go-large-pdp/video-slide-2.png";
+
+const LAY_N_GO_LARGE_60_BULLETS = [
+  `Lay-n-Go Large 60" diameter activity play mat with patented raised lip to keep LEGOs and small toys contained`,
+  "Play for hours, clean up in seconds — just pull the drawstring and it closes completely",
+  "4 mesh pockets for storing special pieces",
+  "Wide strap for easy carrying, hanging, and storage",
+  "Machine washable",
+  "4-in-1: activity mat, cleanup, storage, and carry-all in one",
+  "Toys not included",
+] as const;
+
 const COSMO_AUTOPLAY_YOUTUBE_ID = "G3E80xl9lSM";
 const COSMO_AMAZON_REVIEWS_URL =
   "https://www.amazon.com/Lay-n-Go-Cosmo-Cosmetic-Bag-Black/dp/B00B04V3PQ/ref=sr_1_2?crid=319SA2P59OD6R&dib=eyJ2IjoiMSJ9.yZpPmIN6c0isZ7qkwNkUWg.XsRHQlPyJ9UrcTBLmVdjiQ0rxRkojK3Ksfzjf7LjOYg&dib_tag=se&keywords=cosmo%2Blayngo&qid=1778181094&sprefix=cosmo%2Blayng%2Caps%2C106&sr=8-2&th=1#averageCustomerReviewsAnchor";
@@ -468,7 +479,11 @@ const ProductDetail = () => {
     <img
       src={orderedImages[selectedImage].node.url}
       alt={orderedImages[selectedImage].node.altText || product.title}
-      className="h-full w-full max-h-full object-contain"
+      className={cn(
+        "h-full w-full max-h-full object-contain",
+        isLayNGoLarge60 &&
+          "max-md:h-auto max-md:max-h-[min(58vmin,380px)] max-md:w-full max-md:min-w-0 max-md:max-w-full max-md:object-contain",
+      )}
     />
   ) : orderedImages[selectedImage]?.node ? (
     <img
@@ -797,10 +812,16 @@ const ProductDetail = () => {
               </h1>
             </header>
 
-            <section className="-mx-4 bg-white px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
-              <div className="grid gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
-                <div className="space-y-4">
-                  <div className="relative flex aspect-square w-full items-center justify-center bg-white lg:mx-auto lg:max-h-[min(92vh,920px)]">
+            <section className="-mx-4 overflow-x-hidden bg-white px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
+              <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
+                <div className="min-w-0 space-y-4">
+                  <div
+                    className={cn(
+                      "relative flex aspect-square w-full min-w-0 items-center justify-center overflow-hidden bg-white lg:mx-auto lg:max-h-[min(92vh,920px)]",
+                      isLayNGoLarge60 &&
+                        "max-md:aspect-auto max-md:max-h-[min(58vmin,400px)] max-md:min-h-[200px] max-md:py-2",
+                    )}
+                  >
                     {mainHeroImage}
                   </div>
                   {heroThumbnails}
@@ -826,6 +847,18 @@ const ProductDetail = () => {
                   </div>
 
                   <div ref={primaryAddToCartRef}>{addToCartButtonCosmo}</div>
+                  {isLayNGoLarge60 ? (
+                    <ul
+                      className="mt-5 list-disc space-y-2.5 pl-5 text-left text-sm font-medium leading-relaxed text-neutral-700 marker:text-neutral-900"
+                      aria-label="Lay-n-Go Large highlights"
+                    >
+                      {LAY_N_GO_LARGE_60_BULLETS.map((line) => (
+                        <li key={line} className="pl-0.5">
+                          {line}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </div>
               </div>
             </section>
@@ -969,12 +1002,12 @@ const ProductDetail = () => {
             {showCosmoStyleBottomExtras ? (
               <section
                 className="mx-auto mt-8 w-full max-w-4xl sm:mt-10"
-                aria-label={isNailspaPdp ? "NAILSPA ratings" : "Cosmo ratings"}
+                aria-label={isNailspaPdp ? "Nailspa ratings" : "Cosmo ratings"}
               >
                 <div className="px-5 py-2 text-center sm:px-7">
                   <div
                     className="mx-auto mb-3 flex items-center justify-center gap-1.5"
-                    aria-label="4.5 out of 5 stars"
+                    aria-label={isNailspaPdp ? "4.2 out of 5 stars" : "4.5 out of 5 stars"}
                   >
                     <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
                     <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
@@ -982,10 +1015,17 @@ const ProductDetail = () => {
                     <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
                     <span className="relative block h-5 w-5 sm:h-6 sm:w-6" aria-hidden>
                       <Star className="h-full w-full fill-[#c7c9cf] stroke-none" />
-                      <Star className="absolute inset-0 h-full w-full fill-[#f4b400] stroke-none [clip-path:inset(0_50%_0_0)]" />
+                      <Star
+                        className={cn(
+                          "absolute inset-0 h-full w-full fill-[#f4b400] stroke-none",
+                          isNailspaPdp ? "[clip-path:inset(0_80%_0_0)]" : "[clip-path:inset(0_50%_0_0)]",
+                        )}
+                      />
                     </span>
                   </div>
-                  <p className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">4.5 out of 5</p>
+                  <p className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                    {isNailspaPdp ? "4.2 out of 5" : "4.5 out of 5"}
+                  </p>
                   <p className="mt-2 text-sm font-medium text-muted-foreground sm:text-base">
                     {isNailspaPdp ? "Highly rated on Amazon" : "14,817 global ratings"}
                   </p>
