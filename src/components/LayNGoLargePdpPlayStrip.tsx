@@ -11,7 +11,9 @@ const TRAVELER_CALLOUT_LIP = "/products/lay-n-go-large-pdp/traveler-callout-lip.
 const FEATURE_OPEN = "/products/lay-n-go-large-pdp/feature-3-open.png";
 const FEATURE_OPEN_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-3-open.png";
 const FEATURE_CINCH = "/products/lay-n-go-large-pdp/feature-4-cinch.png";
+const FEATURE_CINCH_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-4-cinch.png";
 const FEATURE_CARRY = "/products/lay-n-go-large-pdp/feature-5-carry.png";
+const FEATURE_CARRY_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-5-carry.png";
 
 type LayNGoLargePdpPlayStripProps = {
   headlineImageSrc?: string;
@@ -189,8 +191,12 @@ export function LayNGoLargePdpPlayStrip({
 
               <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
                 <img
-                  src={FEATURE_CINCH}
-                  alt="Cinching the Lay-n-Go Large drawstring to gather the mat closed"
+                  src={calloutVariant === "lifestyle-44" ? FEATURE_CINCH_LIFESTYLE : FEATURE_CINCH}
+                  alt={
+                    calloutVariant === "lifestyle-44"
+                      ? "Cinching the Lay-n-Go Lifestyle drawstring to close the black mat bag"
+                      : "Cinching the Lay-n-Go Large drawstring to gather the mat closed"
+                  }
                   className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
                   loading="lazy"
                   decoding="async"
@@ -201,8 +207,12 @@ export function LayNGoLargePdpPlayStrip({
 
               <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
                 <img
-                  src={FEATURE_CARRY}
-                  alt="Carrying the closed Lay-n-Go Large bag with the wide shoulder strap"
+                  src={calloutVariant === "lifestyle-44" ? FEATURE_CARRY_LIFESTYLE : FEATURE_CARRY}
+                  alt={
+                    calloutVariant === "lifestyle-44"
+                      ? "Person wearing the cinched Lay-n-Go Lifestyle 44 inch mat as a backpack against a white studio background"
+                      : "Carrying the closed Lay-n-Go Large bag with the wide shoulder strap"
+                  }
                   className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
                   loading="lazy"
                   decoding="async"

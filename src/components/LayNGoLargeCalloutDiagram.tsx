@@ -130,8 +130,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 44,
       containerMinHClass: "min-h-[min(76.8vh,768px)]",
       heroWidthClass: "w-[min(75.2vw,736px)]",
+      /** Less negative margin than Large so the 44″ line + label sit lower and stay in frame. */
       dimensionWrapClass:
-        "relative z-20 mx-auto -mt-[7.75rem] w-[min(75.2vw,736px)] pt-0 sm:-mt-[8.5rem] md:-mt-[10.25rem] lg:-mt-[11.25rem]",
+        "relative z-20 mx-auto -mt-[4.5rem] w-[min(75.2vw,736px)] pt-0 pb-2 sm:-mt-[5rem] sm:pb-3 md:-mt-[6.25rem] md:pb-4 lg:-mt-[7.25rem] lg:pb-5",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
       meshCalloutSrc: CALLOUT_MESH_LIFESTYLE,
       lipCalloutSrc: CALLOUT_LIP_LIFESTYLE,
@@ -176,16 +177,19 @@ function FloatingCallout({
   editorMode,
   onAnchorPointerDown,
   imageSrcOverride,
+  variant = "large-60",
 }: {
   calloutKey: CalloutKey;
   layout: LayoutState;
   editorMode: boolean;
   onAnchorPointerDown: (e: React.PointerEvent, key: CalloutKey) => void;
   imageSrcOverride?: string;
+  variant?: LayNGoCalloutDiagramVariant;
 }) {
   const { imageSrc, imageAlt, label, textAbove } = CALLOUT_META[calloutKey];
   const thumbSrc = imageSrcOverride ?? imageSrc;
   const { x, y } = layout.anchors[calloutKey];
+  const lifestyleThumb = variant === "lifestyle-44";
 
   const text = (
     <p className="max-w-[13rem] text-center font-heading text-[0.7rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:max-w-[15rem] sm:text-xs md:text-sm">
@@ -194,11 +198,19 @@ function FloatingCallout({
   );
 
   const thumb = (
-    <div className="aspect-square h-[7.25rem] w-[7.25rem] shrink-0 overflow-hidden rounded-full ring-2 ring-white sm:h-32 sm:w-32 md:h-40 md:w-40">
+    <div
+      className={cn(
+        "aspect-square h-[7.25rem] w-[7.25rem] shrink-0 overflow-hidden rounded-full sm:h-32 sm:w-32 md:h-40 md:w-40",
+        lifestyleThumb ? "ring-0" : "ring-2 ring-white",
+      )}
+    >
       <img
         src={thumbSrc}
         alt={imageAlt}
-        className="h-full w-full object-cover"
+        className={cn(
+          "h-full w-full object-cover object-center",
+          lifestyleThumb && "origin-center scale-[1.14]",
+        )}
         loading="lazy"
         decoding="async"
       />
@@ -408,7 +420,12 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       ) : null}
 
       {/* Mobile */}
-      <div className="flex flex-col items-center gap-2 md:hidden">
+      <div
+        className={cn(
+          "flex flex-col items-center gap-2 md:hidden",
+          variant === "lifestyle-44" && "gap-3 pb-6",
+        )}
+      >
         <img
           src={config.heroSrc}
           alt={config.heroAlt}
@@ -416,12 +433,24 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           loading="lazy"
           decoding="async"
         />
-        <DiameterLine inches={config.diameterInches} className={cn("w-full", config.mobileHeroMaxClass)} />
+        <DiameterLine
+          inches={config.diameterInches}
+          className={cn(
+            "w-full",
+            config.mobileHeroMaxClass,
+            variant === "lifestyle-44" && "mt-1 shrink-0 pb-1",
+          )}
+        />
         {(["cord", "mesh", "lip"] as CalloutKey[]).map((k) => {
           const m = CALLOUT_META[k];
           return (
             <div key={k} className="flex flex-col items-center gap-2 px-2">
-              <div className="aspect-square h-32 w-32 shrink-0 overflow-hidden rounded-full ring-2 ring-neutral-100">
+              <div
+                className={cn(
+                  "aspect-square h-32 w-32 shrink-0 overflow-hidden rounded-full",
+                  variant === "lifestyle-44" ? "ring-0" : "ring-2 ring-neutral-100",
+                )}
+              >
                 <img
                   src={
                     k === "cord"
@@ -431,7 +460,10 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                         : config.meshCalloutSrc
                   }
                   alt={m.imageAlt}
-                  className="h-full w-full object-cover"
+                  className={cn(
+                    "h-full w-full object-cover object-center",
+                    variant === "lifestyle-44" && "origin-center scale-[1.14]",
+                  )}
                   loading="lazy"
                   decoding="async"
                 />
@@ -445,7 +477,12 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       </div>
 
       {/* Desktop */}
-      <div className="mx-auto hidden w-full max-w-[1100px] md:block md:px-2">
+      <div
+        className={cn(
+          "mx-auto hidden w-full max-w-[1100px] md:block md:px-2",
+          variant === "lifestyle-44" && "pb-10 md:pb-12",
+        )}
+      >
         <div
           ref={containerRef}
           className={cn("relative mx-auto w-full", config.containerMinHClass)}
@@ -567,6 +604,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               layout={layout}
               editorMode={editorMode}
               onAnchorPointerDown={onAnchorPointerDown}
+              variant={variant}
               imageSrcOverride={
                 k === "cord"
                   ? config.cordCalloutSrc
