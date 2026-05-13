@@ -417,8 +417,8 @@ function CarryingHandleOverlay({
     >
       <div
         className={cn(
-          "absolute cursor-move touch-none rounded-lg border border-neutral-200/60 bg-white/[0.9] px-3 py-2 shadow-md shadow-black/[0.06] backdrop-blur-md sm:px-4 sm:py-2.5",
-          "inline-flex min-w-0 max-w-[min(20rem,calc(100vw-2rem))] flex-col items-start gap-1",
+          "absolute cursor-move touch-none rounded-lg border border-neutral-200/60 bg-white/[0.9] px-3 py-2 shadow-md shadow-black/[0.06] backdrop-blur-md sm:px-5 sm:py-3",
+          "inline-flex min-w-0 w-max max-w-[min(40rem,calc(100vw-2rem))] flex-col items-start gap-1.5 sm:max-w-[min(42rem,calc(100vw-2.5rem))]",
         )}
         style={{ left: `${carryBoxPos.x}%`, top: `${carryBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
         onPointerDown={(e) => {
@@ -439,10 +439,10 @@ function CarryingHandleOverlay({
         onPointerCancel={() => setDragCarryBox(false)}
       >
         {editorMode ? <p className="mb-0.5 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
-        <p className="font-heading text-balance text-base font-bold tracking-tight text-foreground md:text-lg">
+        <p className="font-heading text-base font-bold leading-tight tracking-tight text-foreground sm:text-lg md:text-xl">
           {CARRY_CALLOUT_TITLE}
         </p>
-        <p className="text-pretty text-sm leading-snug text-neutral-700 md:text-[0.95rem] md:leading-snug">
+        <p className="max-w-none text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
           {CARRY_CALLOUT_BODY}
         </p>
       </div>
@@ -778,10 +778,10 @@ export function NailspaPdpStory() {
             {!editorMode ? (
               <div className="relative z-10 mx-auto mt-0 flex w-full max-w-none flex-col gap-2 px-0 pt-1 md:hidden">
                 <div className={cn(NAILSPA_STACKED_CALLOUT, "w-full px-3 py-2")}>
-                  <p className="font-heading text-balance text-base font-bold tracking-tight text-foreground">
+                  <p className="font-heading text-base font-bold leading-tight tracking-tight text-foreground sm:text-lg">
                     {CARRY_CALLOUT_TITLE}
                   </p>
-                  <p className="mt-1 text-pretty text-sm leading-snug text-neutral-700">{CARRY_CALLOUT_BODY}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">{CARRY_CALLOUT_BODY}</p>
                 </div>
                 <div className={cn(NAILSPA_STACKED_CALLOUT, "px-3 py-2")}>
                   <h3 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">

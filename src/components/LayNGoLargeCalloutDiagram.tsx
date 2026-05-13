@@ -128,7 +128,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       containerMinHClass: "min-h-[min(76.8vh,768px)]",
       heroWidthClass: "w-[min(75.2vw,736px)]",
       dimensionWrapClass:
-        "relative z-20 mx-auto -mt-[6.6rem] w-[min(75.2vw,736px)] pt-0 sm:-mt-[7.2rem] md:-mt-[8.8rem] lg:-mt-[9.6rem]",
+        "relative z-20 mx-auto -mt-[7.75rem] w-[min(75.2vw,736px)] pt-0 sm:-mt-[8.5rem] md:-mt-[10.25rem] lg:-mt-[11.25rem]",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
     };
   }
@@ -141,7 +141,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
     containerMinHClass: "min-h-[min(96vh,960px)]",
     heroWidthClass: "w-[min(94vw,920px)]",
     dimensionWrapClass:
-      "relative z-20 mx-auto -mt-[8.25rem] w-[min(94vw,920px)] pt-0 sm:-mt-36 md:-mt-44 lg:-mt-48",
+      "relative z-20 mx-auto -mt-[9.5rem] w-[min(94vw,920px)] pt-0 sm:-mt-40 md:-mt-48 lg:-mt-52",
     mobileHeroMaxClass: "max-w-lg",
   };
 }
@@ -150,9 +150,9 @@ function DiameterLine({ inches, className }: { inches: number; className?: strin
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
       <div className="flex w-full max-w-md items-end justify-center sm:max-w-lg">
-        <div className="h-12 w-px shrink-0 bg-neutral-900 sm:h-14 md:h-16" aria-hidden />
+        <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
         <div className="mb-0 h-px min-w-0 flex-1 bg-neutral-900" aria-hidden />
-        <div className="h-12 w-px shrink-0 bg-neutral-900 sm:h-14 md:h-16" aria-hidden />
+        <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
       </div>
       <p className="mt-1 font-heading text-lg font-semibold tabular-nums text-neutral-900 sm:text-xl">
         {inches}&quot;
@@ -314,21 +314,33 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
       if (k === "mesh") {
-        // Apex on mat at dot; two ends on callout circle, symmetric about anchor→dot so the wedge is centered on the left side of the circle.
+        // Four pocket markers on the mat (offsets from mesh drag point) → four rim hits on the callout circle, symmetric in angle.
         const toward = unitToward(a.x, a.y, d.x, d.y);
-        const spread = (7 * Math.PI) / 180;
-        const uU = rotateVec(toward.x, toward.y, spread);
-        const uL = rotateVec(toward.x, toward.y, -spread);
-        const meshUpperEnd = { x: a.x + uU.x * R, y: a.y + uU.y * R };
-        const meshLowerEnd = { x: a.x + uL.x * R, y: a.y + uL.y * R };
+        const spreadDeg = [-17, -5.5, 5.5, 17];
+        const pocketOffsets = [
+          { ox: -3.2, oy: -42 },
+          { ox: 3.2, oy: -42 },
+          { ox: -3.2, oy: -2.2 },
+          { ox: 3.2, oy: -2.2 },
+        ];
+        const starts = pocketOffsets.map(({ ox, oy }) => ({
+          x: clamp(d.x + ox, 2, 98),
+          y: clamp(d.y + oy, 2, 98),
+        }));
+        const ends = spreadDeg.map((deg) => {
+          const rad = (deg * Math.PI) / 180;
+          const u = rotateVec(toward.x, toward.y, rad);
+          return { x: a.x + u.x * R, y: a.y + u.y * R };
+        });
+        const meshFan = starts.map((s, i) => ({ x1: s.x, y1: s.y, x2: ends[i].x, y2: ends[i].y }));
         return {
           k,
           x1: d.x,
           y1: d.y,
           x2: end.x,
           y2: end.y,
-          meshUpperEnd,
-          meshLowerEnd,
+          meshFan,
+          meshPocketDots: starts,
         };
       }
       return { k, x1: d.x, y1: d.y, x2: end.x, y2: end.y };
@@ -437,49 +449,33 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             preserveAspectRatio="none"
             aria-hidden
           >
-            {lineEnds.map(({ k, x1, y1, x2, y2, meshUpperEnd, meshLowerEnd }) =>
-              k === "mesh" && meshUpperEnd && meshLowerEnd ? (
+            {lineEnds.map(({ k, x1, y1, x2, y2, meshFan }) =>
+              k === "mesh" && meshFan ? (
                 <g key={k}>
-                  <line
-                    x1={x1}
-                    y1={y1}
-                    x2={meshUpperEnd.x}
-                    y2={meshUpperEnd.y}
-                    stroke="black"
-                    strokeWidth="1.02"
-                    strokeLinecap="round"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  <line
-                    x1={x1}
-                    y1={y1}
-                    x2={meshUpperEnd.x}
-                    y2={meshUpperEnd.y}
-                    stroke="white"
-                    strokeWidth="0.58"
-                    strokeLinecap="round"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  <line
-                    x1={x1}
-                    y1={y1}
-                    x2={meshLowerEnd.x}
-                    y2={meshLowerEnd.y}
-                    stroke="black"
-                    strokeWidth="1.02"
-                    strokeLinecap="round"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  <line
-                    x1={x1}
-                    y1={y1}
-                    x2={meshLowerEnd.x}
-                    y2={meshLowerEnd.y}
-                    stroke="white"
-                    strokeWidth="0.58"
-                    strokeLinecap="round"
-                    vectorEffect="non-scaling-stroke"
-                  />
+                  {meshFan.map((ln, i) => (
+                    <g key={`mesh-${i}`}>
+                      <line
+                        x1={ln.x1}
+                        y1={ln.y1}
+                        x2={ln.x2}
+                        y2={ln.y2}
+                        stroke="black"
+                        strokeWidth="1.02"
+                        strokeLinecap="round"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                      <line
+                        x1={ln.x1}
+                        y1={ln.y1}
+                        x2={ln.x2}
+                        y2={ln.y2}
+                        stroke="white"
+                        strokeWidth="0.58"
+                        strokeLinecap="round"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                    </g>
+                  ))}
                 </g>
               ) : (
                 <line
@@ -496,6 +492,26 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               ),
             )}
           </svg>
+
+          {(() => {
+            const meshSeg = lineEnds.find((s) => s.k === "mesh");
+            const pts =
+              meshSeg && "meshPocketDots" in meshSeg && Array.isArray(meshSeg.meshPocketDots)
+                ? meshSeg.meshPocketDots
+                : null;
+            if (!pts?.length) return null;
+            return (
+              <div className="pointer-events-none absolute inset-0 z-[24]" aria-hidden>
+                {pts.map((pt, i) => (
+                  <span
+                    key={`mesh-pocket-${i}`}
+                    className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-md ring-1 ring-white"
+                    style={{ left: `${pt.x}%`, top: `${pt.y}%` }}
+                  />
+                ))}
+              </div>
+            );
+          })()}
 
           <div
             className={cn(
