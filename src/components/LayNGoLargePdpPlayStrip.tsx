@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { LayNGoLargeCalloutDiagram } from "@/components/LayNGoLargeCalloutDiagram";
+import { LayNGoLargeCalloutDiagram, type LayNGoCalloutDiagramVariant } from "@/components/LayNGoLargeCalloutDiagram";
 
 const HEADLINE = "Your whole routine. One pull to pack it up.";
 const HEADLINE_IMAGE = "/products/lay-n-go-large-pdp/play-blue.png";
@@ -17,6 +17,7 @@ type LayNGoLargePdpPlayStripProps = {
   showLowerSections?: boolean;
   forceHeadlineSingleLine?: boolean;
   showTravelerCalloutSection?: boolean;
+  calloutVariant?: LayNGoCalloutDiagramVariant;
 };
 
 function TravelerDetailCalloutSection() {
@@ -133,6 +134,7 @@ export function LayNGoLargePdpPlayStrip({
   showLowerSections = true,
   forceHeadlineSingleLine = false,
   showTravelerCalloutSection = false,
+  calloutVariant = "large-60",
 }: LayNGoLargePdpPlayStripProps) {
   return (
     <section
@@ -204,7 +206,7 @@ export function LayNGoLargePdpPlayStrip({
             </div>
           </div>
 
-          <LayNGoLargeCalloutDiagram />
+          <LayNGoLargeCalloutDiagram variant={calloutVariant} />
         </>
       ) : null}
     </section>

@@ -5,11 +5,18 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const HERO_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/hero-callout-main.png";
+const HERO_CALLOUT_LIFESTYLE = "/products/lay-n-go-lifestyle-44/hero-callout-main.png";
 const CALLOUT_CORD = "/products/lay-n-go-large-pdp/callout-cord-pocket.png";
 const CALLOUT_MESH = "/products/lay-n-go-large-pdp/callout-mesh-pockets.png";
 const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 
-const STORAGE_KEY = "lay-n-go-large-callout-layout-v5";
+const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
+const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v1";
+
+const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
+const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
+
+export type LayNGoCalloutDiagramVariant = "large-60" | "lifestyle-44";
 
 type CalloutKey = "cord" | "lip" | "mesh";
 
@@ -61,9 +68,9 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-function loadLayout(): LayoutState {
+function loadLayout(storageKey: string): LayoutState {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey);
     if (!raw) return DEFAULT_LAYOUT;
     const parsed = JSON.parse(raw) as Partial<LayoutState>;
     const dots: Partial<Record<CalloutKey, Pt>> = parsed.dots ?? {};
@@ -95,15 +102,61 @@ function shortenToward(ax: number, ay: number, tx: number, ty: number, radius: n
   return { x: ax + ux * radius, y: ay + uy * radius };
 }
 
-function DimensionSixtyInch({ className }: { className?: string }) {
+/** Unit vector from A toward B (viewBox 0–100). */
+function unitToward(ax: number, ay: number, bx: number, by: number) {
+  const dx = bx - ax;
+  const dy = by - ay;
+  const len = Math.hypot(dx, dy) || 1;
+  return { x: dx / len, y: dy / len };
+}
+
+function rotateVec(ux: number, uy: number, rad: number) {
+  const c = Math.cos(rad);
+  const s = Math.sin(rad);
+  return { x: ux * c - uy * s, y: ux * s + uy * c };
+}
+
+function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
+  if (variant === "lifestyle-44") {
+    return {
+      storageKey: STORAGE_KEY_LIFESTYLE,
+      layoutEvent: LAYOUT_SYNC_EVENT_LIFESTYLE,
+      heroSrc: HERO_CALLOUT_LIFESTYLE,
+      heroAlt:
+        "Lay-n-Go Lifestyle 44 inch backpack activity play mat from above with building blocks, mesh pockets, and straps",
+      diameterInches: 44,
+      containerMinHClass: "min-h-[min(76.8vh,768px)]",
+      heroWidthClass: "w-[min(75.2vw,736px)]",
+      dimensionWrapClass:
+        "relative z-20 mx-auto -mt-[6.6rem] w-[min(75.2vw,736px)] pt-0 sm:-mt-[7.2rem] md:-mt-[8.8rem] lg:-mt-[9.6rem]",
+      mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
+    };
+  }
+  return {
+    storageKey: STORAGE_KEY_LARGE,
+    layoutEvent: LAYOUT_SYNC_EVENT_LARGE,
+    heroSrc: HERO_CALLOUT_MAIN,
+    heroAlt: "Lay-n-Go Large 60 inch activity mat from above, filled with building blocks",
+    diameterInches: 60,
+    containerMinHClass: "min-h-[min(96vh,960px)]",
+    heroWidthClass: "w-[min(94vw,920px)]",
+    dimensionWrapClass:
+      "relative z-20 mx-auto -mt-[8.25rem] w-[min(94vw,920px)] pt-0 sm:-mt-36 md:-mt-44 lg:-mt-48",
+    mobileHeroMaxClass: "max-w-lg",
+  };
+}
+
+function DiameterLine({ inches, className }: { inches: number; className?: string }) {
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
       <div className="flex w-full max-w-md items-end justify-center sm:max-w-lg">
-        <div className="h-3 w-px shrink-0 bg-neutral-900" aria-hidden />
+        <div className="h-12 w-px shrink-0 bg-neutral-900 sm:h-14 md:h-16" aria-hidden />
         <div className="mb-0 h-px min-w-0 flex-1 bg-neutral-900" aria-hidden />
-        <div className="h-3 w-px shrink-0 bg-neutral-900" aria-hidden />
+        <div className="h-12 w-px shrink-0 bg-neutral-900 sm:h-14 md:h-16" aria-hidden />
       </div>
-      <p className="mt-1 font-heading text-lg font-semibold tabular-nums text-neutral-900 sm:text-xl">60&quot;</p>
+      <p className="mt-1 font-heading text-lg font-semibold tabular-nums text-neutral-900 sm:text-xl">
+        {inches}&quot;
+      </p>
     </div>
   );
 }
@@ -169,14 +222,22 @@ function FloatingCallout({
   );
 }
 
-function LargeCalloutEditorToolbar({ getLayout }: { getLayout: () => LayoutState }) {
+function LargeCalloutEditorToolbar({
+  getLayout,
+  storageKey,
+  layoutSyncEvent,
+}: {
+  getLayout: () => LayoutState;
+  storageKey: string;
+  layoutSyncEvent: string;
+}) {
   const navigate = useNavigate();
   const location = useLocation();
 
   const save = () => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(getLayout()));
-      window.dispatchEvent(new Event("lay-n-go-large-callout-layout"));
+      localStorage.setItem(storageKey, JSON.stringify(getLayout()));
+      window.dispatchEvent(new Event(layoutSyncEvent));
       toast.success("Saved layout in this browser");
     } catch {
       toast.error("Could not save");
@@ -219,25 +280,32 @@ function LargeCalloutEditorToolbar({ getLayout }: { getLayout: () => LayoutState
   );
 }
 
-export function LayNGoLargeCalloutDiagram() {
+type LayNGoLargeCalloutDiagramProps = {
+  variant?: LayNGoCalloutDiagramVariant;
+};
+
+export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeCalloutDiagramProps) {
   const [searchParams] = useSearchParams();
   const editorMode = searchParams.get("editLargeCallouts") === "1" || searchParams.get("editLargeCallouts") === "true";
 
-  const [layout, setLayout] = useState<LayoutState>(() => loadLayout());
+  const config = useMemo(() => diagramConfig(variant), [variant]);
+
+  const [layout, setLayout] = useState<LayoutState>(() => loadLayout(diagramConfig(variant).storageKey));
   const layoutRef = useRef(layout);
   layoutRef.current = layout;
   const containerRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ kind: "dot" | "anchor"; key: CalloutKey } | null>(null);
 
   useEffect(() => {
-    const sync = () => setLayout(loadLayout());
-    window.addEventListener("lay-n-go-large-callout-layout", sync);
+    const sync = () => setLayout(loadLayout(config.storageKey));
+    sync();
+    window.addEventListener(config.layoutEvent, sync);
     window.addEventListener("storage", sync);
     return () => {
-      window.removeEventListener("lay-n-go-large-callout-layout", sync);
+      window.removeEventListener(config.layoutEvent, sync);
       window.removeEventListener("storage", sync);
     };
-  }, []);
+  }, [config.storageKey, config.layoutEvent]);
 
   const lineEnds = useMemo(() => {
     const R = 5.5;
@@ -246,16 +314,21 @@ export function LayNGoLargeCalloutDiagram() {
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
       if (k === "mesh") {
-        const meshUpperStart = { x: d.x + 0.25, y: d.y - 42 };
-        const meshLowerStart = { x: d.x + 1.2, y: d.y - 2 };
+        // Apex on mat at dot; two ends on callout circle, symmetric about anchor→dot so the wedge is centered on the left side of the circle.
+        const toward = unitToward(a.x, a.y, d.x, d.y);
+        const spread = (7 * Math.PI) / 180;
+        const uU = rotateVec(toward.x, toward.y, spread);
+        const uL = rotateVec(toward.x, toward.y, -spread);
+        const meshUpperEnd = { x: a.x + uU.x * R, y: a.y + uU.y * R };
+        const meshLowerEnd = { x: a.x + uL.x * R, y: a.y + uL.y * R };
         return {
           k,
           x1: d.x,
           y1: d.y,
           x2: end.x,
           y2: end.y,
-          meshUpperStart,
-          meshLowerStart,
+          meshUpperEnd,
+          meshLowerEnd,
         };
       }
       return { k, x1: d.x, y1: d.y, x2: end.x, y2: end.y };
@@ -310,7 +383,7 @@ export function LayNGoLargeCalloutDiagram() {
   return (
     <div
       className="mx-auto mt-14 max-w-6xl border-t border-neutral-200/80 pt-12 sm:mt-16 sm:pt-14"
-      aria-label="Lay-n-Go Large product details"
+      aria-label={variant === "lifestyle-44" ? "Lay-n-Go Lifestyle product details" : "Lay-n-Go Large product details"}
     >
       {editorMode ? (
         <div className="sticky top-0 z-[250] mb-4 border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
@@ -321,13 +394,13 @@ export function LayNGoLargeCalloutDiagram() {
       {/* Mobile */}
       <div className="flex flex-col items-center gap-2 md:hidden">
         <img
-          src={HERO_CALLOUT_MAIN}
-          alt="Lay-n-Go Large 60 inch activity mat from above, filled with building blocks"
-          className="w-full max-w-lg object-contain"
+          src={config.heroSrc}
+          alt={config.heroAlt}
+          className={cn("w-full object-contain", config.mobileHeroMaxClass)}
           loading="lazy"
           decoding="async"
         />
-        <DimensionSixtyInch className="w-full max-w-lg" />
+        <DiameterLine inches={config.diameterInches} className={cn("w-full", config.mobileHeroMaxClass)} />
         {(["cord", "mesh", "lip"] as CalloutKey[]).map((k) => {
           const m = CALLOUT_META[k];
           return (
@@ -353,7 +426,7 @@ export function LayNGoLargeCalloutDiagram() {
       <div className="mx-auto hidden w-full max-w-[1100px] md:block md:px-2">
         <div
           ref={containerRef}
-          className="relative mx-auto min-h-[min(96vh,960px)] w-full"
+          className={cn("relative mx-auto w-full", config.containerMinHClass)}
           onPointerMove={editorMode ? onPointerMove : undefined}
           onPointerUp={editorMode ? (e) => endDrag(e) : undefined}
           onPointerCancel={editorMode ? (e) => endDrag(e) : undefined}
@@ -364,44 +437,44 @@ export function LayNGoLargeCalloutDiagram() {
             preserveAspectRatio="none"
             aria-hidden
           >
-            {lineEnds.map(({ k, x1, y1, x2, y2, meshUpperStart, meshLowerStart }) =>
-              k === "mesh" ? (
+            {lineEnds.map(({ k, x1, y1, x2, y2, meshUpperEnd, meshLowerEnd }) =>
+              k === "mesh" && meshUpperEnd && meshLowerEnd ? (
                 <g key={k}>
                   <line
-                    x1={meshUpperStart!.x}
-                    y1={meshUpperStart!.y}
-                    x2={x2}
-                    y2={y2}
+                    x1={x1}
+                    y1={y1}
+                    x2={meshUpperEnd.x}
+                    y2={meshUpperEnd.y}
                     stroke="black"
                     strokeWidth="1.02"
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
                   />
                   <line
-                    x1={meshUpperStart!.x}
-                    y1={meshUpperStart!.y}
-                    x2={x2}
-                    y2={y2}
+                    x1={x1}
+                    y1={y1}
+                    x2={meshUpperEnd.x}
+                    y2={meshUpperEnd.y}
                     stroke="white"
                     strokeWidth="0.58"
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
                   />
                   <line
-                    x1={meshLowerStart!.x}
-                    y1={meshLowerStart!.y}
-                    x2={x2}
-                    y2={y2}
+                    x1={x1}
+                    y1={y1}
+                    x2={meshLowerEnd.x}
+                    y2={meshLowerEnd.y}
                     stroke="black"
                     strokeWidth="1.02"
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
                   />
                   <line
-                    x1={meshLowerStart!.x}
-                    y1={meshLowerStart!.y}
-                    x2={x2}
-                    y2={y2}
+                    x1={x1}
+                    y1={y1}
+                    x2={meshLowerEnd.x}
+                    y2={meshLowerEnd.y}
                     stroke="white"
                     strokeWidth="0.58"
                     strokeLinecap="round"
@@ -424,27 +497,15 @@ export function LayNGoLargeCalloutDiagram() {
             )}
           </svg>
 
-          {lineEnds
-            .filter((seg) => seg.k === "mesh" && seg.meshUpperStart && seg.meshLowerStart)
-            .map((seg) => (
-              <div key="mesh-fork-dots" className="pointer-events-none absolute inset-0 z-[24]">
-                <span
-                  className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white"
-                  style={{ left: `${seg.meshUpperStart!.x}%`, top: `${seg.meshUpperStart!.y}%` }}
-                  aria-hidden
-                />
-                <span
-                  className="absolute h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white"
-                  style={{ left: `${seg.meshLowerStart!.x}%`, top: `${seg.meshLowerStart!.y}%` }}
-                  aria-hidden
-                />
-              </div>
-            ))}
-
-          <div className="pointer-events-none absolute left-1/2 top-1/2 z-10 w-[min(94vw,920px)] -translate-x-1/2 -translate-y-1/2">
+          <div
+            className={cn(
+              "pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2",
+              config.heroWidthClass,
+            )}
+          >
             <img
-              src={HERO_CALLOUT_MAIN}
-              alt="Lay-n-Go Large 60 inch activity mat from above, filled with building blocks"
+              src={config.heroSrc}
+              alt={config.heroAlt}
               className="relative z-10 w-full object-contain"
               loading="lazy"
               decoding="async"
@@ -488,12 +549,18 @@ export function LayNGoLargeCalloutDiagram() {
           ))}
         </div>
 
-        <div className="mx-auto -mt-[7.5rem] w-[min(94vw,920px)] pt-0 sm:-mt-32 md:-mt-40 lg:-mt-44">
-          <DimensionSixtyInch />
+        <div className={config.dimensionWrapClass}>
+          <DiameterLine inches={config.diameterInches} />
         </div>
       </div>
 
-      {editorMode ? <LargeCalloutEditorToolbar getLayout={() => layoutRef.current} /> : null}
+      {editorMode ? (
+        <LargeCalloutEditorToolbar
+          getLayout={() => layoutRef.current}
+          storageKey={config.storageKey}
+          layoutSyncEvent={config.layoutEvent}
+        />
+      ) : null}
     </div>
   );
 }

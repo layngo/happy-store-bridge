@@ -59,6 +59,17 @@ const LAY_N_GO_LARGE_60_BULLETS = [
   "Toys not included",
 ] as const;
 
+const LAY_N_GO_LIFESTYLE_44_BULLETS = [
+  `44" diameter backpack activity play mat with patented raised lip to keep toys contained`,
+  "Play for hours, clean up in seconds — just pull the drawstring and it cinches completely closed",
+  "Convenient backpack straps plus an extra handle for carrying, hanging, or storing",
+  "4 mesh velcroed interior pockets for storing special pieces",
+  "Additional purple inner rip-stop liner",
+  "Machine washable",
+  "4-in-1: activity mat, cleanup, storage, and carry-all in one",
+  "Toys not included",
+] as const;
+
 const COSMO_AUTOPLAY_YOUTUBE_ID = "G3E80xl9lSM";
 const COSMO_AMAZON_REVIEWS_URL =
   "https://www.amazon.com/Lay-n-Go-Cosmo-Cosmetic-Bag-Black/dp/B00B04V3PQ/ref=sr_1_2?crid=319SA2P59OD6R&dib=eyJ2IjoiMSJ9.yZpPmIN6c0isZ7qkwNkUWg.XsRHQlPyJ9UrcTBLmVdjiQ0rxRkojK3Ksfzjf7LjOYg&dib_tag=se&keywords=cosmo%2Blayngo&qid=1778181094&sprefix=cosmo%2Blayng%2Caps%2C106&sr=8-2&th=1#averageCustomerReviewsAnchor";
@@ -328,6 +339,7 @@ const ProductDetail = () => {
   );
   const layNGoHandle = product?.handle.toLowerCase() ?? "";
   const isLayNGoLarge60 = layNGoHandle === "lay-n-go-large-60";
+  const isLayNGoLifestyle44 = layNGoHandle === "lay-n-go-lifestyle-44";
   const hasLayNGoLargeStoryLayout =
     layNGoHandle === "lay-n-go-large-60" ||
     layNGoHandle === "lay-n-go-lifestyle-44" ||
@@ -482,7 +494,7 @@ const ProductDetail = () => {
       className={cn(
         "h-full w-full max-h-full object-contain",
         isLayNGoLarge60 &&
-          "max-md:h-auto max-md:max-h-[min(58vmin,380px)] max-md:w-full max-md:min-w-0 max-md:max-w-full max-md:object-contain",
+          "max-md:h-auto max-md:max-h-[min(62vmin,410px)] max-md:w-full max-md:min-w-0 max-md:max-w-full max-md:object-contain",
       )}
     />
   ) : orderedImages[selectedImage]?.node ? (
@@ -819,7 +831,7 @@ const ProductDetail = () => {
                     className={cn(
                       "relative flex aspect-square w-full min-w-0 items-center justify-center overflow-hidden bg-white lg:mx-auto lg:max-h-[min(92vh,920px)]",
                       isLayNGoLarge60 &&
-                        "max-md:aspect-auto max-md:max-h-[min(58vmin,400px)] max-md:min-h-[200px] max-md:py-2",
+                        "max-md:aspect-auto max-md:max-h-[min(62vmin,430px)] max-md:min-h-[200px] max-md:py-2",
                     )}
                   >
                     {mainHeroImage}
@@ -847,12 +859,14 @@ const ProductDetail = () => {
                   </div>
 
                   <div ref={primaryAddToCartRef}>{addToCartButtonCosmo}</div>
-                  {isLayNGoLarge60 ? (
+                  {isLayNGoLarge60 || isLayNGoLifestyle44 ? (
                     <ul
                       className="mt-5 list-disc space-y-2.5 pl-5 text-left text-sm font-medium leading-relaxed text-neutral-700 marker:text-neutral-900"
-                      aria-label="Lay-n-Go Large highlights"
+                      aria-label={
+                        isLayNGoLarge60 ? "Lay-n-Go Large highlights" : "Lay-n-Go Lifestyle highlights"
+                      }
                     >
-                      {LAY_N_GO_LARGE_60_BULLETS.map((line) => (
+                      {(isLayNGoLarge60 ? LAY_N_GO_LARGE_60_BULLETS : LAY_N_GO_LIFESTYLE_44_BULLETS).map((line) => (
                         <li key={line} className="pl-0.5">
                           {line}
                         </li>
@@ -871,6 +885,7 @@ const ProductDetail = () => {
                 headlineImageSrc={
                   isLayNGoTraveler20 ? "/products/lay-n-go-large-pdp/traveler-hero.png" : undefined
                 }
+                calloutVariant={isLayNGoLifestyle44 ? "lifestyle-44" : "large-60"}
               />
             ) : null}
 
