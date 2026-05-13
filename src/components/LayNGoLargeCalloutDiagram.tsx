@@ -14,7 +14,7 @@ const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containment-lip.png";
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
-const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v1";
+const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v2";
 
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
@@ -40,6 +40,20 @@ const DEFAULT_LAYOUT: LayoutState = {
     cord: { x: 50, y: 10 },
     lip: { x: 12, y: 48 },
     mesh: { x: 86, y: 46 },
+  },
+};
+
+/** Lifestyle: cord callout sits higher; dot nudged so the leader line still reads cleanly. */
+const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
+  dots: {
+    cord: { x: 50, y: 18 },
+    lip: DEFAULT_LAYOUT.dots.lip,
+    mesh: DEFAULT_LAYOUT.dots.mesh,
+  },
+  anchors: {
+    cord: { x: 50, y: 2 },
+    lip: DEFAULT_LAYOUT.anchors.lip,
+    mesh: DEFAULT_LAYOUT.anchors.mesh,
   },
 };
 
@@ -71,27 +85,27 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-function loadLayout(storageKey: string): LayoutState {
+function loadLayout(storageKey: string, fallback: LayoutState = DEFAULT_LAYOUT): LayoutState {
   try {
     const raw = localStorage.getItem(storageKey);
-    if (!raw) return DEFAULT_LAYOUT;
+    if (!raw) return fallback;
     const parsed = JSON.parse(raw) as Partial<LayoutState>;
     const dots: Partial<Record<CalloutKey, Pt>> = parsed.dots ?? {};
     const anchors: Partial<Record<CalloutKey, Pt>> = parsed.anchors ?? {};
     return {
       dots: {
-        cord: dots.cord ?? DEFAULT_LAYOUT.dots.cord,
-        lip: dots.lip ?? DEFAULT_LAYOUT.dots.lip,
-        mesh: dots.mesh ?? DEFAULT_LAYOUT.dots.mesh,
+        cord: dots.cord ?? fallback.dots.cord,
+        lip: dots.lip ?? fallback.dots.lip,
+        mesh: dots.mesh ?? fallback.dots.mesh,
       },
       anchors: {
-        cord: anchors.cord ?? DEFAULT_LAYOUT.anchors.cord,
-        lip: anchors.lip ?? DEFAULT_LAYOUT.anchors.lip,
-        mesh: anchors.mesh ?? DEFAULT_LAYOUT.anchors.mesh,
+        cord: anchors.cord ?? fallback.anchors.cord,
+        lip: anchors.lip ?? fallback.anchors.lip,
+        mesh: anchors.mesh ?? fallback.anchors.mesh,
       },
     };
   } catch {
-    return DEFAULT_LAYOUT;
+    return fallback;
   }
 }
 
@@ -130,9 +144,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 44,
       containerMinHClass: "min-h-[min(76.8vh,768px)]",
       heroWidthClass: "w-[min(75.2vw,736px)]",
-      /** Less negative margin than Large so the 44″ line + label sit lower and stay in frame. */
+      /** Pull up less than before + top padding so ticks clear the mat; pb keeps 44″ visible. */
       dimensionWrapClass:
-        "relative z-20 mx-auto -mt-[4.5rem] w-[min(75.2vw,736px)] pt-0 pb-2 sm:-mt-[5rem] sm:pb-3 md:-mt-[6.25rem] md:pb-4 lg:-mt-[7.25rem] lg:pb-5",
+        "relative z-20 mx-auto -mt-[3.25rem] w-[min(75.2vw,736px)] pt-5 pb-2 sm:-mt-[3.75rem] sm:pt-6 sm:pb-3 md:-mt-[5rem] md:pt-7 md:pb-4 lg:-mt-[6rem] lg:pt-8 lg:pb-5",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
       meshCalloutSrc: CALLOUT_MESH_LIFESTYLE,
       lipCalloutSrc: CALLOUT_LIP_LIFESTYLE,
@@ -156,7 +170,16 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
   };
 }
 
-function DiameterLine({ inches, className }: { inches: number; className?: string }) {
+function DiameterLine({
+  inches,
+  className,
+  variant = "large-60",
+}: {
+  inches: number;
+  className?: string;
+  variant?: LayNGoCalloutDiagramVariant;
+}) {
+  const lifestyle = variant === "lifestyle-44";
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
       <div className="flex w-full max-w-md items-end justify-center sm:max-w-lg">
@@ -164,7 +187,12 @@ function DiameterLine({ inches, className }: { inches: number; className?: strin
         <div className="mb-0 h-px min-w-0 flex-1 bg-neutral-900" aria-hidden />
         <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
       </div>
-      <p className="mt-1 font-heading text-lg font-semibold tabular-nums text-neutral-900 sm:text-xl">
+      <p
+        className={cn(
+          "font-heading font-semibold tabular-nums text-neutral-900",
+          lifestyle ? "mt-2 text-xl sm:text-2xl" : "mt-1 text-lg sm:text-xl",
+        )}
+      >
         {inches}&quot;
       </p>
     </div>
@@ -190,6 +218,9 @@ function FloatingCallout({
   const thumbSrc = imageSrcOverride ?? imageSrc;
   const { x, y } = layout.anchors[calloutKey];
   const lifestyleThumb = variant === "lifestyle-44";
+  const cordLifestyleCompact = lifestyleThumb && calloutKey === "cord";
+  const lipLifestyleTightCrop = lifestyleThumb && calloutKey === "lip";
+  const meshLifestyleTightCrop = lifestyleThumb && calloutKey === "mesh";
 
   const text = (
     <p className="max-w-[13rem] text-center font-heading text-[0.7rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:max-w-[15rem] sm:text-xs md:text-sm">
@@ -200,8 +231,11 @@ function FloatingCallout({
   const thumb = (
     <div
       className={cn(
-        "aspect-square h-[7.25rem] w-[7.25rem] shrink-0 overflow-hidden rounded-full sm:h-32 sm:w-32 md:h-40 md:w-40",
-        lifestyleThumb ? "ring-0" : "ring-2 ring-white",
+        "aspect-square shrink-0 overflow-hidden rounded-full",
+        cordLifestyleCompact
+          ? "h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32"
+          : "h-[7.25rem] w-[7.25rem] sm:h-32 sm:w-32 md:h-40 md:w-40",
+        lifestyleThumb ? "ring-0 shadow-none" : "ring-2 ring-white",
       )}
     >
       <img
@@ -209,7 +243,9 @@ function FloatingCallout({
         alt={imageAlt}
         className={cn(
           "h-full w-full object-cover object-center",
-          lifestyleThumb && "origin-center scale-[1.14]",
+          cordLifestyleCompact && "origin-center scale-[1.26] object-[center_18%]",
+          lipLifestyleTightCrop && "origin-center scale-[1.24] object-[30%_center]",
+          meshLifestyleTightCrop && "origin-center scale-[1.24] object-[58%_center]",
         )}
         loading="lazy"
         decoding="async"
@@ -314,14 +350,21 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
 
   const config = useMemo(() => diagramConfig(variant), [variant]);
 
-  const [layout, setLayout] = useState<LayoutState>(() => loadLayout(diagramConfig(variant).storageKey));
+  const fallbackLayout = useMemo(
+    () => (variant === "lifestyle-44" ? DEFAULT_LAYOUT_LIFESTYLE : DEFAULT_LAYOUT),
+    [variant],
+  );
+
+  const [layout, setLayout] = useState<LayoutState>(() =>
+    loadLayout(diagramConfig(variant).storageKey, fallbackLayout),
+  );
   const layoutRef = useRef(layout);
   layoutRef.current = layout;
   const containerRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{ kind: "dot" | "anchor"; key: CalloutKey } | null>(null);
 
   useEffect(() => {
-    const sync = () => setLayout(loadLayout(config.storageKey));
+    const sync = () => setLayout(loadLayout(config.storageKey, fallbackLayout));
     sync();
     window.addEventListener(config.layoutEvent, sync);
     window.addEventListener("storage", sync);
@@ -329,7 +372,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       window.removeEventListener(config.layoutEvent, sync);
       window.removeEventListener("storage", sync);
     };
-  }, [config.storageKey, config.layoutEvent]);
+  }, [config.storageKey, config.layoutEvent, fallbackLayout]);
 
   const lineEnds = useMemo(() => {
     const R = 5.5;
@@ -435,10 +478,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         />
         <DiameterLine
           inches={config.diameterInches}
+          variant={variant}
           className={cn(
             "w-full",
             config.mobileHeroMaxClass,
-            variant === "lifestyle-44" && "mt-1 shrink-0 pb-1",
+            variant === "lifestyle-44" && "mt-2 shrink-0 pb-1",
           )}
         />
         {(["cord", "mesh", "lip"] as CalloutKey[]).map((k) => {
@@ -447,8 +491,9 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             <div key={k} className="flex flex-col items-center gap-2 px-2">
               <div
                 className={cn(
-                  "aspect-square h-32 w-32 shrink-0 overflow-hidden rounded-full",
-                  variant === "lifestyle-44" ? "ring-0" : "ring-2 ring-neutral-100",
+                  "aspect-square shrink-0 overflow-hidden rounded-full",
+                  variant === "lifestyle-44" ? "ring-0 shadow-none" : "ring-2 ring-neutral-100",
+                  variant === "lifestyle-44" && k === "cord" ? "h-28 w-28" : "h-32 w-32",
                 )}
               >
                 <img
@@ -462,7 +507,9 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                   alt={m.imageAlt}
                   className={cn(
                     "h-full w-full object-cover object-center",
-                    variant === "lifestyle-44" && "origin-center scale-[1.14]",
+                    variant === "lifestyle-44" && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",
+                    variant === "lifestyle-44" && k === "lip" && "origin-center scale-[1.24] object-[30%_center]",
+                    variant === "lifestyle-44" && k === "mesh" && "origin-center scale-[1.24] object-[58%_center]",
                   )}
                   loading="lazy"
                   decoding="async"
@@ -619,7 +666,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         </div>
 
         <div className={config.dimensionWrapClass}>
-          <DiameterLine inches={config.diameterInches} />
+          <DiameterLine inches={config.diameterInches} variant={variant} />
         </div>
       </div>
 
