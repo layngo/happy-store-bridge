@@ -31,7 +31,7 @@ type ArrowPointKey = keyof Pick<ArrowGeom, "start" | "control" | "end">;
 type CordBoxPos = { right: number; bottom: number };
 type BoxPos = { x: number; y: number };
 
-// Reverted to pre-drag coordinates.
+// Shipped defaults (match saved browser layout when no localStorage).
 const ARROWS: ArrowMap = {
   mesh: {
     viewBox: "0 0 120 48",
@@ -71,8 +71,7 @@ const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
 const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 68.19598858173077, bottom: 5.593950320512818 };
 const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 91, y: 86 };
-/** Right column; shifted down/left so copy sits closer to the nailMat arrow toward the product photo. */
-const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 44, y: 66 };
+const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 27.992304437924677, y: 46.79633617401123 };
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));

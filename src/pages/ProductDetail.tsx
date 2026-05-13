@@ -1033,7 +1033,7 @@ const ProductDetail = () => {
                       <Star
                         className={cn(
                           "absolute inset-0 h-full w-full fill-[#f4b400] stroke-none",
-                          isNailspaPdp ? "[clip-path:inset(0_80%_0_0)]" : "[clip-path:inset(0_50%_0_0)]",
+                          isNailspaPdp ? "[clip-path:inset(0_68%_0_0)]" : "[clip-path:inset(0_50%_0_0)]",
                         )}
                       />
                     </span>

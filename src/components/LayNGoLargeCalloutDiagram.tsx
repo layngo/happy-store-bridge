@@ -7,8 +7,11 @@ import { cn } from "@/lib/utils";
 const HERO_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/hero-callout-main.png";
 const HERO_CALLOUT_LIFESTYLE = "/products/lay-n-go-lifestyle-44/hero-callout-main.png";
 const CALLOUT_CORD = "/products/lay-n-go-large-pdp/callout-cord-pocket.png";
+const CALLOUT_CORD_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-cord-pocket.png";
 const CALLOUT_MESH = "/products/lay-n-go-large-pdp/callout-mesh-pockets.png";
+const CALLOUT_MESH_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-mesh-pockets.png";
 const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
+const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containment-lip.png";
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
 const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v1";
@@ -130,6 +133,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       dimensionWrapClass:
         "relative z-20 mx-auto -mt-[7.75rem] w-[min(75.2vw,736px)] pt-0 sm:-mt-[8.5rem] md:-mt-[10.25rem] lg:-mt-[11.25rem]",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
+      meshCalloutSrc: CALLOUT_MESH_LIFESTYLE,
+      lipCalloutSrc: CALLOUT_LIP_LIFESTYLE,
+      cordCalloutSrc: CALLOUT_CORD_LIFESTYLE,
     };
   }
   return {
@@ -143,6 +149,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
     dimensionWrapClass:
       "relative z-20 mx-auto -mt-[9.5rem] w-[min(94vw,920px)] pt-0 sm:-mt-40 md:-mt-48 lg:-mt-52",
     mobileHeroMaxClass: "max-w-lg",
+    meshCalloutSrc: CALLOUT_MESH,
+    lipCalloutSrc: CALLOUT_LIP,
+    cordCalloutSrc: CALLOUT_CORD,
   };
 }
 
@@ -166,13 +175,16 @@ function FloatingCallout({
   layout,
   editorMode,
   onAnchorPointerDown,
+  imageSrcOverride,
 }: {
   calloutKey: CalloutKey;
   layout: LayoutState;
   editorMode: boolean;
   onAnchorPointerDown: (e: React.PointerEvent, key: CalloutKey) => void;
+  imageSrcOverride?: string;
 }) {
   const { imageSrc, imageAlt, label, textAbove } = CALLOUT_META[calloutKey];
+  const thumbSrc = imageSrcOverride ?? imageSrc;
   const { x, y } = layout.anchors[calloutKey];
 
   const text = (
@@ -184,7 +196,7 @@ function FloatingCallout({
   const thumb = (
     <div className="aspect-square h-[7.25rem] w-[7.25rem] shrink-0 overflow-hidden rounded-full ring-2 ring-white sm:h-32 sm:w-32 md:h-40 md:w-40">
       <img
-        src={imageSrc}
+        src={thumbSrc}
         alt={imageAlt}
         className="h-full w-full object-cover"
         loading="lazy"
@@ -314,33 +326,25 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
       if (k === "mesh") {
-        // Four pocket markers on the mat (offsets from mesh drag point) → four rim hits on the callout circle, symmetric in angle.
+        // Two mat anchors (top / bottom mesh areas) → two symmetric rim points on the callout circle.
+        const meshUpperStart = { x: d.x + 0.25, y: d.y - 42 };
+        const meshLowerStart = { x: d.x + 1.2, y: d.y - 2 };
         const toward = unitToward(a.x, a.y, d.x, d.y);
-        const spreadDeg = [-17, -5.5, 5.5, 17];
-        const pocketOffsets = [
-          { ox: -3.2, oy: -42 },
-          { ox: 3.2, oy: -42 },
-          { ox: -3.2, oy: -2.2 },
-          { ox: 3.2, oy: -2.2 },
-        ];
-        const starts = pocketOffsets.map(({ ox, oy }) => ({
-          x: clamp(d.x + ox, 2, 98),
-          y: clamp(d.y + oy, 2, 98),
-        }));
-        const ends = spreadDeg.map((deg) => {
-          const rad = (deg * Math.PI) / 180;
-          const u = rotateVec(toward.x, toward.y, rad);
-          return { x: a.x + u.x * R, y: a.y + u.y * R };
-        });
-        const meshFan = starts.map((s, i) => ({ x1: s.x, y1: s.y, x2: ends[i].x, y2: ends[i].y }));
+        const spread = (7 * Math.PI) / 180;
+        const uU = rotateVec(toward.x, toward.y, spread);
+        const uL = rotateVec(toward.x, toward.y, -spread);
+        const meshUpperEnd = { x: a.x + uU.x * R, y: a.y + uU.y * R };
+        const meshLowerEnd = { x: a.x + uL.x * R, y: a.y + uL.y * R };
         return {
           k,
           x1: d.x,
           y1: d.y,
           x2: end.x,
           y2: end.y,
-          meshFan,
-          meshPocketDots: starts,
+          meshUpperStart,
+          meshLowerStart,
+          meshUpperEnd,
+          meshLowerEnd,
         };
       }
       return { k, x1: d.x, y1: d.y, x2: end.x, y2: end.y };
@@ -419,7 +423,13 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             <div key={k} className="flex flex-col items-center gap-2 px-2">
               <div className="aspect-square h-32 w-32 shrink-0 overflow-hidden rounded-full ring-2 ring-neutral-100">
                 <img
-                  src={m.imageSrc}
+                  src={
+                    k === "cord"
+                      ? config.cordCalloutSrc
+                      : k === "lip"
+                        ? config.lipCalloutSrc
+                        : config.meshCalloutSrc
+                  }
                   alt={m.imageAlt}
                   className="h-full w-full object-cover"
                   loading="lazy"
@@ -449,33 +459,49 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             preserveAspectRatio="none"
             aria-hidden
           >
-            {lineEnds.map(({ k, x1, y1, x2, y2, meshFan }) =>
-              k === "mesh" && meshFan ? (
+            {lineEnds.map(({ k, x1, y1, x2, y2, meshUpperStart, meshLowerStart, meshUpperEnd, meshLowerEnd }) =>
+              k === "mesh" && meshUpperStart && meshLowerStart && meshUpperEnd && meshLowerEnd ? (
                 <g key={k}>
-                  {meshFan.map((ln, i) => (
-                    <g key={`mesh-${i}`}>
-                      <line
-                        x1={ln.x1}
-                        y1={ln.y1}
-                        x2={ln.x2}
-                        y2={ln.y2}
-                        stroke="black"
-                        strokeWidth="1.02"
-                        strokeLinecap="round"
-                        vectorEffect="non-scaling-stroke"
-                      />
-                      <line
-                        x1={ln.x1}
-                        y1={ln.y1}
-                        x2={ln.x2}
-                        y2={ln.y2}
-                        stroke="white"
-                        strokeWidth="0.58"
-                        strokeLinecap="round"
-                        vectorEffect="non-scaling-stroke"
-                      />
-                    </g>
-                  ))}
+                  <line
+                    x1={meshUpperStart.x}
+                    y1={meshUpperStart.y}
+                    x2={meshUpperEnd.x}
+                    y2={meshUpperEnd.y}
+                    stroke="black"
+                    strokeWidth="1.02"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <line
+                    x1={meshUpperStart.x}
+                    y1={meshUpperStart.y}
+                    x2={meshUpperEnd.x}
+                    y2={meshUpperEnd.y}
+                    stroke="white"
+                    strokeWidth="0.58"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <line
+                    x1={meshLowerStart.x}
+                    y1={meshLowerStart.y}
+                    x2={meshLowerEnd.x}
+                    y2={meshLowerEnd.y}
+                    stroke="black"
+                    strokeWidth="1.02"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  <line
+                    x1={meshLowerStart.x}
+                    y1={meshLowerStart.y}
+                    x2={meshLowerEnd.x}
+                    y2={meshLowerEnd.y}
+                    stroke="white"
+                    strokeWidth="0.58"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                  />
                 </g>
               ) : (
                 <line
@@ -492,26 +518,6 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               ),
             )}
           </svg>
-
-          {(() => {
-            const meshSeg = lineEnds.find((s) => s.k === "mesh");
-            const pts =
-              meshSeg && "meshPocketDots" in meshSeg && Array.isArray(meshSeg.meshPocketDots)
-                ? meshSeg.meshPocketDots
-                : null;
-            if (!pts?.length) return null;
-            return (
-              <div className="pointer-events-none absolute inset-0 z-[24]" aria-hidden>
-                {pts.map((pt, i) => (
-                  <span
-                    key={`mesh-pocket-${i}`}
-                    className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-md ring-1 ring-white"
-                    style={{ left: `${pt.x}%`, top: `${pt.y}%` }}
-                  />
-                ))}
-              </div>
-            );
-          })()}
 
           <div
             className={cn(
@@ -561,6 +567,15 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               layout={layout}
               editorMode={editorMode}
               onAnchorPointerDown={onAnchorPointerDown}
+              imageSrcOverride={
+                k === "cord"
+                  ? config.cordCalloutSrc
+                  : k === "lip"
+                    ? config.lipCalloutSrc
+                    : k === "mesh"
+                      ? config.meshCalloutSrc
+                      : undefined
+              }
             />
           ))}
         </div>

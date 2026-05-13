@@ -9,6 +9,7 @@ const TRAVELER_CALLOUT_CORD = "/products/lay-n-go-large-pdp/traveler-callout-cor
 const TRAVELER_CALLOUT_LIP = "/products/lay-n-go-large-pdp/traveler-callout-lip.png";
 
 const FEATURE_OPEN = "/products/lay-n-go-large-pdp/feature-3-open.png";
+const FEATURE_OPEN_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-3-open.png";
 const FEATURE_CINCH = "/products/lay-n-go-large-pdp/feature-4-cinch.png";
 const FEATURE_CARRY = "/products/lay-n-go-large-pdp/feature-5-carry.png";
 
@@ -172,8 +173,12 @@ export function LayNGoLargePdpPlayStrip({
             <div className="flex w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:gap-1 md:gap-2 lg:gap-3">
               <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
                 <img
-                  src={FEATURE_OPEN}
-                  alt="Lay-n-Go Large open with toys; easy access to play and start cleanup"
+                  src={calloutVariant === "lifestyle-44" ? FEATURE_OPEN_LIFESTYLE : FEATURE_OPEN}
+                  alt={
+                    calloutVariant === "lifestyle-44"
+                      ? "Lay-n-Go Lifestyle mat open with building blocks; pulling the drawstring to begin cleanup"
+                      : "Lay-n-Go Large open with toys; easy access to play and start cleanup"
+                  }
                   className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
                   loading="lazy"
                   decoding="async"
