@@ -67,7 +67,8 @@ const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
 const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 68.19598858173077, bottom: 5.593950320512818 };
 const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 91, y: 86 };
-const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 22, y: 50 };
+/** Centered in the right copy column so translate(-50%,-50%) does not bleed under the image column. */
+const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 50, y: 48 };
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -566,7 +567,7 @@ function NailMatCalloutEditor({
         onPointerCancel={() => setDragBox(false)}
       >
         <div
-          className="absolute w-[min(90%,360px)] cursor-move touch-none"
+          className="absolute z-10 w-[min(90%,360px)] max-w-full cursor-move touch-none"
           style={{ left: `${nailMatBoxPos.x}%`, top: `${nailMatBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
           onPointerDown={(e) => {
             if (!editorMode) return;
@@ -758,8 +759,8 @@ export function NailspaPdpStory() {
 
       {/* Bottom — closed bag photo + nail mat copy (desktop: cluster centered as one unit) */}
       <div className="px-4 pb-14 pt-4 sm:px-6 sm:pb-16 sm:pt-8 md:px-10 md:pt-12 lg:px-14">
-        <div className="mx-auto flex w-full max-w-[min(100%,1200px)] flex-col gap-2 md:flex-row md:items-start md:justify-center md:gap-10 lg:gap-12">
-          <div className="w-full shrink-0 md:w-[min(46%,560px)] lg:w-[min(48%,600px)]">
+        <div className="mx-auto flex w-full max-w-[min(100%,1200px)] flex-col gap-2 overflow-visible md:flex-row md:items-start md:justify-center md:gap-10 lg:gap-12">
+          <div className="relative z-10 w-full shrink-0 md:w-[min(46%,560px)] lg:w-[min(48%,600px)]">
             <BottomProductImage
               arrows={arrows}
               editorMode={editorMode}
@@ -787,7 +788,7 @@ export function NailspaPdpStory() {
             ) : null}
           </div>
 
-          <div className="relative flex w-full shrink-0 flex-col md:w-[min(44%,520px)] md:max-w-lg md:justify-center md:pt-4">
+          <div className="relative z-30 flex w-full shrink-0 flex-col overflow-visible md:w-[min(44%,520px)] md:max-w-lg md:justify-center md:pt-4">
             <NailMatCalloutEditor
               arrows={arrows}
               editorMode={editorMode}

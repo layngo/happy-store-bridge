@@ -943,10 +943,10 @@ const ProductDetail = () => {
             {showCosmoStyleBottomExtras ? (
               <section
                 className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
-                aria-label={isNailspaPdp ? "NAILSPA FAQ" : "Cosmo FAQ"}
+                aria-label={isNailspaPdp ? "Nailspa FAQ" : "Cosmo FAQ"}
               >
                 <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  {isNailspaPdp ? "FAQ" : "Cosmo FAQ"}
+                  {isNailspaPdp ? "Nailspa FAQ" : "Cosmo FAQ"}
                 </h2>
                 <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
                   {(isNailspaPdp ? NAILSPA_FAQ_ITEMS : COSMO_FAQ_ITEMS).map((item, idx) => (
