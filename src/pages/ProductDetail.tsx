@@ -35,6 +35,7 @@ import { NailspaPdpHeroVideo } from "@/components/NailspaPdpHeroVideo";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
 import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
+import { NailspaPdpLifestyleGallery } from "@/components/NailspaPdpLifestyleGallery";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -50,6 +51,8 @@ const LAY_N_GO_LARGE_SLIDE_2 = "/products/lay-n-go-large-pdp/video-slide-2.png";
 const COSMO_AUTOPLAY_YOUTUBE_ID = "G3E80xl9lSM";
 const COSMO_AMAZON_REVIEWS_URL =
   "https://www.amazon.com/Lay-n-Go-Cosmo-Cosmetic-Bag-Black/dp/B00B04V3PQ/ref=sr_1_2?crid=319SA2P59OD6R&dib=eyJ2IjoiMSJ9.yZpPmIN6c0isZ7qkwNkUWg.XsRHQlPyJ9UrcTBLmVdjiQ0rxRkojK3Ksfzjf7LjOYg&dib_tag=se&keywords=cosmo%2Blayngo&qid=1778181094&sprefix=cosmo%2Blayng%2Caps%2C106&sr=8-2&th=1#averageCustomerReviewsAnchor";
+const NAILSPA_AMAZON_REVIEWS_URL =
+  "https://www.amazon.com/Lay-n-Go-NailSpa-Manicure-Pedicure-Pattern/dp/B082M13J4H#averageCustomerReviewsAnchor";
 const COSMO_FAQ_ITEMS = [
   {
     question: "What sizes does the Cosmo come in?",
@@ -95,6 +98,39 @@ const COSMO_FAQ_ITEMS = [
     question: "How is it different from a regular makeup bag?",
     answer:
       "A regular bag forces you to dig. The Cosmo lays completely flat so you can see and reach everything at once, then closes in one pull - no dumping, no rummaging, no mess.",
+  },
+] as const;
+
+const NAILSPA_FAQ_ITEMS = [
+  {
+    question: "What is the NAILSPA?",
+    answer:
+      'The NAILSPA is an 18" lay-flat manicure mat and organizer: spread it on a counter for a clean workspace, then cinch the drawstring to pack polish, tools, and accessories in one portable bundle.',
+  },
+  {
+    question: "How does it work?",
+    answer:
+      "Open the drawstring so the mat lies flat. Mesh pockets and elastic keep bottles and tools visible and upright while you work. When you are finished, pull the cord to gather everything closed—no more bottles rolling off the towel.",
+  },
+  {
+    question: "What can fit inside?",
+    answer:
+      "Typical manicure kits: multiple polish bottles, files, buffers, clippers, small jars, and brushes. The 18\" size is sized for home vanities and travel bathrooms alike.",
+  },
+  {
+    question: "Is it machine washable?",
+    answer:
+      "Yes—follow care instructions on the product label. Between washes, the water-resistant fabric wipes clean for polish smudges and spills.",
+  },
+  {
+    question: "Is it good for travel?",
+    answer:
+      "Yes. It gives you a dedicated clean surface away from hotel counters, then cinches into a compact bundle that fits in a tote or suitcase.",
+  },
+  {
+    question: "How is it different from a zippered pouch?",
+    answer:
+      "A zip pouch hides everything in a pile. The NAILSPA stays open and flat so you see every item at once, with pockets that keep polish from tipping—then closes in seconds when you are done.",
   },
 ] as const;
 
@@ -252,6 +288,10 @@ const ProductDetail = () => {
         isCosmoMini16Product(product.handle, product.title)),
   );
 
+  const isNailspaPdp = Boolean(product && isNailspa18Product(product.handle));
+  /** Bottom gallery, FAQ, ratings summary, sticky cart — Cosmo story PDPs and NAILSPA. */
+  const showCosmoStyleBottomExtras = isCosmoStoryPdp || isNailspaPdp;
+
   const showCosmoDescriptionBelowHero = Boolean(
     product &&
       isCosmoPdp &&
@@ -325,7 +365,7 @@ const ProductDetail = () => {
   }, [isLayNGoLarge60]);
 
   useEffect(() => {
-    if (!isCosmoStoryPdp) {
+    if (!showCosmoStyleBottomExtras) {
       setShowStickyAddToCart(false);
       return;
     }
@@ -340,7 +380,7 @@ const ProductDetail = () => {
     );
     observer.observe(target);
     return () => observer.disconnect();
-  }, [isCosmoStoryPdp, product?.id]);
+  }, [showCosmoStyleBottomExtras, product?.id]);
 
   if (loading) {
     return (
@@ -892,14 +932,28 @@ const ProductDetail = () => {
               </div>
             </section>
 
-            {isCosmoStoryPdp ? <CosmoPdpVideoGallery /> : null}
+            {showCosmoStyleBottomExtras ? (
+              isCosmoStoryPdp ? (
+                <CosmoPdpVideoGallery />
+              ) : (
+                <NailspaPdpLifestyleGallery />
+              )
+            ) : null}
 
-            {isCosmoStoryPdp ? (
-              <section className="mx-auto mt-14 w-full max-w-4xl sm:mt-16" aria-label="Cosmo FAQ">
-                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Cosmo FAQ</h2>
+            {showCosmoStyleBottomExtras ? (
+              <section
+                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
+                aria-label={isNailspaPdp ? "NAILSPA FAQ" : "Cosmo FAQ"}
+              >
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  {isNailspaPdp ? "FAQ" : "Cosmo FAQ"}
+                </h2>
                 <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
-                  {COSMO_FAQ_ITEMS.map((item, idx) => (
-                    <AccordionItem key={item.question} value={`cosmo-faq-${idx}`}>
+                  {(isNailspaPdp ? NAILSPA_FAQ_ITEMS : COSMO_FAQ_ITEMS).map((item, idx) => (
+                    <AccordionItem
+                      key={item.question}
+                      value={isNailspaPdp ? `nailspa-faq-${idx}` : `cosmo-faq-${idx}`}
+                    >
                       <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
                         {item.question}
                       </AccordionTrigger>
@@ -912,10 +966,16 @@ const ProductDetail = () => {
               </section>
             ) : null}
 
-            {isCosmoStoryPdp ? (
-              <section className="mx-auto mt-8 w-full max-w-4xl sm:mt-10" aria-label="Cosmo ratings">
+            {showCosmoStyleBottomExtras ? (
+              <section
+                className="mx-auto mt-8 w-full max-w-4xl sm:mt-10"
+                aria-label={isNailspaPdp ? "NAILSPA ratings" : "Cosmo ratings"}
+              >
                 <div className="px-5 py-2 text-center sm:px-7">
-                  <div className="mx-auto mb-3 flex items-center justify-center gap-1.5" aria-label="4.5 out of 5 stars">
+                  <div
+                    className="mx-auto mb-3 flex items-center justify-center gap-1.5"
+                    aria-label="4.5 out of 5 stars"
+                  >
                     <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
                     <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
                     <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
@@ -927,10 +987,10 @@ const ProductDetail = () => {
                   </div>
                   <p className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">4.5 out of 5</p>
                   <p className="mt-2 text-sm font-medium text-muted-foreground sm:text-base">
-                    14,817 global ratings
+                    {isNailspaPdp ? "Highly rated on Amazon" : "14,817 global ratings"}
                   </p>
                   <a
-                    href={COSMO_AMAZON_REVIEWS_URL}
+                    href={isNailspaPdp ? NAILSPA_AMAZON_REVIEWS_URL : COSMO_AMAZON_REVIEWS_URL}
                     target="_blank"
                     rel="noreferrer noopener"
                     className="mt-4 inline-flex text-sm font-semibold text-primary underline-offset-4 hover:underline sm:text-base"
@@ -972,7 +1032,7 @@ const ProductDetail = () => {
           </div>
         )}
 
-        {!isCosmoStoryPdp && amazonReviewsBundle.reviews.length > 0 ? (
+        {!showCosmoStyleBottomExtras && amazonReviewsBundle.reviews.length > 0 ? (
           <ProductAmazonReviews
             reviews={amazonReviewsBundle.reviews}
             amazonListingUrl={amazonReviewsBundle.amazonListingUrl}
@@ -991,7 +1051,7 @@ const ProductDetail = () => {
         ) : null}
       </div>
 
-      {isCosmoStoryPdp && showStickyAddToCart ? (
+      {showCosmoStyleBottomExtras && showStickyAddToCart ? (
         <div className="pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center px-4">
           <Button
             size="lg"

@@ -13,7 +13,7 @@ const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-b
 
 /** Bordered cards for the two stacked NAILSPA copy blocks under the closed-bag still (mobile). */
 const NAILSPA_STACKED_CALLOUT =
-  "rounded-lg border-2 border-neutral-300 bg-white/[0.96] px-3 py-2.5 shadow-md shadow-black/[0.08] backdrop-blur-md sm:px-4 sm:py-3";
+  "rounded-lg border-2 border-neutral-300 bg-white px-3 py-2.5 shadow-md shadow-black/[0.08] sm:px-4 sm:py-3";
 
 const CARRY_CALLOUT_TITLE = "High quality nail mat";
 const CARRY_CALLOUT_BODY =
@@ -67,7 +67,7 @@ const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
 const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 68.19598858173077, bottom: 5.593950320512818 };
 const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 80, y: 76 };
-const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 22, y: 34 };
+const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 22, y: 50 };
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -471,6 +471,7 @@ function BottomProductImage({
       className={cn("relative w-full overflow-visible border-0 bg-transparent shadow-none ring-0", className)}
       aria-label="Lay-n-Go NAILSPA closed with carry handle"
     >
+      {/* Clip only art + vignette; callouts sit in a sibling layer so wide panels are not cut off */}
       <div className="relative min-h-[min(52vh,440px)] w-full overflow-hidden rounded-2xl sm:min-h-[min(54vh,480px)] md:min-h-[min(56vh,560px)] lg:min-h-[min(58vh,620px)]">
         <img
           src={IMG_BOTTOM}
@@ -479,39 +480,47 @@ function BottomProductImage({
           draggable={false}
           loading="lazy"
         />
-        {/* Gradient wraps around the hand/arm at top-right, fades into white on all edges */}
-        {/* Top: deep fade around hand — band sits lower so less washes the top edge */}
+        {/* Mobile: top edge only — tight fade into hand; no radial tail bleeding over cards below */}
         <div
-          className="pointer-events-none absolute inset-x-0 z-[2] max-md:top-[10%] max-md:h-[34%] md:top-[14%] md:h-[30%]"
+          className="pointer-events-none absolute inset-x-0 top-0 z-[2] h-[18%] md:hidden"
+          style={{
+            background:
+              "linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.92) 14%, rgba(255,255,255,0.45) 32%, rgba(255,255,255,0) 100%)",
+          }}
+          aria-hidden
+        />
+        {/* Desktop: top band + right + left/bottom rails (unchanged) */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-[14%] z-[2] hidden h-[30%] md:block"
           style={{
             background:
               "linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.88) 28%, rgba(255,255,255,0.38) 62%, rgba(255,255,255,0) 100%)",
           }}
           aria-hidden
         />
-        {/* Right: fade so arm/handle on right blends away */}
+        {/* Right: fade — desktop only */}
         <div
-          className="pointer-events-none absolute inset-y-0 right-0 z-[2]"
-          style={{ width: "30%", background: "linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.7) 35%, rgba(255,255,255,0) 100%)" }}
+          className="pointer-events-none absolute inset-y-0 right-0 z-[2] hidden w-[30%] md:block"
+          style={{ background: "linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.7) 35%, rgba(255,255,255,0) 100%)" }}
           aria-hidden
         />
-        {/* Left + bottom: tight perimeter rails */}
+        {/* Left + bottom rails — desktop only */}
         <div
-          className="pointer-events-none absolute inset-0 z-[1]"
+          className="pointer-events-none absolute inset-0 z-[1] hidden md:block"
           style={{
             background:
               "linear-gradient(to right, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 100%), linear-gradient(to top, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 100%)",
           }}
         />
-        <div className={editorMode ? "contents" : "hidden md:contents"}>
-          <CarryingHandleOverlay
-            arrows={arrows}
-            editorMode={editorMode}
-            onArrowChange={onArrowChange}
-            carryBoxPos={carryBoxPos}
-            onCarryBoxPosChange={onCarryBoxPosChange}
-          />
-        </div>
+      </div>
+      <div className={cn("pointer-events-none absolute inset-0 z-20 overflow-visible", editorMode ? "block" : "hidden md:block")}>
+        <CarryingHandleOverlay
+          arrows={arrows}
+          editorMode={editorMode}
+          onArrowChange={onArrowChange}
+          carryBoxPos={carryBoxPos}
+          onCarryBoxPosChange={onCarryBoxPosChange}
+        />
       </div>
     </div>
   );
@@ -741,9 +750,9 @@ export function NailspaPdpStory() {
         </div>
       </div>
 
-      {/* Mobile: soft white fade between main story block and closed-bag block (no hard seam) */}
+      {/* Mobile: light seam between story blocks (keep short so it does not read into cards) */}
       <div
-        className="pointer-events-none h-14 w-full shrink-0 bg-gradient-to-b from-white via-neutral-100/85 to-white md:hidden"
+        className="pointer-events-none h-8 w-full shrink-0 bg-gradient-to-b from-white via-white to-white md:hidden"
         aria-hidden
       />
 
@@ -759,7 +768,7 @@ export function NailspaPdpStory() {
               onCarryBoxPosChange={setCarryBoxPos}
             />
             {!editorMode ? (
-              <div className="mx-auto mt-0 flex w-full max-w-none flex-col gap-3 px-1 max-md:-mt-8 md:hidden">
+              <div className="relative z-10 mx-auto mt-0 flex w-full max-w-none flex-col gap-3 px-1 pt-2 max-md:mt-2 md:hidden">
                 <div className={cn(NAILSPA_STACKED_CALLOUT, "w-full py-2 sm:px-6 sm:py-2")}>
                   <p className="font-heading whitespace-nowrap text-base font-bold tracking-tight text-foreground">
                     {CARRY_CALLOUT_TITLE}
