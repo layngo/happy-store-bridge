@@ -49,9 +49,9 @@ const ARROWS: ArrowMap = {
   },
   carry: {
     viewBox: "0 0 100 100",
-    start: { x: 101.13932291666667, y: 21.228315659928857 },
-    control: { x: 82.21216446314102, y: 33.0487044186321 },
-    end: { x: 64.26344651442307, y: 35.37771633764351 },
+    start: { x: 97.5, y: 30 },
+    control: { x: 84, y: 40 },
+    end: { x: 66.5, y: 38 },
   },
   nailMat: {
     viewBox: "-120 -80 360 220",
@@ -66,7 +66,7 @@ const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
 const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 68.19598858173077, bottom: 5.593950320512818 };
-const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 80, y: 76 };
+const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 91, y: 86 };
 const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 22, y: 50 };
 
 function clamp(n: number, min: number, max: number) {

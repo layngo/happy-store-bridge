@@ -875,7 +875,7 @@ const ProductDetail = () => {
               <div
                 className={cn(
                   "w-full",
-                  isNailspa18Product(product.handle) && "mx-auto md:max-w-[50%] md:shrink-0",
+                  isNailspa18Product(product.handle) && "mx-auto md:max-w-[60%] md:shrink-0",
                 )}
               >
               <div
