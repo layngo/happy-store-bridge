@@ -14,7 +14,7 @@ const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containment-lip.png";
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
-const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v2";
+const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v5";
 
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
@@ -43,16 +43,16 @@ const DEFAULT_LAYOUT: LayoutState = {
   },
 };
 
-/** Lifestyle: cord callout sits higher; dot nudged so the leader line still reads cleanly. */
+/** Lifestyle: cord / lip tuned; mesh ref dot + offsets match 44″ hero pocket rows. */
 const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
   dots: {
-    cord: { x: 50, y: 18 },
-    lip: DEFAULT_LAYOUT.dots.lip,
-    mesh: DEFAULT_LAYOUT.dots.mesh,
+    cord: { x: 50, y: 14 },
+    lip: { x: 24, y: 49 },
+    mesh: { x: 56, y: 50 },
   },
   anchors: {
-    cord: { x: 50, y: 2 },
-    lip: DEFAULT_LAYOUT.anchors.lip,
+    cord: { x: 50, y: -2 },
+    lip: { x: 9, y: 48 },
     mesh: DEFAULT_LAYOUT.anchors.mesh,
   },
 };
@@ -256,7 +256,8 @@ function FloatingCallout({
   return (
     <div
       className={cn(
-        "absolute z-20 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2",
+        "absolute z-20 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center",
+        cordLifestyleCompact ? "gap-1" : "gap-2",
         editorMode
           ? "cursor-grab touch-none pointer-events-auto active:cursor-grabbing"
           : "pointer-events-none",
@@ -381,9 +382,16 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
       if (k === "mesh") {
-        // Two mat anchors (top / bottom mesh areas) → two symmetric rim points on the callout circle.
-        const meshUpperStart = { x: d.x + 0.25, y: d.y - 42 };
-        const meshLowerStart = { x: d.x + 1.2, y: d.y - 2 };
+        // Two pocket touch-points on the mat → two rim points on the callout circle.
+        let meshUpperStart: Pt;
+        let meshLowerStart: Pt;
+        if (variant === "lifestyle-44") {
+          meshUpperStart = { x: d.x + 5, y: d.y - 36 };
+          meshLowerStart = { x: d.x + 5, y: d.y + 36 };
+        } else {
+          meshUpperStart = { x: d.x + 0.25, y: d.y - 42 };
+          meshLowerStart = { x: d.x + 1.2, y: d.y - 2 };
+        }
         const toward = unitToward(a.x, a.y, d.x, d.y);
         const spread = (7 * Math.PI) / 180;
         const uU = rotateVec(toward.x, toward.y, spread);
@@ -404,7 +412,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       }
       return { k, x1: d.x, y1: d.y, x2: end.x, y2: end.y };
     });
-  }, [layout]);
+  }, [layout, variant]);
 
   const onPointerMove = useCallback(
     (ev: React.PointerEvent) => {
@@ -586,6 +594,28 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
                   />
+                  {(variant === "large-60" || variant === "lifestyle-44") && !editorMode ? (
+                    <>
+                      <circle
+                        cx={meshUpperStart.x}
+                        cy={meshUpperStart.y}
+                        r="0.72"
+                        fill="#ffffff"
+                        stroke="#171717"
+                        strokeWidth="0.38"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                      <circle
+                        cx={meshLowerStart.x}
+                        cy={meshLowerStart.y}
+                        r="0.72"
+                        fill="#ffffff"
+                        stroke="#171717"
+                        strokeWidth="0.38"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                    </>
+                  ) : null}
                 </g>
               ) : (
                 <line
