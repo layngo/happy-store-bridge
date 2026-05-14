@@ -66,33 +66,45 @@ function TravelerDetailCalloutSection() {
         />
 
         <svg className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 100 100" aria-hidden>
-          <line x1="23" y1="55" x2="13" y2="70" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
-          <circle cx="23" cy="55" r="1.2" fill="#ffffff" stroke="#ffffff" strokeWidth="0.45" />
+          {/* Zipper pocket callout → zipper on mat: straight white line with black edge */}
+          <line x1="13" y1="27" x2="39" y2="58" stroke="#0a0a0a" strokeWidth="0.72" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+          <line x1="13" y1="27" x2="39" y2="58" stroke="#ffffff" strokeWidth="0.38" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+          <circle cx="39" cy="58" r="1.45" fill="#0a0a0a" vectorEffect="non-scaling-stroke" />
+          <circle cx="39" cy="58" r="0.95" fill="#ffffff" stroke="#0a0a0a" strokeWidth="0.22" vectorEffect="non-scaling-stroke" />
 
           <line x1="19" y1="78" x2="19" y2="25" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
           <line x1="19" y1="25" x2="11" y2="12" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
           <circle cx="19" cy="78" r="1.2" fill="#ffffff" stroke="#ffffff" strokeWidth="0.45" />
 
-          <line x1="74" y1="27" x2="84" y2="12" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
-          <circle cx="74" cy="27" r="1.2" fill="#ffffff" stroke="#ffffff" strokeWidth="0.45" />
+          {/* Containment lip callout → upper rim of mat: outlined shaft + arrow at bag edge */}
+          <line x1="86" y1="23" x2="71.5" y2="25.8" stroke="#0a0a0a" strokeWidth="0.72" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+          <line x1="86" y1="23" x2="71.5" y2="25.8" stroke="#ffffff" strokeWidth="0.38" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+          <polygon
+            points="68.4,26.6 71.6,24.5 71.6,28.7"
+            fill="#ffffff"
+            stroke="#0a0a0a"
+            strokeWidth="0.26"
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+          />
         </svg>
 
         <div className="absolute left-[2.5%] top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[3%] sm:top-[3%] sm:max-w-[13rem]">
           <TravelerCalloutThumb
             src={TRAVELER_CALLOUT_ZIPPER}
             alt="Zipper pocket closeup"
-            imageClassName="object-cover object-[center_58%]"
+            imageClassName="origin-center scale-[1.22] object-cover object-[center_34%] sm:scale-[1.2] sm:object-[center_36%]"
           />
           <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
             Zipper Pocket
           </p>
         </div>
 
-        <div className="absolute left-[2.5%] top-[62%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[3%] sm:max-w-[13rem]">
+        <div className="absolute left-[1.25%] top-[62%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[1.75%] sm:max-w-[13rem]">
           <TravelerCalloutThumb
             src={TRAVELER_CALLOUT_CORD}
             alt="Cord lock and handle closeup"
-            imageClassName="object-contain object-center scale-[1.14] sm:scale-[1.12]"
+            imageClassName="origin-center scale-[1.52] object-cover object-bottom sm:scale-[1.48]"
           />
           <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
             Cord Lock/Pocket + Handle
@@ -103,7 +115,7 @@ function TravelerDetailCalloutSection() {
           <TravelerCalloutThumb
             src={TRAVELER_CALLOUT_LIP}
             alt="Containment lip closeup"
-            imageClassName="object-cover object-[26%_center] scale-[1.08] sm:object-[24%_center]"
+            imageClassName="origin-center scale-[1.38] object-cover object-[14%_center] sm:scale-[1.34] sm:object-[12%_center]"
           />
           <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
             Convenient containment lip
@@ -177,18 +189,14 @@ export function LayNGoLargePdpPlayStrip({
   calloutVariant = "large-60",
 }: LayNGoLargePdpPlayStripProps) {
   const threeStepImageClassName = cn(
-    "h-auto w-full object-contain",
+    "h-auto w-full max-w-full object-contain",
     calloutVariant === "lifestyle-44"
-      ? "max-w-[min(100%,28rem)] max-h-[min(60vh,500px)] sm:max-w-[min(100%,34rem)] sm:max-h-[min(62vh,540px)] md:max-w-full md:max-h-[min(50vh,400px)] lg:max-h-[480px]"
-      : "max-w-full max-h-[min(34vh,220px)] sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]",
+      ? "max-h-[min(36vh,240px)] sm:max-h-[min(44vh,300px)] md:max-h-[min(50vh,400px)] lg:max-h-[480px]"
+      : "max-h-[min(34vh,220px)] sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]",
   );
 
-  const threeStepImageColClassName = cn(
-    "flex justify-center",
-    calloutVariant === "lifestyle-44"
-      ? "w-full shrink-0 md:min-h-0 md:min-w-0 md:w-auto md:flex-1 md:basis-0"
-      : "min-h-0 min-w-0 flex-1 basis-0",
-  );
+  /** Same flex column contract as Large so horizontal mobile row shares width and images scale with `object-contain`. */
+  const threeStepImageColClassName = "flex min-h-0 min-w-0 flex-1 basis-0 justify-center";
 
   return (
     <section
@@ -224,14 +232,16 @@ export function LayNGoLargePdpPlayStrip({
           {calloutVariant !== "lite-18" ? (
             <div
               className="mx-auto mt-14 max-w-[min(100%,90rem)] pt-12 sm:mt-16 sm:pt-14"
-              aria-label="How Lay-n-Go Large works in three steps"
+              aria-label={
+                calloutVariant === "lifestyle-44"
+                  ? "How Lay-n-Go Lifestyle works in three steps"
+                  : "How Lay-n-Go Large works in three steps"
+              }
             >
               <div
                 className={cn(
-                  "flex w-full max-w-full items-center justify-center overflow-x-hidden px-0.5 sm:px-1 sm:gap-1 md:gap-2 lg:gap-3",
-                  calloutVariant === "lifestyle-44"
-                    ? "flex-col gap-8 py-1 md:flex-row md:flex-nowrap md:gap-2 md:py-0"
-                    : "flex-row flex-nowrap gap-0.5",
+                  "flex w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:gap-1 sm:px-1 md:gap-2 lg:gap-3",
+                  calloutVariant === "lifestyle-44" && "py-1 md:py-0",
                 )}
               >
                 <div className={threeStepImageColClassName}>

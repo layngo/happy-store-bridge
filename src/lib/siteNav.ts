@@ -6,7 +6,7 @@ export const shopCollectionLinks = [
   { to: "/product/lay-n-go-nailspa-18", label: "Nail Solutions" },
   { to: "/collections/play", label: "Play" },
   { to: "/product/lay-n-go-traveler-20", label: "Tech & Travel" },
-  { to: "/collections/pet-solutions", label: "Pet Solutions" },
+  { to: "/product/lay-n-go-travel-dog-bed-44", label: "Pet Solutions" },
   { to: "/collections/military-first-responder", label: "Outdoor / Tactical" },
 ] as const;
 
@@ -34,7 +34,7 @@ export const heroCategories = [
   { label: "COSMO", hint: "Cosmetics & beauty", to: "/collections/cosmetic-bags" },
   { label: "PLAY", hint: "Toy cleanup & play mats", to: "/collections/play" },
   { label: "TRAVELER", hint: "Tech on the go", to: "/product/lay-n-go-traveler-20" },
-  { label: "PET", hint: "Pet travel & beds", to: "/collections/pet-solutions" },
+  { label: "PET", hint: "Pet travel & beds", to: "/product/lay-n-go-travel-dog-bed-44" },
 ] as const;
 
 export const testimonials = [

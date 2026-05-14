@@ -181,6 +181,19 @@ const LAY_N_GO_TRAVELER_20_BULLETS = [
   "Accessories not included",
 ] as const;
 
+const LAY_N_GO_TRAVEL_DOG_BED_44_BULLETS = [
+  "Converts from a cozy dog bed into a portable carrying bag in seconds",
+  `Large 44" quilted mat with soft fleece lining for added comfort`,
+  "Machine washable for easy cleaning and everyday use",
+  "Great for home, car seats, couches, travel, vacations, and outdoor dining",
+  "Protects furniture and car interiors from dirt, fur, and scratches",
+  "Built-in storage carries bowls, food, toys, treats, and essentials",
+  "Oversized zippered pocket fits a retractable leash, phone, keys, and more",
+  "Lightweight and easy to transport wherever your dog goes",
+  "Durable design made for everyday adventures with your pet",
+  "Smart all-in-one dog bed and travel bag solution",
+] as const;
+
 const COSMO_AUTOPLAY_YOUTUBE_ID = "G3E80xl9lSM";
 const COSMO_AMAZON_REVIEWS_URL =
   "https://www.amazon.com/Lay-n-Go-Cosmo-Cosmetic-Bag-Black/dp/B00B04V3PQ/ref=sr_1_2?crid=319SA2P59OD6R&dib=eyJ2IjoiMSJ9.yZpPmIN6c0isZ7qkwNkUWg.XsRHQlPyJ9UrcTBLmVdjiQ0rxRkojK3Ksfzjf7LjOYg&dib_tag=se&keywords=cosmo%2Blayngo&qid=1778181094&sprefix=cosmo%2Blayng%2Caps%2C106&sr=8-2&th=1#averageCustomerReviewsAnchor";
@@ -267,18 +280,16 @@ const NAILSPA_FAQ_ITEMS = [
   },
 ] as const;
 
-const TRAVELER_20_BLOCKED_IMAGE_URL =
-  "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/B00F1TI8T0.PT05.jpg?v=1643213779";
-
-const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags-v2";
-
-type ProductLocationState = { fromCosmeticBagsV2?: boolean };
+/** Shopify “PT##” art for Traveler — feature/sizing/travel diagrams, not product photography. */
+function isLayNGoTraveler20InfographicImageUrl(url: string): boolean {
+  return /B00F1TI8T0\.PT\d+/i.test(url);
+}
 
 function getOrderedImagesForProduct(product: ShopifyProduct["node"]) {
   let imgs = product.images.edges;
 
   if (product.handle.toLowerCase() === "lay-n-go-traveler-20") {
-    imgs = imgs.filter((img) => img.node.url !== TRAVELER_20_BLOCKED_IMAGE_URL);
+    imgs = imgs.filter((img) => !isLayNGoTraveler20InfographicImageUrl(img.node.url));
   }
 
   if (!isCosmoMini16Product(product.handle, product.title) || imgs.length < 4) return imgs;
@@ -432,7 +443,8 @@ const ProductDetail = () => {
         isCosmoMini16Product(product.handle, product.title) ||
         isNailspa18Product(product.handle) ||
         isLayNGoPlayMatProduct(product.handle) ||
-        product.handle.toLowerCase() === "lay-n-go-traveler-20"),
+        product.handle.toLowerCase() === "lay-n-go-traveler-20" ||
+        product.handle.toLowerCase() === "lay-n-go-travel-dog-bed-44"),
   );
 
   /** Editorial story strip + arrow editor — Cosmo bags only, not Nailspa. */
@@ -456,6 +468,7 @@ const ProductDetail = () => {
       product.handle.toLowerCase() !== "lay-n-go-lifestyle-44" &&
       product.handle.toLowerCase() !== "lay-n-go-lite-18" &&
       product.handle.toLowerCase() !== "lay-n-go-traveler-20" &&
+      product.handle.toLowerCase() !== "lay-n-go-travel-dog-bed-44" &&
       Boolean(product.description?.trim()),
   );
 
@@ -485,9 +498,9 @@ const ProductDetail = () => {
     layNGoHandle === "lay-n-go-defender-mini-16" ||
     layNGoHandle.includes("wired") ||
     layNGoHandle.includes("traveler") ||
-    layNGoHandle.includes("travel") ||
     layNGoHandle.includes("tech");
   const isLayNGoTraveler20 = layNGoHandle === "lay-n-go-traveler-20";
+  const isLayNGoTravelDogBed44 = layNGoHandle === "lay-n-go-travel-dog-bed-44";
   const colorOptionName = useMemo(() => {
     if (!product) return null;
     return product.options.find((opt) => isColorOptionName(opt.name))?.name ?? null;
@@ -886,9 +899,11 @@ const ProductDetail = () => {
                           ? cosmoMiniSwatchStyle(v.node)
                           : product.handle.toLowerCase() === "lay-n-go-traveler-20"
                             ? travelerSwatchStyle(optValue || "")
-                            : isLayNGoPlayMatProduct(product.handle)
-                              ? layNGoPlayMatSwatchStyle(optValue || "")
-                              : variantImageSwatchStyle(v.node, optValue || "")
+                            : product.handle.toLowerCase() === "lay-n-go-travel-dog-bed-44"
+                              ? dogBedSwatchStyle(optValue || "")
+                              : isLayNGoPlayMatProduct(product.handle)
+                                ? layNGoPlayMatSwatchStyle(optValue || "")
+                                : variantImageSwatchStyle(v.node, optValue || "")
                         : undefined
                     }
                     disabled={!v.node.availableForSale}
@@ -1073,26 +1088,30 @@ const ProductDetail = () => {
                   </div>
 
                   <div ref={primaryAddToCartRef}>{addToCartButtonCosmo}</div>
-                  {isLayNGoLarge60 || isLayNGoLifestyle44 || isLayNGoLite18 || isLayNGoTraveler20 ? (
+                  {isLayNGoLarge60 || isLayNGoLifestyle44 || isLayNGoLite18 || isLayNGoTraveler20 || isLayNGoTravelDogBed44 ? (
                     <ul
                       className="mt-5 list-disc space-y-2.5 pl-5 text-left text-sm font-medium leading-relaxed text-neutral-700 marker:text-neutral-900"
                       aria-label={
                         isLayNGoTraveler20
                           ? "Lay-n-Go Traveler highlights"
-                          : isLayNGoLarge60
-                            ? "Lay-n-Go Large highlights"
-                            : isLayNGoLifestyle44
-                              ? "Lay-n-Go Lifestyle highlights"
-                              : "Lay-n-Go Lite highlights"
+                          : isLayNGoTravelDogBed44
+                            ? "Lay-n-Go Travel Dog Bed highlights"
+                            : isLayNGoLarge60
+                              ? "Lay-n-Go Large highlights"
+                              : isLayNGoLifestyle44
+                                ? "Lay-n-Go Lifestyle highlights"
+                                : "Lay-n-Go Lite highlights"
                       }
                     >
                       {(isLayNGoTraveler20
                         ? LAY_N_GO_TRAVELER_20_BULLETS
-                        : isLayNGoLarge60
-                          ? LAY_N_GO_LARGE_60_BULLETS
-                          : isLayNGoLifestyle44
-                            ? LAY_N_GO_LIFESTYLE_44_BULLETS
-                            : LAY_N_GO_LITE_18_BULLETS
+                        : isLayNGoTravelDogBed44
+                          ? LAY_N_GO_TRAVEL_DOG_BED_44_BULLETS
+                          : isLayNGoLarge60
+                            ? LAY_N_GO_LARGE_60_BULLETS
+                            : isLayNGoLifestyle44
+                              ? LAY_N_GO_LIFESTYLE_44_BULLETS
+                              : LAY_N_GO_LITE_18_BULLETS
                       ).map((line) => (
                         <li key={line} className="pl-0.5">
                           {line}
@@ -1465,7 +1484,13 @@ const ProductDetail = () => {
                       choice.idx === selectedVariantIdx ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" : "",
                       !choice.node.availableForSale ? "line-through opacity-40" : "",
                     )}
-                    style={isCosmoMini16 ? cosmoMiniSwatchStyle(choice.node) : variantImageSwatchStyle(choice.node, choice.rawValue)}
+                    style={
+                      isCosmoMini16
+                        ? cosmoMiniSwatchStyle(choice.node)
+                        : product.handle.toLowerCase() === "lay-n-go-travel-dog-bed-44"
+                          ? dogBedSwatchStyle(choice.rawValue)
+                          : variantImageSwatchStyle(choice.node, choice.rawValue)
+                    }
                     disabled={!choice.node.availableForSale}
                     aria-label={choice.displayValue}
                     title={choice.displayValue}
@@ -1541,6 +1566,14 @@ function travelerSwatchStyle(optionValue: string): CSSProperties {
   const key = optionValue.trim().toLowerCase();
   if (key.includes("black")) return { backgroundColor: "#1a1a1a" };
   return { backgroundColor: "#6f6f6f" };
+}
+
+/** Lay-n-Go Travel Dog Bed (44″) — solid swatches aligned to product fabric (Burgundy Chocolate / Navy). */
+function dogBedSwatchStyle(optionValue: string): CSSProperties {
+  const key = optionValue.trim().toLowerCase();
+  if (key.includes("navy")) return { backgroundColor: "#1e2445" };
+  if (key.includes("burgundy") || key.includes("chocolate")) return { backgroundColor: "#722626" };
+  return { backgroundColor: "#94a3b8" };
 }
 
 function displayOptionValue(handle: string, rawValue: string): string {

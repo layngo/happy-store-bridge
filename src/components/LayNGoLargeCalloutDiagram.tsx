@@ -22,7 +22,7 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v4";
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v5";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
 /** Slight drop shadow on diagram callout circles (Large + Lifestyle + Traveler, mobile + desktop). */
@@ -78,16 +78,20 @@ const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
   },
 };
 
-/** Lite: lip dot tuned for 18″ hero; cord thumbnail uses `CALLOUT_CORD_LITE`. */
+/** Lite: cord ↔ mesh swap on PDP (mat anchors + copy + art); lip tuned for 18″ hero. */
 const DEFAULT_LAYOUT_LITE: LayoutState = {
   dots: {
-    ...DEFAULT_LAYOUT_LIFESTYLE.dots,
+    cord: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.mesh },
+    mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.cord },
     lip: { x: 31, y: 49 },
   },
-  anchors: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors },
+  anchors: {
+    cord: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.mesh },
+    mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.cord },
+    lip: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.lip },
+  },
 };
 
-/** Lite PDP omits the cord-lock / pocket callout (see `visibleCalloutKeys`). */
 const ALL_CALLOUT_KEYS: CalloutKey[] = ["cord", "lip", "mesh"];
 const MOBILE_CALLOUT_KEYS: CalloutKey[] = ["cord", "mesh", "lip"];
 
@@ -119,8 +123,16 @@ const CALLOUT_META: Record<
   },
 };
 
-function calloutLabelForVariant(calloutKey: CalloutKey, _variant: LayNGoCalloutDiagramVariant): string {
+function calloutLabelForVariant(calloutKey: CalloutKey, variant: LayNGoCalloutDiagramVariant): string {
+  if (variant === "lite-18" && calloutKey === "cord") return CALLOUT_META.mesh.label;
+  if (variant === "lite-18" && calloutKey === "mesh") return CALLOUT_META.cord.label;
   return CALLOUT_META[calloutKey].label;
+}
+
+function calloutImageAltForVariant(calloutKey: CalloutKey, variant: LayNGoCalloutDiagramVariant): string {
+  if (variant === "lite-18" && calloutKey === "cord") return CALLOUT_META.mesh.imageAlt;
+  if (variant === "lite-18" && calloutKey === "mesh") return CALLOUT_META.cord.imageAlt;
+  return CALLOUT_META[calloutKey].imageAlt;
 }
 
 function clamp(n: number, min: number, max: number) {
@@ -186,7 +198,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 44,
       containerMinHClass: "min-h-[min(76.8vh,768px)]",
       heroWidthClass: "w-[min(75.2vw,736px)]",
-      /** Pull up less than before + top padding so ticks clear the mat; pb keeps 44″ visible. */
+      /** Pull up less than before + top padding so ticks clear the mat; 44″ bracket width is `lifestyle-44` in `DiameterLine`. */
       dimensionWrapClass:
         "relative z-20 mx-auto -mt-[3.25rem] w-[min(75.2vw,736px)] pt-5 pb-2 sm:-mt-[3.75rem] sm:pt-6 sm:pb-3 md:-mt-[5rem] md:pt-7 md:pb-4 lg:-mt-[6rem] lg:pt-8 lg:pb-5",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
@@ -205,13 +217,13 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 18,
       containerMinHClass: "min-h-[min(76.8vh,768px)]",
       heroWidthClass: "w-[min(75.2vw,736px)]",
-      /** Tighter to hero than Lifestyle — 18″ line width is handled in `DiameterLine` for `lite-18`. */
+      /** Tighter vertical offset to hero than Lifestyle; 18″ bracket width matches mat in `DiameterLine`. */
       dimensionWrapClass:
         "relative z-20 mx-auto -mt-[4.25rem] w-[min(75.2vw,736px)] pt-3 pb-2 sm:-mt-[4.75rem] sm:pt-4 sm:pb-3 md:-mt-[6.25rem] md:pt-5 md:pb-4 lg:-mt-[7.25rem] lg:pt-6 lg:pb-5",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
-      meshCalloutSrc: CALLOUT_MESH,
+      meshCalloutSrc: CALLOUT_CORD_LITE,
       lipCalloutSrc: CALLOUT_LIP_LITE,
-      cordCalloutSrc: CALLOUT_CORD_LITE,
+      cordCalloutSrc: CALLOUT_MESH,
     };
   }
   return {
@@ -245,17 +257,20 @@ function DiameterLine({
 }) {
   const lifestyle44 = variant === "lifestyle-44";
   const lite18 = variant === "lite-18";
+  const traveler20 = variant === "traveler-20";
   const lifestyleChrome =
     variant === "lifestyle-44" || variant === "lite-18" || variant === "traveler-20";
 
   const bracketWidthClass = lifestyle44
-    ? "mx-auto w-[min(100%,74%)] sm:w-[min(100%,68%)] md:w-[min(100%,52%)] lg:w-[min(100%,48%)]"
+    ? /** Mobile vs md+ tuned separately — hero mat is nearly full width; old 74→48% read far inside the rim */
+      "mx-auto w-[min(100%,94%)] sm:w-[min(100%,92%)] md:w-[min(100%,88%)] lg:w-[min(100%,85%)]"
     : lite18
-      ? /** ~18″ mat footprint in Lite hero art — narrower than 44″ / TRAVELER so the line matches visible diameter */
-        "mx-auto w-[min(100%,40%)] sm:w-[min(100%,38%)] md:w-[min(100%,34%)] lg:w-[min(100%,31%)]"
-      : lifestyleChrome
-        ? "mx-auto w-[min(100%,52%)] sm:w-[min(100%,50%)] md:w-[min(100%,48%)]"
-        : "w-full max-w-md sm:max-w-lg";
+      ? /** Lite hero: mat spans almost full image width — bracket tracks visible bag diameter */
+        "mx-auto w-[min(100%,94%)] sm:w-[min(100%,92%)] md:w-[min(100%,90%)] lg:w-[min(100%,88%)]"
+    : traveler20
+      ? /** Traveler callout hero — mat nearly full width; mobile vs md+ tuned separately */
+        "mx-auto w-[min(100%,93%)] sm:w-[min(100%,91%)] md:w-[min(100%,88%)] lg:w-[min(100%,85%)]"
+    : "w-full max-w-md sm:max-w-lg";
 
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
@@ -310,14 +325,28 @@ function FloatingCallout({
   imageSrcOverride?: string;
   variant?: LayNGoCalloutDiagramVariant;
 }) {
-  const { imageSrc, imageAlt, textAbove } = CALLOUT_META[calloutKey];
+  const { imageSrc, textAbove } = CALLOUT_META[calloutKey];
   const label = calloutLabelForVariant(calloutKey, variant);
+  const thumbAlt = calloutImageAltForVariant(calloutKey, variant);
   const thumbSrc = imageSrcOverride ?? imageSrc;
   const { x, y } = layout.anchors[calloutKey];
   const lifestyleThumb = diagramUsesLifestyleChrome(variant);
   const cordLifestyleCompact = lifestyleThumb && calloutKey === "cord";
   const lipLifestyleTightCrop = lifestyleThumb && calloutKey === "lip";
   const meshLifestyleTightCrop = lifestyleThumb && calloutKey === "mesh";
+
+  const thumbCropClass = (() => {
+    if (variant === "lite-18") {
+      if (calloutKey === "cord") return "origin-center scale-[1.24] object-[58%_center]";
+      if (calloutKey === "mesh") return "origin-center scale-[1.26] object-[center_18%]";
+      if (calloutKey === "lip") return "origin-center scale-[1.24] object-[30%_center]";
+      return "";
+    }
+    if (cordLifestyleCompact) return "origin-center scale-[1.26] object-[center_18%]";
+    if (lipLifestyleTightCrop) return "origin-center scale-[1.24] object-[30%_center]";
+    if (meshLifestyleTightCrop) return "origin-center scale-[1.24] object-[58%_center]";
+    return "";
+  })();
 
   const text = (
     <p className="max-w-[13rem] text-center font-heading text-[0.7rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:max-w-[15rem] sm:text-xs md:text-sm">
@@ -338,13 +367,8 @@ function FloatingCallout({
     >
       <img
         src={thumbSrc}
-        alt={imageAlt}
-        className={cn(
-          "h-full w-full object-cover object-center",
-          cordLifestyleCompact && "origin-center scale-[1.26] object-[center_18%]",
-          lipLifestyleTightCrop && "origin-center scale-[1.24] object-[30%_center]",
-          meshLifestyleTightCrop && "origin-center scale-[1.24] object-[58%_center]",
-        )}
+        alt={thumbAlt}
+        className={cn("h-full w-full object-cover object-center", thumbCropClass)}
         loading="lazy"
         decoding="async"
       />
@@ -499,6 +523,9 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
       if (k === "mesh") {
+        if (variant === "lite-18") {
+          return { k, x1: d.x, y1: d.y, x2: end.x, y2: end.y };
+        }
         // Two pocket touch-points on the mat → two rim points on the callout circle.
         let meshUpperStart: Pt;
         let meshLowerStart: Pt;
@@ -635,6 +662,20 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         />
         {MOBILE_CALLOUT_KEYS.map((k) => {
           const m = CALLOUT_META[k];
+          const mobileThumbCrop =
+            variant === "lite-18"
+              ? k === "cord"
+                ? "origin-center scale-[1.24] object-[58%_center]"
+                : k === "mesh"
+                  ? "origin-center scale-[1.26] object-[center_18%]"
+                  : k === "lip"
+                    ? "origin-center scale-[1.24] object-[30%_center]"
+                    : ""
+              : cn(
+                  diagramUsesLifestyleChrome(variant) && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",
+                  diagramUsesLifestyleChrome(variant) && k === "lip" && "origin-center scale-[1.24] object-[30%_center]",
+                  diagramUsesLifestyleChrome(variant) && k === "mesh" && "origin-center scale-[1.24] object-[58%_center]",
+                );
           const thumb = (
             <div
               className={cn(
@@ -652,13 +693,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                       ? config.lipCalloutSrc
                       : config.meshCalloutSrc
                 }
-                alt={m.imageAlt}
-                className={cn(
-                  "h-full w-full object-cover object-center",
-                  diagramUsesLifestyleChrome(variant) && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",
-                  diagramUsesLifestyleChrome(variant) && k === "lip" && "origin-center scale-[1.24] object-[30%_center]",
-                  diagramUsesLifestyleChrome(variant) && k === "mesh" && "origin-center scale-[1.24] object-[58%_center]",
-                )}
+                alt={calloutImageAltForVariant(k, variant)}
+                className={cn("h-full w-full object-cover object-center", mobileThumbCrop)}
                 loading="lazy"
                 decoding="async"
               />
