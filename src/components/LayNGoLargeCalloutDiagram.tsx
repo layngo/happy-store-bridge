@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 const HERO_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/hero-callout-main.png";
 const HERO_CALLOUT_LIFESTYLE = "/products/lay-n-go-lifestyle-44/hero-callout-main.png";
+const HERO_CALLOUT_LITE = "/products/lay-n-go-lite-18/hero-callout-main.png";
 const CALLOUT_CORD = "/products/lay-n-go-large-pdp/callout-cord-pocket.png";
 const CALLOUT_CORD_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-cord-pocket.png";
 const CALLOUT_MESH = "/products/lay-n-go-large-pdp/callout-mesh-pockets.png";
@@ -19,10 +20,13 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v1";
+const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
+
 /** Slight drop shadow on diagram callout circles (Large + Lifestyle, mobile + desktop). */
 const CALLOUT_THUMB_SHADOW = "shadow-[0_2px_10px_rgb(0_0_0_/_0.12),0_6px_20px_rgb(0_0_0_/_0.08)]";
 
-export type LayNGoCalloutDiagramVariant = "large-60" | "lifestyle-44";
+export type LayNGoCalloutDiagramVariant = "large-60" | "lifestyle-44" | "lite-18";
 
 /** ~20px on a typical md stage, as 0–100 viewBox deltas (see `preserveAspectRatio="none"`). */
 const LIFESTYLE_MESH_POCKET_DX_20PX = 2.65;
@@ -70,6 +74,16 @@ const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
     mesh: DEFAULT_LAYOUT.anchors.mesh,
   },
 };
+
+/** Same anchor defaults as Lifestyle; Lite uses its own storage key. */
+const DEFAULT_LAYOUT_LITE: LayoutState = {
+  dots: { ...DEFAULT_LAYOUT_LIFESTYLE.dots },
+  anchors: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors },
+};
+
+function diagramUsesLifestyleChrome(variant: LayNGoCalloutDiagramVariant) {
+  return variant === "lifestyle-44" || variant === "lite-18";
+}
 
 const CALLOUT_META: Record<
   CalloutKey,
@@ -167,6 +181,24 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       cordCalloutSrc: CALLOUT_CORD_LIFESTYLE,
     };
   }
+  if (variant === "lite-18") {
+    return {
+      storageKey: STORAGE_KEY_LITE,
+      layoutEvent: LAYOUT_SYNC_EVENT_LITE,
+      heroSrc: HERO_CALLOUT_LITE,
+      heroAlt:
+        'Lay-n-Go Lite 18" green activity mat from above with magnetic tiles, drawstring, and Lay-n-Go Lite pocket on white',
+      diameterInches: 18,
+      containerMinHClass: "min-h-[min(76.8vh,768px)]",
+      heroWidthClass: "w-[min(75.2vw,736px)]",
+      dimensionWrapClass:
+        "relative z-20 mx-auto -mt-[3.25rem] w-[min(75.2vw,736px)] pt-5 pb-2 sm:-mt-[3.75rem] sm:pt-6 sm:pb-3 md:-mt-[5rem] md:pt-7 md:pb-4 lg:-mt-[6rem] lg:pt-8 lg:pb-5",
+      mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
+      meshCalloutSrc: CALLOUT_MESH,
+      lipCalloutSrc: CALLOUT_LIP,
+      cordCalloutSrc: CALLOUT_CORD,
+    };
+  }
   return {
     storageKey: STORAGE_KEY_LARGE,
     layoutEvent: LAYOUT_SYNC_EVENT_LARGE,
@@ -193,7 +225,7 @@ function DiameterLine({
   className?: string;
   variant?: LayNGoCalloutDiagramVariant;
 }) {
-  const lifestyle = variant === "lifestyle-44";
+  const lifestyle = diagramUsesLifestyleChrome(variant);
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
       <div
@@ -238,7 +270,7 @@ function FloatingCallout({
   const { imageSrc, imageAlt, label, textAbove } = CALLOUT_META[calloutKey];
   const thumbSrc = imageSrcOverride ?? imageSrc;
   const { x, y } = layout.anchors[calloutKey];
-  const lifestyleThumb = variant === "lifestyle-44";
+  const lifestyleThumb = diagramUsesLifestyleChrome(variant);
   const cordLifestyleCompact = lifestyleThumb && calloutKey === "cord";
   const lipLifestyleTightCrop = lifestyleThumb && calloutKey === "lip";
   const meshLifestyleTightCrop = lifestyleThumb && calloutKey === "mesh";
@@ -298,10 +330,6 @@ function FloatingCallout({
                 <div
                   className="pointer-events-none absolute left-1/2 top-0 z-[5] w-px -translate-x-1/2 bg-neutral-900"
                   style={{ bottom: "calc(14% + 10px)" }}
-                  aria-hidden
-                />
-                <span
-                  className="pointer-events-none absolute bottom-[12%] left-1/2 z-[6] h-3 w-3 -translate-x-1/2 translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-sm ring-1 ring-white"
                   aria-hidden
                 />
               </div>
@@ -392,7 +420,12 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
   const config = useMemo(() => diagramConfig(variant), [variant]);
 
   const fallbackLayout = useMemo(
-    () => (variant === "lifestyle-44" ? DEFAULT_LAYOUT_LIFESTYLE : DEFAULT_LAYOUT),
+    () =>
+      variant === "lifestyle-44"
+        ? DEFAULT_LAYOUT_LIFESTYLE
+        : variant === "lite-18"
+          ? DEFAULT_LAYOUT_LITE
+          : DEFAULT_LAYOUT,
     [variant],
   );
 
@@ -425,7 +458,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         // Two pocket touch-points on the mat → two rim points on the callout circle.
         let meshUpperStart: Pt;
         let meshLowerStart: Pt;
-        if (variant === "lifestyle-44") {
+        if (diagramUsesLifestyleChrome(variant)) {
           meshUpperStart = {
             x: d.x - 5 + LIFESTYLE_MESH_POCKET_DX_20PX,
             y: d.y - 36 + LIFESTYLE_MESH_POCKET_DY_HALF_20PX,
@@ -509,11 +542,17 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
     <div
       className={cn(
         "mx-auto max-w-6xl pt-12 sm:pt-14",
-        variant === "lifestyle-44"
+        diagramUsesLifestyleChrome(variant)
           ? "mt-[calc(3.5rem+100px)] rounded-2xl bg-white px-2 sm:mt-[calc(4rem+100px)] sm:px-4"
           : "mt-14 sm:mt-16",
       )}
-      aria-label={variant === "lifestyle-44" ? "Lay-n-Go Lifestyle product details" : "Lay-n-Go Large product details"}
+      aria-label={
+        variant === "lifestyle-44"
+          ? "Lay-n-Go Lifestyle product details"
+          : variant === "lite-18"
+            ? "Lay-n-Go Lite product details"
+            : "Lay-n-Go Large product details"
+      }
     >
       {editorMode ? (
         <div className="sticky top-0 z-[250] mb-4 border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
@@ -525,7 +564,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       <div
         className={cn(
           "flex flex-col items-center gap-2 md:hidden",
-          variant === "lifestyle-44" && "gap-3 pb-6",
+          diagramUsesLifestyleChrome(variant) && "gap-3 pb-6",
         )}
       >
         <img
@@ -534,7 +573,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           className={cn(
             "w-full object-contain",
             config.mobileHeroMaxClass,
-            variant === "lifestyle-44" && "rounded-xl bg-white",
+            diagramUsesLifestyleChrome(variant) && "rounded-xl bg-white",
           )}
           loading="lazy"
           decoding="async"
@@ -545,7 +584,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           className={cn(
             "w-full",
             config.mobileHeroMaxClass,
-            variant === "lifestyle-44" && "mt-2 shrink-0 pb-1",
+            diagramUsesLifestyleChrome(variant) && "mt-2 shrink-0 pb-1",
           )}
         />
         {(["cord", "mesh", "lip"] as CalloutKey[]).map((k) => {
@@ -555,8 +594,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               className={cn(
                 "aspect-square shrink-0 overflow-hidden rounded-full",
                 CALLOUT_THUMB_SHADOW,
-                variant === "lifestyle-44" ? "ring-0" : "ring-2 ring-neutral-100",
-                variant === "lifestyle-44" && k === "cord" ? "h-28 w-28" : "h-32 w-32",
+                diagramUsesLifestyleChrome(variant) ? "ring-0" : "ring-2 ring-neutral-100",
+                diagramUsesLifestyleChrome(variant) && k === "cord" ? "h-28 w-28" : "h-32 w-32",
               )}
             >
               <img
@@ -570,9 +609,9 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                 alt={m.imageAlt}
                 className={cn(
                   "h-full w-full object-cover object-center",
-                  variant === "lifestyle-44" && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",
-                  variant === "lifestyle-44" && k === "lip" && "origin-center scale-[1.24] object-[30%_center]",
-                  variant === "lifestyle-44" && k === "mesh" && "origin-center scale-[1.24] object-[58%_center]",
+                  diagramUsesLifestyleChrome(variant) && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",
+                  diagramUsesLifestyleChrome(variant) && k === "lip" && "origin-center scale-[1.24] object-[30%_center]",
+                  diagramUsesLifestyleChrome(variant) && k === "mesh" && "origin-center scale-[1.24] object-[58%_center]",
                 )}
                 loading="lazy"
                 decoding="async"
@@ -585,7 +624,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             </p>
           );
 
-          if (variant === "lifestyle-44" && k === "cord") {
+          if (diagramUsesLifestyleChrome(variant) && k === "cord") {
             return (
               <div key={k} className="flex w-full flex-col items-center gap-1.5 px-2">
                 {label}
@@ -595,10 +634,6 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                   <div
                     className="pointer-events-none absolute left-1/2 top-0 z-[1] w-px -translate-x-1/2 bg-neutral-900"
                     style={{ bottom: "calc(14% + 10px)" }}
-                    aria-hidden
-                  />
-                  <span
-                    className="pointer-events-none absolute bottom-[12%] left-1/2 z-[2] h-3 w-3 -translate-x-1/2 translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-sm ring-1 ring-white"
                     aria-hidden
                   />
                 </div>
@@ -619,7 +654,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       <div
         className={cn(
           "mx-auto hidden w-full max-w-[1100px] md:block md:px-2",
-          variant === "lifestyle-44" && "pb-10 md:pb-12",
+          diagramUsesLifestyleChrome(variant) && "pb-10 md:pb-12",
         )}
       >
         <div
@@ -627,7 +662,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           className={cn(
             "relative mx-auto w-full",
             config.containerMinHClass,
-            variant === "lifestyle-44" && "rounded-xl bg-white",
+            diagramUsesLifestyleChrome(variant) && "rounded-xl bg-white",
           )}
           onPointerMove={editorMode ? onPointerMove : undefined}
           onPointerUp={editorMode ? (e) => endDrag(e) : undefined}
@@ -701,7 +736,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
 
           {(() => {
             if (editorMode) return null;
-            if (variant !== "large-60" && variant !== "lifestyle-44") return null;
+            if (variant !== "large-60" && variant !== "lifestyle-44" && variant !== "lite-18") return null;
             const meshLe = lineEnds.find((le) => le.k === "mesh" && le.meshUpperStart);
             if (!meshLe?.meshUpperStart || !meshLe.meshLowerStart) return null;
             const pocketDotCls = cn(
@@ -728,7 +763,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             className={cn(
               "pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2",
               config.heroWidthClass,
-              variant === "lifestyle-44" && "rounded-lg bg-white",
+              diagramUsesLifestyleChrome(variant) && "rounded-lg bg-white",
             )}
           >
             <img
@@ -736,7 +771,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               alt={config.heroAlt}
               className={cn(
                 "relative z-10 w-full object-contain",
-                variant === "lifestyle-44" && "rounded-lg bg-white",
+                diagramUsesLifestyleChrome(variant) && "rounded-lg bg-white",
               )}
               loading="lazy"
               decoding="async"

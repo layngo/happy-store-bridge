@@ -168,58 +168,60 @@ export function LayNGoLargePdpPlayStrip({
 
       {showLowerSections ? (
         <>
-          <div
-            className="mx-auto mt-14 max-w-[min(100%,90rem)] pt-12 sm:mt-16 sm:pt-14"
-            aria-label="How Lay-n-Go Large works in three steps"
-          >
-            <div className="flex w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:gap-1 md:gap-2 lg:gap-3">
-              <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
-                <img
-                  src={calloutVariant === "lifestyle-44" ? FEATURE_OPEN_LIFESTYLE : FEATURE_OPEN}
-                  alt={
-                    calloutVariant === "lifestyle-44"
-                      ? "Lay-n-Go Lifestyle mat open with building blocks; pulling the drawstring to begin cleanup"
-                      : "Lay-n-Go Large open with toys; easy access to play and start cleanup"
-                  }
-                  className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+          {calloutVariant !== "lite-18" ? (
+            <div
+              className="mx-auto mt-14 max-w-[min(100%,90rem)] pt-12 sm:mt-16 sm:pt-14"
+              aria-label="How Lay-n-Go Large works in three steps"
+            >
+              <div className="flex w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:gap-1 md:gap-2 lg:gap-3">
+                <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
+                  <img
+                    src={calloutVariant === "lifestyle-44" ? FEATURE_OPEN_LIFESTYLE : FEATURE_OPEN}
+                    alt={
+                      calloutVariant === "lifestyle-44"
+                        ? "Lay-n-Go Lifestyle mat open with building blocks; pulling the drawstring to begin cleanup"
+                        : "Lay-n-Go Large open with toys; easy access to play and start cleanup"
+                    }
+                    className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
 
-              <FeatureConnector label="Easy access and cleanup" />
+                <FeatureConnector label="Easy access and cleanup" />
 
-              <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
-                <img
-                  src={calloutVariant === "lifestyle-44" ? FEATURE_CINCH_LIFESTYLE : FEATURE_CINCH}
-                  alt={
-                    calloutVariant === "lifestyle-44"
-                      ? "Cinching the Lay-n-Go Lifestyle drawstring to close the black mat bag"
-                      : "Cinching the Lay-n-Go Large drawstring to gather the mat closed"
-                  }
-                  className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+                <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
+                  <img
+                    src={calloutVariant === "lifestyle-44" ? FEATURE_CINCH_LIFESTYLE : FEATURE_CINCH}
+                    alt={
+                      calloutVariant === "lifestyle-44"
+                        ? "Cinching the Lay-n-Go Lifestyle drawstring to close the black mat bag"
+                        : "Cinching the Lay-n-Go Large drawstring to gather the mat closed"
+                    }
+                    className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
 
-              <FeatureConnector label="Wide strap for easy travel and storage" />
+                <FeatureConnector label="Wide strap for easy travel and storage" />
 
-              <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
-                <img
-                  src={calloutVariant === "lifestyle-44" ? FEATURE_CARRY_LIFESTYLE : FEATURE_CARRY}
-                  alt={
-                    calloutVariant === "lifestyle-44"
-                      ? "Person wearing the cinched Lay-n-Go Lifestyle 44 inch mat as a backpack against a white studio background"
-                      : "Carrying the closed Lay-n-Go Large bag with the wide shoulder strap"
-                  }
-                  className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
+                  <img
+                    src={calloutVariant === "lifestyle-44" ? FEATURE_CARRY_LIFESTYLE : FEATURE_CARRY}
+                    alt={
+                      calloutVariant === "lifestyle-44"
+                        ? "Person wearing the cinched Lay-n-Go Lifestyle 44 inch mat as a backpack against a white studio background"
+                        : "Carrying the closed Lay-n-Go Large bag with the wide shoulder strap"
+                    }
+                    className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          ) : null}
 
           <LayNGoLargeCalloutDiagram variant={calloutVariant} />
         </>

@@ -86,19 +86,31 @@ const LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES = [
 const LAY_N_GO_LITE_18_GALLERY_SLIDES = [
   {
     src: "/products/lay-n-go-lite-18/lite-gallery-1.png",
-    alt: "Children playing with small toys on a blue Lay-n-Go Lite mat at the beach",
+    alt: "Lay-n-Go Lite bags cinched closed with embroidered logo in warm sunlight",
   },
   {
     src: "/products/lay-n-go-lite-18/lite-gallery-2.png",
-    alt: "Child playing with building bricks in a blue Lay-n-Go Lite on an airplane tray table",
+    alt: "Children playing with small toys on a blue Lay-n-Go Lite mat at the beach",
   },
   {
     src: "/products/lay-n-go-lite-18/lite-gallery-3.png",
-    alt: "Two children with pink and green Lay-n-Go mats playing with toys at a kitchen counter",
+    alt: "Green Lay-n-Go Lite mat with checkered rim on a table filled with LEGO bricks",
   },
   {
     src: "/products/lay-n-go-lite-18/lite-gallery-4.png",
-    alt: "Three children on outdoor chairs by a lake with green and orange Lay-n-Go Lite bags",
+    alt: "Pink Lay-n-Go Lite mat with checkered exterior on a table with small toys",
+  },
+  {
+    src: "/products/lay-n-go-lite-18/lite-gallery-5.png",
+    alt: "Two children playing UNO on a blue Lay-n-Go Lite mat at a wooden table",
+  },
+  {
+    src: "/products/lay-n-go-lite-18/lite-gallery-6.png",
+    alt: "Child building with LEGO pieces on a blue Lay-n-Go Lite mat on a wooden table",
+  },
+  {
+    src: "/products/lay-n-go-lite-18/lite-gallery-7.png",
+    alt: "Two children playing with LEGO on a pink-and-blue Lay-n-Go Lite at a kitchen counter",
   },
 ] as const;
 
@@ -312,6 +324,25 @@ const ProductDetail = () => {
   }, [product?.id, product?.handle]);
 
   useEffect(() => {
+    if (!product || product.handle.toLowerCase() !== "lay-n-go-lite-18") return;
+    const colorName = product.options.find((opt) => isColorOptionName(opt.name))?.name;
+    if (!colorName) return;
+    const greenIdx = product.variants.edges.findIndex((edge) => {
+      const val = edge.node.selectedOptions.find((o) => o.name === colorName)?.value ?? "";
+      return /\bgreen\b/i.test(val.trim().toLowerCase());
+    });
+    if (greenIdx < 0) return;
+    setSelectedVariantIdx(greenIdx);
+    const variant = product.variants.edges[greenIdx]?.node;
+    const variantImageUrl = variant?.image?.url;
+    if (variantImageUrl) {
+      const imgs = getOrderedImagesForProduct(product);
+      const imageIdx = imgs.findIndex((img) => img.node.url === variantImageUrl);
+      if (imageIdx >= 0) setSelectedImage(imageIdx);
+    }
+  }, [product?.id, product?.handle]);
+
+  useEffect(() => {
     setCosmo20GalleryIndex(0);
     setCosmo22GalleryIndex(0);
     setNailspa18GalleryIndex(0);
@@ -429,7 +460,7 @@ const ProductDetail = () => {
   const colorVariantChoices = useMemo(() => {
     if (!product || !colorOptionName) return [];
     const seen = new Set<string>();
-    return product.variants.edges.flatMap((edge, idx) => {
+    const choices = product.variants.edges.flatMap((edge, idx) => {
       const rawValue = edge.node.selectedOptions.find((o) => o.name === colorOptionName)?.value ?? "";
       if (!rawValue) return [];
       const key = rawValue.trim().toLowerCase();
@@ -444,6 +475,15 @@ const ProductDetail = () => {
         },
       ];
     });
+    if (product.handle.toLowerCase() === "lay-n-go-lite-18") {
+      return [...choices].sort((a, b) => {
+        const ag = /\bgreen\b/i.test(a.rawValue.trim());
+        const bg = /\bgreen\b/i.test(b.rawValue.trim());
+        if (ag !== bg) return ag ? -1 : 1;
+        return 0;
+      });
+    }
+    return choices;
   }, [colorOptionName, product]);
 
   useEffect(() => {
@@ -1015,7 +1055,9 @@ const ProductDetail = () => {
                       ? "/products/lay-n-go-lifestyle-44/play-strip-headline.png"
                       : undefined
                 }
-                calloutVariant={isLayNGoLifestyle44 ? "lifestyle-44" : "large-60"}
+                calloutVariant={
+                  isLayNGoLifestyle44 ? "lifestyle-44" : isLayNGoLite18 ? "lite-18" : "large-60"
+                }
               />
             ) : null}
 
@@ -1070,7 +1112,7 @@ const ProductDetail = () => {
                         type="button"
                         variant="outline"
                         size="icon"
-                        className="h-10 w-10 shrink-0 self-center rounded-full shadow-sm sm:h-11 sm:w-11"
+                        className="h-10 w-10 shrink-0 self-center rounded-full border-0 bg-black text-white hover:bg-neutral-900 hover:text-white focus-visible:ring-white/40 sm:h-11 sm:w-11"
                         onClick={() =>
                           layNGoHeroGallery.setSlideIndex(
                             (prev) =>
@@ -1079,7 +1121,7 @@ const ProductDetail = () => {
                         }
                         aria-label="Show previous photo"
                       >
-                        <ChevronLeft className="h-5 w-5 shrink-0" aria-hidden />
+                        <ChevronLeft className="h-5 w-5 shrink-0 text-white" aria-hidden />
                       </Button>
                       <div className="relative min-w-0 flex-1 overflow-hidden rounded-xl bg-white pt-[56.34%]">
                         <div className="absolute inset-0 overflow-hidden">
@@ -1109,13 +1151,13 @@ const ProductDetail = () => {
                         type="button"
                         variant="outline"
                         size="icon"
-                        className="h-10 w-10 shrink-0 self-center rounded-full shadow-sm sm:h-11 sm:w-11"
+                        className="h-10 w-10 shrink-0 self-center rounded-full border-0 bg-black text-white hover:bg-neutral-900 hover:text-white focus-visible:ring-white/40 sm:h-11 sm:w-11"
                         onClick={() =>
                           layNGoHeroGallery.setSlideIndex((prev) => (prev + 1) % layNGoHeroGallery.slides.length)
                         }
                         aria-label="Show next photo"
                       >
-                        <ChevronRight className="h-5 w-5 shrink-0" aria-hidden />
+                        <ChevronRight className="h-5 w-5 shrink-0 text-white" aria-hidden />
                       </Button>
                     </div>
                   </div>
