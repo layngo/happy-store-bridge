@@ -22,12 +22,14 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v5";
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v6";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
-/** Slight drop shadow on diagram callout circles (Large + Lifestyle + Traveler, mobile + desktop). */
+/** Circular diagram callouts: thin white rim + black drop shadow. Use on outer wrapper; inner needs `overflow-hidden rounded-full` for the image. */
 export const CALLOUT_THUMB_SHADOW =
-  "shadow-[0_2px_10px_rgb(0_0_0_/_0.12),0_6px_20px_rgb(0_0_0_/_0.08)]";
+  "rounded-full bg-white p-[2px] shadow-[0_2px_8px_rgba(0,0,0,0.32),0_5px_16px_rgba(0,0,0,0.26)]";
+
+export const CALLOUT_THUMB_INNER_CLIP = "relative h-full w-full overflow-hidden rounded-full";
 
 export type LayNGoCalloutDiagramVariant = "large-60" | "lifestyle-44" | "lite-18";
 
@@ -78,16 +80,16 @@ const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
   },
 };
 
-/** Lite: cord ↔ mesh swap on PDP (mat anchors + copy + art); lip tuned for 18″ hero. */
+/** Lite 18″: same cord/mesh mat anchors as Lifestyle; lip tuned for 18″ hero art. */
 const DEFAULT_LAYOUT_LITE: LayoutState = {
   dots: {
-    cord: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.mesh },
-    mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.cord },
+    cord: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.cord },
+    mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.mesh },
     lip: { x: 31, y: 49 },
   },
   anchors: {
-    cord: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.mesh },
-    mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.cord },
+    cord: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.cord },
+    mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.mesh },
     lip: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.lip },
   },
 };
@@ -122,18 +124,6 @@ const CALLOUT_META: Record<
     textAbove: false,
   },
 };
-
-function calloutLabelForVariant(calloutKey: CalloutKey, variant: LayNGoCalloutDiagramVariant): string {
-  if (variant === "lite-18" && calloutKey === "cord") return CALLOUT_META.mesh.label;
-  if (variant === "lite-18" && calloutKey === "mesh") return CALLOUT_META.cord.label;
-  return CALLOUT_META[calloutKey].label;
-}
-
-function calloutImageAltForVariant(calloutKey: CalloutKey, variant: LayNGoCalloutDiagramVariant): string {
-  if (variant === "lite-18" && calloutKey === "cord") return CALLOUT_META.mesh.imageAlt;
-  if (variant === "lite-18" && calloutKey === "mesh") return CALLOUT_META.cord.imageAlt;
-  return CALLOUT_META[calloutKey].imageAlt;
-}
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -221,9 +211,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       dimensionWrapClass:
         "relative z-20 mx-auto -mt-[4.25rem] w-[min(75.2vw,736px)] pt-3 pb-2 sm:-mt-[4.75rem] sm:pt-4 sm:pb-3 md:-mt-[6.25rem] md:pt-5 md:pb-4 lg:-mt-[7.25rem] lg:pt-6 lg:pb-5",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
-      meshCalloutSrc: CALLOUT_CORD_LITE,
+      meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP_LITE,
-      cordCalloutSrc: CALLOUT_MESH,
+      cordCalloutSrc: CALLOUT_CORD_LITE,
     };
   }
   return {
@@ -265,8 +255,8 @@ function DiameterLine({
     ? /** Mobile vs md+ tuned separately — hero mat is nearly full width; old 74→48% read far inside the rim */
       "mx-auto w-[min(100%,94%)] sm:w-[min(100%,92%)] md:w-[min(100%,88%)] lg:w-[min(100%,85%)]"
     : lite18
-      ? /** Lite hero: mat spans almost full image width — bracket tracks visible bag diameter */
-        "mx-auto w-[min(100%,94%)] sm:w-[min(100%,92%)] md:w-[min(100%,90%)] lg:w-[min(100%,88%)]"
+      ? /** Lite hero: mat is inset in the asset — narrow bracket so ticks track the green disc (mobile + desktop). */
+        "mx-auto w-[min(100%,72%)] sm:w-[min(100%,70%)] md:w-[min(100%,68%)] lg:w-[min(100%,66%)]"
     : traveler20
       ? /** Traveler callout hero — mat nearly full width; mobile vs md+ tuned separately */
         "mx-auto w-[min(100%,93%)] sm:w-[min(100%,91%)] md:w-[min(100%,88%)] lg:w-[min(100%,85%)]"
@@ -326,8 +316,8 @@ function FloatingCallout({
   variant?: LayNGoCalloutDiagramVariant;
 }) {
   const { imageSrc, textAbove } = CALLOUT_META[calloutKey];
-  const label = calloutLabelForVariant(calloutKey, variant);
-  const thumbAlt = calloutImageAltForVariant(calloutKey, variant);
+  const label = CALLOUT_META[calloutKey].label;
+  const thumbAlt = CALLOUT_META[calloutKey].imageAlt;
   const thumbSrc = imageSrcOverride ?? imageSrc;
   const { x, y } = layout.anchors[calloutKey];
   const lifestyleThumb = diagramUsesLifestyleChrome(variant);
@@ -336,12 +326,6 @@ function FloatingCallout({
   const meshLifestyleTightCrop = lifestyleThumb && calloutKey === "mesh";
 
   const thumbCropClass = (() => {
-    if (variant === "lite-18") {
-      if (calloutKey === "cord") return "origin-center scale-[1.24] object-[58%_center]";
-      if (calloutKey === "mesh") return "origin-center scale-[1.26] object-[center_18%]";
-      if (calloutKey === "lip") return "origin-center scale-[1.24] object-[30%_center]";
-      return "";
-    }
     if (cordLifestyleCompact) return "origin-center scale-[1.26] object-[center_18%]";
     if (lipLifestyleTightCrop) return "origin-center scale-[1.24] object-[30%_center]";
     if (meshLifestyleTightCrop) return "origin-center scale-[1.24] object-[58%_center]";
@@ -357,21 +341,22 @@ function FloatingCallout({
   const thumb = (
     <div
       className={cn(
-        "aspect-square shrink-0 overflow-hidden rounded-full",
+        "aspect-square shrink-0",
         cordLifestyleCompact
           ? "h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32"
           : "h-[7.25rem] w-[7.25rem] sm:h-32 sm:w-32 md:h-40 md:w-40",
         CALLOUT_THUMB_SHADOW,
-        lifestyleThumb ? "ring-0" : "ring-2 ring-white",
       )}
     >
-      <img
-        src={thumbSrc}
-        alt={thumbAlt}
-        className={cn("h-full w-full object-cover object-center", thumbCropClass)}
-        loading="lazy"
-        decoding="async"
-      />
+      <div className={CALLOUT_THUMB_INNER_CLIP}>
+        <img
+          src={thumbSrc}
+          alt={thumbAlt}
+          className={cn("h-full w-full object-cover object-center", thumbCropClass)}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     </div>
   );
 
@@ -523,9 +508,6 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
       if (k === "mesh") {
-        if (variant === "lite-18") {
-          return { k, x1: d.x, y1: d.y, x2: end.x, y2: end.y };
-        }
         // Two pocket touch-points on the mat → two rim points on the callout circle.
         let meshUpperStart: Pt;
         let meshLowerStart: Pt;
@@ -662,47 +644,39 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         />
         {MOBILE_CALLOUT_KEYS.map((k) => {
           const m = CALLOUT_META[k];
-          const mobileThumbCrop =
-            variant === "lite-18"
-              ? k === "cord"
-                ? "origin-center scale-[1.24] object-[58%_center]"
-                : k === "mesh"
-                  ? "origin-center scale-[1.26] object-[center_18%]"
-                  : k === "lip"
-                    ? "origin-center scale-[1.24] object-[30%_center]"
-                    : ""
-              : cn(
-                  diagramUsesLifestyleChrome(variant) && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",
-                  diagramUsesLifestyleChrome(variant) && k === "lip" && "origin-center scale-[1.24] object-[30%_center]",
-                  diagramUsesLifestyleChrome(variant) && k === "mesh" && "origin-center scale-[1.24] object-[58%_center]",
-                );
+          const mobileThumbCrop = cn(
+            diagramUsesLifestyleChrome(variant) && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",
+            diagramUsesLifestyleChrome(variant) && k === "lip" && "origin-center scale-[1.24] object-[30%_center]",
+            diagramUsesLifestyleChrome(variant) && k === "mesh" && "origin-center scale-[1.24] object-[58%_center]",
+          );
           const thumb = (
             <div
               className={cn(
-                "aspect-square shrink-0 overflow-hidden rounded-full",
+                "aspect-square shrink-0",
                 CALLOUT_THUMB_SHADOW,
-                diagramUsesLifestyleChrome(variant) ? "ring-0" : "ring-2 ring-neutral-100",
                 diagramUsesLifestyleChrome(variant) && k === "cord" ? "h-28 w-28" : "h-32 w-32",
               )}
             >
-              <img
-                src={
-                  k === "cord"
-                    ? config.cordCalloutSrc
-                    : k === "lip"
-                      ? config.lipCalloutSrc
-                      : config.meshCalloutSrc
-                }
-                alt={calloutImageAltForVariant(k, variant)}
-                className={cn("h-full w-full object-cover object-center", mobileThumbCrop)}
-                loading="lazy"
-                decoding="async"
-              />
+              <div className={CALLOUT_THUMB_INNER_CLIP}>
+                <img
+                  src={
+                    k === "cord"
+                      ? config.cordCalloutSrc
+                      : k === "lip"
+                        ? config.lipCalloutSrc
+                        : config.meshCalloutSrc
+                  }
+                  alt={m.imageAlt}
+                  className={cn("h-full w-full object-cover object-center", mobileThumbCrop)}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
             </div>
           );
           const label = (
             <p className="max-w-xs text-center font-heading text-xs font-bold uppercase leading-snug text-neutral-900">
-              {calloutLabelForVariant(k, variant)}
+              {m.label}
             </p>
           );
 
@@ -759,30 +733,28 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             {lineEnds.map(({ k, x1, y1, x2, y2, meshUpperStart, meshLowerStart, meshUpperEnd, meshLowerEnd }) =>
               k === "mesh" && meshUpperStart && meshLowerStart && meshUpperEnd && meshLowerEnd ? (
                 <g key={k}>
-                  {variant !== "lite-18" ? (
-                    <>
-                      <line
-                        x1={meshUpperStart.x}
-                        y1={meshUpperStart.y}
-                        x2={meshUpperEnd.x}
-                        y2={meshUpperEnd.y}
-                        stroke="black"
-                        strokeWidth="1.02"
-                        strokeLinecap="round"
-                        vectorEffect="non-scaling-stroke"
-                      />
-                      <line
-                        x1={meshUpperStart.x}
-                        y1={meshUpperStart.y}
-                        x2={meshUpperEnd.x}
-                        y2={meshUpperEnd.y}
-                        stroke="white"
-                        strokeWidth="0.58"
-                        strokeLinecap="round"
-                        vectorEffect="non-scaling-stroke"
-                      />
-                    </>
-                  ) : null}
+                  <>
+                    <line
+                      x1={meshUpperStart.x}
+                      y1={meshUpperStart.y}
+                      x2={meshUpperEnd.x}
+                      y2={meshUpperEnd.y}
+                      stroke="black"
+                      strokeWidth="1.02"
+                      strokeLinecap="round"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                    <line
+                      x1={meshUpperStart.x}
+                      y1={meshUpperStart.y}
+                      x2={meshUpperEnd.x}
+                      y2={meshUpperEnd.y}
+                      stroke="white"
+                      strokeWidth="0.58"
+                      strokeLinecap="round"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  </>
                   <line
                     x1={meshLowerStart.x}
                     y1={meshLowerStart.y}
@@ -831,13 +803,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             );
             return (
               <>
-                {variant !== "lite-18" ? (
-                  <span
-                    className={pocketDotCls}
-                    style={{ left: `${meshLe.meshUpperStart.x}%`, top: `${meshLe.meshUpperStart.y}%` }}
-                    aria-hidden
-                  />
-                ) : null}
+                <span
+                  className={pocketDotCls}
+                  style={{ left: `${meshLe.meshUpperStart.x}%`, top: `${meshLe.meshUpperStart.y}%` }}
+                  aria-hidden
+                />
                 <span
                   className={pocketDotCls}
                   style={{ left: `${meshLe.meshLowerStart.x}%`, top: `${meshLe.meshLowerStart.y}%` }}

@@ -4,6 +4,7 @@ import { fetchCollectionByHandle, type ShopifyCollectionDetail } from "@/lib/sho
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getCollectionGridSwatchPreview } from "@/components/ProductCard";
+import { CALLOUT_THUMB_SHADOW } from "@/components/LayNGoLargeCalloutDiagram";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Loader2, ChevronRight, Home } from "lucide-react";
@@ -240,9 +241,10 @@ const CosmeticBagsV2 = () => {
                   */}
                   <div
                     className={cn(
-                      "mx-auto max-w-full rounded-full transition-[transform,box-shadow] duration-200 ease-out will-change-transform",
+                      "mx-auto max-w-full transition-[transform,box-shadow] duration-200 ease-out will-change-transform",
+                      CALLOUT_THUMB_SHADOW,
                       "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
-                      "shadow-none group-hover:shadow-[0_10px_28px_-6px_rgba(0,0,0,0.2),0_4px_10px_-4px_rgba(0,0,0,0.1)]",
+                      "group-hover:shadow-[0_4px_12px_rgba(0,0,0,0.38),0_10px_24px_rgba(0,0,0,0.28)]",
                     )}
                     style={{ width: circleWidth, aspectRatio: "1" }}
                   >
