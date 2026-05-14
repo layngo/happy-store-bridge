@@ -154,15 +154,17 @@ export function LayNGoLargePdpPlayStrip({
         {HEADLINE}
       </h2>
 
-      <div className="mx-auto mt-8 max-w-[min(100%,64rem)] sm:mt-10">
-        <img
-          src={headlineImageSrc}
-          alt="Lay-n-Go product hero image"
-          className="block h-auto w-full max-w-full object-contain"
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
+      {calloutVariant !== "lite-18" ? (
+        <div className="mx-auto mt-8 max-w-[min(100%,64rem)] sm:mt-10">
+          <img
+            src={headlineImageSrc}
+            alt="Lay-n-Go product hero image"
+            className="block h-auto w-full max-w-full object-contain"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      ) : null}
 
       {showTravelerCalloutSection ? <TravelerDetailCalloutSection /> : null}
 

@@ -13,6 +13,7 @@ const CALLOUT_MESH = "/products/lay-n-go-large-pdp/callout-mesh-pockets.png";
 const CALLOUT_MESH_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-mesh-pockets.png";
 const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containment-lip.png";
+const CALLOUT_LIP_LITE = "/products/lay-n-go-lite-18/callout-containment-lip.png";
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
 const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
@@ -109,6 +110,13 @@ const CALLOUT_META: Record<
   },
 };
 
+function calloutLabelForVariant(calloutKey: CalloutKey, variant: LayNGoCalloutDiagramVariant): string {
+  if (variant === "lite-18" && calloutKey === "mesh") {
+    return CALLOUT_META.cord.label;
+  }
+  return CALLOUT_META[calloutKey].label;
+}
+
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
@@ -195,7 +203,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
         "relative z-20 mx-auto -mt-[3.25rem] w-[min(75.2vw,736px)] pt-5 pb-2 sm:-mt-[3.75rem] sm:pt-6 sm:pb-3 md:-mt-[5rem] md:pt-7 md:pb-4 lg:-mt-[6rem] lg:pt-8 lg:pb-5",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
       meshCalloutSrc: CALLOUT_MESH,
-      lipCalloutSrc: CALLOUT_LIP,
+      lipCalloutSrc: CALLOUT_LIP_LITE,
       cordCalloutSrc: CALLOUT_CORD,
     };
   }
@@ -225,14 +233,14 @@ function DiameterLine({
   className?: string;
   variant?: LayNGoCalloutDiagramVariant;
 }) {
-  const lifestyle = diagramUsesLifestyleChrome(variant);
+  const lifestyleChrome = diagramUsesLifestyleChrome(variant);
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
       <div
         className={cn(
           "flex items-end justify-center",
-          lifestyle
-            ? "mx-auto w-[min(100%,70%)] sm:w-[min(100%,68%)] md:w-[min(100%,66%)]"
+          lifestyleChrome
+            ? "mx-auto w-[min(100%,52%)] sm:w-[min(100%,50%)] md:w-[min(100%,48%)]"
             : "w-full max-w-md sm:max-w-lg",
         )}
       >
@@ -243,7 +251,7 @@ function DiameterLine({
       <p
         className={cn(
           "font-heading font-semibold tabular-nums text-neutral-900",
-          lifestyle ? "mt-2 text-xl sm:text-2xl" : "mt-1 text-lg sm:text-xl",
+          lifestyleChrome ? "mt-2 text-xl sm:text-2xl" : "mt-1 text-lg sm:text-xl",
         )}
       >
         {inches}&quot;
@@ -267,7 +275,8 @@ function FloatingCallout({
   imageSrcOverride?: string;
   variant?: LayNGoCalloutDiagramVariant;
 }) {
-  const { imageSrc, imageAlt, label, textAbove } = CALLOUT_META[calloutKey];
+  const { imageSrc, imageAlt, textAbove } = CALLOUT_META[calloutKey];
+  const label = calloutLabelForVariant(calloutKey, variant);
   const thumbSrc = imageSrcOverride ?? imageSrc;
   const { x, y } = layout.anchors[calloutKey];
   const lifestyleThumb = diagramUsesLifestyleChrome(variant);
@@ -620,7 +629,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           );
           const label = (
             <p className="max-w-xs text-center font-heading text-xs font-bold uppercase leading-snug text-neutral-900">
-              {m.label}
+              {calloutLabelForVariant(k, variant)}
             </p>
           );
 
@@ -677,26 +686,30 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             {lineEnds.map(({ k, x1, y1, x2, y2, meshUpperStart, meshLowerStart, meshUpperEnd, meshLowerEnd }) =>
               k === "mesh" && meshUpperStart && meshLowerStart && meshUpperEnd && meshLowerEnd ? (
                 <g key={k}>
-                  <line
-                    x1={meshUpperStart.x}
-                    y1={meshUpperStart.y}
-                    x2={meshUpperEnd.x}
-                    y2={meshUpperEnd.y}
-                    stroke="black"
-                    strokeWidth="1.02"
-                    strokeLinecap="round"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  <line
-                    x1={meshUpperStart.x}
-                    y1={meshUpperStart.y}
-                    x2={meshUpperEnd.x}
-                    y2={meshUpperEnd.y}
-                    stroke="white"
-                    strokeWidth="0.58"
-                    strokeLinecap="round"
-                    vectorEffect="non-scaling-stroke"
-                  />
+                  {variant !== "lite-18" ? (
+                    <>
+                      <line
+                        x1={meshUpperStart.x}
+                        y1={meshUpperStart.y}
+                        x2={meshUpperEnd.x}
+                        y2={meshUpperEnd.y}
+                        stroke="black"
+                        strokeWidth="1.02"
+                        strokeLinecap="round"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                      <line
+                        x1={meshUpperStart.x}
+                        y1={meshUpperStart.y}
+                        x2={meshUpperEnd.x}
+                        y2={meshUpperEnd.y}
+                        stroke="white"
+                        strokeWidth="0.58"
+                        strokeLinecap="round"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                    </>
+                  ) : null}
                   <line
                     x1={meshLowerStart.x}
                     y1={meshLowerStart.y}
@@ -745,11 +758,13 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             );
             return (
               <>
-                <span
-                  className={pocketDotCls}
-                  style={{ left: `${meshLe.meshUpperStart.x}%`, top: `${meshLe.meshUpperStart.y}%` }}
-                  aria-hidden
-                />
+                {variant !== "lite-18" ? (
+                  <span
+                    className={pocketDotCls}
+                    style={{ left: `${meshLe.meshUpperStart.x}%`, top: `${meshLe.meshUpperStart.y}%` }}
+                    aria-hidden
+                  />
+                ) : null}
                 <span
                   className={pocketDotCls}
                   style={{ left: `${meshLe.meshLowerStart.x}%`, top: `${meshLe.meshLowerStart.y}%` }}
