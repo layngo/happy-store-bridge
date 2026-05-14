@@ -32,14 +32,14 @@ export function LayNGoTravelDogBedPdpStrip() {
       <div className="mt-8 grid w-full grid-cols-2 gap-0 sm:mt-10">
         <img
           src={STORY_MAT_FLAT}
-          alt="Lay-n-Go pet mat laid flat with quilted surface, red containment lip, and pet accessories on top"
+          alt="Lay-n-Go pet mat with brown quilted surface and red lip, organized with collar, leash, rope toy, and accessories"
           className="block h-auto w-full object-cover object-center"
           loading="lazy"
           decoding="async"
         />
         <img
           src={STORY_MAT_LIFESTYLE}
-          alt="Person kneeling beside a dog on the open pet mat with toys and leash"
+          alt="Red Lay-n-Go pet bag with wide strap, front pocket showing logo, phone, and retractable leash"
           className="block h-auto w-full object-cover object-center"
           loading="lazy"
           decoding="async"
