@@ -14,12 +14,16 @@ const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containment-lip.png";
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
-const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v6";
+const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v7";
 
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
 export type LayNGoCalloutDiagramVariant = "large-60" | "lifestyle-44";
+
+/** ~20px on a typical md stage, as 0–100 viewBox deltas (see `preserveAspectRatio="none"`). */
+const LIFESTYLE_MESH_POCKET_DX_20PX = 2.65;
+const LIFESTYLE_MESH_POCKET_DY_HALF_20PX = 1.33;
 
 type CalloutKey = "cord" | "lip" | "mesh";
 
@@ -43,15 +47,15 @@ const DEFAULT_LAYOUT: LayoutState = {
   },
 };
 
-/** Lifestyle: cord / lip tuned; mesh ref dot + offsets match 44″ hero pocket rows. */
+/** Lifestyle: cord anchor/dot shifted ~200px up vs v6 (see min-h~768px); lip/mesh tuned. */
 const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
   dots: {
-    cord: { x: 50, y: 14 },
+    cord: { x: 50, y: -4 },
     lip: { x: 24, y: 49 },
     mesh: { x: 52, y: 50 },
   },
   anchors: {
-    cord: { x: 50, y: -2 },
+    cord: { x: 50, y: -26 },
     lip: { x: 9, y: 48 },
     mesh: DEFAULT_LAYOUT.anchors.mesh,
   },
@@ -386,8 +390,14 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         let meshUpperStart: Pt;
         let meshLowerStart: Pt;
         if (variant === "lifestyle-44") {
-          meshUpperStart = { x: d.x - 5, y: d.y - 36 };
-          meshLowerStart = { x: d.x - 5, y: d.y + 36 };
+          meshUpperStart = {
+            x: d.x - 5 + LIFESTYLE_MESH_POCKET_DX_20PX,
+            y: d.y - 36 + LIFESTYLE_MESH_POCKET_DY_HALF_20PX,
+          };
+          meshLowerStart = {
+            x: d.x - 5 + LIFESTYLE_MESH_POCKET_DX_20PX,
+            y: d.y + 36 - LIFESTYLE_MESH_POCKET_DY_HALF_20PX,
+          };
         } else {
           meshUpperStart = { x: d.x + 0.25, y: d.y - 42 };
           meshLowerStart = { x: d.x + 1.2, y: d.y - 2 };
