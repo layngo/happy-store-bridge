@@ -14,10 +14,13 @@ const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containment-lip.png";
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
-const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v9";
+const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
 
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
+
+/** Subtle depth on diagram callout circles (Large + Lifestyle, mobile + desktop). */
+const CALLOUT_THUMB_SHADOW = "shadow-[0_2px_10px_rgb(0_0_0_/_0.11)]";
 
 export type LayNGoCalloutDiagramVariant = "large-60" | "lifestyle-44";
 
@@ -58,7 +61,7 @@ const LIFESTYLE_LIP_DOT_DX_50PX = 5.55;
 const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
   dots: {
     cord: { x: 50, y: -4 + LIFESTYLE_CORD_CALLOUT_DOWN_75PX_DY },
-    lip: { x: 24 - LIFESTYLE_LIP_DOT_DX_50PX, y: 49 },
+    lip: { x: 24 - LIFESTYLE_LIP_DOT_DX_50PX + LIFESTYLE_MESH_POCKET_DX_20PX, y: 49 },
     mesh: { x: 52, y: 50 },
   },
   anchors: {
@@ -193,12 +196,7 @@ function DiameterLine({
   const lifestyle = variant === "lifestyle-44";
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
-      <div
-        className={cn(
-          "flex w-full items-end justify-center",
-          lifestyle ? "max-w-none" : "max-w-md sm:max-w-lg",
-        )}
-      >
+      <div className="flex w-full max-w-md items-end justify-center sm:max-w-lg">
         <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
         <div className="mb-0 h-px min-w-0 flex-1 bg-neutral-900" aria-hidden />
         <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
@@ -251,7 +249,8 @@ function FloatingCallout({
         cordLifestyleCompact
           ? "h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32"
           : "h-[7.25rem] w-[7.25rem] sm:h-32 sm:w-32 md:h-40 md:w-40",
-        lifestyleThumb ? "ring-0 shadow-none" : "ring-2 ring-white",
+        CALLOUT_THUMB_SHADOW,
+        lifestyleThumb ? "ring-0" : "ring-2 ring-white",
       )}
     >
       <img
@@ -484,9 +483,9 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
   return (
     <div
       className={cn(
-        "mx-auto max-w-6xl border-t border-neutral-200/80 pt-12 sm:pt-14",
+        "mx-auto max-w-6xl pt-12 sm:pt-14",
         variant === "lifestyle-44"
-          ? "mt-[calc(3.5rem+100px)] sm:mt-[calc(4rem+100px)]"
+          ? "mt-[calc(3.5rem+100px)] rounded-2xl bg-white px-2 sm:mt-[calc(4rem+100px)] sm:px-4"
           : "mt-14 sm:mt-16",
       )}
       aria-label={variant === "lifestyle-44" ? "Lay-n-Go Lifestyle product details" : "Lay-n-Go Large product details"}
@@ -507,7 +506,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         <img
           src={config.heroSrc}
           alt={config.heroAlt}
-          className={cn("w-full object-contain", config.mobileHeroMaxClass)}
+          className={cn(
+            "w-full object-contain",
+            config.mobileHeroMaxClass,
+            variant === "lifestyle-44" && "rounded-xl bg-white",
+          )}
           loading="lazy"
           decoding="async"
         />
@@ -522,37 +525,63 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         />
         {(["cord", "mesh", "lip"] as CalloutKey[]).map((k) => {
           const m = CALLOUT_META[k];
+          const thumb = (
+            <div
+              className={cn(
+                "aspect-square shrink-0 overflow-hidden rounded-full",
+                CALLOUT_THUMB_SHADOW,
+                variant === "lifestyle-44" ? "ring-0" : "ring-2 ring-neutral-100",
+                variant === "lifestyle-44" && k === "cord" ? "h-28 w-28" : "h-32 w-32",
+              )}
+            >
+              <img
+                src={
+                  k === "cord"
+                    ? config.cordCalloutSrc
+                    : k === "lip"
+                      ? config.lipCalloutSrc
+                      : config.meshCalloutSrc
+                }
+                alt={m.imageAlt}
+                className={cn(
+                  "h-full w-full object-cover object-center",
+                  variant === "lifestyle-44" && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",
+                  variant === "lifestyle-44" && k === "lip" && "origin-center scale-[1.24] object-[30%_center]",
+                  variant === "lifestyle-44" && k === "mesh" && "origin-center scale-[1.24] object-[58%_center]",
+                )}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          );
+          const label = (
+            <p className="max-w-xs text-center font-heading text-xs font-bold uppercase leading-snug text-neutral-900">
+              {m.label}
+            </p>
+          );
+
+          if (variant === "lifestyle-44" && k === "cord") {
+            return (
+              <div key={k} className="flex flex-col items-center gap-1 px-2">
+                {label}
+                <div className="flex flex-col items-center" aria-hidden>
+                  <div className="h-5 w-px shrink-0 bg-neutral-900 sm:h-6" />
+                </div>
+                <div className="relative shrink-0">
+                  <span
+                    className="pointer-events-none absolute left-1/2 top-0 z-10 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-sm ring-1 ring-white"
+                    aria-hidden
+                  />
+                  {thumb}
+                </div>
+              </div>
+            );
+          }
+
           return (
             <div key={k} className="flex flex-col items-center gap-2 px-2">
-              <div
-                className={cn(
-                  "aspect-square shrink-0 overflow-hidden rounded-full",
-                  variant === "lifestyle-44" ? "ring-0 shadow-none" : "ring-2 ring-neutral-100",
-                  variant === "lifestyle-44" && k === "cord" ? "h-28 w-28" : "h-32 w-32",
-                )}
-              >
-                <img
-                  src={
-                    k === "cord"
-                      ? config.cordCalloutSrc
-                      : k === "lip"
-                        ? config.lipCalloutSrc
-                        : config.meshCalloutSrc
-                  }
-                  alt={m.imageAlt}
-                  className={cn(
-                    "h-full w-full object-cover object-center",
-                    variant === "lifestyle-44" && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",
-                    variant === "lifestyle-44" && k === "lip" && "origin-center scale-[1.24] object-[30%_center]",
-                    variant === "lifestyle-44" && k === "mesh" && "origin-center scale-[1.24] object-[58%_center]",
-                  )}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <p className="max-w-xs text-center font-heading text-xs font-bold uppercase leading-snug text-neutral-900">
-                {m.label}
-              </p>
+              {thumb}
+              {label}
             </div>
           );
         })}
@@ -567,7 +596,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       >
         <div
           ref={containerRef}
-          className={cn("relative mx-auto w-full", config.containerMinHClass)}
+          className={cn(
+            "relative mx-auto w-full",
+            config.containerMinHClass,
+            variant === "lifestyle-44" && "rounded-xl bg-white",
+          )}
           onPointerMove={editorMode ? onPointerMove : undefined}
           onPointerUp={editorMode ? (e) => endDrag(e) : undefined}
           onPointerCancel={editorMode ? (e) => endDrag(e) : undefined}
@@ -667,12 +700,16 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             className={cn(
               "pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2",
               config.heroWidthClass,
+              variant === "lifestyle-44" && "rounded-lg bg-white",
             )}
           >
             <img
               src={config.heroSrc}
               alt={config.heroAlt}
-              className="relative z-10 w-full object-contain"
+              className={cn(
+                "relative z-10 w-full object-contain",
+                variant === "lifestyle-44" && "rounded-lg bg-white",
+              )}
               loading="lazy"
               decoding="async"
             />

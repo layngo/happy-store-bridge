@@ -141,7 +141,10 @@ export function LayNGoLargePdpPlayStrip({
 }: LayNGoLargePdpPlayStripProps) {
   return (
     <section
-      className="relative left-1/2 -ml-[50vw] w-screen overflow-x-clip bg-white px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8"
+      className={cn(
+        "relative left-1/2 -ml-[50vw] w-screen overflow-x-clip px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8",
+        calloutVariant === "lifestyle-44" ? "bg-background" : "bg-white",
+      )}
       aria-labelledby="lay-n-go-large-play-strip-heading"
     >
       <h2
@@ -169,7 +172,7 @@ export function LayNGoLargePdpPlayStrip({
       {showLowerSections ? (
         <>
           <div
-            className="mx-auto mt-14 max-w-[min(100%,90rem)] border-t border-neutral-200/80 pt-12 sm:mt-16 sm:pt-14"
+            className="mx-auto mt-14 max-w-[min(100%,90rem)] pt-12 sm:mt-16 sm:pt-14"
             aria-label="How Lay-n-Go Large works in three steps"
           >
             <div className="flex w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:gap-1 md:gap-2 lg:gap-3">

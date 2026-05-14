@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
-import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronRight, Home, Star } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronLeft, ChevronRight, Home, Star } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
@@ -421,10 +421,28 @@ const ProductDetail = () => {
   }, [isLayNGoLifestyle44, product?.id]);
 
   useEffect(() => {
-    if (!showCosmoStyleBottomExtras) {
-      setShowStickyAddToCart(false);
-      return;
+    if (!product) return;
+    const h = product.handle.toLowerCase();
+    if (h !== "lay-n-go-large-60" && h !== "lay-n-go-lifestyle-44") return;
+    const slides = h === "lay-n-go-large-60" ? LAY_N_GO_LARGE_60_GALLERY_SLIDES : LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES;
+    const origin = window.location.origin;
+    const links: HTMLLinkElement[] = [];
+    for (const slide of slides) {
+      const href = slide.src.startsWith("/") ? `${origin}${slide.src}` : slide.src;
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.href = href;
+      document.head.appendChild(link);
+      links.push(link);
     }
+    return () => {
+      links.forEach((el) => el.remove());
+    };
+  }, [product?.id, product?.handle]);
+
+  useEffect(() => {
+    setShowStickyAddToCart(false);
     const target = primaryAddToCartRef.current;
     if (!target) return;
     const observer = new IntersectionObserver(
@@ -436,7 +454,7 @@ const ProductDetail = () => {
     );
     observer.observe(target);
     return () => observer.disconnect();
-  }, [showCosmoStyleBottomExtras, product?.id]);
+  }, [product?.id, isCosmoPdp]);
 
   if (loading) {
     return (
@@ -815,12 +833,17 @@ const ProductDetail = () => {
     <>
       {optionPickersOnly}
       {quantityPicker}
-      {addToCartButton}
+      <div ref={primaryAddToCartRef}>{addToCartButton}</div>
     </>
   );
 
   return (
-    <div className={cn("min-h-screen flex flex-col", isCosmoPdp ? "bg-white" : "bg-background")}>
+    <div
+      className={cn(
+        "min-h-screen flex flex-col",
+        isCosmoPdp && !isLayNGoLifestyle44 ? "bg-white" : "bg-background",
+      )}
+    >
       <Header />
       <div className="container py-8 flex-1">
         <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6">
@@ -867,7 +890,12 @@ const ProductDetail = () => {
               </h1>
             </header>
 
-            <section className="-mx-4 overflow-x-hidden bg-white px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
+            <section
+              className={cn(
+                "-mx-4 overflow-x-hidden px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10",
+                isLayNGoLifestyle44 ? "bg-background" : "bg-white",
+              )}
+            >
               <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
                 <div className="min-w-0 space-y-4">
                   <div
@@ -926,7 +954,11 @@ const ProductDetail = () => {
                 showLowerSections={!isLayNGoTraveler20}
                 showTravelerCalloutSection={isLayNGoTraveler20}
                 headlineImageSrc={
-                  isLayNGoTraveler20 ? "/products/lay-n-go-large-pdp/traveler-hero.png" : undefined
+                  isLayNGoTraveler20
+                    ? "/products/lay-n-go-large-pdp/traveler-hero.png"
+                    : isLayNGoLifestyle44
+                      ? "/products/lay-n-go-lifestyle-44/play-strip-headline.png"
+                      : undefined
                 }
                 calloutVariant={isLayNGoLifestyle44 ? "lifestyle-44" : "large-60"}
               />
@@ -972,42 +1004,61 @@ const ProductDetail = () => {
                 {layNGoHeroGallery ? (
                   <div className="mx-auto w-[80%] max-w-full">
                     <div
-                      className="relative w-full overflow-hidden rounded-2xl border-0 bg-white pt-[56.34%] shadow-none"
+                      className="flex items-stretch gap-2 rounded-2xl border border-border bg-white p-2 shadow-sm sm:gap-3 sm:p-3"
                       aria-roledescription="carousel"
                       aria-label={layNGoHeroGallery.galleryAriaLabel}
                     >
-                      <div className="absolute inset-0 overflow-hidden">
-                        <div
-                          className="flex h-full transition-transform duration-700 ease-in-out"
-                          style={{
-                            width: `${layNGoHeroGallery.slides.length * 100}%`,
-                            transform: `translateX(-${(layNGoHeroGallery.slideIndex * 100) / layNGoHeroGallery.slides.length}%)`,
-                          }}
-                        >
-                          {layNGoHeroGallery.slides.map((slide) => (
-                            <img
-                              key={slide.src}
-                              src={slide.src}
-                              alt={slide.alt}
-                              className="h-full shrink-0 object-contain"
-                              style={{ width: `${100 / layNGoHeroGallery.slides.length}%` }}
-                              loading="lazy"
-                              decoding="async"
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-3 flex justify-center">
+                      <span className="sr-only" aria-live="polite">
+                        Photo {layNGoHeroGallery.slideIndex + 1} of {layNGoHeroGallery.slides.length}
+                      </span>
                       <Button
                         type="button"
                         variant="outline"
                         size="icon"
-                        className="h-10 w-10 rounded-full shadow-sm"
+                        className="h-10 w-10 shrink-0 self-center rounded-full shadow-sm sm:h-11 sm:w-11"
+                        onClick={() =>
+                          layNGoHeroGallery.setSlideIndex(
+                            (prev) =>
+                              (prev - 1 + layNGoHeroGallery.slides.length) % layNGoHeroGallery.slides.length,
+                          )
+                        }
+                        aria-label="Show previous photo"
+                      >
+                        <ChevronLeft className="h-5 w-5 shrink-0" aria-hidden />
+                      </Button>
+                      <div className="relative min-w-0 flex-1 overflow-hidden rounded-xl border border-border/70 bg-muted/10 pt-[56.34%]">
+                        <div className="absolute inset-0 overflow-hidden">
+                          <div
+                            className="flex h-full transition-transform duration-700 ease-in-out"
+                            style={{
+                              width: `${layNGoHeroGallery.slides.length * 100}%`,
+                              transform: `translateX(-${(layNGoHeroGallery.slideIndex * 100) / layNGoHeroGallery.slides.length}%)`,
+                            }}
+                          >
+                            {layNGoHeroGallery.slides.map((slide, slideIdx) => (
+                              <img
+                                key={slide.src}
+                                src={slide.src}
+                                alt={slide.alt}
+                                className="h-full shrink-0 object-contain"
+                                style={{ width: `${100 / layNGoHeroGallery.slides.length}%` }}
+                                loading="eager"
+                                decoding="async"
+                                fetchPriority={slideIdx === 0 ? "high" : "low"}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-10 w-10 shrink-0 self-center rounded-full shadow-sm sm:h-11 sm:w-11"
                         onClick={() =>
                           layNGoHeroGallery.setSlideIndex((prev) => (prev + 1) % layNGoHeroGallery.slides.length)
                         }
-                        aria-label={`Show next photo (${((layNGoHeroGallery.slideIndex + 1) % layNGoHeroGallery.slides.length) + 1} of ${layNGoHeroGallery.slides.length})`}
+                        aria-label="Show next photo"
                       >
                         <ChevronRight className="h-5 w-5 shrink-0" aria-hidden />
                       </Button>
@@ -1170,20 +1221,28 @@ const ProductDetail = () => {
         ) : null}
       </div>
 
-      {showCosmoStyleBottomExtras && showStickyAddToCart ? (
+      {showStickyAddToCart ? (
         <div className="pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center px-4">
           <Button
             size="lg"
-            onClick={() => setStickyConfirmOpen(true)}
+            onClick={() => {
+              if (colorVariantChoices.length > 0) setStickyConfirmOpen(true);
+              else void handleAddToCart();
+            }}
             disabled={isLoading || !selectedVariant?.availableForSale}
-            className="pointer-events-auto font-cosmo-cta w-full max-w-sm rounded-md border border-neutral-700 bg-[#2c2c2c] text-base font-semibold tracking-wide text-neutral-50 shadow-[0_10px_28px_-10px_rgba(0,0,0,0.45)] hover:bg-[#1f1f1f] disabled:opacity-50"
+            className={cn(
+              "pointer-events-auto w-full max-w-sm text-base font-semibold shadow-[0_10px_28px_-10px_rgba(0,0,0,0.45)] disabled:opacity-50",
+              isCosmoPdp
+                ? "font-cosmo-cta rounded-md border border-neutral-700 bg-[#2c2c2c] tracking-wide text-neutral-50 hover:bg-[#1f1f1f]"
+                : "bg-primary text-primary-foreground hover:bg-primary/90",
+            )}
           >
             {isLoading ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : (
               <>
-                <ShoppingCart className="mr-2 h-5 w-5 opacity-90" />
-                Add to cart
+                <ShoppingCart className={cn("mr-2 h-5 w-5", isCosmoPdp && "opacity-90")} />
+                {isCosmoPdp ? "Add to cart" : "Add to Cart"}
               </>
             )}
           </Button>
