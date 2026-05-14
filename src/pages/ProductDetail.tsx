@@ -37,6 +37,7 @@ import { CosmoPdpStory } from "@/components/CosmoPdpStory";
 import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
 import { NailspaPdpLifestyleGallery } from "@/components/NailspaPdpLifestyleGallery";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
+import { LayNGoTravelDogBedPdpStrip } from "@/components/LayNGoTravelDogBedPdpStrip";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -122,6 +123,21 @@ const LAY_N_GO_TRAVELER_20_GALLERY_SLIDES = [
   {
     src: "/products/lay-n-go-traveler-20/traveler-gallery-4.png",
     alt: "Lay-n-Go Traveler black and gray kits on white, alternate studio product view",
+  },
+] as const;
+
+const LAY_N_GO_TRAVEL_DOG_BED_44_GALLERY_SLIDES = [
+  {
+    src: "/products/lay-n-go-travel-dog-bed-44/gallery-1.png",
+    alt: "Two dogs resting on Lay-n-Go quilted pet mats on a lawn in front of a white house",
+  },
+  {
+    src: "/products/lay-n-go-travel-dog-bed-44/gallery-2.png",
+    alt: "Small dog sitting on a brown and red Lay-n-Go pet mat at home with plush toys",
+  },
+  {
+    src: "/products/lay-n-go-travel-dog-bed-44/gallery-3.png",
+    alt: "Dog on a Lay-n-Go mat draped over a car back seat with red straps on the headrest",
   },
 ] as const;
 
@@ -309,6 +325,7 @@ const ProductDetail = () => {
   const [layNGoLifestyle44SlideIndex, setLayNGoLifestyle44SlideIndex] = useState(0);
   const [layNGoLite18SlideIndex, setLayNGoLite18SlideIndex] = useState(0);
   const [layNGoTraveler20SlideIndex, setLayNGoTraveler20SlideIndex] = useState(0);
+  const [layNGoTravelDogBed44SlideIndex, setLayNGoTravelDogBed44SlideIndex] = useState(0);
   const [showStickyAddToCart, setShowStickyAddToCart] = useState(false);
   const [stickyConfirmOpen, setStickyConfirmOpen] = useState(false);
   const primaryAddToCartRef = useRef<HTMLDivElement | null>(null);
@@ -540,13 +557,18 @@ const ProductDetail = () => {
   }, [isLayNGoTraveler20, product?.id]);
 
   useEffect(() => {
+    setLayNGoTravelDogBed44SlideIndex(0);
+  }, [isLayNGoTravelDogBed44, product?.id]);
+
+  useEffect(() => {
     if (!product) return;
     const h = product.handle.toLowerCase();
     if (
       h !== "lay-n-go-large-60" &&
       h !== "lay-n-go-lifestyle-44" &&
       h !== "lay-n-go-lite-18" &&
-      h !== "lay-n-go-traveler-20"
+      h !== "lay-n-go-traveler-20" &&
+      h !== "lay-n-go-travel-dog-bed-44"
     )
       return;
     const slides =
@@ -556,7 +578,9 @@ const ProductDetail = () => {
           ? LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES
           : h === "lay-n-go-lite-18"
             ? LAY_N_GO_LITE_18_GALLERY_SLIDES
-            : LAY_N_GO_TRAVELER_20_GALLERY_SLIDES;
+            : h === "lay-n-go-traveler-20"
+              ? LAY_N_GO_TRAVELER_20_GALLERY_SLIDES
+              : LAY_N_GO_TRAVEL_DOG_BED_44_GALLERY_SLIDES;
     const origin = window.location.origin;
     const links: HTMLLinkElement[] = [];
     for (const slide of slides) {
@@ -644,7 +668,14 @@ const ProductDetail = () => {
               setSlideIndex: setLayNGoTraveler20SlideIndex,
               galleryAriaLabel: "Lay-n-Go Traveler product photos",
             }
-          : null;
+          : isLayNGoTravelDogBed44
+            ? {
+                slides: [...LAY_N_GO_TRAVEL_DOG_BED_44_GALLERY_SLIDES],
+                slideIndex: layNGoTravelDogBed44SlideIndex,
+                setSlideIndex: setLayNGoTravelDogBed44SlideIndex,
+                galleryAriaLabel: "Lay-n-Go Travel Dog Bed lifestyle photos",
+              }
+            : null;
   const layNGoGalleryArrowBtnClassName =
     "h-10 w-10 shrink-0 self-center rounded-full border-0 bg-black text-white hover:bg-neutral-900 hover:text-white focus-visible:ring-white/40 sm:h-11 sm:w-11";
   const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
@@ -777,7 +808,7 @@ const ProductDetail = () => {
       {!isCosmo22Product(product.handle) &&
       !isCosmo20Product(product.handle) &&
       !isNailspa18Product(product.handle) &&
-      !(isLayNGoLarge60 || isLayNGoLifestyle44 || isLayNGoLite18) &&
+      !(isLayNGoLarge60 || isLayNGoLifestyle44 || isLayNGoLite18 || isLayNGoTraveler20 || isLayNGoTravelDogBed44) &&
       orderedImages.length > 1 ? (
         <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Product photo gallery">
           {orderedImages.map((img, i) => (
@@ -1128,6 +1159,8 @@ const ProductDetail = () => {
                 }
               />
             ) : null}
+
+            {isLayNGoTravelDogBed44 ? <LayNGoTravelDogBedPdpStrip /> : null}
 
             {showCosmoDescriptionBelowHero ? (
               <section className="mx-auto mt-12 max-w-3xl sm:mt-14" aria-label="Product details">

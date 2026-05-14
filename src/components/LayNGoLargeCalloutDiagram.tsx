@@ -100,6 +100,15 @@ const DEFAULT_LAYOUT_LITE: LayoutState = {
 const ALL_CALLOUT_KEYS: CalloutKey[] = ["cord", "lip", "mesh"];
 const MOBILE_CALLOUT_KEYS: CalloutKey[] = ["cord", "mesh", "lip"];
 
+/** Lite omits the mesh pocket callout (no circle or label). */
+function calloutKeysForVariant(variant: LayNGoCalloutDiagramVariant): CalloutKey[] {
+  return variant === "lite-18" ? ["cord", "lip"] : ALL_CALLOUT_KEYS;
+}
+
+function mobileCalloutKeysForVariant(variant: LayNGoCalloutDiagramVariant): CalloutKey[] {
+  return variant === "lite-18" ? ["cord", "lip"] : MOBILE_CALLOUT_KEYS;
+}
+
 function diagramUsesLifestyleChrome(variant: LayNGoCalloutDiagramVariant) {
   return variant === "lifestyle-44" || variant === "lite-18";
 }
@@ -506,7 +515,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
 
   const lineEnds = useMemo(() => {
     const R = 5.5;
-    return ALL_CALLOUT_KEYS.map((k) => {
+    return calloutKeysForVariant(variant).map((k) => {
       const d = layout.dots[k];
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
@@ -645,7 +654,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             variant === "lite-18" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
           )}
         />
-        {MOBILE_CALLOUT_KEYS.map((k) => {
+        {mobileCalloutKeysForVariant(variant).map((k) => {
           const m = CALLOUT_META[k];
           const mobileThumbCrop = cn(
             diagramUsesLifestyleChrome(variant) && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",
@@ -733,7 +742,9 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             preserveAspectRatio="none"
             aria-hidden
           >
-            {lineEnds.map(({ k, x1, y1, x2, y2, meshUpperStart, meshLowerStart, meshUpperEnd, meshLowerEnd }) =>
+            {lineEnds
+              .filter((le) => variant !== "lite-18" || le.k === "lip")
+              .map(({ k, x1, y1, x2, y2, meshUpperStart, meshLowerStart, meshUpperEnd, meshLowerEnd }) =>
               k === "mesh" && meshUpperStart && meshLowerStart && meshUpperEnd && meshLowerEnd ? (
                 <g key={k}>
                   <>
@@ -797,7 +808,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
 
           {(() => {
             if (editorMode) return null;
-            if (variant !== "large-60" && variant !== "lifestyle-44" && variant !== "lite-18") return null;
+            if (variant !== "large-60" && variant !== "lifestyle-44") return null;
             const meshLe = lineEnds.find((le) => le.k === "mesh" && le.meshUpperStart);
             if (!meshLe?.meshUpperStart || !meshLe.meshLowerStart) return null;
             const pocketDotCls = cn(
@@ -839,13 +850,14 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             />
           </div>
 
-          {ALL_CALLOUT_KEYS.map((k) => {
+          {calloutKeysForVariant(variant).map((k) => {
             const { x, y } = layout.dots[k];
             const dotCls = cn(
               "absolute z-[25] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-md ring-1 ring-white",
               editorMode ? "h-4 w-4 cursor-grab ring-2 ring-amber-400 touch-none active:cursor-grabbing" : "h-3 w-3",
             );
             if (k === "mesh" && !editorMode) return null;
+            if (variant === "lite-18" && !editorMode && k !== "lip") return null;
             return editorMode ? (
               <button
                 key={k}
@@ -865,7 +877,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             );
           })}
 
-          {ALL_CALLOUT_KEYS.map((k) => (
+          {calloutKeysForVariant(variant).map((k) => (
             <FloatingCallout
               key={k}
               calloutKey={k}

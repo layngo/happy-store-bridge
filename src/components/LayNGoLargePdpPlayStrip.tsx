@@ -58,6 +58,13 @@ function TravelerCalloutThumb({
 /** Hero `traveler-callout-main.png` is 1024×762; viewBox matches so leaders align with `object-contain` art. */
 const TRAVELER_CALLOUT_VIEWBOX = { w: 1024, h: 762 } as const;
 
+/** Match `LayNGoLargeCalloutDiagram` cord/lip leaders: `strokeWidth="0.34"` in 0–100 viewBox → ×(1024/100) in Traveler art space. */
+const TRAVELER_LEADER_STROKE = 0.34 * (1024 / 100);
+/** Mat-end dots: smaller than legacy 14/9px-in-VB rings so they read like other diagrams’ callout dots. */
+const TRAVELER_DOT_R_OUT = 8;
+const TRAVELER_DOT_R_IN = 5.25;
+const TRAVELER_DOT_RING = 1.05;
+
 function TravelerDetailCalloutSection() {
   const { w: vbW, h: vbH } = TRAVELER_CALLOUT_VIEWBOX;
   return (
@@ -75,22 +82,54 @@ function TravelerDetailCalloutSection() {
         />
 
         <svg
-          className="pointer-events-none absolute inset-0 z-10 h-full w-full"
+          className="pointer-events-none absolute inset-0 z-10 h-full w-full text-neutral-900/85"
           viewBox={`0 0 ${vbW} ${vbH}`}
           preserveAspectRatio="xMidYMid meet"
           aria-hidden
         >
-          {/* Zipper: bottom-center of top-left thumb → zipper pocket (mat lower-left; coords in hero px) */}
-          <line x1="78" y1="122" x2="398" y2="532" stroke="#0a0a0a" strokeWidth="7" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-          <line x1="78" y1="122" x2="398" y2="532" stroke="#ffffff" strokeWidth="3.6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-          <circle cx="398" cy="532" r="14" fill="#0a0a0a" vectorEffect="non-scaling-stroke" />
-          <circle cx="398" cy="532" r="9" fill="#ffffff" stroke="#0a0a0a" strokeWidth="2.2" vectorEffect="non-scaling-stroke" />
+          {/* Zipper: bottom-center of top-left thumb → zipper pull on mat (short; coords in hero 1024×762 px) */}
+          <line
+            x1="78"
+            y1="122"
+            x2="334"
+            y2="450"
+            stroke="currentColor"
+            strokeWidth={TRAVELER_LEADER_STROKE}
+            strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
+          />
+          <circle cx="334" cy="450" r={TRAVELER_DOT_R_OUT} fill="currentColor" vectorEffect="non-scaling-stroke" />
+          <circle
+            cx="334"
+            cy="450"
+            r={TRAVELER_DOT_R_IN}
+            fill="#ffffff"
+            stroke="currentColor"
+            strokeWidth={TRAVELER_DOT_RING}
+            vectorEffect="non-scaling-stroke"
+          />
 
-          {/* Lip: bottom-center of top-right thumb → raised rim */}
-          <line x1="946" y1="122" x2="708" y2="198" stroke="#0a0a0a" strokeWidth="7" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-          <line x1="946" y1="122" x2="708" y2="198" stroke="#ffffff" strokeWidth="3.6" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-          <circle cx="708" cy="198" r="14" fill="#0a0a0a" vectorEffect="non-scaling-stroke" />
-          <circle cx="708" cy="198" r="9" fill="#ffffff" stroke="#0a0a0a" strokeWidth="2.2" vectorEffect="non-scaling-stroke" />
+          {/* Lip: bottom-center of top-right thumb → raised rim (x1 tracks thumb; nudge when lip block `right` changes) */}
+          <line
+            x1="962"
+            y1="122"
+            x2="708"
+            y2="198"
+            stroke="currentColor"
+            strokeWidth={TRAVELER_LEADER_STROKE}
+            strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
+          />
+          <circle cx="708" cy="198" r={TRAVELER_DOT_R_OUT} fill="currentColor" vectorEffect="non-scaling-stroke" />
+          <circle
+            cx="708"
+            cy="198"
+            r={TRAVELER_DOT_R_IN}
+            fill="#ffffff"
+            stroke="currentColor"
+            strokeWidth={TRAVELER_DOT_RING}
+            vectorEffect="non-scaling-stroke"
+          />
         </svg>
 
         <div className="absolute left-[2.5%] top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[3%] sm:top-[3%] sm:max-w-[13rem]">
@@ -104,7 +143,7 @@ function TravelerDetailCalloutSection() {
           </p>
         </div>
 
-        <div className="absolute left-0 top-[62%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-0 sm:max-w-[13rem]">
+        <div className="absolute left-[-0.5rem] top-[62%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[-0.75rem] sm:max-w-[13rem]">
           <TravelerCalloutThumb
             src={TRAVELER_CALLOUT_CORD}
             alt="Cord lock and handle closeup"
@@ -115,7 +154,7 @@ function TravelerDetailCalloutSection() {
           </p>
         </div>
 
-        <div className="absolute right-[2.5%] top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:right-[3%] sm:top-[3%] sm:max-w-[13rem]">
+        <div className="absolute right-[1%] top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:right-[1.5%] sm:top-[3%] sm:max-w-[13rem]">
           <TravelerCalloutThumb
             src={TRAVELER_CALLOUT_LIP}
             alt="Containment lip closeup"
@@ -177,7 +216,7 @@ function LifestyleMobileStoryImage({
 }
 
 /** Dashed curve + solid tip (Nailspa family), always drawn left → right; stroke scaled up for stage-to-stage strip. */
-function LargeFeatureArrow({ className }: { className?: string }) {
+export function LargeFeatureArrow({ className }: { className?: string }) {
   const viewBox = "0 0 140 52";
   const start = { x: 6, y: 28 };
   const control = { x: 72, y: 10 };
@@ -216,7 +255,7 @@ function LargeFeatureArrow({ className }: { className?: string }) {
   );
 }
 
-function FeatureConnector({ label, arrowDirection = "right" }: { label: string; arrowDirection?: "right" | "down" }) {
+export function FeatureConnector({ label, arrowDirection = "right" }: { label: string; arrowDirection?: "right" | "down" }) {
   const isDown = arrowDirection === "down";
   return (
     <div
