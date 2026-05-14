@@ -96,6 +96,8 @@ const DEFAULT_LAYOUT_LITE: LayoutState = {
 
 const ALL_CALLOUT_KEYS: CalloutKey[] = ["cord", "lip", "mesh"];
 const MOBILE_CALLOUT_KEYS: CalloutKey[] = ["cord", "mesh", "lip"];
+/** Lite PDP mobile: mesh callout first, then cord (lip unchanged). */
+const MOBILE_CALLOUT_KEYS_LITE: CalloutKey[] = ["mesh", "cord", "lip"];
 
 function diagramUsesLifestyleChrome(variant: LayNGoCalloutDiagramVariant) {
   return variant === "lifestyle-44" || variant === "lite-18";
@@ -642,7 +644,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             variant === "lite-18" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
           )}
         />
-        {MOBILE_CALLOUT_KEYS.map((k) => {
+        {(variant === "lite-18" ? MOBILE_CALLOUT_KEYS_LITE : MOBILE_CALLOUT_KEYS).map((k) => {
           const m = CALLOUT_META[k];
           const mobileThumbCrop = cn(
             diagramUsesLifestyleChrome(variant) && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",

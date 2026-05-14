@@ -271,45 +271,88 @@ export function LayNGoLargePdpPlayStrip({
               }
             >
               {calloutVariant === "lifestyle-44" ? (
-                <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-6 px-1 py-1 sm:gap-8 md:gap-10">
-                  <div className="flex w-full justify-center">
-                    <div className="w-full max-w-[min(100%,42rem)]">
+                <>
+                  {/* Triangle: mobile / small screens only */}
+                  <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-6 px-1 py-1 sm:gap-8 md:hidden">
+                    <div className="flex w-full justify-center">
+                      <div className="w-full max-w-[min(100%,42rem)]">
+                        <img
+                          src={FEATURE_OPEN_LIFESTYLE}
+                          alt="Lay-n-Go Lifestyle mat open with building blocks; pulling the drawstring to begin cleanup"
+                          className={lifestyleTriangleApexImg}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </div>
+                    </div>
+                    <FeatureConnector label="Easy access and cleanup" arrowDirection="down" />
+                    <div className="grid w-full grid-cols-1 items-center gap-8 sm:grid-cols-[minmax(0,1fr)_minmax(9rem,auto)_minmax(0,1fr)] sm:gap-4 md:gap-6 lg:gap-8">
+                      <div className="flex justify-center sm:justify-end">
+                        <div className="w-full max-w-[min(100%,34rem)] sm:w-full sm:max-w-none">
+                          <img
+                            src={FEATURE_CINCH_LIFESTYLE}
+                            alt="Cinching the Lay-n-Go Lifestyle drawstring to close the black mat bag"
+                            className={lifestyleTriangleBaseImg}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </div>
+                      </div>
+                      <FeatureConnector label="Wide strap for easy travel and storage" />
+                      <div className="flex justify-center sm:justify-start">
+                        <div className="w-full max-w-[min(100%,34rem)] sm:w-full sm:max-w-none">
+                          <img
+                            src={FEATURE_CARRY_LIFESTYLE}
+                            alt="Person wearing the cinched Lay-n-Go Lifestyle 44 inch mat as a backpack against a white studio background"
+                            className={lifestyleTriangleBaseImg}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Desktop: same horizontal strip as Large */}
+                  <div
+                    className={cn(
+                      "mx-auto hidden w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 md:flex sm:gap-1 sm:px-1 md:gap-2 lg:gap-3",
+                    )}
+                  >
+                    <div className={threeStepImageColClassName}>
                       <img
                         src={FEATURE_OPEN_LIFESTYLE}
                         alt="Lay-n-Go Lifestyle mat open with building blocks; pulling the drawstring to begin cleanup"
-                        className={lifestyleTriangleApexImg}
+                        className={threeStepImageClassName}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+
+                    <FeatureConnector label="Easy access and cleanup" />
+
+                    <div className={threeStepImageColClassName}>
+                      <img
+                        src={FEATURE_CINCH_LIFESTYLE}
+                        alt="Cinching the Lay-n-Go Lifestyle drawstring to close the black mat bag"
+                        className={threeStepImageClassName}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+
+                    <FeatureConnector label="Wide strap for easy travel and storage" />
+
+                    <div className={threeStepImageColClassName}>
+                      <img
+                        src={FEATURE_CARRY_LIFESTYLE}
+                        alt="Person wearing the cinched Lay-n-Go Lifestyle 44 inch mat as a backpack against a white studio background"
+                        className={threeStepImageClassName}
                         loading="lazy"
                         decoding="async"
                       />
                     </div>
                   </div>
-                  <FeatureConnector label="Easy access and cleanup" arrowDirection="down" />
-                  <div className="grid w-full grid-cols-1 items-center gap-8 sm:grid-cols-[minmax(0,1fr)_minmax(9rem,auto)_minmax(0,1fr)] sm:gap-4 md:gap-6 lg:gap-8">
-                    <div className="flex justify-center sm:justify-end">
-                      <div className="w-full max-w-[min(100%,34rem)] sm:w-full sm:max-w-none">
-                        <img
-                          src={FEATURE_CINCH_LIFESTYLE}
-                          alt="Cinching the Lay-n-Go Lifestyle drawstring to close the black mat bag"
-                          className={lifestyleTriangleBaseImg}
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                    </div>
-                    <FeatureConnector label="Wide strap for easy travel and storage" />
-                    <div className="flex justify-center sm:justify-start">
-                      <div className="w-full max-w-[min(100%,34rem)] sm:w-full sm:max-w-none">
-                        <img
-                          src={FEATURE_CARRY_LIFESTYLE}
-                          alt="Person wearing the cinched Lay-n-Go Lifestyle 44 inch mat as a backpack against a white studio background"
-                          className={lifestyleTriangleBaseImg}
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                </>
               ) : (
                 <div
                   className={cn(
