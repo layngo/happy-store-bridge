@@ -114,6 +114,29 @@ const LAY_N_GO_LITE_18_GALLERY_SLIDES = [
   },
 ] as const;
 
+const LAY_N_GO_TRAVELER_20_GALLERY_SLIDES = [
+  {
+    src: "/products/lay-n-go-traveler-20/traveler-gallery-1.png",
+    alt: "Lay-n-Go Traveler open on a locker room bench with toiletries spread on the mat",
+  },
+  {
+    src: "/products/lay-n-go-traveler-20/traveler-gallery-2.png",
+    alt: "Lay-n-Go Traveler open on a bathroom counter by a sink with grooming essentials",
+  },
+  {
+    src: "/products/lay-n-go-traveler-20/traveler-gallery-3.png",
+    alt: "Lay-n-Go Traveler open on a bed in front of an open suitcase with travel toiletries",
+  },
+  {
+    src: "/products/lay-n-go-traveler-20/traveler-gallery-4.png",
+    alt: "Lay-n-Go Traveler open on an upholstered bench with toiletries and zippered pocket in use",
+  },
+  {
+    src: "/products/lay-n-go-traveler-20/traveler-gallery-5.png",
+    alt: "Lay-n-Go Traveler cinched closed with handle, hanging from a seat hook on a train",
+  },
+] as const;
+
 const LAY_N_GO_LARGE_60_BULLETS = [
   `Lay-n-Go Large 60" diameter activity play mat with patented raised lip to keep LEGOs and small toys contained`,
   "Play for hours, clean up in seconds — just pull the drawstring and it closes completely",
@@ -145,6 +168,17 @@ const LAY_N_GO_LITE_18_BULLETS = [
   "Machine washable",
   "4-in-1: activity mat, cleanup, storage, and carry-all in one",
   "Toys not included",
+] as const;
+
+const LAY_N_GO_TRAVELER_20_BULLETS = [
+  `20" diameter men's Dopp Kit that lays completely flat for full access to all your toiletries`,
+  "No more digging through a traditional kit or putting your toothbrush on a hotel counter",
+  "Patented raised lip keeps everything contained on a clean, dry surface — at home, on the road, or at the gym",
+  "Zippered interior pocket for storing smaller items",
+  "Pull the drawstring and it cinches back into a completely sealed, handled pack",
+  "Machine washable",
+  "4-in-1: use, cleanup, store, and go",
+  "Accessories not included",
 ] as const;
 
 const COSMO_AUTOPLAY_YOUTUBE_ID = "G3E80xl9lSM";
@@ -275,6 +309,7 @@ const ProductDetail = () => {
   const [layNGoLargeSlideIndex, setLayNGoLargeSlideIndex] = useState(0);
   const [layNGoLifestyle44SlideIndex, setLayNGoLifestyle44SlideIndex] = useState(0);
   const [layNGoLite18SlideIndex, setLayNGoLite18SlideIndex] = useState(0);
+  const [layNGoTraveler20SlideIndex, setLayNGoTraveler20SlideIndex] = useState(0);
   const [showStickyAddToCart, setShowStickyAddToCart] = useState(false);
   const [stickyConfirmOpen, setStickyConfirmOpen] = useState(false);
   const primaryAddToCartRef = useRef<HTMLDivElement | null>(null);
@@ -420,6 +455,7 @@ const ProductDetail = () => {
       product.handle.toLowerCase() !== "lay-n-go-large-60" &&
       product.handle.toLowerCase() !== "lay-n-go-lifestyle-44" &&
       product.handle.toLowerCase() !== "lay-n-go-lite-18" &&
+      product.handle.toLowerCase() !== "lay-n-go-traveler-20" &&
       Boolean(product.description?.trim()),
   );
 
@@ -499,15 +535,27 @@ const ProductDetail = () => {
   }, [isLayNGoLite18, product?.id]);
 
   useEffect(() => {
+    setLayNGoTraveler20SlideIndex(0);
+  }, [isLayNGoTraveler20, product?.id]);
+
+  useEffect(() => {
     if (!product) return;
     const h = product.handle.toLowerCase();
-    if (h !== "lay-n-go-large-60" && h !== "lay-n-go-lifestyle-44" && h !== "lay-n-go-lite-18") return;
+    if (
+      h !== "lay-n-go-large-60" &&
+      h !== "lay-n-go-lifestyle-44" &&
+      h !== "lay-n-go-lite-18" &&
+      h !== "lay-n-go-traveler-20"
+    )
+      return;
     const slides =
       h === "lay-n-go-large-60"
         ? LAY_N_GO_LARGE_60_GALLERY_SLIDES
         : h === "lay-n-go-lifestyle-44"
           ? LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES
-          : LAY_N_GO_LITE_18_GALLERY_SLIDES;
+          : h === "lay-n-go-lite-18"
+            ? LAY_N_GO_LITE_18_GALLERY_SLIDES
+            : LAY_N_GO_TRAVELER_20_GALLERY_SLIDES;
     const origin = window.location.origin;
     const links: HTMLLinkElement[] = [];
     for (const slide of slides) {
@@ -588,7 +636,16 @@ const ProductDetail = () => {
             setSlideIndex: setLayNGoLite18SlideIndex,
             galleryAriaLabel: "Lay-n-Go Lite lifestyle photos",
           }
-        : null;
+        : isLayNGoTraveler20
+          ? {
+              slides: [...LAY_N_GO_TRAVELER_20_GALLERY_SLIDES],
+              slideIndex: layNGoTraveler20SlideIndex,
+              setSlideIndex: setLayNGoTraveler20SlideIndex,
+              galleryAriaLabel: "Lay-n-Go Traveler lifestyle photos",
+            }
+          : null;
+  const layNGoGalleryArrowBtnClassName =
+    "h-10 w-10 shrink-0 self-center rounded-full border-0 bg-black text-white hover:bg-neutral-900 hover:text-white focus-visible:ring-white/40 sm:h-11 sm:w-11";
   const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
   const priceDisplay = parseFloat(
     selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount,
@@ -1016,22 +1073,26 @@ const ProductDetail = () => {
                   </div>
 
                   <div ref={primaryAddToCartRef}>{addToCartButtonCosmo}</div>
-                  {isLayNGoLarge60 || isLayNGoLifestyle44 || isLayNGoLite18 ? (
+                  {isLayNGoLarge60 || isLayNGoLifestyle44 || isLayNGoLite18 || isLayNGoTraveler20 ? (
                     <ul
                       className="mt-5 list-disc space-y-2.5 pl-5 text-left text-sm font-medium leading-relaxed text-neutral-700 marker:text-neutral-900"
                       aria-label={
-                        isLayNGoLarge60
-                          ? "Lay-n-Go Large highlights"
-                          : isLayNGoLifestyle44
-                            ? "Lay-n-Go Lifestyle highlights"
-                            : "Lay-n-Go Lite highlights"
+                        isLayNGoTraveler20
+                          ? "Lay-n-Go Traveler highlights"
+                          : isLayNGoLarge60
+                            ? "Lay-n-Go Large highlights"
+                            : isLayNGoLifestyle44
+                              ? "Lay-n-Go Lifestyle highlights"
+                              : "Lay-n-Go Lite highlights"
                       }
                     >
-                      {(isLayNGoLarge60
-                        ? LAY_N_GO_LARGE_60_BULLETS
-                        : isLayNGoLifestyle44
-                          ? LAY_N_GO_LIFESTYLE_44_BULLETS
-                          : LAY_N_GO_LITE_18_BULLETS
+                      {(isLayNGoTraveler20
+                        ? LAY_N_GO_TRAVELER_20_BULLETS
+                        : isLayNGoLarge60
+                          ? LAY_N_GO_LARGE_60_BULLETS
+                          : isLayNGoLifestyle44
+                            ? LAY_N_GO_LIFESTYLE_44_BULLETS
+                            : LAY_N_GO_LITE_18_BULLETS
                       ).map((line) => (
                         <li key={line} className="pl-0.5">
                           {line}
@@ -1099,9 +1160,9 @@ const ProductDetail = () => {
                 )}
               >
                 {layNGoHeroGallery ? (
-                  <div className="mx-auto w-[80%] max-w-full">
+                  <div className="mx-auto w-full max-w-full md:w-[80%]">
                     <div
-                      className="flex items-stretch gap-2 rounded-2xl bg-white p-2 shadow-sm sm:gap-3 sm:p-3"
+                      className="flex flex-col gap-3 rounded-2xl bg-white p-2 shadow-sm sm:gap-3 sm:p-3 md:flex-row md:items-stretch"
                       aria-roledescription="carousel"
                       aria-label={layNGoHeroGallery.galleryAriaLabel}
                     >
@@ -1112,7 +1173,7 @@ const ProductDetail = () => {
                         type="button"
                         variant="outline"
                         size="icon"
-                        className="h-10 w-10 shrink-0 self-center rounded-full border-0 bg-black text-white hover:bg-neutral-900 hover:text-white focus-visible:ring-white/40 sm:h-11 sm:w-11"
+                        className={cn(layNGoGalleryArrowBtnClassName, "hidden md:inline-flex")}
                         onClick={() =>
                           layNGoHeroGallery.setSlideIndex(
                             (prev) =>
@@ -1123,7 +1184,7 @@ const ProductDetail = () => {
                       >
                         <ChevronLeft className="h-5 w-5 shrink-0 text-white" aria-hidden />
                       </Button>
-                      <div className="relative min-w-0 flex-1 overflow-hidden rounded-xl bg-white pt-[56.34%]">
+                      <div className="relative min-h-0 w-full min-w-0 flex-1 overflow-hidden rounded-xl bg-white pt-[56.34%]">
                         <div className="absolute inset-0 overflow-hidden">
                           <div
                             className="flex h-full transition-transform duration-700 ease-in-out"
@@ -1151,7 +1212,7 @@ const ProductDetail = () => {
                         type="button"
                         variant="outline"
                         size="icon"
-                        className="h-10 w-10 shrink-0 self-center rounded-full border-0 bg-black text-white hover:bg-neutral-900 hover:text-white focus-visible:ring-white/40 sm:h-11 sm:w-11"
+                        className={cn(layNGoGalleryArrowBtnClassName, "hidden md:inline-flex")}
                         onClick={() =>
                           layNGoHeroGallery.setSlideIndex((prev) => (prev + 1) % layNGoHeroGallery.slides.length)
                         }
@@ -1159,6 +1220,35 @@ const ProductDetail = () => {
                       >
                         <ChevronRight className="h-5 w-5 shrink-0 text-white" aria-hidden />
                       </Button>
+                      <div className="flex justify-center gap-6 md:hidden">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className={layNGoGalleryArrowBtnClassName}
+                          onClick={() =>
+                            layNGoHeroGallery.setSlideIndex(
+                              (prev) =>
+                                (prev - 1 + layNGoHeroGallery.slides.length) % layNGoHeroGallery.slides.length,
+                            )
+                          }
+                          aria-label="Show previous photo"
+                        >
+                          <ChevronLeft className="h-5 w-5 shrink-0 text-white" aria-hidden />
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className={layNGoGalleryArrowBtnClassName}
+                          onClick={() =>
+                            layNGoHeroGallery.setSlideIndex((prev) => (prev + 1) % layNGoHeroGallery.slides.length)
+                          }
+                          aria-label="Show next photo"
+                        >
+                          <ChevronRight className="h-5 w-5 shrink-0 text-white" aria-hidden />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ) : (

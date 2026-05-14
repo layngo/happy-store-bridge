@@ -8,6 +8,7 @@ interface CollectionCardProps {
 }
 
 const NAILSPA_PRODUCT_PATH = "/product/lay-n-go-nailspa-18";
+const TRAVELER_PRODUCT_PATH = "/product/lay-n-go-traveler-20";
 
 const HOME_VIDEO_CARDS: Record<string, { videoId: string; hoverSrc: string; label: string; linkTo?: string }> = {
   "cosmetic-bags": {
@@ -64,7 +65,11 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
   }
 
   const defaultHref =
-    collection.handle === "nail-solutions" ? NAILSPA_PRODUCT_PATH : `/collections/${collection.handle}`;
+    collection.handle === "nail-solutions"
+      ? NAILSPA_PRODUCT_PATH
+      : collection.handle === "technology"
+        ? TRAVELER_PRODUCT_PATH
+        : `/collections/${collection.handle}`;
 
   return (
     <Link to={defaultHref} className="group block">

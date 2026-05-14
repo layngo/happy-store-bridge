@@ -24,8 +24,9 @@ const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v1";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
-/** Slight drop shadow on diagram callout circles (Large + Lifestyle, mobile + desktop). */
-const CALLOUT_THUMB_SHADOW = "shadow-[0_2px_10px_rgb(0_0_0_/_0.12),0_6px_20px_rgb(0_0_0_/_0.08)]";
+/** Slight drop shadow on diagram callout circles (Large + Lifestyle + Traveler, mobile + desktop). */
+export const CALLOUT_THUMB_SHADOW =
+  "shadow-[0_2px_10px_rgb(0_0_0_/_0.12),0_6px_20px_rgb(0_0_0_/_0.08)]";
 
 export type LayNGoCalloutDiagramVariant = "large-60" | "lifestyle-44" | "lite-18";
 
@@ -224,6 +225,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
   };
 }
 
+/** Diameter tick + label (used on full callout diagrams and standalone, e.g. Traveler PDP). */
+export type LayNGoMatDiameterVariant = LayNGoCalloutDiagramVariant | "traveler-20";
+
 function DiameterLine({
   inches,
   className,
@@ -231,17 +235,21 @@ function DiameterLine({
 }: {
   inches: number;
   className?: string;
-  variant?: LayNGoCalloutDiagramVariant;
+  variant?: LayNGoMatDiameterVariant;
 }) {
-  const lifestyleChrome = diagramUsesLifestyleChrome(variant);
+  const lifestyle44 = variant === "lifestyle-44";
+  const lifestyleChrome =
+    variant === "lifestyle-44" || variant === "lite-18" || variant === "traveler-20";
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
       <div
         className={cn(
           "flex items-end justify-center",
-          lifestyleChrome
-            ? "mx-auto w-[min(100%,52%)] sm:w-[min(100%,50%)] md:w-[min(100%,48%)]"
-            : "w-full max-w-md sm:max-w-lg",
+          lifestyle44
+            ? "mx-auto w-[min(100%,74%)] sm:w-[min(100%,68%)] md:w-[min(100%,52%)] lg:w-[min(100%,48%)]"
+            : lifestyleChrome
+              ? "mx-auto w-[min(100%,52%)] sm:w-[min(100%,50%)] md:w-[min(100%,48%)]"
+              : "w-full max-w-md sm:max-w-lg",
         )}
       >
         <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
@@ -256,6 +264,23 @@ function DiameterLine({
       >
         {inches}&quot;
       </p>
+    </div>
+  );
+}
+
+/** Standalone mat diameter graphic (open flat), matching diagram styling. */
+export function LayNGoMatDiameterLine({
+  inches,
+  className,
+  variant = "traveler-20",
+}: {
+  inches: number;
+  className?: string;
+  variant?: LayNGoMatDiameterVariant;
+}) {
+  return (
+    <div aria-label={`${inches} inch diameter when laid flat`}>
+      <DiameterLine inches={inches} className={className} variant={variant} />
     </div>
   );
 }
