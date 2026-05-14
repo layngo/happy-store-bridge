@@ -49,6 +49,40 @@ const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.
 const LAY_N_GO_LARGE_SLIDE_1 = "/products/lay-n-go-large-pdp/video-slide-1.png";
 const LAY_N_GO_LARGE_SLIDE_2 = "/products/lay-n-go-large-pdp/video-slide-2.png";
 
+const LAY_N_GO_LARGE_60_GALLERY_SLIDES = [
+  {
+    src: LAY_N_GO_LARGE_SLIDE_1,
+    alt: "Lay-n-Go Large blue play mat spread out with family and blocks",
+  },
+  {
+    src: LAY_N_GO_LARGE_SLIDE_2,
+    alt: "Lay-n-Go Large green play mat in living room with kids and building blocks",
+  },
+  {
+    src: "/products/lay-n-go-large-pdp/large-gallery-3.png",
+    alt: "Lay-n-Go Large navy bag cinched shut, worn on the back with a child at a front door",
+  },
+  {
+    src: "/products/lay-n-go-large-pdp/large-gallery-4.png",
+    alt: "Lay-n-Go Large navy bag cinched closed and hanging from a door handle",
+  },
+] as const;
+
+const LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES = [
+  {
+    src: "/products/lay-n-go-lifestyle-44/lifestyle-gallery-1.png",
+    alt: "Lay-n-Go Lifestyle mat on a dock by a lake with children playing with building bricks",
+  },
+  {
+    src: "/products/lay-n-go-lifestyle-44/lifestyle-gallery-2.png",
+    alt: "Lay-n-Go Lifestyle mat by a pool with children playing with building bricks",
+  },
+  {
+    src: "/products/lay-n-go-lifestyle-44/lifestyle-gallery-3.png",
+    alt: "Lay-n-Go Lifestyle backpack cinched closed, worn at the lake",
+  },
+] as const;
+
 const LAY_N_GO_LARGE_60_BULLETS = [
   `Lay-n-Go Large 60" diameter activity play mat with patented raised lip to keep LEGOs and small toys contained`,
   "Play for hours, clean up in seconds — just pull the drawstring and it closes completely",
@@ -196,6 +230,7 @@ const ProductDetail = () => {
   const [cosmo22GalleryIndex, setCosmo22GalleryIndex] = useState(0);
   const [nailspa18GalleryIndex, setNailspa18GalleryIndex] = useState(0);
   const [layNGoLargeSlideIndex, setLayNGoLargeSlideIndex] = useState(0);
+  const [layNGoLifestyle44SlideIndex, setLayNGoLifestyle44SlideIndex] = useState(0);
   const [showStickyAddToCart, setShowStickyAddToCart] = useState(false);
   const [stickyConfirmOpen, setStickyConfirmOpen] = useState(false);
   const primaryAddToCartRef = useRef<HTMLDivElement | null>(null);
@@ -319,6 +354,8 @@ const ProductDetail = () => {
       isCosmoPdp &&
       !isNailspa18Product(product.handle) &&
       !isCosmoStoryPdp &&
+      product.handle.toLowerCase() !== "lay-n-go-large-60" &&
+      product.handle.toLowerCase() !== "lay-n-go-lifestyle-44" &&
       Boolean(product.description?.trim()),
   );
 
@@ -380,12 +417,8 @@ const ProductDetail = () => {
   }, [isLayNGoLarge60, product?.id]);
 
   useEffect(() => {
-    if (!isLayNGoLarge60) return;
-    const id = window.setInterval(() => {
-      setLayNGoLargeSlideIndex((prev) => (prev + 1) % 2);
-    }, 5000);
-    return () => window.clearInterval(id);
-  }, [isLayNGoLarge60]);
+    setLayNGoLifestyle44SlideIndex(0);
+  }, [isLayNGoLifestyle44, product?.id]);
 
   useEffect(() => {
     if (!showCosmoStyleBottomExtras) {
@@ -433,6 +466,15 @@ const ProductDetail = () => {
   }
 
   const selectedVariant = product.variants.edges[selectedVariantIdx]?.node;
+  const layNGoHeroGallery =
+    isLayNGoLarge60 || isLayNGoLifestyle44
+      ? {
+          slides: isLayNGoLarge60 ? [...LAY_N_GO_LARGE_60_GALLERY_SLIDES] : [...LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES],
+          slideIndex: isLayNGoLarge60 ? layNGoLargeSlideIndex : layNGoLifestyle44SlideIndex,
+          setSlideIndex: isLayNGoLarge60 ? setLayNGoLargeSlideIndex : setLayNGoLifestyle44SlideIndex,
+          galleryAriaLabel: isLayNGoLarge60 ? "Lay-n-Go Large lifestyle photos" : "Lay-n-Go Lifestyle photos",
+        }
+      : null;
   const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
   const priceDisplay = parseFloat(
     selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount,
@@ -563,6 +605,7 @@ const ProductDetail = () => {
       {!isCosmo22Product(product.handle) &&
       !isCosmo20Product(product.handle) &&
       !isNailspa18Product(product.handle) &&
+      !(isLayNGoLarge60 || isLayNGoLifestyle44) &&
       orderedImages.length > 1 ? (
         <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Product photo gallery">
           {orderedImages.map((img, i) => (
@@ -911,7 +954,7 @@ const ProductDetail = () => {
             <section
               className="mt-14 sm:mt-16"
               aria-label={
-                isLayNGoLarge60
+                layNGoHeroGallery
                   ? "Product image showcase"
                   : isNailspa18Product(product.handle)
                     ? "NAILSPA product video"
@@ -926,57 +969,78 @@ const ProductDetail = () => {
                   isNailspa18Product(product.handle) && "mx-auto md:max-w-[60%] md:shrink-0",
                 )}
               >
-              <div
-                className={cn(
-                  "relative w-full overflow-hidden rounded-2xl",
-                  isLayNGoLarge60
-                    ? "border-0 bg-white pt-[56.34%] shadow-none"
-                    : "border border-border bg-muted/40 shadow-inner aspect-video",
-                )}
-              >
-                {isLayNGoLarge60 ? (
-                  <div className="absolute inset-0 overflow-hidden">
+                {layNGoHeroGallery ? (
+                  <div className="mx-auto w-[80%] max-w-full">
                     <div
-                      className="flex h-full w-[200%] transition-transform duration-700 ease-in-out"
-                      style={{ transform: `translateX(-${layNGoLargeSlideIndex * 50}%)` }}
+                      className="relative w-full overflow-hidden rounded-2xl border-0 bg-white pt-[56.34%] shadow-none"
+                      aria-roledescription="carousel"
+                      aria-label={layNGoHeroGallery.galleryAriaLabel}
                     >
-                      <img
-                        src={LAY_N_GO_LARGE_SLIDE_1}
-                        alt="Lay-n-Go Large blue play mat spread out with family and blocks"
-                        className="h-full w-1/2 shrink-0 object-contain"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                      <img
-                        src={LAY_N_GO_LARGE_SLIDE_2}
-                        alt="Lay-n-Go Large green play mat in living room with kids and building blocks"
-                        className="h-full w-1/2 shrink-0 object-contain"
-                        loading="lazy"
-                        decoding="async"
-                      />
+                      <div className="absolute inset-0 overflow-hidden">
+                        <div
+                          className="flex h-full transition-transform duration-700 ease-in-out"
+                          style={{
+                            width: `${layNGoHeroGallery.slides.length * 100}%`,
+                            transform: `translateX(-${(layNGoHeroGallery.slideIndex * 100) / layNGoHeroGallery.slides.length}%)`,
+                          }}
+                        >
+                          {layNGoHeroGallery.slides.map((slide) => (
+                            <img
+                              key={slide.src}
+                              src={slide.src}
+                              alt={slide.alt}
+                              className="h-full shrink-0 object-contain"
+                              style={{ width: `${100 / layNGoHeroGallery.slides.length}%` }}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-3 flex justify-center">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-10 w-10 rounded-full shadow-sm"
+                        onClick={() =>
+                          layNGoHeroGallery.setSlideIndex((prev) => (prev + 1) % layNGoHeroGallery.slides.length)
+                        }
+                        aria-label={`Show next photo (${((layNGoHeroGallery.slideIndex + 1) % layNGoHeroGallery.slides.length) + 1} of ${layNGoHeroGallery.slides.length})`}
+                      >
+                        <ChevronRight className="h-5 w-5 shrink-0" aria-hidden />
+                      </Button>
                     </div>
                   </div>
-                ) : isNailspa18Product(product.handle) ? (
-                  <NailspaPdpHeroVideo variant="bottom" />
-                ) : cosmoYoutubeId ? (
-                  <iframe
-                    title="Product video"
-                    src={`https://www.youtube.com/embed/${cosmoYoutubeId}?autoplay=1&mute=1&playsinline=1&loop=1&playlist=${cosmoYoutubeId}&rel=0`}
-                    className="absolute inset-0 h-full w-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
                 ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/35 bg-muted/30 px-6 py-12 text-center">
-                    <span className="font-heading text-xl font-semibold tracking-tight text-muted-foreground">
-                      Video placeholder
-                    </span>
-                    <span className="max-w-sm text-sm text-muted-foreground">
-                      Drop in an embed when you&apos;re ready—the layout is sized for 16×9.
-                    </span>
+                  <div
+                    className={cn(
+                      "relative w-full overflow-hidden rounded-2xl border border-border bg-muted/40 shadow-inner aspect-video",
+                    )}
+                  >
+                    {isNailspa18Product(product.handle) ? (
+                      <NailspaPdpHeroVideo variant="bottom" />
+                    ) : cosmoYoutubeId ? (
+                      <iframe
+                        title="Product video"
+                        src={`https://www.youtube.com/embed/${cosmoYoutubeId}?autoplay=1&mute=1&playsinline=1&loop=1&playlist=${cosmoYoutubeId}&rel=0`}
+                        className="absolute inset-0 h-full w-full border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/35 bg-muted/30 px-6 py-12 text-center">
+                        <span className="font-heading text-xl font-semibold tracking-tight text-muted-foreground">
+                          Video placeholder
+                        </span>
+                        <span className="max-w-sm text-sm text-muted-foreground">
+                          Drop in an embed when you&apos;re ready—the layout is sized for 16×9.
+                        </span>
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
               </div>
             </section>
 

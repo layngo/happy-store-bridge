@@ -14,7 +14,7 @@ const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containment-lip.png";
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
-const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v7";
+const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v9";
 
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
@@ -23,7 +23,8 @@ export type LayNGoCalloutDiagramVariant = "large-60" | "lifestyle-44";
 
 /** ~20px on a typical md stage, as 0–100 viewBox deltas (see `preserveAspectRatio="none"`). */
 const LIFESTYLE_MESH_POCKET_DX_20PX = 2.65;
-const LIFESTYLE_MESH_POCKET_DY_HALF_20PX = 1.33;
+/** ~20px × 2 closer vertically on ~768px stage (y half-delta per pocket dot, 0–100 space). */
+const LIFESTYLE_MESH_POCKET_DY_HALF_20PX = 1.33 + (20 / 768) * 100 * 0.5;
 
 type CalloutKey = "cord" | "lip" | "mesh";
 
@@ -47,15 +48,21 @@ const DEFAULT_LAYOUT: LayoutState = {
   },
 };
 
-/** Lifestyle: cord anchor/dot shifted ~200px up vs v6 (see min-h~768px); lip/mesh tuned. */
+/** ~75px vertically on a ~768px-tall stage, as 0–100 y delta. */
+const LIFESTYLE_CORD_CALLOUT_DOWN_75PX_DY = (75 / 768) * 100;
+
+/** ~50px left on a typical md stage, as 0–100 viewBox x delta. */
+const LIFESTYLE_LIP_DOT_DX_50PX = 5.55;
+
+/** Lifestyle defaults: cord/lip/mesh tuned for 44″ hero + callout edit mode. */
 const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
   dots: {
-    cord: { x: 50, y: -4 },
-    lip: { x: 24, y: 49 },
+    cord: { x: 50, y: -4 + LIFESTYLE_CORD_CALLOUT_DOWN_75PX_DY },
+    lip: { x: 24 - LIFESTYLE_LIP_DOT_DX_50PX, y: 49 },
     mesh: { x: 52, y: 50 },
   },
   anchors: {
-    cord: { x: 50, y: -26 },
+    cord: { x: 50, y: -26 + LIFESTYLE_CORD_CALLOUT_DOWN_75PX_DY },
     lip: { x: 9, y: 48 },
     mesh: DEFAULT_LAYOUT.anchors.mesh,
   },
@@ -186,7 +193,12 @@ function DiameterLine({
   const lifestyle = variant === "lifestyle-44";
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
-      <div className="flex w-full max-w-md items-end justify-center sm:max-w-lg">
+      <div
+        className={cn(
+          "flex w-full items-end justify-center",
+          lifestyle ? "max-w-none" : "max-w-md sm:max-w-lg",
+        )}
+      >
         <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
         <div className="mb-0 h-px min-w-0 flex-1 bg-neutral-900" aria-hidden />
         <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
