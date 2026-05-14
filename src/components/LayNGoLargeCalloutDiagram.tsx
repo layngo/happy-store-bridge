@@ -19,8 +19,8 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-/** Subtle depth on diagram callout circles (Large + Lifestyle, mobile + desktop). */
-const CALLOUT_THUMB_SHADOW = "shadow-[0_2px_10px_rgb(0_0_0_/_0.11)]";
+/** Slight drop shadow on diagram callout circles (Large + Lifestyle, mobile + desktop). */
+const CALLOUT_THUMB_SHADOW = "shadow-[0_2px_10px_rgb(0_0_0_/_0.12),0_6px_20px_rgb(0_0_0_/_0.08)]";
 
 export type LayNGoCalloutDiagramVariant = "large-60" | "lifestyle-44";
 
@@ -196,7 +196,14 @@ function DiameterLine({
   const lifestyle = variant === "lifestyle-44";
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
-      <div className="flex w-full max-w-md items-end justify-center sm:max-w-lg">
+      <div
+        className={cn(
+          "flex items-end justify-center",
+          lifestyle
+            ? "mx-auto w-[min(100%,70%)] sm:w-[min(100%,68%)] md:w-[min(100%,66%)]"
+            : "w-full max-w-md sm:max-w-lg",
+        )}
+      >
         <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
         <div className="mb-0 h-px min-w-0 flex-1 bg-neutral-900" aria-hidden />
         <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
@@ -283,7 +290,25 @@ function FloatingCallout({
       {textAbove ? (
         <>
           {text}
-          {thumb}
+          {cordLifestyleCompact ? (
+            <>
+              <div className="h-2.5 w-px shrink-0 bg-neutral-900 sm:h-3" aria-hidden />
+              <div className="relative shrink-0">
+                {thumb}
+                <div
+                  className="pointer-events-none absolute left-1/2 top-0 z-[5] w-px -translate-x-1/2 bg-neutral-900"
+                  style={{ bottom: "calc(14% + 10px)" }}
+                  aria-hidden
+                />
+                <span
+                  className="pointer-events-none absolute bottom-[12%] left-1/2 z-[6] h-3 w-3 -translate-x-1/2 translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-sm ring-1 ring-white"
+                  aria-hidden
+                />
+              </div>
+            </>
+          ) : (
+            thumb
+          )}
         </>
       ) : (
         <>
@@ -562,17 +587,20 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
 
           if (variant === "lifestyle-44" && k === "cord") {
             return (
-              <div key={k} className="flex flex-col items-center gap-1 px-2">
+              <div key={k} className="flex w-full flex-col items-center gap-1.5 px-2">
                 {label}
-                <div className="flex flex-col items-center" aria-hidden>
-                  <div className="h-5 w-px shrink-0 bg-neutral-900 sm:h-6" />
-                </div>
+                <div className="h-5 w-px shrink-0 bg-neutral-900 sm:h-6" aria-hidden />
                 <div className="relative shrink-0">
-                  <span
-                    className="pointer-events-none absolute left-1/2 top-0 z-10 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-sm ring-1 ring-white"
+                  {thumb}
+                  <div
+                    className="pointer-events-none absolute left-1/2 top-0 z-[1] w-px -translate-x-1/2 bg-neutral-900"
+                    style={{ bottom: "calc(14% + 10px)" }}
                     aria-hidden
                   />
-                  {thumb}
+                  <span
+                    className="pointer-events-none absolute bottom-[12%] left-1/2 z-[2] h-3 w-3 -translate-x-1/2 translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-sm ring-1 ring-white"
+                    aria-hidden
+                  />
                 </div>
               </div>
             );

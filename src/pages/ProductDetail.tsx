@@ -83,6 +83,25 @@ const LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES = [
   },
 ] as const;
 
+const LAY_N_GO_LITE_18_GALLERY_SLIDES = [
+  {
+    src: "/products/lay-n-go-lite-18/lite-gallery-1.png",
+    alt: "Children playing with small toys on a blue Lay-n-Go Lite mat at the beach",
+  },
+  {
+    src: "/products/lay-n-go-lite-18/lite-gallery-2.png",
+    alt: "Child playing with building bricks in a blue Lay-n-Go Lite on an airplane tray table",
+  },
+  {
+    src: "/products/lay-n-go-lite-18/lite-gallery-3.png",
+    alt: "Two children with pink and green Lay-n-Go mats playing with toys at a kitchen counter",
+  },
+  {
+    src: "/products/lay-n-go-lite-18/lite-gallery-4.png",
+    alt: "Three children on outdoor chairs by a lake with green and orange Lay-n-Go Lite bags",
+  },
+] as const;
+
 const LAY_N_GO_LARGE_60_BULLETS = [
   `Lay-n-Go Large 60" diameter activity play mat with patented raised lip to keep LEGOs and small toys contained`,
   "Play for hours, clean up in seconds — just pull the drawstring and it closes completely",
@@ -99,6 +118,18 @@ const LAY_N_GO_LIFESTYLE_44_BULLETS = [
   "Convenient backpack straps plus an extra handle for carrying, hanging, or storing",
   "4 mesh velcroed interior pockets for storing special pieces",
   "Additional purple inner rip-stop liner",
+  "Machine washable",
+  "4-in-1: activity mat, cleanup, storage, and carry-all in one",
+  "Toys not included",
+] as const;
+
+const LAY_N_GO_LITE_18_BULLETS = [
+  `18" diameter personal activity play mat — compact enough to take anywhere`,
+  "Perfect for airplanes, car rides, restaurants, or any on-the-go adventure",
+  "Patented raised lip keeps LEGOs and small pieces contained on the mat",
+  "Pull the drawstring and it cinches completely closed for storage and travel",
+  "Convenient handle for easy carrying",
+  "Reversible play mat color",
   "Machine washable",
   "4-in-1: activity mat, cleanup, storage, and carry-all in one",
   "Toys not included",
@@ -231,6 +262,7 @@ const ProductDetail = () => {
   const [nailspa18GalleryIndex, setNailspa18GalleryIndex] = useState(0);
   const [layNGoLargeSlideIndex, setLayNGoLargeSlideIndex] = useState(0);
   const [layNGoLifestyle44SlideIndex, setLayNGoLifestyle44SlideIndex] = useState(0);
+  const [layNGoLite18SlideIndex, setLayNGoLite18SlideIndex] = useState(0);
   const [showStickyAddToCart, setShowStickyAddToCart] = useState(false);
   const [stickyConfirmOpen, setStickyConfirmOpen] = useState(false);
   const primaryAddToCartRef = useRef<HTMLDivElement | null>(null);
@@ -356,6 +388,7 @@ const ProductDetail = () => {
       !isCosmoStoryPdp &&
       product.handle.toLowerCase() !== "lay-n-go-large-60" &&
       product.handle.toLowerCase() !== "lay-n-go-lifestyle-44" &&
+      product.handle.toLowerCase() !== "lay-n-go-lite-18" &&
       Boolean(product.description?.trim()),
   );
 
@@ -377,6 +410,7 @@ const ProductDetail = () => {
   const layNGoHandle = product?.handle.toLowerCase() ?? "";
   const isLayNGoLarge60 = layNGoHandle === "lay-n-go-large-60";
   const isLayNGoLifestyle44 = layNGoHandle === "lay-n-go-lifestyle-44";
+  const isLayNGoLite18 = layNGoHandle === "lay-n-go-lite-18";
   const hasLayNGoLargeStoryLayout =
     layNGoHandle === "lay-n-go-large-60" ||
     layNGoHandle === "lay-n-go-lifestyle-44" ||
@@ -421,10 +455,19 @@ const ProductDetail = () => {
   }, [isLayNGoLifestyle44, product?.id]);
 
   useEffect(() => {
+    setLayNGoLite18SlideIndex(0);
+  }, [isLayNGoLite18, product?.id]);
+
+  useEffect(() => {
     if (!product) return;
     const h = product.handle.toLowerCase();
-    if (h !== "lay-n-go-large-60" && h !== "lay-n-go-lifestyle-44") return;
-    const slides = h === "lay-n-go-large-60" ? LAY_N_GO_LARGE_60_GALLERY_SLIDES : LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES;
+    if (h !== "lay-n-go-large-60" && h !== "lay-n-go-lifestyle-44" && h !== "lay-n-go-lite-18") return;
+    const slides =
+      h === "lay-n-go-large-60"
+        ? LAY_N_GO_LARGE_60_GALLERY_SLIDES
+        : h === "lay-n-go-lifestyle-44"
+          ? LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES
+          : LAY_N_GO_LITE_18_GALLERY_SLIDES;
     const origin = window.location.origin;
     const links: HTMLLinkElement[] = [];
     for (const slide of slides) {
@@ -484,15 +527,28 @@ const ProductDetail = () => {
   }
 
   const selectedVariant = product.variants.edges[selectedVariantIdx]?.node;
-  const layNGoHeroGallery =
-    isLayNGoLarge60 || isLayNGoLifestyle44
+  const layNGoHeroGallery = isLayNGoLarge60
+    ? {
+        slides: [...LAY_N_GO_LARGE_60_GALLERY_SLIDES],
+        slideIndex: layNGoLargeSlideIndex,
+        setSlideIndex: setLayNGoLargeSlideIndex,
+        galleryAriaLabel: "Lay-n-Go Large lifestyle photos",
+      }
+    : isLayNGoLifestyle44
       ? {
-          slides: isLayNGoLarge60 ? [...LAY_N_GO_LARGE_60_GALLERY_SLIDES] : [...LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES],
-          slideIndex: isLayNGoLarge60 ? layNGoLargeSlideIndex : layNGoLifestyle44SlideIndex,
-          setSlideIndex: isLayNGoLarge60 ? setLayNGoLargeSlideIndex : setLayNGoLifestyle44SlideIndex,
-          galleryAriaLabel: isLayNGoLarge60 ? "Lay-n-Go Large lifestyle photos" : "Lay-n-Go Lifestyle photos",
+          slides: [...LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES],
+          slideIndex: layNGoLifestyle44SlideIndex,
+          setSlideIndex: setLayNGoLifestyle44SlideIndex,
+          galleryAriaLabel: "Lay-n-Go Lifestyle photos",
         }
-      : null;
+      : isLayNGoLite18
+        ? {
+            slides: [...LAY_N_GO_LITE_18_GALLERY_SLIDES],
+            slideIndex: layNGoLite18SlideIndex,
+            setSlideIndex: setLayNGoLite18SlideIndex,
+            galleryAriaLabel: "Lay-n-Go Lite lifestyle photos",
+          }
+        : null;
   const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
   const priceDisplay = parseFloat(
     selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount,
@@ -623,7 +679,7 @@ const ProductDetail = () => {
       {!isCosmo22Product(product.handle) &&
       !isCosmo20Product(product.handle) &&
       !isNailspa18Product(product.handle) &&
-      !(isLayNGoLarge60 || isLayNGoLifestyle44) &&
+      !(isLayNGoLarge60 || isLayNGoLifestyle44 || isLayNGoLite18) &&
       orderedImages.length > 1 ? (
         <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Product photo gallery">
           {orderedImages.map((img, i) => (
@@ -838,12 +894,7 @@ const ProductDetail = () => {
   );
 
   return (
-    <div
-      className={cn(
-        "min-h-screen flex flex-col",
-        isCosmoPdp && !isLayNGoLifestyle44 ? "bg-white" : "bg-background",
-      )}
-    >
+    <div className={cn("min-h-screen flex flex-col", isCosmoPdp ? "bg-white" : "bg-background")}>
       <Header />
       <div className="container py-8 flex-1">
         <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6">
@@ -890,12 +941,7 @@ const ProductDetail = () => {
               </h1>
             </header>
 
-            <section
-              className={cn(
-                "-mx-4 overflow-x-hidden px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10",
-                isLayNGoLifestyle44 ? "bg-background" : "bg-white",
-              )}
-            >
+            <section className="-mx-4 overflow-x-hidden bg-white px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
               <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
                 <div className="min-w-0 space-y-4">
                   <div
@@ -930,14 +976,23 @@ const ProductDetail = () => {
                   </div>
 
                   <div ref={primaryAddToCartRef}>{addToCartButtonCosmo}</div>
-                  {isLayNGoLarge60 || isLayNGoLifestyle44 ? (
+                  {isLayNGoLarge60 || isLayNGoLifestyle44 || isLayNGoLite18 ? (
                     <ul
                       className="mt-5 list-disc space-y-2.5 pl-5 text-left text-sm font-medium leading-relaxed text-neutral-700 marker:text-neutral-900"
                       aria-label={
-                        isLayNGoLarge60 ? "Lay-n-Go Large highlights" : "Lay-n-Go Lifestyle highlights"
+                        isLayNGoLarge60
+                          ? "Lay-n-Go Large highlights"
+                          : isLayNGoLifestyle44
+                            ? "Lay-n-Go Lifestyle highlights"
+                            : "Lay-n-Go Lite highlights"
                       }
                     >
-                      {(isLayNGoLarge60 ? LAY_N_GO_LARGE_60_BULLETS : LAY_N_GO_LIFESTYLE_44_BULLETS).map((line) => (
+                      {(isLayNGoLarge60
+                        ? LAY_N_GO_LARGE_60_BULLETS
+                        : isLayNGoLifestyle44
+                          ? LAY_N_GO_LIFESTYLE_44_BULLETS
+                          : LAY_N_GO_LITE_18_BULLETS
+                      ).map((line) => (
                         <li key={line} className="pl-0.5">
                           {line}
                         </li>
@@ -1004,7 +1059,7 @@ const ProductDetail = () => {
                 {layNGoHeroGallery ? (
                   <div className="mx-auto w-[80%] max-w-full">
                     <div
-                      className="flex items-stretch gap-2 rounded-2xl border border-border bg-white p-2 shadow-sm sm:gap-3 sm:p-3"
+                      className="flex items-stretch gap-2 rounded-2xl bg-white p-2 shadow-sm sm:gap-3 sm:p-3"
                       aria-roledescription="carousel"
                       aria-label={layNGoHeroGallery.galleryAriaLabel}
                     >
@@ -1026,7 +1081,7 @@ const ProductDetail = () => {
                       >
                         <ChevronLeft className="h-5 w-5 shrink-0" aria-hidden />
                       </Button>
-                      <div className="relative min-w-0 flex-1 overflow-hidden rounded-xl border border-border/70 bg-muted/10 pt-[56.34%]">
+                      <div className="relative min-w-0 flex-1 overflow-hidden rounded-xl bg-white pt-[56.34%]">
                         <div className="absolute inset-0 overflow-hidden">
                           <div
                             className="flex h-full transition-transform duration-700 ease-in-out"

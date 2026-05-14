@@ -141,10 +141,7 @@ export function LayNGoLargePdpPlayStrip({
 }: LayNGoLargePdpPlayStripProps) {
   return (
     <section
-      className={cn(
-        "relative left-1/2 -ml-[50vw] w-screen overflow-x-clip px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8",
-        calloutVariant === "lifestyle-44" ? "bg-background" : "bg-white",
-      )}
+      className="relative left-1/2 -ml-[50vw] w-screen overflow-x-clip bg-white px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8"
       aria-labelledby="lay-n-go-large-play-strip-heading"
     >
       <h2
