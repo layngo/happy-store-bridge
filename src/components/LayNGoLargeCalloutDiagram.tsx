@@ -22,7 +22,7 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v6";
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v8";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
 /** Circular diagram callouts: thin white rim + black drop shadow. Use on outer wrapper; inner needs `overflow-hidden rounded-full` for the image. */
@@ -80,24 +80,25 @@ const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
   },
 };
 
-/** Lite 18″: same cord/mesh mat anchors as Lifestyle; lip tuned for 18″ hero art. */
+/** ~10px left on the same width scale as `LIFESTYLE_MESH_POCKET_DX_20PX`, for Lite lip mat dot. */
+const LITE_LIP_DOT_DX_10PX = (LIFESTYLE_MESH_POCKET_DX_20PX / 20) * 10;
+
+/** Lite 18″: cord/mesh thumbnail anchors swapped vs Lifestyle; cord/mesh mat dots as Lifestyle; lip mat dot nudged for 18″ hero. */
 const DEFAULT_LAYOUT_LITE: LayoutState = {
   dots: {
     cord: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.cord },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.mesh },
-    lip: { x: 31, y: 49 },
+    lip: { x: 31 - LITE_LIP_DOT_DX_10PX, y: 49 },
   },
   anchors: {
-    cord: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.cord },
-    mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.mesh },
+    cord: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.mesh },
+    mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.cord },
     lip: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.lip },
   },
 };
 
 const ALL_CALLOUT_KEYS: CalloutKey[] = ["cord", "lip", "mesh"];
 const MOBILE_CALLOUT_KEYS: CalloutKey[] = ["cord", "mesh", "lip"];
-/** Lite PDP mobile: mesh callout first, then cord (lip unchanged). */
-const MOBILE_CALLOUT_KEYS_LITE: CalloutKey[] = ["mesh", "cord", "lip"];
 
 function diagramUsesLifestyleChrome(variant: LayNGoCalloutDiagramVariant) {
   return variant === "lifestyle-44" || variant === "lite-18";
@@ -644,7 +645,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             variant === "lite-18" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
           )}
         />
-        {(variant === "lite-18" ? MOBILE_CALLOUT_KEYS_LITE : MOBILE_CALLOUT_KEYS).map((k) => {
+        {MOBILE_CALLOUT_KEYS.map((k) => {
           const m = CALLOUT_META[k];
           const mobileThumbCrop = cn(
             diagramUsesLifestyleChrome(variant) && k === "cord" && "origin-center scale-[1.26] object-[center_18%]",

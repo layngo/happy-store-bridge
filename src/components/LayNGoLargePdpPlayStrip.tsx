@@ -131,6 +131,51 @@ function TravelerDetailCalloutSection() {
   );
 }
 
+/** Curved dashed leader with arrowhead pointing down (mobile Lifestyle steps). */
+function LifestyleMobileDownArrow({ className }: { className?: string }) {
+  return (
+    <svg
+      className={cn("mx-auto block h-14 w-11 shrink-0 text-neutral-900 sm:h-16 sm:w-12", className)}
+      viewBox="0 0 48 72"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path
+        d="M24 6 C24 22 24 38 24 50"
+        stroke="currentColor"
+        strokeWidth="2.35"
+        strokeDasharray="5 6"
+        strokeLinecap="round"
+      />
+      <path d="M15 44 L24 60 L33 44" fill="currentColor" />
+    </svg>
+  );
+}
+
+function LifestyleMobileStoryImage({
+  src,
+  alt,
+  label,
+  imgClassName,
+}: {
+  src: string;
+  alt: string;
+  label: string;
+  imgClassName: string;
+}) {
+  return (
+    <figure className="relative mx-auto w-full max-w-[min(100%,42rem)] overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-black/[0.06]">
+      <img src={src} alt={alt} className={cn("block w-full object-contain", imgClassName)} loading="lazy" decoding="async" />
+      <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/82 via-black/48 to-transparent px-3 pb-3.5 pt-12 sm:px-4 sm:pb-4 sm:pt-14">
+        <p className="text-center font-heading text-[0.62rem] font-bold uppercase leading-tight tracking-wide text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.9)] sm:text-xs">
+          {label}
+        </p>
+      </figcaption>
+    </figure>
+  );
+}
+
 /** Dashed curve + solid tip (Nailspa family), always drawn left → right; stroke scaled up for stage-to-stage strip. */
 function LargeFeatureArrow({ className }: { className?: string }) {
   const viewBox = "0 0 140 52";
@@ -272,50 +317,34 @@ export function LayNGoLargePdpPlayStrip({
             >
               {calloutVariant === "lifestyle-44" ? (
                 <>
-                  {/* Triangle: mobile / small screens only */}
-                  <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-6 px-1 py-1 sm:gap-8 md:hidden">
-                    <div className="flex w-full justify-center">
-                      <div className="w-full max-w-[min(100%,42rem)]">
-                        <img
-                          src={FEATURE_OPEN_LIFESTYLE}
-                          alt="Lay-n-Go Lifestyle mat open with building blocks; pulling the drawstring to begin cleanup"
-                          className={lifestyleTriangleApexImg}
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                    </div>
-                    <FeatureConnector label="Easy access and cleanup" arrowDirection="down" />
-                    <div className="grid w-full grid-cols-1 items-center gap-8 sm:grid-cols-[minmax(0,1fr)_minmax(9rem,auto)_minmax(0,1fr)] sm:gap-4 md:gap-6 lg:gap-8">
-                      <div className="flex justify-center sm:justify-end">
-                        <div className="w-full max-w-[min(100%,34rem)] sm:w-full sm:max-w-none">
-                          <img
-                            src={FEATURE_CINCH_LIFESTYLE}
-                            alt="Cinching the Lay-n-Go Lifestyle drawstring to close the black mat bag"
-                            className={lifestyleTriangleBaseImg}
-                            loading="lazy"
-                            decoding="async"
-                          />
-                        </div>
-                      </div>
-                      <FeatureConnector label="Wide strap for easy travel and storage" />
-                      <div className="flex justify-center sm:justify-start">
-                        <div className="w-full max-w-[min(100%,34rem)] sm:w-full sm:max-w-none">
-                          <img
-                            src={FEATURE_CARRY_LIFESTYLE}
-                            alt="Person wearing the cinched Lay-n-Go Lifestyle 44 inch mat as a backpack against a white studio background"
-                            className={lifestyleTriangleBaseImg}
-                            loading="lazy"
-                            decoding="async"
-                          />
-                        </div>
-                      </div>
-                    </div>
+                  {/* Mobile: stacked steps — label on each image, dashed arrows point down */}
+                  <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-1 py-1 sm:gap-5 md:hidden">
+                    <LifestyleMobileStoryImage
+                      src={FEATURE_OPEN_LIFESTYLE}
+                      alt="Lay-n-Go Lifestyle mat open with building blocks; pulling the drawstring to begin cleanup"
+                      label="Easy access and cleanup"
+                      imgClassName={lifestyleTriangleApexImg}
+                    />
+                    <LifestyleMobileDownArrow />
+                    <LifestyleMobileStoryImage
+                      src={FEATURE_CINCH_LIFESTYLE}
+                      alt="Cinching the Lay-n-Go Lifestyle drawstring to close the black mat bag"
+                      label="Cinch it completely closed"
+                      imgClassName={lifestyleTriangleBaseImg}
+                    />
+                    <LifestyleMobileDownArrow />
+                    <LifestyleMobileStoryImage
+                      src={FEATURE_CARRY_LIFESTYLE}
+                      alt="Person wearing the cinched Lay-n-Go Lifestyle 44 inch mat as a backpack against a white studio background"
+                      label="Wide strap for easy travel and storage"
+                      imgClassName={lifestyleTriangleBaseImg}
+                    />
                   </div>
                   {/* Desktop: same horizontal strip as Large */}
                   <div
                     className={cn(
                       "mx-auto hidden w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 md:flex sm:gap-1 sm:px-1 md:gap-2 lg:gap-3",
+                      "md:-mt-[50px]",
                     )}
                   >
                     <div className={threeStepImageColClassName}>

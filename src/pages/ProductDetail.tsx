@@ -117,23 +117,11 @@ const LAY_N_GO_LITE_18_GALLERY_SLIDES = [
 const LAY_N_GO_TRAVELER_20_GALLERY_SLIDES = [
   {
     src: "/products/lay-n-go-traveler-20/traveler-gallery-1.png",
-    alt: "Lay-n-Go Traveler open on a locker room bench with toiletries spread on the mat",
-  },
-  {
-    src: "/products/lay-n-go-traveler-20/traveler-gallery-2.png",
-    alt: "Lay-n-Go Traveler open on a bathroom counter by a sink with grooming essentials",
-  },
-  {
-    src: "/products/lay-n-go-traveler-20/traveler-gallery-3.png",
-    alt: "Lay-n-Go Traveler open on a bed in front of an open suitcase with travel toiletries",
+    alt: "Lay-n-Go Traveler black and gray kits on white: one laid flat with toiletries, one cinched closed behind",
   },
   {
     src: "/products/lay-n-go-traveler-20/traveler-gallery-4.png",
-    alt: "Lay-n-Go Traveler open on an upholstered bench with toiletries and zippered pocket in use",
-  },
-  {
-    src: "/products/lay-n-go-traveler-20/traveler-gallery-5.png",
-    alt: "Lay-n-Go Traveler cinched closed with handle, hanging from a seat hook on a train",
+    alt: "Lay-n-Go Traveler black and gray kits on white, alternate studio product view",
   },
 ] as const;
 
@@ -654,7 +642,7 @@ const ProductDetail = () => {
               slides: [...LAY_N_GO_TRAVELER_20_GALLERY_SLIDES],
               slideIndex: layNGoTraveler20SlideIndex,
               setSlideIndex: setLayNGoTraveler20SlideIndex,
-              galleryAriaLabel: "Lay-n-Go Traveler lifestyle photos",
+              galleryAriaLabel: "Lay-n-Go Traveler product photos",
             }
           : null;
   const layNGoGalleryArrowBtnClassName =
