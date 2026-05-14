@@ -177,10 +177,17 @@ export function LayNGoLargePdpPlayStrip({
   calloutVariant = "large-60",
 }: LayNGoLargePdpPlayStripProps) {
   const threeStepImageClassName = cn(
-    "h-auto w-full max-w-full object-contain",
+    "h-auto w-full object-contain",
     calloutVariant === "lifestyle-44"
-      ? "max-h-[min(40vh,260px)] sm:max-h-[min(44vh,320px)] md:max-h-[min(50vh,400px)] lg:max-h-[480px]"
-      : "max-h-[min(34vh,220px)] sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]",
+      ? "max-w-[min(100%,28rem)] max-h-[min(60vh,500px)] sm:max-w-[min(100%,34rem)] sm:max-h-[min(62vh,540px)] md:max-w-full md:max-h-[min(50vh,400px)] lg:max-h-[480px]"
+      : "max-w-full max-h-[min(34vh,220px)] sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]",
+  );
+
+  const threeStepImageColClassName = cn(
+    "flex justify-center",
+    calloutVariant === "lifestyle-44"
+      ? "w-full shrink-0 md:min-h-0 md:min-w-0 md:w-auto md:flex-1 md:basis-0"
+      : "min-h-0 min-w-0 flex-1 basis-0",
   );
 
   return (
@@ -219,8 +226,15 @@ export function LayNGoLargePdpPlayStrip({
               className="mx-auto mt-14 max-w-[min(100%,90rem)] pt-12 sm:mt-16 sm:pt-14"
               aria-label="How Lay-n-Go Large works in three steps"
             >
-              <div className="flex w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:gap-1 md:gap-2 lg:gap-3">
-                <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
+              <div
+                className={cn(
+                  "flex w-full max-w-full items-center justify-center overflow-x-hidden px-0.5 sm:px-1 sm:gap-1 md:gap-2 lg:gap-3",
+                  calloutVariant === "lifestyle-44"
+                    ? "flex-col gap-8 py-1 md:flex-row md:flex-nowrap md:gap-2 md:py-0"
+                    : "flex-row flex-nowrap gap-0.5",
+                )}
+              >
+                <div className={threeStepImageColClassName}>
                   <img
                     src={calloutVariant === "lifestyle-44" ? FEATURE_OPEN_LIFESTYLE : FEATURE_OPEN}
                     alt={
@@ -236,7 +250,7 @@ export function LayNGoLargePdpPlayStrip({
 
                 <FeatureConnector label="Easy access and cleanup" />
 
-                <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
+                <div className={threeStepImageColClassName}>
                   <img
                     src={calloutVariant === "lifestyle-44" ? FEATURE_CINCH_LIFESTYLE : FEATURE_CINCH}
                     alt={
@@ -252,7 +266,7 @@ export function LayNGoLargePdpPlayStrip({
 
                 <FeatureConnector label="Wide strap for easy travel and storage" />
 
-                <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
+                <div className={threeStepImageColClassName}>
                   <img
                     src={calloutVariant === "lifestyle-44" ? FEATURE_CARRY_LIFESTYLE : FEATURE_CARRY}
                     alt={

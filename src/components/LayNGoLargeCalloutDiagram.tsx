@@ -14,6 +14,7 @@ const CALLOUT_MESH_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-mesh-poc
 const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containment-lip.png";
 const CALLOUT_LIP_LITE = "/products/lay-n-go-lite-18/callout-containment-lip.png";
+const CALLOUT_CORD_LITE = "/products/lay-n-go-lite-18/callout-cord-pocket-handle.png";
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
 const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
@@ -21,7 +22,7 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v1";
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v4";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
 /** Slight drop shadow on diagram callout circles (Large + Lifestyle + Traveler, mobile + desktop). */
@@ -77,11 +78,18 @@ const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
   },
 };
 
-/** Same anchor defaults as Lifestyle; Lite uses its own storage key. */
+/** Lite: lip dot tuned for 18″ hero; cord thumbnail uses `CALLOUT_CORD_LITE`. */
 const DEFAULT_LAYOUT_LITE: LayoutState = {
-  dots: { ...DEFAULT_LAYOUT_LIFESTYLE.dots },
+  dots: {
+    ...DEFAULT_LAYOUT_LIFESTYLE.dots,
+    lip: { x: 31, y: 49 },
+  },
   anchors: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors },
 };
+
+/** Lite PDP omits the cord-lock / pocket callout (see `visibleCalloutKeys`). */
+const ALL_CALLOUT_KEYS: CalloutKey[] = ["cord", "lip", "mesh"];
+const MOBILE_CALLOUT_KEYS: CalloutKey[] = ["cord", "mesh", "lip"];
 
 function diagramUsesLifestyleChrome(variant: LayNGoCalloutDiagramVariant) {
   return variant === "lifestyle-44" || variant === "lite-18";
@@ -111,10 +119,7 @@ const CALLOUT_META: Record<
   },
 };
 
-function calloutLabelForVariant(calloutKey: CalloutKey, variant: LayNGoCalloutDiagramVariant): string {
-  if (variant === "lite-18" && calloutKey === "mesh") {
-    return CALLOUT_META.cord.label;
-  }
+function calloutLabelForVariant(calloutKey: CalloutKey, _variant: LayNGoCalloutDiagramVariant): string {
   return CALLOUT_META[calloutKey].label;
 }
 
@@ -200,12 +205,13 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 18,
       containerMinHClass: "min-h-[min(76.8vh,768px)]",
       heroWidthClass: "w-[min(75.2vw,736px)]",
+      /** Tighter to hero than Lifestyle — 18″ line width is handled in `DiameterLine` for `lite-18`. */
       dimensionWrapClass:
-        "relative z-20 mx-auto -mt-[3.25rem] w-[min(75.2vw,736px)] pt-5 pb-2 sm:-mt-[3.75rem] sm:pt-6 sm:pb-3 md:-mt-[5rem] md:pt-7 md:pb-4 lg:-mt-[6rem] lg:pt-8 lg:pb-5",
+        "relative z-20 mx-auto -mt-[4.25rem] w-[min(75.2vw,736px)] pt-3 pb-2 sm:-mt-[4.75rem] sm:pt-4 sm:pb-3 md:-mt-[6.25rem] md:pt-5 md:pb-4 lg:-mt-[7.25rem] lg:pt-6 lg:pb-5",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP_LITE,
-      cordCalloutSrc: CALLOUT_CORD,
+      cordCalloutSrc: CALLOUT_CORD_LITE,
     };
   }
   return {
@@ -238,20 +244,22 @@ function DiameterLine({
   variant?: LayNGoMatDiameterVariant;
 }) {
   const lifestyle44 = variant === "lifestyle-44";
+  const lite18 = variant === "lite-18";
   const lifestyleChrome =
     variant === "lifestyle-44" || variant === "lite-18" || variant === "traveler-20";
+
+  const bracketWidthClass = lifestyle44
+    ? "mx-auto w-[min(100%,74%)] sm:w-[min(100%,68%)] md:w-[min(100%,52%)] lg:w-[min(100%,48%)]"
+    : lite18
+      ? /** ~18″ mat footprint in Lite hero art — narrower than 44″ / TRAVELER so the line matches visible diameter */
+        "mx-auto w-[min(100%,40%)] sm:w-[min(100%,38%)] md:w-[min(100%,34%)] lg:w-[min(100%,31%)]"
+      : lifestyleChrome
+        ? "mx-auto w-[min(100%,52%)] sm:w-[min(100%,50%)] md:w-[min(100%,48%)]"
+        : "w-full max-w-md sm:max-w-lg";
+
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
-      <div
-        className={cn(
-          "flex items-end justify-center",
-          lifestyle44
-            ? "mx-auto w-[min(100%,74%)] sm:w-[min(100%,68%)] md:w-[min(100%,52%)] lg:w-[min(100%,48%)]"
-            : lifestyleChrome
-              ? "mx-auto w-[min(100%,52%)] sm:w-[min(100%,50%)] md:w-[min(100%,48%)]"
-              : "w-full max-w-md sm:max-w-lg",
-        )}
-      >
+      <div className={cn("flex items-end justify-center", bracketWidthClass)}>
         <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
         <div className="mb-0 h-px min-w-0 flex-1 bg-neutral-900" aria-hidden />
         <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
@@ -259,7 +267,9 @@ function DiameterLine({
       <p
         className={cn(
           "font-heading font-semibold tabular-nums text-neutral-900",
-          lifestyleChrome ? "mt-2 text-xl sm:text-2xl" : "mt-1 text-lg sm:text-xl",
+          lifestyleChrome && !lite18 && "mt-2 text-xl sm:text-2xl",
+          lite18 && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
+          !lifestyleChrome && "mt-1 text-lg sm:text-xl",
         )}
       >
         {inches}&quot;
@@ -484,7 +494,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
 
   const lineEnds = useMemo(() => {
     const R = 5.5;
-    return (["cord", "lip", "mesh"] as CalloutKey[]).map((k) => {
+    return ALL_CALLOUT_KEYS.map((k) => {
       const d = layout.dots[k];
       const a = layout.anchors[k];
       const end = shortenToward(a.x, a.y, d.x, d.y, R);
@@ -598,7 +608,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       <div
         className={cn(
           "flex flex-col items-center gap-2 md:hidden",
-          diagramUsesLifestyleChrome(variant) && "gap-3 pb-6",
+          diagramUsesLifestyleChrome(variant) &&
+            (variant === "lifestyle-44" || variant === "lite-18" ? "gap-2 pb-6" : "gap-3 pb-6"),
         )}
       >
         <img
@@ -618,10 +629,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           className={cn(
             "w-full",
             config.mobileHeroMaxClass,
-            diagramUsesLifestyleChrome(variant) && "mt-2 shrink-0 pb-1",
+            variant === "lifestyle-44" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
+            variant === "lite-18" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
           )}
         />
-        {(["cord", "mesh", "lip"] as CalloutKey[]).map((k) => {
+        {MOBILE_CALLOUT_KEYS.map((k) => {
           const m = CALLOUT_META[k];
           const thumb = (
             <div
@@ -818,7 +830,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             />
           </div>
 
-          {(["cord", "lip", "mesh"] as CalloutKey[]).map((k) => {
+          {ALL_CALLOUT_KEYS.map((k) => {
             const { x, y } = layout.dots[k];
             const dotCls = cn(
               "absolute z-[25] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-neutral-900 bg-white shadow-md ring-1 ring-white",
@@ -844,7 +856,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             );
           })}
 
-          {(["cord", "lip", "mesh"] as CalloutKey[]).map((k) => (
+          {ALL_CALLOUT_KEYS.map((k) => (
             <FloatingCallout
               key={k}
               calloutKey={k}
