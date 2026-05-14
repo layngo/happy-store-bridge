@@ -24,9 +24,9 @@ export function LayNGoTravelDogBedPdpStrip() {
     >
       <h2
         id="lay-n-go-travel-dog-bed-story-heading"
-        className="mx-auto max-w-5xl px-4 text-center font-heading text-[clamp(1.85rem,7.5vw,3.65rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground sm:px-4"
+        className="mx-auto max-w-5xl px-4 text-center font-heading text-[clamp(1.85rem,7.5vw,3.65rem)] font-black leading-[0.92] tracking-tight text-foreground sm:px-4"
       >
-        Your whole routine. One pull to pack it up.
+        The last dog bed you'll ever need to carry
       </h2>
 
       <div className="mt-8 grid w-full grid-cols-2 gap-0 sm:mt-10">
