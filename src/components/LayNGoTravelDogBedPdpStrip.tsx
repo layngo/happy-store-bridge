@@ -24,44 +24,38 @@ export function LayNGoTravelDogBedPdpStrip() {
     >
       <h2
         id="lay-n-go-travel-dog-bed-story-heading"
-        className="mx-auto max-w-none whitespace-nowrap px-4 text-center font-heading text-[clamp(1rem,4.8vw,3.65rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground sm:px-4"
+        className="mx-auto max-w-[min(100%,24rem)] px-4 text-center font-heading text-[clamp(1.1rem,4.2vw,2.5rem)] font-black uppercase leading-[1.08] tracking-tight text-foreground sm:max-w-[min(100%,32rem)] sm:px-5 sm:text-[clamp(1.25rem,3.8vw,2.85rem)] md:max-w-[min(100%,40rem)]"
       >
-        The last dog bed you'll ever need to carry
+        The last dog bed you&apos;ll ever
+        <br />
+        need to carry
       </h2>
 
       <div className="mt-8 grid w-full grid-cols-2 gap-0 sm:mt-10">
-        <img
-          src={STORY_MAT_FLAT}
-          alt="Lay-n-Go pet mat with brown quilted surface and red lip, organized with collar, leash, rope toy, and accessories"
-          className="block h-auto w-full object-cover object-center"
-          loading="lazy"
-          decoding="async"
-        />
-        <img
-          src={STORY_MAT_LIFESTYLE}
-          alt="Red Lay-n-Go pet bag with wide strap, front pocket showing logo, phone, and retractable leash"
-          className="block h-auto w-full object-cover object-center"
-          loading="lazy"
-          decoding="async"
-        />
+        <div className="flex min-h-0 w-full flex-col items-center bg-white pt-[100px]">
+          <img
+            src={STORY_MAT_FLAT}
+            alt="Lay-n-Go pet mat with brown quilted surface and red lip, organized with collar, leash, rope toy, and accessories"
+            className="block h-auto w-[90%] max-w-full object-cover object-center"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div className="flex min-h-0 w-full items-center justify-center bg-white">
+          <img
+            src={STORY_MAT_LIFESTYLE}
+            alt="Red Lay-n-Go pet bag with wide strap, front pocket showing logo, phone, and retractable leash"
+            className="block h-auto w-[60%] max-w-full object-contain object-center"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
       </div>
 
       <div
         className="mx-auto mt-14 flex w-full max-w-[min(100%,90rem)] flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 pt-12 sm:mt-16 sm:gap-1 sm:px-1 sm:pt-14 md:gap-2 lg:gap-3"
         aria-label="How the Lay-n-Go Travel Dog Bed packs up in three steps"
       >
-        <div className={threeStepImageColClassName}>
-          <img
-            src={STORY_CARRY}
-            alt="Person carrying the packed red Lay-n-Go pet bag over the shoulder next to a seated dog"
-            className={threeStepImageClassName}
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
-
-        <FeatureConnector label="Quick folding for easy cleanup" />
-
         <div className={threeStepImageColClassName}>
           <img
             src={STORY_FOLD}
@@ -72,12 +66,24 @@ export function LayNGoTravelDogBedPdpStrip() {
           />
         </div>
 
-        <FeatureConnector label="Wide strap for easy travel and storage" />
+        <FeatureConnector label="Quick folding for easy cleanup" />
 
         <div className={threeStepImageColClassName}>
           <img
             src={STORY_STRAP}
             alt="Packed red Lay-n-Go bag showing the wide strap and front pocket with Lay-n-Go logo"
+            className={threeStepImageClassName}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <FeatureConnector label="Wide strap for easy travel and storage" />
+
+        <div className={threeStepImageColClassName}>
+          <img
+            src={STORY_CARRY}
+            alt="Person carrying the packed red Lay-n-Go pet bag over the shoulder next to a seated dog"
             className={threeStepImageClassName}
             loading="lazy"
             decoding="async"
