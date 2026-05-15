@@ -4,8 +4,11 @@ import { fetchCollectionByHandle, type ShopifyCollectionDetail } from "@/lib/sho
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getCollectionGridSwatchPreview } from "@/components/ProductCard";
-import { CALLOUT_THUMB_SHADOW } from "@/components/LayNGoLargeCalloutDiagram";
 import { cn } from "@/lib/utils";
+
+/** Drop shadow only — no white padding ring (unlike CALLOUT_THUMB_SHADOW). */
+const DEFENDER_DISK_SHADOW =
+  "rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.32),0_5px_16px_rgba(0,0,0,0.26)]";
 import { Loader2, ChevronRight, Home } from "lucide-react";
 
 export const MILITARY_FIRST_RESPONDER_PATH = "/collections/military-first-responder";
@@ -24,8 +27,8 @@ type SizeSpec = {
   shortName: string;
   imageSrc: string;
   imageAlt: string;
-  /** Fills the circular frame; tuned per asset to crop file whitespace without clipping the mat. */
-  imageClassName: string;
+  /** Zoom past baked-in file margins; mini uses less zoom so the full mat stays inside the circle. */
+  imageScaleClass: string;
   match: (handle: string, title: string) => boolean;
 };
 
@@ -35,8 +38,7 @@ const SIZE_SPECS: SizeSpec[] = [
     shortName: "Defender Mini",
     imageSrc: IMG_16,
     imageAlt: "Lay-n-Go DEFENDER mini 16 inch open flat with personal gear organized on the mat",
-    imageClassName:
-      "block h-full w-full min-h-full min-w-full origin-center scale-[1.4] object-cover object-center",
+    imageScaleClass: "scale-[1.14]",
     match: (handle, title) => {
       const h = handle.toLowerCase();
       const t = title.toLowerCase();
@@ -52,8 +54,7 @@ const SIZE_SPECS: SizeSpec[] = [
     shortName: "Defender Tactical",
     imageSrc: IMG_20,
     imageAlt: "Lay-n-Go DEFENDER Tactical 20 inch open flat with mesh pockets and personal gear",
-    imageClassName:
-      "block h-full w-full min-h-full min-w-full origin-center scale-[1.12] object-cover object-[center_46%]",
+    imageScaleClass: "scale-[1.14]",
     match: (handle, title) => {
       const h = handle.toLowerCase();
       const t = title.toLowerCase();
@@ -170,7 +171,7 @@ const MilitaryFirstResponder = () => {
           <div>
             <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground">{collection.title}</h1>
             <p className="mt-2 max-w-2xl text-sm font-medium text-primary sm:text-base">
-              Select a size to see all of your color and pattern options!
+              Select a size
             </p>
           </div>
         </div>
@@ -227,17 +228,20 @@ const MilitaryFirstResponder = () => {
                   <div
                     className={cn(
                       "mx-auto max-w-full transition-[transform,box-shadow] duration-200 ease-out will-change-transform",
-                      CALLOUT_THUMB_SHADOW,
+                      DEFENDER_DISK_SHADOW,
                       "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
                       "group-hover:shadow-[0_4px_12px_rgba(0,0,0,0.38),0_10px_24px_rgba(0,0,0,0.28)]",
                     )}
                     style={{ width: circleWidth, aspectRatio: "1" }}
                   >
-                    <div className="relative h-full w-full overflow-hidden rounded-full bg-white">
+                    <div className="relative h-full w-full overflow-hidden rounded-full bg-neutral-950">
                       <img
                         src={spec.imageSrc}
                         alt={spec.imageAlt}
-                        className={spec.imageClassName}
+                        className={cn(
+                          "block h-full w-full min-h-full min-w-full origin-center object-cover object-center",
+                          spec.imageScaleClass,
+                        )}
                         loading="lazy"
                         decoding="async"
                       />
