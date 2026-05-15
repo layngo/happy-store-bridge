@@ -24,6 +24,8 @@ type SizeSpec = {
   shortName: string;
   imageSrc: string;
   imageAlt: string;
+  /** Fills the circular frame; tuned per asset to crop file whitespace without clipping the mat. */
+  imageClassName: string;
   match: (handle: string, title: string) => boolean;
 };
 
@@ -33,6 +35,8 @@ const SIZE_SPECS: SizeSpec[] = [
     shortName: "Defender Mini",
     imageSrc: IMG_16,
     imageAlt: "Lay-n-Go DEFENDER mini 16 inch open flat with personal gear organized on the mat",
+    imageClassName:
+      "block h-full w-full min-h-full min-w-full origin-center scale-[1.4] object-cover object-center",
     match: (handle, title) => {
       const h = handle.toLowerCase();
       const t = title.toLowerCase();
@@ -48,6 +52,8 @@ const SIZE_SPECS: SizeSpec[] = [
     shortName: "Defender Tactical",
     imageSrc: IMG_20,
     imageAlt: "Lay-n-Go DEFENDER Tactical 20 inch open flat with mesh pockets and personal gear",
+    imageClassName:
+      "block h-full w-full min-h-full min-w-full origin-center scale-[1.12] object-cover object-[center_46%]",
     match: (handle, title) => {
       const h = handle.toLowerCase();
       const t = title.toLowerCase();
@@ -231,7 +237,7 @@ const MilitaryFirstResponder = () => {
                       <img
                         src={spec.imageSrc}
                         alt={spec.imageAlt}
-                        className="block h-full w-full object-contain object-center p-[3%]"
+                        className={spec.imageClassName}
                         loading="lazy"
                         decoding="async"
                       />
