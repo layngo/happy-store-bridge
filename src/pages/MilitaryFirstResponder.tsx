@@ -231,7 +231,7 @@ const MilitaryFirstResponder = () => {
                       <img
                         src={spec.imageSrc}
                         alt={spec.imageAlt}
-                        className="block h-full w-full min-h-full min-w-full origin-center scale-[1.06] object-cover object-center"
+                        className="block h-full w-full object-contain object-center p-[3%]"
                         loading="lazy"
                         decoding="async"
                       />

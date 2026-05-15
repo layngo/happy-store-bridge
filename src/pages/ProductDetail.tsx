@@ -546,6 +546,7 @@ const ProductDetail = () => {
   const isLayNGoTravelDogBed44 = layNGoHandle === "lay-n-go-travel-dog-bed-44";
   const isLayNGoDefenderMini16 = layNGoHandle === "lay-n-go-defender-mini-16";
   const isLayNGoDefenderTactical20 = layNGoHandle === "lay-n-go-tactical-bag-20";
+  const isLayNGoDefender = isLayNGoDefenderMini16 || isLayNGoDefenderTactical20;
   const colorOptionName = useMemo(() => {
     if (!product) return null;
     return product.options.find((opt) => isColorOptionName(opt.name))?.name ?? null;
@@ -1135,10 +1136,12 @@ const ProductDetail = () => {
                 </div>
 
                 <div className="flex flex-col gap-6 px-0 py-0">
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Choose colors</p>
-                    <div className="mt-3">{optionPickersOnly}</div>
-                  </div>
+                  {!isLayNGoDefender ? (
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Choose colors</p>
+                      <div className="mt-3">{optionPickersOnly}</div>
+                    </div>
+                  ) : null}
 
                   <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5 border-b border-neutral-200/80 pb-6">
                     <div>
