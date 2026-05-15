@@ -27,8 +27,8 @@ type SizeSpec = {
   shortName: string;
   imageSrc: string;
   imageAlt: string;
-  /** Zoom past baked-in file margins; mini uses less zoom so the full mat stays inside the circle. */
   imageScaleClass: string;
+  imageObjectPositionClass: string;
   match: (handle: string, title: string) => boolean;
 };
 
@@ -38,7 +38,8 @@ const SIZE_SPECS: SizeSpec[] = [
     shortName: "Defender Mini",
     imageSrc: IMG_16,
     imageAlt: "Lay-n-Go DEFENDER mini 16 inch open flat with personal gear organized on the mat",
-    imageScaleClass: "scale-[1.14]",
+    imageScaleClass: "scale-[1.28]",
+    imageObjectPositionClass: "object-contain object-center",
     match: (handle, title) => {
       const h = handle.toLowerCase();
       const t = title.toLowerCase();
@@ -54,7 +55,8 @@ const SIZE_SPECS: SizeSpec[] = [
     shortName: "Defender Tactical",
     imageSrc: IMG_20,
     imageAlt: "Lay-n-Go DEFENDER Tactical 20 inch open flat with mesh pockets and personal gear",
-    imageScaleClass: "scale-[1.14]",
+    imageScaleClass: "scale-[1.22]",
+    imageObjectPositionClass: "object-cover object-[56%_52%]",
     match: (handle, title) => {
       const h = handle.toLowerCase();
       const t = title.toLowerCase();
@@ -239,7 +241,8 @@ const MilitaryFirstResponder = () => {
                         src={spec.imageSrc}
                         alt={spec.imageAlt}
                         className={cn(
-                          "block h-full w-full min-h-full min-w-full origin-center object-cover object-center",
+                          "block h-full w-full min-h-full min-w-full origin-center",
+                          spec.imageObjectPositionClass,
                           spec.imageScaleClass,
                         )}
                         loading="lazy"
