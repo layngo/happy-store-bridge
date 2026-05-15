@@ -43,6 +43,14 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
 import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPlayMat";
+import { MILITARY_FIRST_RESPONDER_PATH } from "@/pages/MilitaryFirstResponder";
+
+const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags-v2";
+
+type ProductLocationState = {
+  fromCosmeticBagsV2?: boolean;
+  fromMilitaryFirstResponder?: boolean;
+};
 
 const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero-v2.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
@@ -185,6 +193,28 @@ const LAY_N_GO_TRAVELER_20_BULLETS = [
   "Accessories not included",
 ] as const;
 
+const LAY_N_GO_DEFENDER_MINI_16_BULLETS = [
+  `Compact 16" design converts from an open organizing mat into a fully sealed carrying bag in seconds`,
+  "Patented design lays completely flat with a raised edge to contain all contents",
+  "Built-in interior pockets keep personal essentials organized and easy to access",
+  "Clean, dry work surface lets you see and reach all items at once",
+  "External drawstring pocket with Velcro® patch ready",
+  "Cord lock closure and carrying handle for secure, easy transport",
+  "Washable and durable textiles designed for heavy duty activity",
+  "Designed specifically to support Warfighters packing personal essentials for deployment",
+] as const;
+
+const LAY_N_GO_DEFENDER_TACTICAL_20_BULLETS = [
+  `Compact 20" design converts from an open organizing mat into a fully sealed carrying bag in seconds`,
+  "Patented design lays completely flat with a raised edge to contain all contents",
+  "Built-in interior pockets keep personal essentials organized and easy to access",
+  "Clean, dry work surface lets you see and reach all items at once",
+  "External drawstring pocket with Velcro® patch ready",
+  "Cord lock closure and carrying handle for secure, easy transport",
+  "Washable and durable textiles designed for heavy duty activity",
+  "Designed specifically to support Warfighters packing personal essentials for deployment",
+] as const;
+
 const LAY_N_GO_TRAVEL_DOG_BED_44_BULLETS = [
   "Converts from a cozy dog bed into a portable carrying bag in seconds",
   `Large 44" quilted mat with soft fleece lining for added comfort`,
@@ -310,6 +340,9 @@ const ProductDetail = () => {
   }>();
   const location = useLocation();
   const fromCosmeticBagsV2 = Boolean((location.state as ProductLocationState | null)?.fromCosmeticBagsV2);
+  const fromMilitaryFirstResponder = Boolean(
+    (location.state as ProductLocationState | null)?.fromMilitaryFirstResponder,
+  );
   const slug = productHandle ?? handle;
 
   const [product, setProduct] = useState<ShopifyProduct["node"] | null>(null);
@@ -401,14 +434,18 @@ const ProductDetail = () => {
 
   const backHref = fromCosmeticBagsV2
     ? COSMETIC_BAGS_V2_PATH
-    : collectionHandle
-      ? `/collections/${collectionHandle}`
-      : "/collections";
+    : fromMilitaryFirstResponder
+      ? MILITARY_FIRST_RESPONDER_PATH
+      : collectionHandle
+        ? `/collections/${collectionHandle}`
+        : "/collections";
   const backLabel = fromCosmeticBagsV2
     ? "Back to Cosmetic Bags V2"
-    : collectionHandle
-      ? "Back to collection"
-      : "Back to collections";
+    : fromMilitaryFirstResponder
+      ? "Back to Outdoor / Tactical"
+      : collectionHandle
+        ? "Back to collection"
+        : "Back to collections";
 
   const isCosmoMini16 = product ? isCosmoMini16Product(product.handle, product.title) : false;
   const orderedImages = useMemo(() => {
@@ -501,11 +538,14 @@ const ProductDetail = () => {
     layNGoHandle === "lay-n-go-lifestyle-44" ||
     layNGoHandle === "lay-n-go-lite-18" ||
     layNGoHandle === "lay-n-go-defender-mini-16" ||
+    layNGoHandle === "lay-n-go-tactical-bag-20" ||
     layNGoHandle.includes("wired") ||
     layNGoHandle.includes("traveler") ||
     layNGoHandle.includes("tech");
   const isLayNGoTraveler20 = layNGoHandle === "lay-n-go-traveler-20";
   const isLayNGoTravelDogBed44 = layNGoHandle === "lay-n-go-travel-dog-bed-44";
+  const isLayNGoDefenderMini16 = layNGoHandle === "lay-n-go-defender-mini-16";
+  const isLayNGoDefenderTactical20 = layNGoHandle === "lay-n-go-tactical-bag-20";
   const colorOptionName = useMemo(() => {
     if (!product) return null;
     return product.options.find((opt) => isColorOptionName(opt.name))?.name ?? null;
@@ -1044,6 +1084,13 @@ const ProductDetail = () => {
                 Cosmetic Bags V2
               </Link>
             </>
+          ) : fromMilitaryFirstResponder ? (
+            <>
+              <ChevronRight className="w-4 h-4 shrink-0" />
+              <Link to={MILITARY_FIRST_RESPONDER_PATH} className="hover:text-foreground transition-colors">
+                Outdoor / Tactical
+              </Link>
+            </>
           ) : collectionHandle ? (
             <>
               <ChevronRight className="w-4 h-4 shrink-0" />
@@ -1107,7 +1154,13 @@ const ProductDetail = () => {
                   </div>
 
                   <div ref={primaryAddToCartRef}>{addToCartButtonCosmo}</div>
-                  {isLayNGoLarge60 || isLayNGoLifestyle44 || isLayNGoLite18 || isLayNGoTraveler20 || isLayNGoTravelDogBed44 ? (
+                  {isLayNGoLarge60 ||
+                  isLayNGoLifestyle44 ||
+                  isLayNGoLite18 ||
+                  isLayNGoTraveler20 ||
+                  isLayNGoTravelDogBed44 ||
+                  isLayNGoDefenderMini16 ||
+                  isLayNGoDefenderTactical20 ? (
                     <ul
                       className="mt-5 list-disc space-y-2.5 pl-5 text-left text-sm font-medium leading-relaxed text-neutral-700 marker:text-neutral-900"
                       aria-label={
@@ -1115,22 +1168,30 @@ const ProductDetail = () => {
                           ? "Lay-n-Go Traveler highlights"
                           : isLayNGoTravelDogBed44
                             ? "Lay-n-Go Travel Dog Bed highlights"
-                            : isLayNGoLarge60
-                              ? "Lay-n-Go Large highlights"
-                              : isLayNGoLifestyle44
-                                ? "Lay-n-Go Lifestyle highlights"
-                                : "Lay-n-Go Lite highlights"
+                            : isLayNGoDefenderMini16
+                              ? "Lay-n-Go DEFENDER mini highlights"
+                              : isLayNGoDefenderTactical20
+                                ? "Lay-n-Go DEFENDER Tactical highlights"
+                                : isLayNGoLarge60
+                                  ? "Lay-n-Go Large highlights"
+                                  : isLayNGoLifestyle44
+                                    ? "Lay-n-Go Lifestyle highlights"
+                                    : "Lay-n-Go Lite highlights"
                       }
                     >
                       {(isLayNGoTraveler20
                         ? LAY_N_GO_TRAVELER_20_BULLETS
                         : isLayNGoTravelDogBed44
                           ? LAY_N_GO_TRAVEL_DOG_BED_44_BULLETS
-                          : isLayNGoLarge60
-                            ? LAY_N_GO_LARGE_60_BULLETS
-                            : isLayNGoLifestyle44
-                              ? LAY_N_GO_LIFESTYLE_44_BULLETS
-                              : LAY_N_GO_LITE_18_BULLETS
+                          : isLayNGoDefenderMini16
+                            ? LAY_N_GO_DEFENDER_MINI_16_BULLETS
+                            : isLayNGoDefenderTactical20
+                              ? LAY_N_GO_DEFENDER_TACTICAL_20_BULLETS
+                              : isLayNGoLarge60
+                                ? LAY_N_GO_LARGE_60_BULLETS
+                                : isLayNGoLifestyle44
+                                  ? LAY_N_GO_LIFESTYLE_44_BULLETS
+                                  : LAY_N_GO_LITE_18_BULLETS
                       ).map((line) => (
                         <li key={line} className="pl-0.5">
                           {line}
@@ -1144,7 +1205,10 @@ const ProductDetail = () => {
 
             {hasLayNGoLargeStoryLayout ? (
               <LayNGoLargePdpPlayStrip
-                forceHeadlineSingleLine={isLayNGoTraveler20}
+                headline={
+                  isLayNGoDefenderMini16 || isLayNGoDefenderTactical20 ? "Mission-Ready in Seconds" : undefined
+                }
+                forceHeadlineSingleLine={isLayNGoTraveler20 || isLayNGoDefenderMini16 || isLayNGoDefenderTactical20}
                 showLowerSections={!isLayNGoTraveler20}
                 showTravelerCalloutSection={isLayNGoTraveler20}
                 headlineImageSrc={

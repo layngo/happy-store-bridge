@@ -10,7 +10,8 @@ export function isLayNGoPlayMatProduct(handle: string): boolean {
     h === "lay-n-go-lite-18" ||
     h === "lay-n-go-large-60" ||
     h === "lay-n-go-lifestyle-44" ||
-    h === "lay-n-go-defender-mini-16"
+    h === "lay-n-go-defender-mini-16" ||
+    h === "lay-n-go-tactical-bag-20"
   );
 }
 

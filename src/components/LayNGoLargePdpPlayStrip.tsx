@@ -22,6 +22,8 @@ const FEATURE_CARRY = "/products/lay-n-go-large-pdp/feature-5-carry.png";
 const FEATURE_CARRY_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-5-carry.png";
 
 type LayNGoLargePdpPlayStripProps = {
+  /** Story-strip headline (rendered with `uppercase` in the h2). Defaults to Large/Lifestyle copy. */
+  headline?: string;
   headlineImageSrc?: string;
   showLowerSections?: boolean;
   forceHeadlineSingleLine?: boolean;
@@ -306,6 +308,7 @@ export function FeatureConnector({ label, arrowDirection = "right" }: { label: s
 }
 
 export function LayNGoLargePdpPlayStrip({
+  headline = HEADLINE,
   headlineImageSrc = HEADLINE_IMAGE,
   showLowerSections = true,
   forceHeadlineSingleLine = false,
@@ -344,7 +347,7 @@ export function LayNGoLargePdpPlayStrip({
           forceHeadlineSingleLine && "max-w-none whitespace-nowrap text-[clamp(1rem,4.8vw,3.65rem)]",
         )}
       >
-        {HEADLINE}
+        {headline}
       </h2>
 
       {calloutVariant !== "lite-18" ? (

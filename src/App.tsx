@@ -26,6 +26,7 @@ import SmallBusinesses from "./pages/static/SmallBusinesses.tsx";
 import Wholesale from "./pages/static/Wholesale.tsx";
 import CosmoArrowPlayground from "./pages/CosmoArrowPlayground.tsx";
 import CosmeticBagsV2 from "./pages/CosmeticBagsV2.tsx";
+import MilitaryFirstResponder from "./pages/MilitaryFirstResponder.tsx";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const AppContent = () => {
           path="/collections/pet-solutions"
           element={<Navigate to="/product/lay-n-go-travel-dog-bed-44" replace />}
         />
+        <Route path="/collections/military-first-responder" element={<MilitaryFirstResponder />} />
         <Route path="/collections/:handle" element={<Collection />} />
         <Route path="/collections" element={<CollectionsIndex />} />
 
