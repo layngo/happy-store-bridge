@@ -19,33 +19,33 @@ export function LayNGoTravelDogBedPdpStrip() {
 
   return (
     <section
-      className="relative left-1/2 -ml-[50vw] w-screen overflow-x-clip bg-white pb-10 pt-6 text-foreground sm:pb-12 sm:pt-8"
+      className="relative left-1/2 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-clip bg-white pb-10 pt-6 text-foreground sm:pb-12 sm:pt-8"
       aria-labelledby="lay-n-go-travel-dog-bed-story-heading"
     >
       <h2
         id="lay-n-go-travel-dog-bed-story-heading"
-        className="mx-auto max-w-[min(100%,24rem)] px-4 text-center font-heading text-[clamp(1.1rem,4.2vw,2.5rem)] font-black uppercase leading-[1.08] tracking-tight text-foreground sm:max-w-[min(100%,32rem)] sm:px-5 sm:text-[clamp(1.25rem,3.8vw,2.85rem)] md:max-w-[min(100%,40rem)]"
+        className="mx-auto max-w-[min(100%,34rem)] px-4 text-center font-heading text-[clamp(1.35rem,5.5vw,3.15rem)] font-black uppercase leading-[1.1] tracking-tight text-foreground sm:max-w-[min(100%,42rem)] sm:px-5 sm:text-[clamp(1.55rem,4.8vw,3.5rem)] md:max-w-[min(100%,56rem)] md:text-[clamp(1.7rem,4.2vw,3.85rem)]"
       >
-        The last dog bed you&apos;ll ever
+        <span className="inline-block whitespace-nowrap">The last dog bed you&apos;ll</span>
         <br />
-        need to carry
+        ever need to carry
       </h2>
 
       <div className="mt-8 grid w-full grid-cols-2 gap-0 sm:mt-10">
-        <div className="flex min-h-0 w-full flex-col items-center bg-white pt-[100px]">
+        <div className="flex min-h-0 w-full flex-col items-stretch bg-white pt-[100px]">
           <img
             src={STORY_MAT_FLAT}
             alt="Lay-n-Go pet mat with brown quilted surface and red lip, organized with collar, leash, rope toy, and accessories"
-            className="block h-auto w-[90%] max-w-full object-cover object-center"
+            className="block h-auto w-full object-cover object-center"
             loading="lazy"
             decoding="async"
           />
         </div>
-        <div className="flex min-h-0 w-full items-center justify-center bg-white">
+        <div className="min-h-0 w-full bg-white">
           <img
             src={STORY_MAT_LIFESTYLE}
             alt="Red Lay-n-Go pet bag with wide strap, front pocket showing logo, phone, and retractable leash"
-            className="block h-auto w-[60%] max-w-full object-contain object-center"
+            className="block h-auto w-full object-cover object-center"
             loading="lazy"
             decoding="async"
           />
