@@ -66,15 +66,15 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
                         <p className="font-semibold text-sm text-primary mt-1">${parseFloat(item.price.amount).toFixed(2)}</p>
                       </div>
                       <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                        <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => removeItem(item.variantId)}>
+                        <Button variant="ghost" size="icon" aria-label={`Remove ${item.product.node.title} from cart`} className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => removeItem(item.variantId)}>
                           <Trash2 className="h-3 w-3" />
                         </Button>
                         <div className="flex items-center gap-1">
-                          <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.variantId, item.quantity - 1)}>
+                          <Button variant="outline" size="icon" aria-label={`Decrease quantity of ${item.product.node.title}`} className="h-6 w-6" onClick={() => updateQuantity(item.variantId, item.quantity - 1)}>
                             <Minus className="h-3 w-3" />
                           </Button>
-                          <span className="w-8 text-center text-sm text-foreground">{item.quantity}</span>
-                          <Button variant="outline" size="icon" className="h-6 w-6" onClick={() => updateQuantity(item.variantId, item.quantity + 1)}>
+                          <span className="w-8 text-center text-sm text-foreground" aria-live="polite" aria-label={`Quantity ${item.quantity}`}>{item.quantity}</span>
+                          <Button variant="outline" size="icon" aria-label={`Increase quantity of ${item.product.node.title}`} className="h-6 w-6" onClick={() => updateQuantity(item.variantId, item.quantity + 1)}>
                             <Plus className="h-3 w-3" />
                           </Button>
                         </div>

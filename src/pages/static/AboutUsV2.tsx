@@ -46,7 +46,7 @@ const SECTIONS: SectionBlock[] = [
         src: aboutUsV2Png("they-meet-world-travelers-maggie-molson.png"),
         caption: "World Travelers Greeted by Maggie & Molson",
         storyText:
-          "Before kids, the Lay-n-Go founders were able to do a lot of travelling, but the dogs were always there to welcome them back. Their time on the road turned out to be incredible field research for developing products that actually made life easier at home and on the go!",
+          "Before starting a family, the Lay-n-Go founders were avid travelers, with their dogs faithfully waiting to welcome them back. Those adventures became invaluable field research, inspiring new products designed to make life easier at home and on the go!",
       },
       {
         src: aboutUsV2Png("they-meet-wedding-toast.png"),
@@ -81,7 +81,7 @@ const SECTIONS: SectionBlock[] = [
     ],
   },
   {
-    heading: "They start a business, earn 8 patents and gain the best customers ever",
+    heading: "They start a business, earn 8 patents, and gain the best customers ever",
     images: [
       { src: PLACEHOLDER("lng-about-13"), caption: "Original LARGE play mat launch" },
       { src: PLACEHOLDER("lng-about-14"), caption: "LITE personal size ships" },
@@ -95,12 +95,6 @@ const SECTIONS: SectionBlock[] = [
       { src: PLACEHOLDER("lng-about-22"), caption: "Traveler line meets commuters" },
       { src: PLACEHOLDER("lng-about-23"), caption: "Pet solutions hit the road" },
       { src: PLACEHOLDER("lng-about-24"), caption: "WIRED tech pouch debut" },
-      { src: PLACEHOLDER("lng-about-25"), caption: "NAILSPA studio-ready kit" },
-      { src: PLACEHOLDER("lng-about-26"), caption: "Defender line field-tested" },
-      { src: PLACEHOLDER("lng-about-27"), caption: "Press tour green-room prep" },
-      { src: PLACEHOLDER("lng-about-28"), caption: "Customer thank-you wall growing" },
-      { src: PLACEHOLDER("lng-about-29"), caption: "International shipping milestone" },
-      { src: PLACEHOLDER("lng-about-30"), caption: "Team photo newest headquarters" },
     ],
   },
   {
@@ -204,7 +198,6 @@ function StoryGridCell({ src, caption, storyText }: GridSlot) {
           <span
             className={cn(
               "text-center text-[10px] font-semibold uppercase leading-snug tracking-[0.12em] text-primary",
-              "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
             )}
           >
             {caption}
@@ -266,9 +259,9 @@ function StorySection({ block }: { block: SectionBlock }) {
 }
 
 const AboutUsV2 = () => (
-  <div className="min-h-screen bg-background flex flex-col">
+  <div className="min-h-dvh bg-background flex flex-col">
     <Header />
-    <main className="container flex-1 py-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main id="main-content" className="container flex-1 py-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="not-prose text-base font-medium leading-normal text-foreground/88">
         <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-9 md:mb-10">
           About Us (V2)
