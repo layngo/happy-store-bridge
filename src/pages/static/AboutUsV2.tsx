@@ -204,7 +204,6 @@ function StoryGridCell({ src, caption, storyText }: GridSlot) {
           <span
             className={cn(
               "text-center text-[10px] font-semibold uppercase leading-snug tracking-[0.12em] text-primary",
-              "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
             )}
           >
             {caption}
