@@ -657,9 +657,9 @@ const ProductDetail = () => {
     return (
       <div className="min-h-dvh bg-background flex flex-col">
         <Header />
-        <div className="flex flex-1 items-center justify-center py-32">
+        <main id="main-content" className="flex flex-1 items-center justify-center py-32">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
+        </main>
         <SiteFooter />
       </div>
     );
@@ -669,12 +669,12 @@ const ProductDetail = () => {
     return (
       <div className="min-h-dvh bg-background flex flex-col">
         <Header />
-        <div className="container py-20 text-center flex-1">
+        <main id="main-content" className="container py-20 text-center flex-1">
           <p className="text-muted-foreground text-lg">Product not found</p>
           <Link to="/collections" className="text-primary hover:underline mt-4 inline-block">
             View collections
           </Link>
-        </div>
+        </main>
         <SiteFooter />
       </div>
     );
@@ -1070,7 +1070,7 @@ const ProductDetail = () => {
   return (
     <div className={cn("min-h-dvh flex flex-col", isCosmoPdp ? "bg-white" : "bg-background")}>
       <Header />
-      <div className="container py-8 flex-1">
+      <main id="main-content" className="container py-8 flex-1">
         <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6">
           <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground transition-colors">
             <Home className="w-4 h-4" />
@@ -1515,7 +1515,7 @@ const ProductDetail = () => {
             </div>
           </section>
         ) : null}
-      </div>
+      </main>
 
       {showStickyAddToCart ? (
         <div className="pointer-events-none fixed inset-x-0 bottom-4 z-40 flex justify-center px-4">
