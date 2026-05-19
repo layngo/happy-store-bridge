@@ -269,6 +269,7 @@ const Index = () => {
         </div>
       </section>
 
+      </main>
       <SiteFooter variant="light" />
     </div>
   );
