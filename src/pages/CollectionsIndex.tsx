@@ -28,7 +28,7 @@ const CollectionsIndex = () => {
   return (
     <div className="min-h-dvh bg-background flex flex-col">
       <Header />
-      <div className="container py-8 flex-1">
+      <main id="main-content" className="container py-8 flex-1">
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
           <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground transition-colors">
             <Home className="w-4 h-4" />
@@ -56,7 +56,7 @@ const CollectionsIndex = () => {
             ))}
           </div>
         )}
-      </div>
+      </main>
       <SiteFooter />
     </div>
   );

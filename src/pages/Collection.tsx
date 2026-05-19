@@ -107,7 +107,7 @@ const Collection = () => {
           </p>
           <ProductGrid prefetchedProducts={displayProducts} />
         </div>
-      </div>
+      </main>
       <SiteFooter />
     </div>
   );
