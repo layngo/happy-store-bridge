@@ -81,7 +81,7 @@ const SECTIONS: SectionBlock[] = [
     ],
   },
   {
-    heading: "They start a business, earn 8 patents and gain the best customers ever",
+    heading: "They start a business, earn 8 patents, and gain the best customers ever",
     images: [
       { src: PLACEHOLDER("lng-about-13"), caption: "Original LARGE play mat launch" },
       { src: PLACEHOLDER("lng-about-14"), caption: "LITE personal size ships" },
