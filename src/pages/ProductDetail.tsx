@@ -997,19 +997,21 @@ const ProductDetail = () => {
       <Button
         variant="outline"
         size="icon"
+        aria-label="Decrease quantity"
         className="border-neutral-300 text-neutral-800 hover:bg-neutral-100"
         onClick={() => setQuantity(Math.max(1, quantity - 1))}
       >
-        <Minus className="h-4 w-4" />
+        <Minus className="h-4 w-4" aria-hidden />
       </Button>
-      <span className="w-10 text-center text-lg font-medium tabular-nums text-neutral-900 sm:w-12">{quantity}</span>
+      <span className="w-10 text-center text-lg font-medium tabular-nums text-neutral-900 sm:w-12" aria-live="polite" aria-label={`Quantity ${quantity}`}>{quantity}</span>
       <Button
         variant="outline"
         size="icon"
+        aria-label="Increase quantity"
         className="border-neutral-300 text-neutral-800 hover:bg-neutral-100"
         onClick={() => setQuantity(quantity + 1)}
       >
-        <Plus className="h-4 w-4" />
+        <Plus className="h-4 w-4" aria-hidden />
       </Button>
     </div>
   );
