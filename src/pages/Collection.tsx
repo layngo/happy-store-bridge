@@ -34,7 +34,7 @@ const Collection = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-dvh bg-background flex flex-col">
         <Header />
         <div className="flex flex-1 items-center justify-center py-32">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -46,7 +46,7 @@ const Collection = () => {
 
   if (!collection) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-dvh bg-background flex flex-col">
         <Header />
         <div className="container py-20 text-center flex-1">
           <p className="text-muted-foreground text-lg">Collection not found</p>
@@ -60,7 +60,7 @@ const Collection = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-dvh bg-background flex flex-col">
       <Header />
       <div className="container py-8 flex-1">
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8 flex-wrap">

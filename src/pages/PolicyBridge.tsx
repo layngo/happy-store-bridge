@@ -13,7 +13,7 @@ const PolicyBridge = () => {
   }, [slug]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 p-8">
+    <div className="min-h-dvh bg-background flex flex-col items-center justify-center gap-4 p-8">
       <Loader2 className="w-8 h-8 animate-spin text-primary" />
       <p className="text-muted-foreground text-sm text-center">Opening the official policy on Lay-n-Go…</p>
     </div>

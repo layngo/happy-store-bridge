@@ -26,7 +26,7 @@ export default function CosmoArrowPlayground() {
   const [packupD, setPackupD] = useState<string>(COSMO_STORY_ARROW_PATH_DEFAULT.packup);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
       <Header />
       <main className="container max-w-4xl py-10">
         <div className="mb-8 space-y-2">

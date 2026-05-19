@@ -266,7 +266,7 @@ function StorySection({ block }: { block: SectionBlock }) {
 }
 
 const AboutUsV2 = () => (
-  <div className="min-h-screen bg-background flex flex-col">
+  <div className="min-h-dvh bg-background flex flex-col">
     <Header />
     <main className="container flex-1 py-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="not-prose text-base font-medium leading-normal text-foreground/88">

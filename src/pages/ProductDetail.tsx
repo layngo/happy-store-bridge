@@ -655,7 +655,7 @@ const ProductDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-dvh bg-background flex flex-col">
         <Header />
         <div className="flex flex-1 items-center justify-center py-32">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -667,7 +667,7 @@ const ProductDetail = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-dvh bg-background flex flex-col">
         <Header />
         <div className="container py-20 text-center flex-1">
           <p className="text-muted-foreground text-lg">Product not found</p>
@@ -1068,7 +1068,7 @@ const ProductDetail = () => {
   );
 
   return (
-    <div className={cn("min-h-screen flex flex-col", isCosmoPdp ? "bg-white" : "bg-background")}>
+    <div className={cn("min-h-dvh flex flex-col", isCosmoPdp ? "bg-white" : "bg-background")}>
       <Header />
       <div className="container py-8 flex-1">
         <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6">
