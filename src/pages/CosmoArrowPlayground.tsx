@@ -28,7 +28,7 @@ export default function CosmoArrowPlayground() {
   return (
     <div className="min-h-dvh bg-background">
       <Header />
-      <main className="container max-w-4xl py-10">
+      <main id="main-content" className="container max-w-4xl py-10">
         <div className="mb-8 space-y-2">
           <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground">Cosmo story — arrow editor</h1>
           <p className="text-sm text-muted-foreground">
