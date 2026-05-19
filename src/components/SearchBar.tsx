@@ -28,7 +28,7 @@ export const SearchBar = ({ className, light }: SearchBarProps) => {
       <Search
         className={cn(
           "absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none",
-          light ? "text-slate-400" : "text-muted-foreground",
+          light ? "text-slate-600" : "text-muted-foreground",
         )}
       />
       <Input
@@ -38,7 +38,7 @@ export const SearchBar = ({ className, light }: SearchBarProps) => {
         onChange={(e) => setQ(e.target.value)}
         className={cn(
           "pl-9 h-9 text-sm",
-          light ? "bg-white/80 border-sky-200 placeholder:text-slate-400" : "bg-muted/50",
+          light ? "bg-white/80 border-sky-200 placeholder:text-slate-500 text-slate-900" : "bg-muted/50",
         )}
         aria-label="Search products"
       />

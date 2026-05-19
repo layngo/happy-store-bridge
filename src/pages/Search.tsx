@@ -23,9 +23,9 @@ const Search = () => {
   }, [query]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-dvh bg-background flex flex-col">
       <Header />
-      <main className="flex-1 container py-10">
+      <main id="main-content" className="flex-1 container py-10">
         <h1 className="font-heading text-3xl font-bold text-foreground mb-2">Search</h1>
         {query ? (
           <p className="text-muted-foreground mb-8">

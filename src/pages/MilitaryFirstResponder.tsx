@@ -123,11 +123,11 @@ const MilitaryFirstResponder = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-dvh bg-background flex flex-col">
         <Header />
-        <div className="flex flex-1 items-center justify-center py-32">
+        <main id="main-content" className="flex flex-1 items-center justify-center py-32">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
+        </main>
         <SiteFooter />
       </div>
     );
@@ -135,23 +135,23 @@ const MilitaryFirstResponder = () => {
 
   if (!collection) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="min-h-dvh bg-background flex flex-col">
         <Header />
-        <div className="container py-20 text-center flex-1">
+        <main id="main-content" className="container py-20 text-center flex-1">
           <p className="text-muted-foreground text-lg">Collection not found</p>
           <Link to="/collections" className="text-primary hover:underline mt-4 inline-block">
             View all collections
           </Link>
-        </div>
+        </main>
         <SiteFooter />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-dvh bg-background flex flex-col">
       <Header />
-      <div className="container py-8 flex-1">
+      <main id="main-content" className="container py-8 flex-1">
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8 flex-wrap">
           <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground transition-colors">
             <Home className="w-4 h-4" />
@@ -289,7 +289,7 @@ const MilitaryFirstResponder = () => {
             ))}
           </div>
         </section>
-      </div>
+      </main>
       <SiteFooter />
     </div>
   );
