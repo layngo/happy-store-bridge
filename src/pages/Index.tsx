@@ -90,9 +90,10 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-dvh bg-background flex flex-col">
       <Header variant="light" />
 
+      <main id="main-content" className="flex-1">
       {/* Hero — ~20:9 frame reveals more of the 16:9 Vimeo crop; Cosmo brand film */}
       <section className="relative w-full border-b border-border bg-black">
         <div className="relative aspect-[20/9] w-full overflow-hidden">
@@ -268,6 +269,7 @@ const Index = () => {
         </div>
       </section>
 
+      </main>
       <SiteFooter variant="light" />
     </div>
   );

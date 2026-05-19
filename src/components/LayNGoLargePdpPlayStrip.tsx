@@ -1,5 +1,11 @@
 import { cn } from "@/lib/utils";
-import { LayNGoLargeCalloutDiagram } from "@/components/LayNGoLargeCalloutDiagram";
+import {
+  CALLOUT_THUMB_INNER_CLIP,
+  CALLOUT_THUMB_SHADOW,
+  LayNGoLargeCalloutDiagram,
+  LayNGoMatDiameterLine,
+  type LayNGoCalloutDiagramVariant,
+} from "@/components/LayNGoLargeCalloutDiagram";
 
 const HEADLINE = "Your whole routine. One pull to pack it up.";
 const HEADLINE_IMAGE = "/products/lay-n-go-large-pdp/play-blue.png";
@@ -9,73 +15,228 @@ const TRAVELER_CALLOUT_CORD = "/products/lay-n-go-large-pdp/traveler-callout-cor
 const TRAVELER_CALLOUT_LIP = "/products/lay-n-go-large-pdp/traveler-callout-lip.png";
 
 const FEATURE_OPEN = "/products/lay-n-go-large-pdp/feature-3-open.png";
+const FEATURE_OPEN_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-3-open.png";
 const FEATURE_CINCH = "/products/lay-n-go-large-pdp/feature-4-cinch.png";
+const FEATURE_CINCH_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-4-cinch.png";
 const FEATURE_CARRY = "/products/lay-n-go-large-pdp/feature-5-carry.png";
+const FEATURE_CARRY_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-5-carry.png";
 
 type LayNGoLargePdpPlayStripProps = {
+  /** Story-strip headline (rendered with `uppercase` in the h2). Defaults to Large/Lifestyle copy. */
+  headline?: string;
   headlineImageSrc?: string;
   showLowerSections?: boolean;
   forceHeadlineSingleLine?: boolean;
   showTravelerCalloutSection?: boolean;
+  calloutVariant?: LayNGoCalloutDiagramVariant;
 };
 
-function TravelerDetailCalloutSection() {
+const travelerCalloutThumbFrame = "relative h-20 w-20 shrink-0 sm:h-24 sm:w-24 md:h-28 md:w-28";
+
+function TravelerCalloutThumb({
+  src,
+  alt,
+  imageClassName,
+}: {
+  src: string;
+  alt: string;
+  imageClassName: string;
+}) {
   return (
-    <section className="mx-auto mt-12 w-full max-w-6xl md:mt-14" aria-label="Traveler feature callouts">
-      <div className="relative mx-auto w-full max-w-5xl">
+    <div className={cn(travelerCalloutThumbFrame, CALLOUT_THUMB_SHADOW)}>
+      <div className={CALLOUT_THUMB_INNER_CLIP}>
+        <img
+          src={src}
+          alt={alt}
+          className={cn("absolute inset-0 h-full w-full", imageClassName)}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
+  );
+}
+
+/** Hero `traveler-callout-main.png` is 1024×762; viewBox matches so leaders align with `object-contain` art. */
+const TRAVELER_CALLOUT_VIEWBOX = { w: 1024, h: 762 } as const;
+
+/** Same black/white pair as `LayNGoLargeCalloutDiagram` mesh leaders: `1.02` / `0.58` in 0–100 viewBox → Traveler 1024-wide space. */
+const TRAVELER_VB = 1024 / 100;
+const TRAVELER_LEADER_OUTER = 1.02 * TRAVELER_VB;
+const TRAVELER_LEADER_INNER = 0.58 * TRAVELER_VB;
+/** Mat-end dots: match Large diagram HTML dots (~h-3 w-3, border-2) in user units + non-scaling stroke. */
+const TRAVELER_DOT_MAT_R = 6.5;
+const TRAVELER_DOT_MAT_STROKE = 2.25;
+
+function TravelerLeaderPair({
+  x1,
+  y1,
+  x2,
+  y2,
+}: {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}) {
+  return (
+    <g>
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke="#0a0a0a"
+        strokeWidth={TRAVELER_LEADER_OUTER}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke="#ffffff"
+        strokeWidth={TRAVELER_LEADER_INNER}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+    </g>
+  );
+}
+
+function TravelerDetailCalloutSection() {
+  const { w: vbW, h: vbH } = TRAVELER_CALLOUT_VIEWBOX;
+  return (
+    <section className="mx-auto mt-12 w-full max-w-6xl overflow-visible md:mt-14" aria-label="Traveler feature callouts">
+      {/* One box for image + SVG + thumbs so % and viewBox share the same geometry as the photo */}
+      <div className="relative mx-auto w-full max-w-4xl overflow-visible">
         <img
           src={TRAVELER_CALLOUT_MAIN}
           alt="Lay-n-Go Traveler opened flat with travel essentials organized inside"
-          className="mx-auto block h-auto w-full max-w-4xl object-contain"
+          className="block h-auto w-full object-contain"
+          width={vbW}
+          height={vbH}
           loading="lazy"
           decoding="async"
         />
 
-        <svg className="pointer-events-none absolute inset-0 z-10 h-full w-full" viewBox="0 0 100 100" aria-hidden>
-          <line x1="23" y1="55" x2="13" y2="70" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
-          <circle cx="23" cy="55" r="1.2" fill="#ffffff" stroke="#ffffff" strokeWidth="0.45" />
+        <svg
+          className="pointer-events-none absolute inset-0 z-10 h-full w-full"
+          viewBox={`0 0 ${vbW} ${vbH}`}
+          preserveAspectRatio="xMidYMid meet"
+          aria-hidden
+        >
+          {/* Zipper: bottom-center of top-left thumb → zipper pull (y1 follows thumb; label sits above thumb) */}
+          <TravelerLeaderPair x1={78} y1={150} x2={334} y2={450} />
+          <circle
+            cx="334"
+            cy="450"
+            r={TRAVELER_DOT_MAT_R}
+            fill="#ffffff"
+            stroke="#0a0a0a"
+            strokeWidth={TRAVELER_DOT_MAT_STROKE}
+            vectorEffect="non-scaling-stroke"
+          />
 
-          <line x1="19" y1="78" x2="19" y2="25" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
-          <line x1="19" y1="25" x2="11" y2="12" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
-          <circle cx="19" cy="78" r="1.2" fill="#ffffff" stroke="#ffffff" strokeWidth="0.45" />
-
-          <line x1="74" y1="27" x2="84" y2="12" stroke="#ffffff" strokeWidth="0.45" strokeLinecap="round" />
-          <circle cx="74" cy="27" r="1.2" fill="#ffffff" stroke="#ffffff" strokeWidth="0.45" />
+          {/* Lip: bottom-center of top-right thumb → raised rim on outer edge (x1 tracks thumb; x2,y2 on bag perimeter) */}
+          <TravelerLeaderPair x1={978} y1={122} x2={812} y2={158} />
+          <circle
+            cx="812"
+            cy="158"
+            r={TRAVELER_DOT_MAT_R}
+            fill="#ffffff"
+            stroke="#0a0a0a"
+            strokeWidth={TRAVELER_DOT_MAT_STROKE}
+            vectorEffect="non-scaling-stroke"
+          />
         </svg>
 
-        <div className="absolute left-[2%] top-[2%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:max-w-[13rem]">
-          <div className="aspect-square w-20 overflow-hidden rounded-full sm:w-24 md:w-28">
-            <img src={TRAVELER_CALLOUT_ZIPPER} alt="Zipper pocket closeup" className="h-full w-full object-cover" />
-          </div>
-          <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
+        <div className="absolute left-[2.5%] top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[3%] sm:top-[3%] sm:max-w-[13rem]">
+          <p className="mb-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
             Zipper Pocket
           </p>
+          <TravelerCalloutThumb
+            src={TRAVELER_CALLOUT_ZIPPER}
+            alt="Zipper pocket closeup"
+            imageClassName="origin-center scale-[1.22] object-cover object-[center_34%] sm:scale-[1.2] sm:object-[center_36%]"
+          />
         </div>
 
-        <div className="absolute left-[2%] top-[64%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:max-w-[13rem]">
-          <div className="aspect-square w-20 overflow-hidden rounded-full sm:w-24 md:w-28">
-            <img src={TRAVELER_CALLOUT_CORD} alt="Cord lock and handle closeup" className="h-full w-full object-cover" />
-          </div>
+        <div className="absolute left-[-1.25rem] top-[62%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[-1.75rem] sm:max-w-[13rem]">
+          <TravelerCalloutThumb
+            src={TRAVELER_CALLOUT_CORD}
+            alt="Cord lock and handle closeup"
+            imageClassName="origin-center scale-[1.52] object-cover object-bottom sm:scale-[1.48]"
+          />
           <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
             Cord Lock/Pocket + Handle
           </p>
         </div>
 
-        <div className="absolute right-[2%] top-[2%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:max-w-[13rem]">
-          <div className="aspect-square w-20 overflow-hidden rounded-full sm:w-24 md:w-28">
-            <img src={TRAVELER_CALLOUT_LIP} alt="Containment lip closeup" className="h-full w-full object-cover" />
-          </div>
+        <div className="absolute right-0 top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:right-0 sm:top-[3%] sm:max-w-[13rem]">
+          <TravelerCalloutThumb
+            src={TRAVELER_CALLOUT_LIP}
+            alt="Containment lip closeup"
+            imageClassName="origin-center scale-[1.38] object-cover object-[14%_center] sm:scale-[1.34] sm:object-[12%_center]"
+          />
           <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
             Convenient containment lip
           </p>
         </div>
       </div>
+      <LayNGoMatDiameterLine inches={20} variant="traveler-20" className="mx-auto mt-4 w-full max-w-4xl" />
     </section>
   );
 }
 
+/** Curved dashed leader with arrowhead pointing down (mobile Lifestyle steps). */
+function LifestyleMobileDownArrow({ className }: { className?: string }) {
+  return (
+    <svg
+      className={cn("mx-auto block h-14 w-11 shrink-0 text-neutral-900 sm:h-16 sm:w-12", className)}
+      viewBox="0 0 48 72"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path
+        d="M24 6 C24 22 24 38 24 50"
+        stroke="currentColor"
+        strokeWidth="2.35"
+        strokeDasharray="5 6"
+        strokeLinecap="round"
+      />
+      <path d="M15 44 L24 60 L33 44" fill="currentColor" />
+    </svg>
+  );
+}
+
+function LifestyleMobileStoryImage({
+  src,
+  alt,
+  label,
+  imgClassName,
+}: {
+  src: string;
+  alt: string;
+  label: string;
+  imgClassName: string;
+}) {
+  return (
+    <figure className="relative mx-auto w-full max-w-[min(100%,42rem)]">
+      <img src={src} alt={alt} className={cn("block w-full object-contain", imgClassName)} loading="lazy" decoding="async" />
+      <figcaption className="mt-2 px-2 sm:px-3">
+        <p className="text-center font-heading text-[0.62rem] font-bold uppercase leading-tight tracking-wide text-neutral-900 sm:text-xs">
+          {label}
+        </p>
+      </figcaption>
+    </figure>
+  );
+}
+
 /** Dashed curve + solid tip (Nailspa family), always drawn left → right; stroke scaled up for stage-to-stage strip. */
-function LargeFeatureArrow({ className }: { className?: string }) {
+export function LargeFeatureArrow({ className }: { className?: string }) {
   const viewBox = "0 0 140 52";
   const start = { x: 6, y: 28 };
   const control = { x: 72, y: 10 };
@@ -114,26 +275,66 @@ function LargeFeatureArrow({ className }: { className?: string }) {
   );
 }
 
-function FeatureConnector({ label }: { label: string }) {
+export function FeatureConnector({ label, arrowDirection = "right" }: { label: string; arrowDirection?: "right" | "down" }) {
+  const isDown = arrowDirection === "down";
   return (
     <div
-      className="flex w-16 shrink-0 flex-col items-center justify-center gap-1.5 self-center py-1 sm:w-24 sm:gap-2 md:w-32 lg:w-36"
+      className={cn(
+        "flex shrink-0 flex-col items-center justify-center gap-1.5 py-1",
+        isDown
+          ? "w-full max-w-md self-center sm:max-w-lg"
+          : "w-16 self-center sm:w-24 sm:gap-2 md:w-32 lg:w-36",
+      )}
       role="presentation"
     >
-      <p className="w-full max-w-[9rem] text-center font-heading text-[0.58rem] font-bold uppercase leading-tight tracking-wide text-neutral-900 sm:max-w-[11rem] sm:text-xs md:max-w-[13rem] md:text-sm lg:text-[0.95rem]">
+      <p
+        className={cn(
+          "w-full text-center font-heading font-bold uppercase leading-tight tracking-wide text-neutral-900",
+          isDown ? "max-w-[11rem] text-[0.58rem] sm:max-w-[14rem] sm:text-xs md:text-sm" : "max-w-[9rem] text-[0.58rem] sm:max-w-[11rem] sm:text-xs md:max-w-[13rem] md:text-sm lg:text-[0.95rem]",
+        )}
+      >
         {label}
       </p>
-      <LargeFeatureArrow className="h-9 w-full max-w-full sm:h-12 md:h-[3.5rem]" />
+      <LargeFeatureArrow
+        className={cn(
+          "shrink-0 text-neutral-900",
+          isDown
+            ? "h-10 w-28 origin-center -rotate-90 sm:h-11 sm:w-32 md:h-12 md:w-36"
+            : "h-9 w-full max-w-full sm:h-12 md:h-[3.5rem]",
+        )}
+      />
     </div>
   );
 }
 
 export function LayNGoLargePdpPlayStrip({
+  headline = HEADLINE,
   headlineImageSrc = HEADLINE_IMAGE,
   showLowerSections = true,
   forceHeadlineSingleLine = false,
   showTravelerCalloutSection = false,
+  calloutVariant = "large-60",
 }: LayNGoLargePdpPlayStripProps) {
+  const threeStepImageClassName = cn(
+    "h-auto w-full max-w-full object-contain",
+    calloutVariant === "lifestyle-44"
+      ? "max-h-[min(36vh,240px)] sm:max-h-[min(44vh,300px)] md:max-h-[min(50vh,400px)] lg:max-h-[480px]"
+      : "max-h-[min(34vh,220px)] sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]",
+  );
+
+  /** Lifestyle “triangle”: apex + base row — each photo gets more width than a 3-across strip. */
+  const lifestyleTriangleApexImg = cn(
+    "h-auto w-full max-w-full object-contain",
+    "max-h-[min(50vh,340px)] sm:max-h-[min(56vh,420px)] md:max-h-[min(58vh,520px)] lg:max-h-[580px]",
+  );
+  const lifestyleTriangleBaseImg = cn(
+    "h-auto w-full max-w-full object-contain",
+    "max-h-[min(42vh,280px)] sm:max-h-[min(50vh,380px)] md:max-h-[min(54vh,460px)] lg:max-h-[520px]",
+  );
+
+  /** Same flex column contract as Large so horizontal mobile row shares width and images scale with `object-contain`. */
+  const threeStepImageColClassName = "flex min-h-0 min-w-0 flex-1 basis-0 justify-center";
+
   return (
     <section
       className="relative left-1/2 -ml-[50vw] w-screen overflow-x-clip bg-white px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8"
@@ -146,65 +347,146 @@ export function LayNGoLargePdpPlayStrip({
           forceHeadlineSingleLine && "max-w-none whitespace-nowrap text-[clamp(1rem,4.8vw,3.65rem)]",
         )}
       >
-        {HEADLINE}
+        {headline}
       </h2>
 
-      <div className="mx-auto mt-8 max-w-[min(100%,64rem)] sm:mt-10">
-        <img
-          src={headlineImageSrc}
-          alt="Lay-n-Go product hero image"
-          className="block h-auto w-full max-w-full object-contain"
-          loading="lazy"
-          decoding="async"
-        />
-      </div>
+      {calloutVariant !== "lite-18" ? (
+        <div className="mx-auto mt-8 max-w-[min(100%,64rem)] sm:mt-10">
+          <img
+            src={headlineImageSrc}
+            alt="Lay-n-Go product hero image"
+            className="block h-auto w-full max-w-full object-contain"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      ) : null}
 
       {showTravelerCalloutSection ? <TravelerDetailCalloutSection /> : null}
 
       {showLowerSections ? (
         <>
-          <div
-            className="mx-auto mt-14 max-w-[min(100%,90rem)] border-t border-neutral-200/80 pt-12 sm:mt-16 sm:pt-14"
-            aria-label="How Lay-n-Go Large works in three steps"
-          >
-            <div className="flex w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:gap-1 md:gap-2 lg:gap-3">
-              <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
-                <img
-                  src={FEATURE_OPEN}
-                  alt="Lay-n-Go Large open with toys; easy access to play and start cleanup"
-                  className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+          {calloutVariant !== "lite-18" ? (
+            <div
+              className="mx-auto mt-14 max-w-[min(100%,90rem)] pt-12 sm:mt-16 sm:pt-14"
+              aria-label={
+                calloutVariant === "lifestyle-44"
+                  ? "How Lay-n-Go Lifestyle works in three steps"
+                  : "How Lay-n-Go Large works in three steps"
+              }
+            >
+              {calloutVariant === "lifestyle-44" ? (
+                <>
+                  {/* Mobile: stacked steps — label on each image, dashed arrows point down */}
+                  <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-1 py-1 sm:gap-5 md:hidden">
+                    <LifestyleMobileStoryImage
+                      src={FEATURE_OPEN_LIFESTYLE}
+                      alt="Lay-n-Go Lifestyle mat open with building blocks; pulling the drawstring to begin cleanup"
+                      label="Easy access and cleanup"
+                      imgClassName={lifestyleTriangleApexImg}
+                    />
+                    <LifestyleMobileDownArrow />
+                    <LifestyleMobileStoryImage
+                      src={FEATURE_CINCH_LIFESTYLE}
+                      alt="Cinching the Lay-n-Go Lifestyle drawstring to close the black mat bag"
+                      label="Cinch it completely closed"
+                      imgClassName={lifestyleTriangleBaseImg}
+                    />
+                    <LifestyleMobileDownArrow />
+                    <LifestyleMobileStoryImage
+                      src={FEATURE_CARRY_LIFESTYLE}
+                      alt="Person wearing the cinched Lay-n-Go Lifestyle 44 inch mat as a backpack against a white studio background"
+                      label="Wide strap for easy travel and storage"
+                      imgClassName={lifestyleTriangleBaseImg}
+                    />
+                  </div>
+                  {/* Desktop: same horizontal strip as Large */}
+                  <div
+                    className={cn(
+                      "mx-auto hidden w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 md:flex sm:gap-1 sm:px-1 md:gap-2 lg:gap-3",
+                      "md:-mt-[50px]",
+                    )}
+                  >
+                    <div className={threeStepImageColClassName}>
+                      <img
+                        src={FEATURE_OPEN_LIFESTYLE}
+                        alt="Lay-n-Go Lifestyle mat open with building blocks; pulling the drawstring to begin cleanup"
+                        className={threeStepImageClassName}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
 
-              <FeatureConnector label="Easy access and cleanup" />
+                    <FeatureConnector label="Easy access and cleanup" />
 
-              <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
-                <img
-                  src={FEATURE_CINCH}
-                  alt="Cinching the Lay-n-Go Large drawstring to gather the mat closed"
-                  className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+                    <div className={threeStepImageColClassName}>
+                      <img
+                        src={FEATURE_CINCH_LIFESTYLE}
+                        alt="Cinching the Lay-n-Go Lifestyle drawstring to close the black mat bag"
+                        className={threeStepImageClassName}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
 
-              <FeatureConnector label="Wide strap for easy travel and storage" />
+                    <FeatureConnector label="Wide strap for easy travel and storage" />
 
-              <div className="flex min-h-0 min-w-0 flex-1 basis-0 justify-center">
-                <img
-                  src={FEATURE_CARRY}
-                  alt="Carrying the closed Lay-n-Go Large bag with the wide shoulder strap"
-                  className="h-auto max-h-[min(34vh,220px)] w-full max-w-full object-contain sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+                    <div className={threeStepImageColClassName}>
+                      <img
+                        src={FEATURE_CARRY_LIFESTYLE}
+                        alt="Person wearing the cinched Lay-n-Go Lifestyle 44 inch mat as a backpack against a white studio background"
+                        className={threeStepImageClassName}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div
+                  className={cn(
+                    "flex w-full max-w-full flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:gap-1 sm:px-1 md:gap-2 lg:gap-3",
+                  )}
+                >
+                  <div className={threeStepImageColClassName}>
+                    <img
+                      src={FEATURE_OPEN}
+                      alt="Lay-n-Go Large open with toys; easy access to play and start cleanup"
+                      className={threeStepImageClassName}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+
+                  <FeatureConnector label="Easy access and cleanup" />
+
+                  <div className={threeStepImageColClassName}>
+                    <img
+                      src={FEATURE_CINCH}
+                      alt="Cinching the Lay-n-Go Large drawstring to gather the mat closed"
+                      className={threeStepImageClassName}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+
+                  <FeatureConnector label="Wide strap for easy travel and storage" />
+
+                  <div className={threeStepImageColClassName}>
+                    <img
+                      src={FEATURE_CARRY}
+                      alt="Carrying the closed Lay-n-Go Large bag with the wide shoulder strap"
+                      className={threeStepImageClassName}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          ) : null}
 
-          <LayNGoLargeCalloutDiagram />
+          <LayNGoLargeCalloutDiagram variant={calloutVariant} />
         </>
       ) : null}
     </section>

@@ -145,6 +145,34 @@ export const COSMO_20_AMAZON_REVIEWS: ProductAmazonReview[] = [
   },
 ];
 
+/** Lay-n-Go NAILSPA 18\" — manicure organizer */
+export const NAILSPA_18_AMAZON_REVIEWS: ProductAmazonReview[] = [
+  {
+    headline: "Perfect for at-home manicures",
+    quote:
+      "I spread this on the counter and everything stays in one place—polish, files, clippers. The mesh pockets keep bottles upright and I’m not hunting through a zip pouch. Cinches up fast when I’m done.",
+    author: "M. R.",
+    rating: 5,
+    variantNote: "Verified Purchase · 18\" · Pattern",
+  },
+  {
+    headline: "Great travel companion",
+    quote:
+      "Took this on a long trip. Lays flat in the hotel bathroom, protects the counter from spills, and fits in my weekender when closed. Wipes clean easily.",
+    author: "Jen A.",
+    rating: 5,
+    variantNote: "Verified Purchase · 18\"",
+  },
+  {
+    headline: "So much easier than a regular bag",
+    quote:
+      "I used to dump everything on a towel. This is neater—the elastic and pockets actually hold my tools. Wish I’d bought it sooner.",
+    author: "Sam K.",
+    rating: 4,
+    variantNote: "Verified Purchase · 18\"",
+  },
+];
+
 /** Cosmo 22\" Deluxe — reviews that specify the 22\" bag */
 export const COSMO_22_AMAZON_REVIEWS: ProductAmazonReview[] = [
   {
@@ -169,11 +197,14 @@ export const COSMO_22_AMAZON_REVIEWS: ProductAmazonReview[] = [
 export const AMAZON_LISTING_URL_BY_HANDLE: Partial<Record<string, string>> = {
   // "lay-n-go-cosmo-20": "https://www.amazon.com/dp/XXXXXXXXXX",
   // "lay-n-go-cosmo-deluxe-22": "https://www.amazon.com/dp/YYYYYYYYYY",
+  "lay-n-go-nailspa-18":
+    "https://www.amazon.com/Lay-n-Go-NailSpa-Manicure-Pedicure-Pattern/dp/B082M13J4H",
 };
 
 const REVIEWS_BY_HANDLE: Partial<Record<string, ProductAmazonReview[]>> = {
   "lay-n-go-cosmo-20": COSMO_20_AMAZON_REVIEWS,
   "lay-n-go-cosmo-deluxe-22": COSMO_22_AMAZON_REVIEWS,
+  "lay-n-go-nailspa-18": NAILSPA_18_AMAZON_REVIEWS,
 };
 
 export function getAmazonReviewsForProduct(handle: string): {

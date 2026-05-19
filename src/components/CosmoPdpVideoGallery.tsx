@@ -85,18 +85,18 @@ export function CosmoPdpVideoGallery() {
 
   return (
     <section className="mt-10 sm:mt-12" aria-label="Cosmo lifestyle photos">
-      <div className="relative overflow-hidden rounded-2xl border border-border bg-neutral-50 shadow-inner">
-        <div ref={emblaRef} className="touch-pan-y">
-          <div className="flex">
+      <div className="relative mx-auto flex aspect-square w-full max-w-[min(100%,42rem)] flex-col overflow-hidden rounded-2xl border border-border bg-neutral-50 shadow-inner">
+        <div ref={emblaRef} className="min-h-0 flex-1 touch-pan-y overflow-hidden">
+          <div className="flex h-full">
             {COSMO_LIFESTYLE_GALLERY.map((item, i) => (
               <div
                 key={item.src}
-                className="flex min-h-[min(72vh,640px)] min-w-0 shrink-0 grow-0 basis-full items-center justify-center bg-neutral-50 px-2 py-3 sm:px-4 sm:py-4"
+                className="flex h-full min-w-0 shrink-0 grow-0 basis-full items-center justify-center bg-neutral-50 p-2 sm:p-3"
               >
                 <img
                   src={item.src}
                   alt={item.alt}
-                  className="max-h-[min(72vh,640px)] w-full max-w-full object-contain object-center"
+                  className="h-full w-full object-contain object-center"
                   loading={i === 0 ? "eager" : "lazy"}
                   decoding="async"
                   draggable={false}
@@ -105,36 +105,36 @@ export function CosmoPdpVideoGallery() {
             ))}
           </div>
         </div>
-      </div>
 
-      <div
-        className="mt-4 flex justify-center gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:justify-start"
-        role="tablist"
-        aria-label="Select lifestyle photo"
-      >
-        {COSMO_LIFESTYLE_GALLERY.map((item, i) => (
-          <button
-            key={item.src}
-            type="button"
-            role="tab"
-            aria-selected={selected === i}
-            aria-label={`Show photo ${i + 1}`}
-            onClick={() => scrollTo(i)}
-            className={cn(
-              "flex h-[3.75rem] shrink-0 items-center justify-center rounded-md border-2 bg-muted/90 px-1 py-0.5 transition-[opacity,box-shadow]",
-              selected === i
-                ? "border-primary opacity-100 shadow-sm ring-2 ring-primary/20"
-                : "border-border/50 opacity-80 hover:border-border hover:opacity-100",
-            )}
-          >
-            <img
-              src={item.src}
-              alt=""
-              className="max-h-[3.35rem] w-auto max-w-[min(5.5rem,22vw)] object-contain"
-              draggable={false}
-            />
-          </button>
-        ))}
+        <div
+          className="flex shrink-0 justify-center gap-2 overflow-x-auto border-t border-border/60 bg-neutral-50 px-2 py-2.5 [-ms-overflow-style:none] [scrollbar-width:none] sm:justify-start sm:px-3 sm:py-3 [&::-webkit-scrollbar]:hidden"
+          role="tablist"
+          aria-label="Select lifestyle photo"
+        >
+          {COSMO_LIFESTYLE_GALLERY.map((item, i) => (
+            <button
+              key={item.src}
+              type="button"
+              role="tab"
+              aria-selected={selected === i}
+              aria-label={`Show photo ${i + 1}`}
+              onClick={() => scrollTo(i)}
+              className={cn(
+                "pointer-events-auto flex aspect-square w-10 shrink-0 items-center justify-center overflow-hidden rounded-md border-2 bg-white p-0.5 shadow-sm transition-[opacity,box-shadow] sm:w-11",
+                selected === i
+                  ? "border-primary opacity-100 shadow-sm ring-2 ring-primary/20"
+                  : "border-border/60 opacity-90 hover:border-border hover:opacity-100",
+              )}
+            >
+              <img
+                src={item.src}
+                alt=""
+                className="h-full w-full object-contain"
+                draggable={false}
+              />
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   );

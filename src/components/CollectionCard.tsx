@@ -8,6 +8,8 @@ interface CollectionCardProps {
 }
 
 const NAILSPA_PRODUCT_PATH = "/product/lay-n-go-nailspa-18";
+const TRAVELER_PRODUCT_PATH = "/product/lay-n-go-traveler-20";
+const TRAVEL_DOG_BED_PRODUCT_PATH = "/product/lay-n-go-travel-dog-bed-44";
 
 const HOME_VIDEO_CARDS: Record<string, { videoId: string; hoverSrc: string; label: string; linkTo?: string }> = {
   "cosmetic-bags": {
@@ -30,6 +32,7 @@ const HOME_VIDEO_CARDS: Record<string, { videoId: string; hoverSrc: string; labe
     videoId: "1188297775",
     hoverSrc: "https://www.layngo.com/cdn/shop/products/B08MV2JM98.PT01_1200x1200.jpg?v=1626120624",
     label: "Pet Solutions",
+    linkTo: TRAVEL_DOG_BED_PRODUCT_PATH,
   },
 };
 
@@ -39,7 +42,7 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
 
   if (homeVideo) {
     return (
-      <Link to={`/collections/${collection.handle}`} className="group block w-[94%] mx-auto">
+      <Link to={homeVideo.linkTo ?? `/collections/${collection.handle}`} className="group mx-auto block w-[94%]">
         <article className="relative aspect-square overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
           <div className="absolute left-1/2 top-1/2 h-full aspect-video -translate-x-1/2 -translate-y-1/2">
             <VimeoLoopFadeEmbed
@@ -64,7 +67,13 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
   }
 
   const defaultHref =
-    collection.handle === "nail-solutions" ? NAILSPA_PRODUCT_PATH : `/collections/${collection.handle}`;
+    collection.handle === "nail-solutions"
+      ? NAILSPA_PRODUCT_PATH
+      : collection.handle === "technology"
+        ? TRAVELER_PRODUCT_PATH
+        : collection.handle === "pet-solutions"
+          ? TRAVEL_DOG_BED_PRODUCT_PATH
+          : `/collections/${collection.handle}`;
 
   return (
     <Link to={defaultHref} className="group block">

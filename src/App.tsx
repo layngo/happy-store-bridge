@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { SkipToMain } from "@/components/SkipToMain";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -26,6 +27,7 @@ import SmallBusinesses from "./pages/static/SmallBusinesses.tsx";
 import Wholesale from "./pages/static/Wholesale.tsx";
 import CosmoArrowPlayground from "./pages/CosmoArrowPlayground.tsx";
 import CosmeticBagsV2 from "./pages/CosmeticBagsV2.tsx";
+import MilitaryFirstResponder from "./pages/MilitaryFirstResponder.tsx";
 
 const queryClient = new QueryClient();
 
@@ -34,17 +36,27 @@ const AppContent = () => {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <SkipToMain />
       <FirstVisitDiscountPopup />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/search" element={<Search />} />
 
         <Route path="/collections/:collectionHandle/products/:productHandle" element={<ProductDetail />} />
+        <Route
+          path="/collections/pet-solutions/:filterSlug"
+          element={<Navigate to="/product/lay-n-go-travel-dog-bed-44" replace />}
+        />
         <Route path="/collections/:handle/:filterSlug" element={<Collection />} />
         <Route
           path="/collections/nail-solutions"
           element={<Navigate to="/product/lay-n-go-nailspa-18" replace />}
         />
+        <Route
+          path="/collections/pet-solutions"
+          element={<Navigate to="/product/lay-n-go-travel-dog-bed-44" replace />}
+        />
+        <Route path="/collections/military-first-responder" element={<MilitaryFirstResponder />} />
         <Route path="/collections/:handle" element={<Collection />} />
         <Route path="/collections" element={<CollectionsIndex />} />
 
