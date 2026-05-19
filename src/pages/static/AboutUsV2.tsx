@@ -95,12 +95,6 @@ const SECTIONS: SectionBlock[] = [
       { src: PLACEHOLDER("lng-about-22"), caption: "Traveler line meets commuters" },
       { src: PLACEHOLDER("lng-about-23"), caption: "Pet solutions hit the road" },
       { src: PLACEHOLDER("lng-about-24"), caption: "WIRED tech pouch debut" },
-      { src: PLACEHOLDER("lng-about-25"), caption: "NAILSPA studio-ready kit" },
-      { src: PLACEHOLDER("lng-about-26"), caption: "Defender line field-tested" },
-      { src: PLACEHOLDER("lng-about-27"), caption: "Press tour green-room prep" },
-      { src: PLACEHOLDER("lng-about-28"), caption: "Customer thank-you wall growing" },
-      { src: PLACEHOLDER("lng-about-29"), caption: "International shipping milestone" },
-      { src: PLACEHOLDER("lng-about-30"), caption: "Team photo newest headquarters" },
     ],
   },
   {
