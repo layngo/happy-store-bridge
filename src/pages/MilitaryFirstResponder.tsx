@@ -5,11 +5,15 @@ import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getCollectionGridSwatchPreview } from "@/components/ProductCard";
 import { cn } from "@/lib/utils";
+import { Loader2, ChevronRight, Home } from "lucide-react";
 
 /** Drop shadow only — no white padding ring (unlike CALLOUT_THUMB_SHADOW). */
 const DEFENDER_DISK_SHADOW =
   "rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.32),0_5px_16px_rgba(0,0,0,0.26)]";
-import { Loader2, ChevronRight, Home } from "lucide-react";
+
+/** Matches Cosmetic Bags V2 disks — square catalog art fills the circle. */
+const DEFENDER_DISK_IMAGE_CLASS =
+  "block h-full w-full min-h-full min-w-full origin-center scale-[1.14] object-cover object-center";
 
 export const MILITARY_FIRST_RESPONDER_PATH = "/collections/military-first-responder";
 
@@ -27,8 +31,6 @@ type SizeSpec = {
   shortName: string;
   imageSrc: string;
   imageAlt: string;
-  imageScaleClass: string;
-  imageObjectPositionClass: string;
   match: (handle: string, title: string) => boolean;
 };
 
@@ -38,8 +40,6 @@ const SIZE_SPECS: SizeSpec[] = [
     shortName: "Defender Mini",
     imageSrc: IMG_16,
     imageAlt: "Lay-n-Go DEFENDER mini 16 inch open flat with personal gear organized on the mat",
-    imageScaleClass: "scale-[1.28]",
-    imageObjectPositionClass: "object-contain object-center",
     match: (handle, title) => {
       const h = handle.toLowerCase();
       const t = title.toLowerCase();
@@ -55,8 +55,6 @@ const SIZE_SPECS: SizeSpec[] = [
     shortName: "Defender Tactical",
     imageSrc: IMG_20,
     imageAlt: "Lay-n-Go DEFENDER Tactical 20 inch open flat with mesh pockets and personal gear",
-    imageScaleClass: "scale-[1.22]",
-    imageObjectPositionClass: "object-cover object-[56%_52%]",
     match: (handle, title) => {
       const h = handle.toLowerCase();
       const t = title.toLowerCase();
@@ -240,11 +238,7 @@ const MilitaryFirstResponder = () => {
                       <img
                         src={spec.imageSrc}
                         alt={spec.imageAlt}
-                        className={cn(
-                          "block h-full w-full min-h-full min-w-full origin-center",
-                          spec.imageObjectPositionClass,
-                          spec.imageScaleClass,
-                        )}
+                        className={DEFENDER_DISK_IMAGE_CLASS}
                         loading="lazy"
                         decoding="async"
                       />

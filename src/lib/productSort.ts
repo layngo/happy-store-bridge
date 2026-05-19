@@ -9,7 +9,30 @@ export type ProductSortKey =
   | "date-new"
   | "date-old";
 
-export function sortProductsList(products: ShopifyProduct[], key: ProductSortKey): ShopifyProduct[] {
+/** Play collection featured order: smallest mat first, largest last. */
+const PLAY_COLLECTION_FEATURED_ORDER = [
+  "lay-n-go-lite-18",
+  "lay-n-go-lifestyle-44",
+  "lay-n-go-large-60",
+] as const;
+
+export function sortPlayCollectionFeatured(products: ShopifyProduct[]): ShopifyProduct[] {
+  const rank = new Map<string, number>(
+    PLAY_COLLECTION_FEATURED_ORDER.map((handle, index) => [handle, index]),
+  );
+  return [...products].sort((a, b) => {
+    const ra = rank.get(a.node.handle.toLowerCase()) ?? PLAY_COLLECTION_FEATURED_ORDER.length;
+    const rb = rank.get(b.node.handle.toLowerCase()) ?? PLAY_COLLECTION_FEATURED_ORDER.length;
+    if (ra !== rb) return ra - rb;
+    return a.node.title.localeCompare(b.node.title);
+  });
+}
+
+export function sortProductsList(
+  products: ShopifyProduct[],
+  key: ProductSortKey,
+  collectionHandle?: string,
+): ShopifyProduct[] {
   const list = [...products];
   const price = (p: ShopifyProduct) => parseFloat(p.node.priceRange.minVariantPrice.amount);
 
@@ -33,6 +56,9 @@ export function sortProductsList(products: ShopifyProduct[], key: ProductSortKey
           new Date(a.node.createdAt || 0).getTime() - new Date(b.node.createdAt || 0).getTime(),
       );
     default:
+      if (collectionHandle?.toLowerCase() === "play") {
+        return sortPlayCollectionFeatured(list);
+      }
       return list;
   }
 }

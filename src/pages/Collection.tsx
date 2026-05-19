@@ -29,8 +29,8 @@ const Collection = () => {
 
   const displayProducts = useMemo(() => {
     if (!collection) return [];
-    return sortProductsList(collection.products, sortKey);
-  }, [collection, sortKey]);
+    return sortProductsList(collection.products, sortKey, handle);
+  }, [collection, sortKey, handle]);
 
   if (loading) {
     return (

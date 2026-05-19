@@ -1562,30 +1562,37 @@ const ProductDetail = () => {
             <div className="space-y-2">
               <p className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">Edit color</p>
               <div className="flex flex-wrap gap-2">
-                {colorVariantChoices.map((choice) => (
-                  <button
-                    key={`${choice.rawValue}-${choice.idx}`}
-                    type="button"
-                    onClick={() => handleVariantSelection(choice.idx)}
-                    className={cn(
-                      "h-9 w-9 rounded-full border border-foreground/25 bg-cover bg-center bg-no-repeat transition-[box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                      choice.idx === selectedVariantIdx ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" : "",
-                      !choice.node.availableForSale ? "line-through opacity-40" : "",
-                    )}
-                    style={
-                      isCosmoMini16
-                        ? cosmoMiniSwatchStyle(choice.node)
-                        : product.handle.toLowerCase() === "lay-n-go-travel-dog-bed-44"
-                          ? dogBedSwatchStyle(choice.rawValue)
-                          : variantImageSwatchStyle(choice.node, choice.rawValue)
-                    }
-                    disabled={!choice.node.availableForSale}
-                    aria-label={choice.displayValue}
-                    title={choice.displayValue}
-                  >
-                    <span className="sr-only">{choice.displayValue}</span>
-                  </button>
-                ))}
+                {colorVariantChoices.map((choice) => {
+                  const solidSwatch = isSolidStickyConfirmSwatch(product.handle, isCosmoMini16, choice.node);
+                  return (
+                    <button
+                      key={`${choice.rawValue}-${choice.idx}`}
+                      type="button"
+                      onClick={() => handleVariantSelection(choice.idx)}
+                      className={cn(
+                        "h-10 w-10 shrink-0 rounded-full transition-[box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                        solidSwatch
+                          ? choice.idx === selectedVariantIdx
+                            ? "ring-2 ring-neutral-900 ring-offset-[3px] ring-offset-white"
+                            : "ring-0"
+                          : cn(
+                              "border border-foreground/25 bg-cover bg-center bg-no-repeat",
+                              choice.idx === selectedVariantIdx
+                                ? "ring-2 ring-foreground ring-offset-2 ring-offset-background"
+                                : "",
+                            ),
+                        !choice.node.availableForSale ? "line-through opacity-40" : "",
+                      )}
+                      style={stickyConfirmSwatchStyle(product.handle, isCosmoMini16, choice)}
+                      disabled={!choice.node.availableForSale}
+                      aria-label={choice.displayValue}
+                      title={choice.displayValue}
+                      aria-pressed={choice.idx === selectedVariantIdx}
+                    >
+                      <span className="sr-only">{choice.displayValue}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           ) : null}
@@ -1637,8 +1644,31 @@ function isCosmoBlackVariant(v: ShopifyProduct["node"]["variants"]["edges"][numb
   return colorOption.includes("black") || title.includes("black");
 }
 
+type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
+
+function stickyConfirmSwatchStyle(
+  handle: string,
+  isCosmoMini16Product: boolean,
+  choice: { rawValue: string; node: VariantNode },
+): CSSProperties {
+  const h = handle.toLowerCase();
+  if (isCosmoMini16Product) return cosmoMiniSwatchStyle(choice.node);
+  if (h === "lay-n-go-travel-dog-bed-44") return dogBedSwatchStyle(choice.rawValue);
+  if (h === "lay-n-go-traveler-20") return travelerSwatchStyle(choice.rawValue);
+  if (isLayNGoPlayMatProduct(handle)) return layNGoPlayMatSwatchStyle(choice.rawValue);
+  return variantImageSwatchStyle(choice.node, choice.rawValue);
+}
+
+function isSolidStickyConfirmSwatch(handle: string, isCosmoMini16Product: boolean, variant: VariantNode): boolean {
+  if (isLayNGoPlayMatProduct(handle)) return true;
+  if (handle.toLowerCase() === "lay-n-go-travel-dog-bed-44") return true;
+  if (handle.toLowerCase() === "lay-n-go-traveler-20") return true;
+  if (isCosmoMini16Product && isCosmoBlackVariant(variant)) return true;
+  return false;
+}
+
 function cosmoMiniSwatchStyle(
-  v: ShopifyProduct["node"]["variants"]["edges"][number]["node"],
+  v: VariantNode,
 ): CSSProperties {
   if (isCosmoBlackVariant(v)) {
     return { backgroundColor: "#111111" };
@@ -1707,10 +1737,7 @@ function isColorOptionName(name: string): boolean {
   return /color|colour/i.test(name);
 }
 
-function variantImageSwatchStyle(
-  variant: ShopifyProduct["node"]["variants"]["edges"][number]["node"],
-  fallbackColor: string,
-): CSSProperties {
+function variantImageSwatchStyle(variant: VariantNode, fallbackColor: string): CSSProperties {
   if (variant.image?.url) {
     return {
       backgroundImage: `url(${variant.image.url})`,

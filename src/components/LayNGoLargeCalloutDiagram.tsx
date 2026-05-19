@@ -260,6 +260,7 @@ function DiameterLine({
   const lifestyle44 = variant === "lifestyle-44";
   const lite18 = variant === "lite-18";
   const traveler20 = variant === "traveler-20";
+  const large60 = variant === "large-60";
   const lifestyleChrome =
     variant === "lifestyle-44" || variant === "lite-18" || variant === "traveler-20";
 
@@ -272,7 +273,10 @@ function DiameterLine({
     : traveler20
       ? /** Traveler callout hero — mat nearly full width; mobile vs md+ tuned separately */
         "mx-auto w-[min(100%,93%)] sm:w-[min(100%,91%)] md:w-[min(100%,88%)] lg:w-[min(100%,85%)]"
-    : "w-full max-w-md sm:max-w-lg";
+    : large60
+      ? /** Large hero: mat is inset in the asset on mobile — bracket tracks visible disc, not full image width */
+        "mx-auto w-[min(100%,66%)] sm:w-[min(100%,70%)] md:w-[min(100%,86%)] lg:w-[min(100%,84%)]"
+      : "w-full max-w-md sm:max-w-lg";
 
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
@@ -652,6 +656,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           className={cn(
             "w-full",
             config.mobileHeroMaxClass,
+            variant === "large-60" && "-mt-2 shrink-0 pb-0",
             variant === "lifestyle-44" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
             variant === "lite-18" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
           )}
