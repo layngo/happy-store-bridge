@@ -21,6 +21,34 @@ const FEATURE_CINCH_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-4-cinch
 const FEATURE_CARRY = "/products/lay-n-go-large-pdp/feature-5-carry.png";
 const FEATURE_CARRY_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-5-carry.png";
 
+const DEFENDER_MINI_16_FLANK_LEFT = "/products/lay-n-go-defender-mini-16/story-flank-left.png";
+const DEFENDER_MINI_16_FLANK_RIGHT = "/products/lay-n-go-defender-mini-16/story-flank-right.png";
+const DEFENDER_TACTICAL_20_FLANK_LEFT = "/products/lay-n-go-tactical-bag-20/story-flank-left.png";
+const DEFENDER_TACTICAL_20_FLANK_RIGHT = "/products/lay-n-go-tactical-bag-20/story-flank-right.png";
+
+const DEFENDER_FLANK_STRIPS: Partial<
+  Record<
+    LayNGoCalloutDiagramVariant,
+    { leftSrc: string; rightSrc: string; leftAlt: string; rightAlt: string; ariaLabel: string }
+  >
+> = {
+  "defender-mini-16": {
+    leftSrc: DEFENDER_MINI_16_FLANK_LEFT,
+    rightSrc: DEFENDER_MINI_16_FLANK_RIGHT,
+    leftAlt: "Lay-n-Go Defender Mini open flat with everyday carry gear organized on the mat",
+    rightAlt: "Cinched Lay-n-Go Defender Mini with American flag patch on olive drab fabric",
+    ariaLabel: "Defender Mini lifestyle photos",
+  },
+  "defender-tactical-20": {
+    leftSrc: DEFENDER_TACTICAL_20_FLANK_LEFT,
+    rightSrc: DEFENDER_TACTICAL_20_FLANK_RIGHT,
+    leftAlt:
+      "Lay-n-Go Defender Tactical 20 open flat with mesh pockets, drawstring, and everyday carry gear on the mat",
+    rightAlt: "Cinched Lay-n-Go Defender Tactical 20 with American flag patch on olive drab fabric",
+    ariaLabel: "Defender Tactical lifestyle photos",
+  },
+};
+
 type LayNGoLargePdpPlayStripProps = {
   /** Story-strip headline (rendered with `uppercase` in the h2). Defaults to Large/Lifestyle copy. */
   headline?: string;
@@ -30,6 +58,47 @@ type LayNGoLargePdpPlayStripProps = {
   showTravelerCalloutSection?: boolean;
   calloutVariant?: LayNGoCalloutDiagramVariant;
 };
+
+function DefenderFlankStrip({
+  leftSrc,
+  rightSrc,
+  leftAlt,
+  rightAlt,
+  ariaLabel,
+}: {
+  leftSrc: string;
+  rightSrc: string;
+  leftAlt: string;
+  rightAlt: string;
+  ariaLabel: string;
+}) {
+  const flankImgClass =
+    "block h-auto w-full max-w-none object-cover max-h-[min(52vh,540px)] sm:max-h-[min(58vh,620px)] md:max-h-[min(62vh,680px)]";
+
+  return (
+    <div
+      className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 sm:mt-10"
+      aria-label={ariaLabel}
+    >
+      <div className="grid w-full grid-cols-2 gap-0">
+        <img
+          src={leftSrc}
+          alt={leftAlt}
+          className={cn(flankImgClass, "object-left")}
+          loading="lazy"
+          decoding="async"
+        />
+        <img
+          src={rightSrc}
+          alt={rightAlt}
+          className={cn(flankImgClass, "object-right")}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
+  );
+}
 
 const travelerCalloutThumbFrame = "relative h-20 w-20 shrink-0 sm:h-24 sm:w-24 md:h-28 md:w-28";
 
@@ -57,8 +126,8 @@ function TravelerCalloutThumb({
   );
 }
 
-/** Hero `traveler-callout-main.png` is 1024×762; viewBox matches so leaders align with `object-contain` art. */
-const TRAVELER_CALLOUT_VIEWBOX = { w: 1024, h: 762 } as const;
+/** Hero `traveler-callout-main.png` is 1024×768; viewBox matches so leaders align with `object-contain` art. */
+const TRAVELER_CALLOUT_VIEWBOX = { w: 1024, h: 768 } as const;
 
 /** Same black/white pair as `LayNGoLargeCalloutDiagram` mesh leaders: `1.02` / `0.58` in 0–100 viewBox → Traveler 1024-wide space. */
 const TRAVELER_VB = 1024 / 100;
@@ -349,6 +418,10 @@ export function LayNGoLargePdpPlayStrip({
       >
         {headline}
       </h2>
+
+      {calloutVariant && DEFENDER_FLANK_STRIPS[calloutVariant] ? (
+        <DefenderFlankStrip {...DEFENDER_FLANK_STRIPS[calloutVariant]!} />
+      ) : null}
 
       {calloutVariant !== "lite-18" && !calloutVariant.startsWith("defender-") ? (
         <div className="mx-auto mt-8 max-w-[min(100%,64rem)] sm:mt-10">

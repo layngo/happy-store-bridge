@@ -7,11 +7,9 @@ import { fetchCollections, type ShopifyCollectionSummary } from "@/lib/shopify";
 import { sortCollectionsForDisplay } from "@/lib/collectionOrder";
 import { testimonials } from "@/lib/siteNav";
 import { Loader2 } from "lucide-react";
+import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 
-const VIMEO_PLAYER_SCRIPT = "https://player.vimeo.com/api/player.js";
-
-const VIMEO_EMBED_SRC =
-  "https://player.vimeo.com/video/1185281289?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1";
+const HOME_HERO_VIMEO_ID = "1185281289";
 const OUR_STORY_IMAGES = [
   "/our-story-slide-1.png",
   "/our-story-slide-2.png",
@@ -79,16 +77,6 @@ const Index = () => {
       .finally(() => setCollectionsLoading(false));
   }, []);
 
-  useEffect(() => {
-    const id = "vimeo-player-api";
-    if (document.getElementById(id)) return;
-    const script = document.createElement("script");
-    script.id = id;
-    script.src = VIMEO_PLAYER_SCRIPT;
-    script.async = true;
-    document.body.appendChild(script);
-  }, []);
-
   return (
     <div className="min-h-dvh bg-background flex flex-col">
       <Header variant="light" />
@@ -97,16 +85,12 @@ const Index = () => {
       {/* Hero — ~20:9 frame reveals more of the 16:9 Vimeo crop; Cosmo brand film */}
       <section className="relative w-full border-b border-border bg-black">
         <div className="relative aspect-[20/9] w-full overflow-hidden">
-          <div className="pointer-events-none absolute left-0 right-0 top-1/2 aspect-video w-full -translate-y-1/2">
-            <iframe
-              src={VIMEO_EMBED_SRC}
-              title="Lay-n-Go"
-              frameBorder={0}
-              allow="autoplay; encrypted-media; picture-in-picture"
-              referrerPolicy="strict-origin-when-cross-origin"
-              tabIndex={-1}
-              className="pointer-events-none absolute inset-0 h-full w-full select-none"
-              aria-hidden
+          <div className="absolute left-0 right-0 top-1/2 z-[5] aspect-video w-full -translate-y-1/2">
+            <PausableAutoplayEmbed
+              provider="vimeo"
+              videoId={HOME_HERO_VIMEO_ID}
+              title="Lay-n-Go brand film"
+              iframeClassName="absolute inset-0 h-full w-full border-0 select-none"
             />
           </div>
           <div

@@ -11,9 +11,9 @@ import { Loader2, ChevronRight, Home } from "lucide-react";
 const DEFENDER_DISK_SHADOW =
   "rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.32),0_5px_16px_rgba(0,0,0,0.26)]";
 
-/** Matches Cosmetic Bags V2 disks — square catalog art fills the circle. */
+/** Transparent PNG — full mat visible (lip, straps, cord); no zoom crop. */
 const DEFENDER_DISK_IMAGE_CLASS =
-  "block h-full w-full min-h-full min-w-full origin-center scale-[1.14] object-cover object-center";
+  "block h-full w-full object-contain object-center p-[4%] sm:p-[5%]";
 
 export const MILITARY_FIRST_RESPONDER_PATH = "/collections/military-first-responder";
 
@@ -234,7 +234,7 @@ const MilitaryFirstResponder = () => {
                     )}
                     style={{ width: circleWidth, aspectRatio: "1" }}
                   >
-                    <div className="relative h-full w-full overflow-hidden rounded-full bg-neutral-950">
+                    <div className="relative h-full w-full rounded-full bg-transparent">
                       <img
                         src={spec.imageSrc}
                         alt={spec.imageAlt}

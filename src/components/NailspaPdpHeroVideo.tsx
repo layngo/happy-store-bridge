@@ -1,13 +1,7 @@
-import { useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 
-const VIMEO_PLAYER_SCRIPT = "https://player.vimeo.com/api/player.js";
-
-/** Chromeless Vimeo nailspa clip (PDP bottom video slot). */
-const NAILSPA_VIMEO_EMBED_SRC =
-  "https://player.vimeo.com/video/1191237502?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1";
-
-const SCRIPT_ID = "vimeo-player-api";
+const NAILSPA_VIMEO_ID = "1191237502";
 
 type NailspaPdpHeroVideoProps = {
   /** Fills a parent `relative aspect-video` box (bottom PDP embed). */
@@ -16,33 +10,21 @@ type NailspaPdpHeroVideoProps = {
 };
 
 export function NailspaPdpHeroVideo({ variant = "card", className }: NailspaPdpHeroVideoProps) {
-  useEffect(() => {
-    if (document.getElementById(SCRIPT_ID)) return;
-    const script = document.createElement("script");
-    script.id = SCRIPT_ID;
-    script.src = VIMEO_PLAYER_SCRIPT;
-    script.async = true;
-    document.body.appendChild(script);
-  }, []);
-
-  const iframe = (
-    <iframe
-      src={NAILSPA_VIMEO_EMBED_SRC}
-      title=""
-      className={cn(
-        "h-full w-full border-0 select-none",
-        variant === "bottom"
-          ? "absolute inset-0 pointer-events-auto"
-          : "pointer-events-none absolute inset-0",
+  const embed = (
+    <PausableAutoplayEmbed
+      provider="vimeo"
+      videoId={NAILSPA_VIMEO_ID}
+      title="Lay-n-Go NAILSPA product video"
+      className="h-full w-full"
+      iframeClassName={cn(
+        "h-full w-full border-0",
+        variant === "bottom" ? "absolute inset-0" : "absolute inset-0",
       )}
-      allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
-      referrerPolicy="strict-origin-when-cross-origin"
-      aria-hidden
     />
   );
 
   if (variant === "bottom") {
-    return iframe;
+    return embed;
   }
 
   return (
@@ -53,7 +35,7 @@ export function NailspaPdpHeroVideo({ variant = "card", className }: NailspaPdpH
         className,
       )}
     >
-      {iframe}
+      {embed}
     </div>
   );
 }

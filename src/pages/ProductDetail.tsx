@@ -32,10 +32,10 @@ import {
   isNailspa18Product,
 } from "@/components/Nailspa18ColorSelector";
 import { NailspaPdpHeroVideo } from "@/components/NailspaPdpHeroVideo";
+import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
 import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
-import { NailspaPdpLifestyleGallery } from "@/components/NailspaPdpLifestyleGallery";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
 import { LayNGoTravelDogBedPdpStrip } from "@/components/LayNGoTravelDogBedPdpStrip";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
@@ -120,6 +120,25 @@ const LAY_N_GO_LITE_18_GALLERY_SLIDES = [
   {
     src: "/products/lay-n-go-lite-18/lite-gallery-7.png",
     alt: "Two children playing with LEGO on a pink-and-blue Lay-n-Go Lite at a kitchen counter",
+  },
+] as const;
+
+const LAY_N_GO_NAILSPA_18_GALLERY_SLIDES = [
+  {
+    src: "/nailspa-pdp/gallery/03.png",
+    alt: "Hands painting nails over an open pink NAILSPA mat with supplies",
+  },
+  {
+    src: "/nailspa-pdp/gallery/04.png",
+    alt: "Smiling person using a patterned NAILSPA mat on a marble bathroom counter",
+  },
+  {
+    src: "/nailspa-pdp/gallery/05.png",
+    alt: "Top-down view of manicure tools and polish on a bright pink NAILSPA mat",
+  },
+  {
+    src: "/nailspa-pdp/gallery/06.png",
+    alt: "Woman painting nails at a kitchen counter with an open patterned Lay-n-Go NAILSPA mat and polish bottles",
   },
 ] as const;
 
@@ -391,6 +410,7 @@ const ProductDetail = () => {
   const [layNGoTravelDogBed44SlideIndex, setLayNGoTravelDogBed44SlideIndex] = useState(0);
   const [layNGoDefenderMini16SlideIndex, setLayNGoDefenderMini16SlideIndex] = useState(0);
   const [layNGoDefenderTactical20SlideIndex, setLayNGoDefenderTactical20SlideIndex] = useState(0);
+  const [layNGoNailspa18SlideIndex, setLayNGoNailspa18SlideIndex] = useState(0);
   const [showStickyAddToCart, setShowStickyAddToCart] = useState(false);
   const [stickyConfirmOpen, setStickyConfirmOpen] = useState(false);
   const primaryAddToCartRef = useRef<HTMLDivElement | null>(null);
@@ -562,6 +582,8 @@ const ProductDetail = () => {
       product.handle.toLowerCase() !== "lay-n-go-lite-18" &&
       product.handle.toLowerCase() !== "lay-n-go-traveler-20" &&
       product.handle.toLowerCase() !== "lay-n-go-travel-dog-bed-44" &&
+      product.handle.toLowerCase() !== "lay-n-go-defender-mini-16" &&
+      product.handle.toLowerCase() !== "lay-n-go-tactical-bag-20" &&
       Boolean(product.description?.trim()),
   );
 
@@ -597,6 +619,7 @@ const ProductDetail = () => {
   const isLayNGoTravelDogBed44 = layNGoHandle === "lay-n-go-travel-dog-bed-44";
   const isLayNGoDefenderMini16 = layNGoHandle === "lay-n-go-defender-mini-16";
   const isLayNGoDefenderTactical20 = layNGoHandle === "lay-n-go-tactical-bag-20";
+  const isLayNGoNailspa18 = layNGoHandle === "lay-n-go-nailspa-18";
   const isLayNGoDefender = isLayNGoDefenderMini16 || isLayNGoDefenderTactical20;
   const colorOptionName = useMemo(() => {
     if (!product) return null;
@@ -664,6 +687,10 @@ const ProductDetail = () => {
   }, [isLayNGoDefenderTactical20, product?.id]);
 
   useEffect(() => {
+    setLayNGoNailspa18SlideIndex(0);
+  }, [isLayNGoNailspa18, product?.id]);
+
+  useEffect(() => {
     if (!product) return;
     const h = product.handle.toLowerCase();
     if (
@@ -673,7 +700,8 @@ const ProductDetail = () => {
       h !== "lay-n-go-traveler-20" &&
       h !== "lay-n-go-travel-dog-bed-44" &&
       h !== "lay-n-go-defender-mini-16" &&
-      h !== "lay-n-go-tactical-bag-20"
+      h !== "lay-n-go-tactical-bag-20" &&
+      h !== "lay-n-go-nailspa-18"
     )
       return;
     const slides =
@@ -689,7 +717,9 @@ const ProductDetail = () => {
                 ? LAY_N_GO_TRAVEL_DOG_BED_44_GALLERY_SLIDES
                 : h === "lay-n-go-defender-mini-16"
                   ? LAY_N_GO_DEFENDER_MINI_16_GALLERY_SLIDES
-                  : LAY_N_GO_DEFENDER_TACTICAL_20_GALLERY_SLIDES;
+                  : h === "lay-n-go-tactical-bag-20"
+                    ? LAY_N_GO_DEFENDER_TACTICAL_20_GALLERY_SLIDES
+                    : LAY_N_GO_NAILSPA_18_GALLERY_SLIDES;
     const origin = window.location.origin;
     const links: HTMLLinkElement[] = [];
     for (const slide of slides) {
@@ -798,7 +828,14 @@ const ProductDetail = () => {
                     setSlideIndex: setLayNGoDefenderTactical20SlideIndex,
                     galleryAriaLabel: "Lay-n-Go Defender Tactical lifestyle photos",
                   }
-                : null;
+                : isLayNGoNailspa18
+                  ? {
+                      slides: [...LAY_N_GO_NAILSPA_18_GALLERY_SLIDES],
+                      slideIndex: layNGoNailspa18SlideIndex,
+                      setSlideIndex: setLayNGoNailspa18SlideIndex,
+                      galleryAriaLabel: "Lay-n-Go NAILSPA lifestyle photos",
+                    }
+                  : null;
   const layNGoGalleryArrowBtnClassName =
     "h-10 w-10 shrink-0 self-center rounded-full border-0 bg-black text-white hover:bg-neutral-900 hover:text-white focus-visible:ring-white/40 sm:h-11 sm:w-11";
   const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
@@ -1372,12 +1409,7 @@ const ProductDetail = () => {
                       : "Video placeholder"
               }
             >
-              <div
-                className={cn(
-                  "w-full",
-                  isNailspa18Product(product.handle) && "mx-auto md:max-w-[60%] md:shrink-0",
-                )}
-              >
+              <div className="w-full">
                 {layNGoHeroGallery ? (
                   <div className="mx-auto w-full max-w-full md:w-[80%]">
                     <div
@@ -1479,12 +1511,11 @@ const ProductDetail = () => {
                     {isNailspa18Product(product.handle) ? (
                       <NailspaPdpHeroVideo variant="bottom" />
                     ) : cosmoYoutubeId ? (
-                      <iframe
+                      <PausableAutoplayEmbed
+                        provider="youtube"
+                        videoId={cosmoYoutubeId}
                         title="Product video"
-                        src={`https://www.youtube.com/embed/${cosmoYoutubeId}?autoplay=1&mute=1&playsinline=1&loop=1&playlist=${cosmoYoutubeId}&rel=0`}
-                        className="absolute inset-0 h-full w-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
+                        iframeClassName="absolute inset-0 h-full w-full border-0"
                       />
                     ) : (
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/35 bg-muted/30 px-6 py-12 text-center">
@@ -1501,13 +1532,7 @@ const ProductDetail = () => {
               </div>
             </section>
 
-            {showCosmoStyleBottomExtras ? (
-              isCosmoStoryPdp ? (
-                <CosmoPdpVideoGallery />
-              ) : (
-                <NailspaPdpLifestyleGallery />
-              )
-            ) : null}
+            {isCosmoStoryPdp ? <CosmoPdpVideoGallery /> : null}
 
             {showCosmoStyleBottomExtras ? (
               <section

@@ -17,6 +17,101 @@ const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containment-lip.png";
 const CALLOUT_LIP_LITE = "/products/lay-n-go-lite-18/callout-containment-lip.png";
 const CALLOUT_CORD_LITE = "/products/lay-n-go-lite-18/callout-cord-pocket-handle.png";
+/** Circular callout thumbs (white bg) — Defender Tactical 20″ diagram. */
+const DEFENDER_CALLOUT_ZIPPER = "/products/lay-n-go-defender-callouts/callout-zipper.png";
+/** Circular callout thumbs (white bg) — shared by Defender Mini 16″ and Tactical 20″. */
+const DEFENDER_CALLOUT_STRAP = "/products/lay-n-go-defender-callouts/callout-strap.png";
+const DEFENDER_CALLOUT_LIP = "/products/lay-n-go-defender-callouts/callout-lip.png";
+const DEFENDER_CALLOUT_DRAWSTRING = "/products/lay-n-go-defender-callouts/callout-drawstring.png";
+
+/** Defender Tactical hero callout stage — matches `hero-callout-main.png` (1024×1024). */
+const DEFENDER_TACTICAL_CALLOUT_VB = { w: 1024, h: 1024 } as const;
+const DEFENDER_TACTICAL_DOT_R = 6.5;
+const DEFENDER_TACTICAL_DOT_STROKE = 2.25;
+const DEFENDER_TACTICAL_LEADER_OUTER = (1.02 * 1024) / 100;
+const DEFENDER_TACTICAL_LEADER_INNER = (0.58 * 1024) / 100;
+
+type DefenderHeroCalloutItem = {
+  key: string;
+  label: string;
+  thumbSrc: string;
+  thumbAlt: string;
+  thumbClassName: string;
+  labelAbove: boolean;
+};
+
+const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
+  {
+    key: "mesh",
+    label: "Dual mesh pockets",
+    thumbSrc: CALLOUT_MESH,
+    thumbAlt: "Mesh pockets on the Defender Tactical interior",
+    thumbClassName: "origin-center scale-[1.24] object-[58%_center]",
+    labelAbove: true,
+  },
+  {
+    key: "zipper",
+    label: "Zipper pocket",
+    thumbSrc: DEFENDER_CALLOUT_ZIPPER,
+    thumbAlt: "Zipper pocket closeup on Defender Tactical",
+    thumbClassName: "object-cover object-center",
+    labelAbove: true,
+  },
+  {
+    key: "strap",
+    label: "Reinforced carry strap",
+    thumbSrc: DEFENDER_CALLOUT_STRAP,
+    thumbAlt: "Reinforced carry strap on Defender Tactical",
+    thumbClassName: "object-cover object-center",
+    labelAbove: true,
+  },
+  {
+    key: "lip",
+    label: "Raised containment lip",
+    thumbSrc: DEFENDER_CALLOUT_LIP,
+    thumbAlt: "Raised containment lip on Defender Tactical",
+    thumbClassName: "object-cover object-center",
+    labelAbove: false,
+  },
+  {
+    key: "cord",
+    label: "Drawstring & cord lock",
+    thumbSrc: DEFENDER_CALLOUT_DRAWSTRING,
+    thumbAlt: "Drawstring and cord lock on Defender Tactical",
+    thumbClassName: "object-cover object-center",
+    labelAbove: false,
+  },
+];
+
+/** Defender Mini hero callout stage — matches `hero-callout-main.png` (1024×600). */
+const DEFENDER_MINI_CALLOUT_VB = { w: 1024, h: 600 } as const;
+
+const DEFENDER_MINI_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
+  {
+    key: "lip",
+    label: "Raised containment lip",
+    thumbSrc: DEFENDER_CALLOUT_LIP,
+    thumbAlt: "Raised containment lip on Defender Mini",
+    thumbClassName: "object-cover object-center",
+    labelAbove: true,
+  },
+  {
+    key: "strap",
+    label: "Reinforced carry strap",
+    thumbSrc: DEFENDER_CALLOUT_STRAP,
+    thumbAlt: "Reinforced carry strap on Defender Mini",
+    thumbClassName: "object-cover object-center",
+    labelAbove: true,
+  },
+  {
+    key: "cord",
+    label: "Drawstring & cord lock",
+    thumbSrc: DEFENDER_CALLOUT_DRAWSTRING,
+    thumbAlt: "Drawstring and cord lock on Defender Mini",
+    thumbClassName: "object-cover object-center",
+    labelAbove: false,
+  },
+];
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
 const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
@@ -113,9 +208,13 @@ const DEFAULT_LAYOUT_LITE: LayoutState = {
 const ALL_CALLOUT_KEYS: CalloutKey[] = ["cord", "lip", "mesh"];
 const MOBILE_CALLOUT_KEYS: CalloutKey[] = ["cord", "mesh", "lip"];
 
-/** Lite omits the mesh pocket callout (no circle or label). Defender: diagram image only until callouts are added. */
-function isDefenderDiagramVariant(variant: LayNGoCalloutDiagramVariant) {
+/** Defender PDPs use fixed hero callout stages instead of draggable cord/lip/mesh layout. */
+function usesFixedDefenderCalloutStage(variant: LayNGoCalloutDiagramVariant) {
   return variant === "defender-mini-16" || variant === "defender-tactical-20";
+}
+
+function isDefenderDiagramVariant(variant: LayNGoCalloutDiagramVariant) {
+  return usesFixedDefenderCalloutStage(variant);
 }
 
 function calloutKeysForVariant(variant: LayNGoCalloutDiagramVariant): CalloutKey[] {
@@ -129,7 +228,7 @@ function mobileCalloutKeysForVariant(variant: LayNGoCalloutDiagramVariant): Call
 }
 
 function diagramUsesLifestyleChrome(variant: LayNGoCalloutDiagramVariant) {
-  return variant === "lifestyle-44" || variant === "lite-18" || isDefenderDiagramVariant(variant);
+  return variant === "lifestyle-44" || variant === "lite-18" || usesFixedDefenderCalloutStage(variant);
 }
 
 const CALLOUT_META: Record<
@@ -236,11 +335,11 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       heroAlt:
         "Lay-n-Go Defender Mini 16 inch tactical mat from above with everyday carry gear organized on olive drab fabric",
       diameterInches: 16,
-      containerMinHClass: "min-h-[min(76.8vh,768px)]",
-      heroWidthClass: "w-[min(75.2vw,736px)]",
+      containerMinHClass: "min-h-[min(92vh,920px)]",
+      heroWidthClass: "w-[min(94vw,920px)]",
       dimensionWrapClass:
-        "relative z-20 mx-auto -mt-[4.25rem] w-[min(75.2vw,736px)] pt-3 pb-2 sm:-mt-[4.75rem] sm:pt-4 sm:pb-3 md:-mt-[6.25rem] md:pt-5 md:pb-4 lg:-mt-[7.25rem] lg:pt-6 lg:pb-5",
-      mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
+        "relative z-20 mx-auto -mt-[6rem] w-[min(94vw,920px)] pt-2 pb-2 sm:-mt-32 sm:pt-3 sm:pb-3 md:-mt-40 md:pt-4 md:pb-4 lg:-mt-44 lg:pt-5 lg:pb-5",
+      mobileHeroMaxClass: "max-w-[min(96vw,36rem)]",
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP,
       cordCalloutSrc: CALLOUT_CORD,
@@ -382,6 +481,260 @@ export function LayNGoMatDiameterLine({
     </div>
   );
 }
+
+function DefenderTacticalLeaderPair({
+  x1,
+  y1,
+  x2,
+  y2,
+}: {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}) {
+  return (
+    <g>
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke="#0a0a0a"
+        strokeWidth={DEFENDER_TACTICAL_LEADER_OUTER}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke="#ffffff"
+        strokeWidth={DEFENDER_TACTICAL_LEADER_INNER}
+        strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
+      />
+    </g>
+  );
+}
+
+function DefenderTacticalMatDot({ cx, cy }: { cx: number; cy: number }) {
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r={DEFENDER_TACTICAL_DOT_R}
+      fill="#ffffff"
+      stroke="#0a0a0a"
+      strokeWidth={DEFENDER_TACTICAL_DOT_STROKE}
+      vectorEffect="non-scaling-stroke"
+    />
+  );
+}
+
+const DEFENDER_CALLOUT_THUMB_FRAME = "relative h-20 w-20 shrink-0 sm:h-24 sm:w-24 md:h-28 md:w-28";
+
+function DefenderHeroCalloutThumb({
+  src,
+  alt,
+  imageClassName,
+}: {
+  src: string;
+  alt: string;
+  imageClassName: string;
+}) {
+  return (
+    <div className={cn(DEFENDER_CALLOUT_THUMB_FRAME, CALLOUT_THUMB_SHADOW)}>
+      <div className={cn(CALLOUT_THUMB_INNER_CLIP, "bg-white")}>
+        <img
+          src={src}
+          alt={alt}
+          className={cn("absolute inset-0 h-full w-full", imageClassName)}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    </div>
+  );
+}
+
+function DefenderHeroCalloutCluster({
+  label,
+  labelAbove,
+  thumbSrc,
+  thumbAlt,
+  thumbClassName,
+  className,
+}: DefenderHeroCalloutItem & { className?: string }) {
+  const labelEl = (
+    <p className="font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
+      {label}
+    </p>
+  );
+
+  return (
+    <div className={cn("z-20 flex flex-col items-center text-center", className)}>
+      {labelAbove ? (
+        <>
+          <div className="mb-2">{labelEl}</div>
+          <DefenderHeroCalloutThumb src={thumbSrc} alt={thumbAlt} imageClassName={thumbClassName} />
+        </>
+      ) : (
+        <>
+          <DefenderHeroCalloutThumb src={thumbSrc} alt={thumbAlt} imageClassName={thumbClassName} />
+          <div className="mt-2">{labelEl}</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function DefenderTactical20CalloutStage({
+  heroSrc,
+  heroAlt,
+}: {
+  heroSrc: string;
+  heroAlt: string;
+}) {
+  const { w: vbW, h: vbH } = DEFENDER_TACTICAL_CALLOUT_VB;
+  const mesh = DEFENDER_TACTICAL_CALLOUTS[0];
+  const zipper = DEFENDER_TACTICAL_CALLOUTS[1];
+  const strap = DEFENDER_TACTICAL_CALLOUTS[2];
+  const lip = DEFENDER_TACTICAL_CALLOUTS[3];
+  const cord = DEFENDER_TACTICAL_CALLOUTS[4];
+
+  return (
+    <div className="relative mx-auto w-full max-w-4xl overflow-visible">
+      <img
+        src={heroSrc}
+        alt={heroAlt}
+        className="block h-auto w-full object-contain"
+        width={vbW}
+        height={vbH}
+        loading="lazy"
+        decoding="async"
+      />
+
+      <svg
+        className="pointer-events-none absolute inset-0 z-10 h-full w-full"
+        viewBox={`0 0 ${vbW} ${vbH}`}
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden
+      >
+        <DefenderTacticalLeaderPair x1={148} y1={918} x2={372} y2={768} />
+        <DefenderTacticalMatDot cx={372} cy={768} />
+        <DefenderTacticalLeaderPair x1={148} y1={948} x2={612} y2={768} />
+        <DefenderTacticalMatDot cx={612} cy={768} />
+        <DefenderTacticalLeaderPair x1={892} y1={168} x2={748} y2={278} />
+        <DefenderTacticalMatDot cx={748} cy={278} />
+        <DefenderTacticalLeaderPair x1={132} y1={152} x2={868} y2={158} />
+        <DefenderTacticalMatDot cx={868} cy={158} />
+        <DefenderTacticalLeaderPair x1={908} y1={912} x2={248} y2={218} />
+        <DefenderTacticalMatDot cx={248} cy={218} />
+        {/* Drawstring: mid-left callout → cord lock (~7 o'clock on mat) */}
+        <DefenderTacticalLeaderPair x1={112} y1={560} x2={178} y2={892} />
+        <DefenderTacticalMatDot cx={178} cy={892} />
+      </svg>
+
+      <DefenderHeroCalloutCluster
+        {...mesh}
+        className="absolute bottom-[3%] left-0 sm:left-[0.5%]"
+      />
+      <DefenderHeroCalloutCluster
+        {...zipper}
+        className="absolute right-0 top-[2.5%] sm:right-[0.5%] sm:top-[3%]"
+      />
+      <DefenderHeroCalloutCluster
+        {...strap}
+        className="absolute left-0 top-[2.5%] sm:left-[0.5%] sm:top-[3%]"
+      />
+      <DefenderHeroCalloutCluster
+        {...lip}
+        className="absolute bottom-[3%] right-0 sm:right-[0.5%]"
+      />
+      <DefenderHeroCalloutCluster
+        {...cord}
+        className="absolute left-[-1rem] top-[56%] sm:left-[-1.25rem] sm:top-[58%]"
+      />
+    </div>
+  );
+}
+
+function DefenderTactical20MobileCallouts() {
+  return (
+    <div className="mt-8 flex w-full flex-col gap-10 px-2 sm:px-4">
+      {DEFENDER_TACTICAL_CALLOUTS.map((c) => (
+        <DefenderHeroCalloutCluster key={c.key} {...c} />
+      ))}
+    </div>
+  );
+}
+
+function DefenderMini16CalloutStage({
+  heroSrc,
+  heroAlt,
+}: {
+  heroSrc: string;
+  heroAlt: string;
+}) {
+  const { w: vbW, h: vbH } = DEFENDER_MINI_CALLOUT_VB;
+  const lip = DEFENDER_MINI_CALLOUTS[0];
+  const strap = DEFENDER_MINI_CALLOUTS[1];
+  const cord = DEFENDER_MINI_CALLOUTS[2];
+
+  return (
+    <div className="relative mx-auto w-full max-w-5xl overflow-visible">
+      <img
+        src={heroSrc}
+        alt={heroAlt}
+        className="block h-auto w-full object-contain"
+        width={vbW}
+        height={vbH}
+        loading="lazy"
+        decoding="async"
+      />
+
+      <svg
+        className="pointer-events-none absolute inset-0 z-10 h-full w-full"
+        viewBox={`0 0 ${vbW} ${vbH}`}
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden
+      >
+        <DefenderTacticalLeaderPair x1={168} y1={158} x2={228} y2={82} />
+        <DefenderTacticalMatDot cx={228} cy={82} />
+        <DefenderTacticalLeaderPair x1={862} y1={158} x2={918} y2={58} />
+        <DefenderTacticalMatDot cx={918} cy={58} />
+        <DefenderTacticalLeaderPair x1={152} y1={518} x2={172} y2={462} />
+        <DefenderTacticalMatDot cx={172} cy={462} />
+      </svg>
+
+      <DefenderHeroCalloutCluster
+        {...lip}
+        className="absolute left-0 top-[2.5%] sm:left-[0.5%] sm:top-[3%]"
+      />
+      <DefenderHeroCalloutCluster
+        {...strap}
+        className="absolute right-0 top-[2.5%] sm:right-[0.5%] sm:top-[3%]"
+      />
+      <DefenderHeroCalloutCluster
+        {...cord}
+        className="absolute bottom-[3%] left-0 sm:left-[0.5%]"
+      />
+    </div>
+  );
+}
+
+function DefenderMini16MobileCallouts() {
+  return (
+    <div className="mt-8 flex w-full flex-col gap-10 px-2 sm:px-4">
+      {DEFENDER_MINI_CALLOUTS.map((c) => (
+        <DefenderHeroCalloutCluster key={c.key} {...c} />
+      ))}
+    </div>
+  );
+}
+
 
 function FloatingCallout({
   calloutKey,
@@ -680,9 +1033,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
     <div
       className={cn(
         "mx-auto max-w-6xl pt-12 sm:pt-14",
-        diagramUsesLifestyleChrome(variant)
-          ? "mt-[calc(3.5rem+100px)] rounded-2xl bg-white px-2 sm:mt-[calc(4rem+100px)] sm:px-4"
-          : "mt-14 sm:mt-16",
+        variant === "defender-mini-16"
+          ? "mt-8 rounded-2xl bg-white px-0 sm:mt-10 sm:px-2"
+          : diagramUsesLifestyleChrome(variant)
+            ? "mt-[calc(3.5rem+100px)] rounded-2xl bg-white px-2 sm:mt-[calc(4rem+100px)] sm:px-4"
+            : "mt-14 sm:mt-16",
       )}
       aria-label={
         variant === "lifestyle-44"
@@ -696,7 +1051,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                 : "Lay-n-Go Large product details"
       }
     >
-      {editorMode ? (
+      {editorMode && !usesFixedDefenderCalloutStage(variant) ? (
         <div className="sticky top-0 z-[250] mb-4 border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
           <strong>Callout edit mode</strong> — drag dots on the mat and drag detail photos. Then Save layout.
         </div>
@@ -734,7 +1089,12 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             variant === "defender-tactical-20" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
           )}
         />
-        {mobileCalloutKeysForVariant(variant).map((k) => {
+        {variant === "defender-tactical-20" ? (
+          <DefenderTactical20MobileCallouts />
+        ) : variant === "defender-mini-16" ? (
+          <DefenderMini16MobileCallouts />
+        ) : (
+          mobileCalloutKeysForVariant(variant).map((k) => {
           const m = CALLOUT_META[k];
           const mobileThumbCrop = cn(
             diagramUsesLifestyleChrome(variant) &&
@@ -798,16 +1158,23 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               {label}
             </div>
           );
-        })}
+        })
+        )}
       </div>
 
       {/* Desktop */}
       <div
         className={cn(
-          "mx-auto hidden w-full max-w-[1100px] md:block md:px-2",
+          "mx-auto hidden w-full md:block md:px-2",
+          variant === "defender-mini-16" ? "max-w-[min(100%,1200px)]" : "max-w-[1100px]",
           diagramUsesLifestyleChrome(variant) && "pb-10 md:pb-12",
         )}
       >
+        {variant === "defender-tactical-20" ? (
+          <DefenderTactical20CalloutStage heroSrc={config.heroSrc} heroAlt={config.heroAlt} />
+        ) : variant === "defender-mini-16" ? (
+          <DefenderMini16CalloutStage heroSrc={config.heroSrc} heroAlt={config.heroAlt} />
+        ) : (
         <div
           ref={containerRef}
           className={cn(
@@ -979,13 +1346,14 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             />
           ))}
         </div>
+        )}
 
         <div className={config.dimensionWrapClass}>
           <DiameterLine inches={config.diameterInches} variant={variant} />
         </div>
       </div>
 
-      {editorMode ? (
+      {editorMode && !usesFixedDefenderCalloutStage(variant) ? (
         <LargeCalloutEditorToolbar
           getLayout={() => layoutRef.current}
           storageKey={config.storageKey}
