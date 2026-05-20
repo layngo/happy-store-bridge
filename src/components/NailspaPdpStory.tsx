@@ -14,8 +14,9 @@ const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-b
 /** Local arrow box under a single callout (nail mat section). */
 const CALLOUT_ARROW_BOX = "mt-2 h-[6.6rem] w-[18rem] shrink-0 sm:h-[7.2rem] sm:w-[19.5rem]";
 
-/** Large workspace so tips can extend past the label without clipping. */
-const MAIN_ARROW_WORKSPACE = "-80 -30 240 110";
+/** Large workspace — must fit dragged joints; old saves used points outside -80..160. */
+const MAIN_ARROW_WORKSPACE = "-170 -85 380 210";
+const LEGACY_MAIN_ARROW_WORKSPACE_OLD = "-80 -30 240 110";
 const DEFAULT_ARROW_STROKE = 1.25;
 const MIN_ARROW_STROKE = 0.75;
 const MAX_ARROW_STROKE = 4;
@@ -28,6 +29,12 @@ const MAX_ARROW_ROTATION = 45;
 /** Lip + handle callout — wide panel so title/body wrap on fewer lines. */
 const LIP_HANDLE_CALLOUT_PANEL =
   "w-[min(92vw,28rem)] min-w-[min(72%,18rem)] max-w-none shrink-0 rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:w-[26rem] sm:px-4 sm:py-3 md:w-[30rem]";
+
+/** Tools + wash callouts on the right — wide horizontal strip (extends left from edge anchor). */
+const EDGE_RIGHT_CALLOUT_PANEL =
+  "w-[min(calc(100vw-1.5rem),28rem)] min-w-[11rem] max-w-none shrink-0 rounded-md bg-white/[0.82] px-3 py-2 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:w-[26rem] sm:px-4 sm:py-2.5 md:w-[30rem]";
+
+const EDGE_RIGHT_CALLOUT_WRAPPER = "!max-w-none w-max";
 
 /** Bordered cards for the two stacked NAILSPA copy blocks under the closed-bag still (mobile). */
 const NAILSPA_STACKED_CALLOUT =
@@ -94,21 +101,31 @@ function mainArrowGeom(start: Point, control: Point, end: Point): ArrowGeom {
 
 function migrateMainArrowGeom(geom: ArrowGeom): ArrowGeom {
   const strokeWidth = geom.strokeWidth ?? DEFAULT_ARROW_STROKE;
+  const headScale = geom.headScale ?? DEFAULT_HEAD_SCALE;
+  const rotation = geom.rotation ?? 0;
 
   if (geom.viewBox === MAIN_ARROW_WORKSPACE) {
-    return {
-      ...geom,
-      strokeWidth,
-      headScale: geom.headScale ?? DEFAULT_HEAD_SCALE,
-      rotation: geom.rotation ?? 0,
-    };
+    return { ...geom, strokeWidth, headScale, rotation };
   }
 
   const vb = parseViewBox(geom.viewBox);
   const ws = parseViewBox(MAIN_ARROW_WORKSPACE);
 
-  if (vb.width >= 200) {
-    return { ...geom, viewBox: MAIN_ARROW_WORKSPACE, strokeWidth };
+  if (geom.viewBox === LEGACY_MAIN_ARROW_WORKSPACE_OLD) {
+    const old = parseViewBox(geom.viewBox);
+    const map = (p: Point) => ({
+      x: ws.minX + ((p.x - old.minX) / old.width) * ws.width,
+      y: ws.minY + ((p.y - old.minY) / old.height) * ws.height,
+    });
+    return {
+      viewBox: MAIN_ARROW_WORKSPACE,
+      start: map(geom.start),
+      control: map(geom.control),
+      end: map(geom.end),
+      strokeWidth,
+      headScale,
+      rotation,
+    };
   }
 
   if (vb.width >= 95 && vb.width <= 105 && vb.minX === 0 && vb.minY === 0) {
@@ -122,6 +139,8 @@ function migrateMainArrowGeom(geom: ArrowGeom): ArrowGeom {
       control: fromStage(geom.control),
       end: fromStage(geom.end),
       strokeWidth,
+      headScale,
+      rotation,
     };
   }
 
@@ -136,49 +155,87 @@ function migrateMainArrowGeom(geom: ArrowGeom): ArrowGeom {
     control: map(geom.control),
     end: map(geom.end),
     strokeWidth,
+    headScale,
+    rotation,
+  };
+}
+
+/** toolsCenter tip was saved off-canvas (x ≈ -160); pulls joints off-screen and stretches the path. */
+function repairToolsCenterArrow(geom: ArrowGeom): ArrowGeom {
+  const vb = parseViewBox(MAIN_ARROW_WORKSPACE);
+  const outOfBounds =
+    geom.end.x < vb.minX + 40 ||
+    geom.start.x > vb.minX + vb.width - 20 ||
+    Math.hypot(geom.end.x - geom.start.x, geom.end.y - geom.start.y) > vb.width * 0.85;
+
+  if (!outOfBounds) {
+    return { ...geom, viewBox: MAIN_ARROW_WORKSPACE };
+  }
+
+  return {
+    ...geom,
+    viewBox: MAIN_ARROW_WORKSPACE,
+    end: { x: 28, y: 40 },
+    strokeWidth: geom.strokeWidth ?? DEFAULT_ARROW_STROKE,
+    headScale: geom.headScale ?? DEFAULT_HEAD_SCALE,
+    rotation: geom.rotation ?? -20,
   };
 }
 
 function normalizeArrowMap(map: ArrowMap): ArrowMap {
   const next = { ...map };
   for (const key of MAIN_CALLOUT_ARROW_KEYS) {
-    next[key] = migrateMainArrowGeom(next[key]);
+    next[key] =
+      key === "toolsCenter" ? repairToolsCenterArrow(migrateMainArrowGeom(next[key])) : migrateMainArrowGeom(next[key]);
   }
   return next;
 }
 
-// Shipped defaults (match saved browser layout when no localStorage).
-const ARROWS: ArrowMap = {
-  mesh: mainArrowGeom(
-    { x: 52, y: 2 },
-    { x: 62, y: 50 },
-    { x: 118, y: 50 },
-  ),
-  lipTop: mainArrowGeom(
-    { x: 105, y: 3 },
-    { x: 74, y: 12 },
-    { x: 22, y: 9 },
-  ),
-  handleRight: mainArrowGeom(
-    { x: 105, y: 3 },
-    { x: 90, y: 26 },
-    { x: 116, y: 44 },
-  ),
-  toolsCenter: mainArrowGeom(
-    { x: 103.51176891130173, y: 3.912429658033902 },
-    { x: 63.83284476954719, y: 31.734448605743918 },
-    { x: -39.900950779786537, y: 5.036993003056402 },
-  ),
-  washSurface: mainArrowGeom(
-    { x: 84.58127121398606, y: 1.7299204937928203 },
-    { x: 54.532862170627816, y: 18.766787929361666 },
-    { x: -5.408713627804482, y: 6.768883369924071 },
-  ),
-  cord: mainArrowGeom(
-    { x: 81.57602163461539, y: 0 },
-    { x: 60.98257211538461, y: 28.715496778569005 },
-    { x: 89.48617788461539, y: 50.33014581213971 },
-  ),
+// Shipped defaults (saved layout; toolsCenter tip kept on-canvas).
+const ARROWS: ArrowMap = normalizeArrowMap({
+  mesh: {
+    viewBox: MAIN_ARROW_WORKSPACE,
+    start: { x: -57.00055531093052, y: -9.46614837646484 },
+    control: { x: -32.20609991891043, y: 0.7793873378208716 },
+    end: { x: -1.324401310512016, y: 0.33388519287109375 },
+    strokeWidth: 1.25,
+  },
+  lipTop: {
+    viewBox: MAIN_ARROW_WORKSPACE,
+    start: { x: 107.67886902195363, y: -64.71631951528511 },
+    control: { x: 121.47009302941902, y: -75.82329177893085 },
+    end: { x: 118.99223913517486, y: -47.223756470308615 },
+    strokeWidth: 1.25,
+  },
+  handleRight: {
+    viewBox: MAIN_ARROW_WORKSPACE,
+    start: { x: 4.504283905029297, y: -66.55971200125556 },
+    control: { x: -23.137951571979144, y: -55.23465582480266 },
+    end: { x: 0.9146998961665673, y: -42.737689850055 },
+    strokeWidth: 1.25,
+  },
+  toolsCenter: {
+    viewBox: MAIN_ARROW_WORKSPACE,
+    start: { x: 135.94736080116496, y: 29.937766550774285 },
+    control: { x: 89.88117523169717, y: 45.55474110702835 },
+    end: { x: 28, y: 40 },
+    strokeWidth: 1.25,
+    rotation: -20,
+  },
+  washSurface: {
+    viewBox: MAIN_ARROW_WORKSPACE,
+    start: { x: 132.84878594534737, y: 81.96707861764091 },
+    control: { x: 84.72006280081612, y: 103.66722324916296 },
+    end: { x: 81.36254937308178, y: 80.26971871512278 },
+    strokeWidth: 1.25,
+  },
+  cord: {
+    viewBox: MAIN_ARROW_WORKSPACE,
+    start: { x: -64.8893209184919, y: 89.62146759033203 },
+    control: { x: -62.71205302647182, y: 105.46503448486328 },
+    end: { x: -37.66089684622629, y: 105.7998559134347 },
+    strokeWidth: 1.25,
+  },
   carry: {
     viewBox: "0 0 100 100",
     start: { x: 97.5, y: 30 },
@@ -191,14 +248,13 @@ const ARROWS: ArrowMap = {
     control: { x: 52, y: 28 },
     end: { x: -102.65920651068159, y: 393.37890625 },
   },
-};
+});
 
-const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v11";
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v12";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
 const MAIN_CALLOUT_BOXES_STORAGE_KEY = "nailspa-story-main-callout-boxes-v3";
-const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 68.19598858173077, bottom: 5.593950320512818 };
 const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 91, y: 86 };
 const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 27.992304437924677, y: 46.79633617401123 };
 
@@ -208,11 +264,13 @@ type MainCalloutAnchor = "start" | "end" | "end-center" | "end-bottom";
 type MainCalloutBoxes = Record<MainCalloutBoxKey, BoxPos>;
 
 const DEFAULT_MAIN_CALLOUT_BOXES: MainCalloutBoxes = {
-  mesh: { x: 4, y: 14 },
+  mesh: { x: 0, y: 18.30925399713033 },
   lipHandle: { x: 78.33745918117191, y: -10 },
-  tools: { x: 100, y: 55.64265213016666 },
-  wash: { x: 100, y: 100 },
+  tools: { x: 97.15595994676862, y: 56.292369930276784 },
+  wash: { x: 75.14803954533168, y: 68.23949953791303 },
 };
+
+const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 77.64717987605503, bottom: 14.289849469150397 };
 
 const MAIN_CALLOUT_ANCHOR: Record<MainCalloutBoxKey, MainCalloutAnchor> = {
   mesh: "start",
@@ -843,12 +901,13 @@ function MainImageCallouts({
         stageRef={boxRef}
         onPosChange={onMainCalloutBoxChange}
         alignItems="items-end"
+        boxClassName={EDGE_RIGHT_CALLOUT_WRAPPER}
       >
-        <div className={CALLOUT_PANEL}>
-          <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
+        <div className={EDGE_RIGHT_CALLOUT_PANEL}>
+          <h2 className="font-heading text-sm font-bold leading-tight tracking-tight text-foreground sm:text-base md:text-lg">
             Room for every tool
           </h2>
-          <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
+          <p className="mt-0.5 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
             A convenient area for all your nail tools in the middle.
           </p>
         </div>
@@ -862,12 +921,13 @@ function MainImageCallouts({
         stageRef={boxRef}
         onPosChange={onMainCalloutBoxChange}
         alignItems="items-end"
+        boxClassName={EDGE_RIGHT_CALLOUT_WRAPPER}
       >
-        <div className={CALLOUT_PANEL}>
-          <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
+        <div className={EDGE_RIGHT_CALLOUT_PANEL}>
+          <h2 className="font-heading text-sm font-bold leading-tight tracking-tight text-foreground sm:text-base md:text-lg">
             Washable application surface
           </h2>
-          <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
+          <p className="mt-0.5 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
             Mess-free manicures on a wipeable surface—spills clean up in seconds.
           </p>
         </div>
@@ -1344,15 +1404,17 @@ export function NailspaPdpStory() {
             <h2 className="font-heading text-base font-bold tracking-tight text-foreground">{LIP_HANDLE_CALLOUT_TITLE}</h2>
             <p className="mt-1 text-xs leading-snug text-neutral-700">{LIP_HANDLE_CALLOUT_BODY}</p>
           </div>
-          <div className={CALLOUT_PANEL}>
-            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Room for every tool</h2>
-            <p className="mt-1 text-xs leading-snug text-neutral-700">
+          <div className={cn(EDGE_RIGHT_CALLOUT_PANEL, "w-full min-w-0")}>
+            <h2 className="font-heading text-base font-bold leading-tight tracking-tight text-foreground">Room for every tool</h2>
+            <p className="mt-0.5 text-xs leading-snug text-neutral-700">
               A convenient area for all your nail tools in the middle.
             </p>
           </div>
-          <div className={CALLOUT_PANEL}>
-            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Washable application surface</h2>
-            <p className="mt-1 text-xs leading-snug text-neutral-700">
+          <div className={cn(EDGE_RIGHT_CALLOUT_PANEL, "w-full min-w-0")}>
+            <h2 className="font-heading text-base font-bold leading-tight tracking-tight text-foreground">
+              Washable application surface
+            </h2>
+            <p className="mt-0.5 text-xs leading-snug text-neutral-700">
               Mess-free manicures on a wipeable surface—spills clean up in seconds.
             </p>
           </div>
