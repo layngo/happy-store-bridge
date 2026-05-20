@@ -139,7 +139,7 @@ export function SubmitReviewDialog({ productHandle, onReviewSubmitted }: SubmitR
         <DialogHeader>
           <DialogTitle className="font-heading">Write a review</DialogTitle>
           <DialogDescription>
-            Verify your Shopify order, then share your experience. Ratings can be set in half-star steps.
+            Verify your Shopify order, then share your experience.
           </DialogDescription>
         </DialogHeader>
 

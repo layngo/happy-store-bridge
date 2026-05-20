@@ -17,6 +17,12 @@ const MAIN_CALLOUT_ARROW_CLASS_END =
 const MAIN_CALLOUT_ARROW_CLASS_START =
   "mt-2 ml-6 h-[6.6rem] w-[18rem] shrink-0 sm:ml-10 sm:h-[7.2rem] sm:w-[19.5rem] md:ml-12";
 
+/** Lip + handle callout — slightly smaller box and arrows than other main-diagram labels. */
+const LIP_HANDLE_CALLOUT_PANEL =
+  "rounded-md bg-white/[0.82] px-2.5 py-2 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:px-3 sm:py-2.5 max-w-[min(46%,300px)] origin-top-right scale-[0.9]";
+const LIP_HANDLE_ARROW_CLASS_END =
+  "mt-1 mr-4 h-[5.25rem] w-[14.5rem] shrink-0 sm:mr-7 sm:h-[5.75rem] sm:w-[15.5rem] md:mr-9";
+
 /** Bordered cards for the two stacked NAILSPA copy blocks under the closed-bag still (mobile). */
 const NAILSPA_STACKED_CALLOUT =
   "rounded-lg border-2 border-neutral-300 bg-white px-3 py-2.5 shadow-md shadow-black/[0.08] sm:px-4 sm:py-3";
@@ -52,27 +58,27 @@ const ARROWS: ArrowMap = {
   },
   lipTop: {
     viewBox: "0 0 120 52",
-    start: { x: 24, y: 52 },
-    control: { x: 58, y: 18 },
-    end: { x: 92, y: 6 },
+    start: { x: 105, y: 3 },
+    control: { x: 74, y: 12 },
+    end: { x: 22, y: 9 },
   },
   handleRight: {
     viewBox: "0 0 120 52",
-    start: { x: 18, y: 52 },
-    control: { x: 72, y: 32 },
-    end: { x: 108, y: 48 },
+    start: { x: 105, y: 3 },
+    control: { x: 90, y: 26 },
+    end: { x: 116, y: 44 },
   },
   toolsCenter: {
     viewBox: "0 0 120 52",
-    start: { x: 108, y: 26 },
-    control: { x: 62, y: 26 },
-    end: { x: 14, y: 28 },
+    start: { x: 103.51176891130173, y: 3.912429658033902 },
+    control: { x: 63.83284476954719, y: 31.734448605743918 },
+    end: { x: -39.900950779786537, y: 5.036993003056402 },
   },
   washSurface: {
     viewBox: "0 0 120 52",
-    start: { x: 98, y: 44 },
-    control: { x: 52, y: 26 },
-    end: { x: 14, y: 14 },
+    start: { x: 84.58127121398606, y: 1.7299204937928203 },
+    control: { x: 54.532862170627816, y: 18.766787929361666 },
+    end: { x: -5.408713627804482, y: 6.768883369924071 },
   },
   cord: {
     viewBox: "0 0 120 52",
@@ -94,11 +100,11 @@ const ARROWS: ArrowMap = {
   },
 };
 
-const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v4";
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v6";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
-const MAIN_CALLOUT_BOXES_STORAGE_KEY = "nailspa-story-main-callout-boxes-v1";
+const MAIN_CALLOUT_BOXES_STORAGE_KEY = "nailspa-story-main-callout-boxes-v3";
 const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 68.19598858173077, bottom: 5.593950320512818 };
 const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 91, y: 86 };
 const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 27.992304437924677, y: 46.79633617401123 };
@@ -110,9 +116,9 @@ type MainCalloutBoxes = Record<MainCalloutBoxKey, BoxPos>;
 
 const DEFAULT_MAIN_CALLOUT_BOXES: MainCalloutBoxes = {
   mesh: { x: 4, y: 14 },
-  lipHandle: { x: 97, y: 2 },
-  tools: { x: 98, y: 38 },
-  wash: { x: 95, y: 91 },
+  lipHandle: { x: 78.33745918117191, y: -10 },
+  tools: { x: 100, y: 55.64265213016666 },
+  wash: { x: 100, y: 100 },
 };
 
 const MAIN_CALLOUT_ANCHOR: Record<MainCalloutBoxKey, MainCalloutAnchor> = {
@@ -203,6 +209,9 @@ function DraggableMainCallout({
   stageRef,
   onPosChange,
   alignItems,
+  yClampMin = 0,
+  yClampMax = 100,
+  boxClassName,
   children,
 }: {
   boxKey: MainCalloutBoxKey;
@@ -212,6 +221,10 @@ function DraggableMainCallout({
   stageRef: React.RefObject<HTMLDivElement | null>;
   onPosChange: (key: MainCalloutBoxKey, next: BoxPos) => void;
   alignItems: "items-start" | "items-end";
+  /** Allow dragging above the diagram (e.g. lip/handle callout). Percent of stage height. */
+  yClampMin?: number;
+  yClampMax?: number;
+  boxClassName?: string;
   children: ReactNode;
 }) {
   const [dragging, setDragging] = useState(false);
@@ -222,6 +235,7 @@ function DraggableMainCallout({
         "absolute z-10 flex max-w-[min(54%,340px)] touch-none flex-col sm:max-w-[360px]",
         alignItems,
         editorMode && "cursor-move",
+        boxClassName,
       )}
       style={{
         left: `${pos.x}%`,
@@ -239,7 +253,7 @@ function DraggableMainCallout({
         if (!editorMode || !dragging || !stageRef.current) return;
         const r = stageRef.current.getBoundingClientRect();
         const xPct = clamp(((e.clientX - r.left) / r.width) * 100, 0, 100);
-        const yPct = clamp(((e.clientY - r.top) / r.height) * 100, 0, 100);
+        const yPct = clamp(((e.clientY - r.top) / r.height) * 100, yClampMin, yClampMax);
         onPosChange(boxKey, { x: xPct, y: yPct });
       }}
       onPointerUp={() => setDragging(false)}
@@ -457,7 +471,7 @@ function MainImageCallouts({
         />
       </DraggableMainCallout>
 
-      {/* Containment lip + carrying handle — two arrows (lip + handle) */}
+      {/* Containment lip + carrying handle — compact box, two arrows (lip rim + handle) */}
       <DraggableMainCallout
         boxKey="lipHandle"
         pos={mainCalloutBoxes.lipHandle}
@@ -466,29 +480,32 @@ function MainImageCallouts({
         stageRef={boxRef}
         onPosChange={onMainCalloutBoxChange}
         alignItems="items-end"
+        yClampMin={-28}
+        yClampMax={100}
+        boxClassName="max-w-[min(48%,320px)] sm:max-w-[300px]"
       >
-        <div className={CALLOUT_PANEL}>
-          <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
+        <div className={LIP_HANDLE_CALLOUT_PANEL}>
+          <h2 className="font-heading text-sm font-bold leading-snug tracking-tight text-foreground sm:text-base md:text-lg">
             {LIP_HANDLE_CALLOUT_TITLE}
           </h2>
-          <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
+          <p className="mt-0.5 text-[10px] leading-snug text-neutral-700 sm:text-[11px] md:text-xs">
             {LIP_HANDLE_CALLOUT_BODY}
           </p>
         </div>
-        <div className="flex w-full max-w-[38rem] flex-col items-end gap-0">
+        <div className={cn("relative shrink-0", LIP_HANDLE_ARROW_CLASS_END)}>
           <CalloutArrow
             variant="lipTop"
             arrows={arrows}
             editorMode={editorMode}
             onArrowChange={onArrowChange}
-            className={MAIN_CALLOUT_ARROW_CLASS_END}
+            className="absolute inset-0 h-full w-full"
           />
           <CalloutArrow
             variant="handleRight"
             arrows={arrows}
             editorMode={editorMode}
             onArrowChange={onArrowChange}
-            className={MAIN_CALLOUT_ARROW_CLASS_END}
+            className="absolute inset-0 h-full w-full"
           />
         </div>
       </DraggableMainCallout>
@@ -939,7 +956,7 @@ export function NailspaPdpStory() {
 
       {/* Main hero — image 1 + callouts */}
       <div className="relative mt-6 px-4 pb-6 sm:mt-8 sm:px-6 sm:pb-10 md:mt-10 md:px-10 md:pb-16 lg:mt-12 lg:px-14">
-        <div className="relative mx-auto max-w-[min(100%,1120px)]">
+        <div className="relative mx-auto max-w-[min(100%,1120px)] overflow-visible">
           <img src={IMG_MAIN} alt="" className="relative z-0 block h-auto w-full" loading="lazy" draggable={false} />
           {/* Vignette on the main story still — desktop + mobile */}
           <div
@@ -950,7 +967,10 @@ export function NailspaPdpStory() {
             }}
           />
           <MainImageCallouts
-            className={cn("absolute inset-0 z-10", editorMode ? "pointer-events-auto" : "pointer-events-none max-md:hidden")}
+            className={cn(
+              "absolute inset-0 z-10 overflow-visible",
+              editorMode ? "pointer-events-auto" : "pointer-events-none max-md:hidden",
+            )}
             arrows={arrows}
             editorMode={editorMode}
             onArrowChange={updateArrow}
