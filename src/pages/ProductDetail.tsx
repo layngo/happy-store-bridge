@@ -363,6 +363,407 @@ const NAILSPA_FAQ_ITEMS = [
   },
 ] as const;
 
+const DEFENDER_MINI_FAQ_ITEMS = [
+  {
+    question: "What is the Lay-n-Go DEFENDER mini?",
+    answer:
+      'The DEFENDER mini is a 16" patented mat-to-bag system designed for Warfighters and military personnel to organize and pack personal essentials for deployments. It opens flat as a containment mat and cinches closed into a fully sealed bag in seconds.',
+  },
+  {
+    question: "How does it work?",
+    answer:
+      "The DEFENDER mini lays completely flat, forming a raised edge to keep all contents contained and visible. Once you're ready to move, simply pull the drawstring to cinch it closed into a secure, sealed bag.",
+  },
+  {
+    question: "What can I store in it?",
+    answer:
+      "It's designed to hold personal mission essentials — tools, first aid items, snacks, batteries, lights, knives, and more. The interior storage pockets keep smaller items organized and accessible.",
+  },
+  {
+    question: "What pockets does it include?",
+    answer:
+      "The DEFENDER mini includes interior storage pockets and an external drawstring pocket with a Velcro® patch for unit ID display (patch not included).",
+  },
+  {
+    question: "Is it washable?",
+    answer:
+      "Yes. The DEFENDER mini is made with washable, durable textiles built to withstand the demands of repeated use and deployment conditions.",
+  },
+  {
+    question: "Does it come with a unit ID patch?",
+    answer:
+      "No. The Velcro® patch is included but the unit ID patch is not. You can attach your own unit patch to the designated Velcro® area.",
+  },
+  {
+    question: "Is the design patented?",
+    answer:
+      "Yes. The DEFENDER is protected by five U.S. patents: #9,084,459 · #10,016,036 · #10,561,213 · #11,116,298 · #11,910,900.",
+  },
+  {
+    question: "Who is this product designed for?",
+    answer:
+      "The DEFENDER mini was specifically designed for Warfighters and military personnel, though it is also well suited for first responders, outdoor enthusiasts, campers, and anyone who needs a fast, organized pack-and-go solution.",
+  },
+  {
+    question: "How do I carry it when packed?",
+    answer:
+      "The DEFENDER mini includes a convenient carrying handle for easy transport once cinched closed.",
+  },
+  {
+    question: "What size is the DEFENDER mini?",
+    answer:
+      'The DEFENDER mini measures 16" and is compact enough to pack alongside other deployment gear without taking up unnecessary space.',
+  },
+] as const;
+
+const DEFENDER_TACTICAL_FAQ_ITEMS = [
+  {
+    question: "What is the Lay-n-Go DEFENDER Tactical?",
+    answer:
+      "The DEFENDER Tactical is a patented utility bag designed in direct response to feedback from active duty and retired service members. Built to address real mission-related challenges, it helps Warfighters organize and pack personal essentials for deployments.",
+  },
+  {
+    question: "How does it work?",
+    answer:
+      "The DEFENDER opens completely flat, forming a raised edge to keep all contents contained and visible. When it's time to move, simply pull the drawstring to cinch it closed into a fully sealed bag in seconds.",
+  },
+  {
+    question: "What makes it different from the DEFENDER mini?",
+    answer:
+      "The DEFENDER Tactical is available in multiple configurations, textiles, and sizes and features two large mesh pockets and a zippered storage pocket for expanded organization options.",
+  },
+  {
+    question: "What pockets does it include?",
+    answer:
+      "The DEFENDER Tactical includes two large interior mesh pockets for visible, easy-access storage, a zippered storage pocket for securing smaller items, and an external drawstring pocket with a Velcro® patch for unit ID display (patch not included).",
+  },
+  {
+    question: "What can I store in it?",
+    answer:
+      "It's designed to hold personal mission essentials — tools, first aid supplies, food, batteries, lights, and more. The mesh pockets keep items visible at a glance while the zippered pocket secures valuables or smaller items.",
+  },
+  {
+    question: "Is it washable?",
+    answer:
+      "Yes. The DEFENDER Tactical is made with washable, durable textiles built to handle the demands of deployment and repeated use.",
+  },
+  {
+    question: "Does it come with a unit ID patch?",
+    answer:
+      "No. The Velcro® patch is included but the unit ID patch is not. You can attach your own unit patch to the designated Velcro® area.",
+  },
+  {
+    question: "Is the design patented?",
+    answer:
+      "Yes. The DEFENDER is protected by four U.S. patents: #9,084,459 · #10,016,036 · #10,561,213 · #11,116,298.",
+  },
+  {
+    question: "Who is this product designed for?",
+    answer:
+      "The DEFENDER Tactical was designed for Warfighters and military personnel, developed with direct input from active duty and retired service members. It is also a strong fit for first responders, law enforcement, outdoor enthusiasts, and anyone needing a fast, organized pack-and-go solution.",
+  },
+  {
+    question: "How do I carry it when packed?",
+    answer:
+      "The DEFENDER Tactical includes a convenient carrying handle for easy transport once cinched closed.",
+  },
+] as const;
+
+const DOG_BED_44_FAQ_ITEMS = [
+  {
+    question: "What is the Lay-n-Go DogBed?",
+    answer:
+      'The Lay-n-Go DogBed is a 44" quilted, fleece-lined mat that converts into a portable carrying bag in seconds. It functions as a traditional dog bed at home and doubles as a travel bag for everything your pet needs on the go.',
+  },
+  {
+    question: "How does it convert into a bag?",
+    answer:
+      "The mat folds quickly and cinches closed using the cord lock and handle system, transforming into a sealed bag that can carry bowls, food, toys, treats, and more.",
+  },
+  {
+    question: "What is the containment lip?",
+    answer:
+      "When laid flat, the DogBed forms a raised edge around the perimeter that keeps your pet's toys, bowls, and belongings contained in one place — perfect for keeping things organized at home or on the go.",
+  },
+  {
+    question: "Is it comfortable for my dog?",
+    answer:
+      "Yes. The DogBed features soft, comfortable quilted padding with a fleece lining for added warmth and comfort, making it a cozy resting spot whether at home or traveling.",
+  },
+  {
+    question: "Can it protect my furniture and car seats?",
+    answer:
+      "Yes. The mat is designed to protect car seats, sofas, and cushions from dirt, fur, and scratches, making it a practical barrier between your pet and your upholstery.",
+  },
+  {
+    question: "Where can I use it?",
+    answer:
+      "The DogBed is designed to go anywhere your dog goes — at home, in the car, on vacation, at outdoor restaurants, or any pet-friendly destination.",
+  },
+  {
+    question: "What fits in the zipper pocket?",
+    answer:
+      "The oversized zippered exterior pocket is large enough to fit a retractable leash, phone, keys, and other small essentials for easy access while on the move.",
+  },
+  {
+    question: "What can the bag carry?",
+    answer:
+      "Once folded into a bag, it easily carries your dog's bowls, food, toys, treats, and everyday essentials all in one place.",
+  },
+  {
+    question: "Is it machine washable?",
+    answer:
+      "Yes. The DogBed is fully machine washable, making cleanup easy after muddy adventures or everyday use.",
+  },
+  {
+    question: "What is included with the DogBed?",
+    answer:
+      "The DogBed includes a wide carry strap for easy travel and storage, a cord lock, cord pocket, carrying handle, and an oversized zippered exterior pocket.",
+  },
+  {
+    question: "What size is the DogBed?",
+    answer:
+      'The DogBed mat measures 44", making it large enough for most dog breeds to stretch out comfortably.',
+  },
+] as const;
+
+const TRAVELER_20_FAQ_ITEMS = [
+  {
+    question: "What is the Lay-n-Go TRAVELER?",
+    answer:
+      'The Lay-n-Go TRAVELER is a patented 20" men\'s Dopp kit that opens completely flat into a contained work surface for toiletries and bath essentials, then cinches closed into a fully sealed, handled pack in seconds.',
+  },
+  {
+    question: "How does it work?",
+    answer:
+      "Simply open the TRAVELER flat to spread out all your toiletries on a clean, dry, contained surface. When you're done, pull the drawstring to cinch everything closed and pack it away — no sorting, no digging, no mess.",
+  },
+  {
+    question: "What is the containment lip?",
+    answer:
+      "When laid flat, the TRAVELER forms a raised edge around the perimeter that keeps all your items from rolling away or falling off the surface, whether you're at home, in a hotel, or at the gym.",
+  },
+  {
+    question: "Will I have to dig through it to find things?",
+    answer:
+      "No. That's the whole point. Everything lays out flat and visible at once, eliminating the need to dig through a traditional toiletry bag to find what you need.",
+  },
+  {
+    question: "Can I put my toothbrush directly on it?",
+    answer:
+      "Yes. The TRAVELER provides a clean, dry surface to place your toothbrush, razor, and other essentials — no more setting items on a hotel bathroom counter.",
+  },
+  {
+    question: "What pockets does it include?",
+    answer:
+      "The TRAVELER includes an interior pocket for small items and a zippered storage pocket for securing essentials, along with a convenient carrying handle.",
+  },
+  {
+    question: "Is it machine washable?",
+    answer:
+      "Yes. The TRAVELER is fully machine washable for easy cleaning after travel or everyday use.",
+  },
+  {
+    question: "What size is it?",
+    answer:
+      'The TRAVELER measures 20" in diameter, providing ample space to lay out all your daily toiletries and bath basics.',
+  },
+  {
+    question: "Where can I use it?",
+    answer:
+      "The TRAVELER is designed for use at home, in hotels, on the road, or at the gym — anywhere you need a clean, organized surface for your essentials.",
+  },
+  {
+    question: "Is the design patented?",
+    answer:
+      "Yes. The TRAVELER is protected by four U.S. patents: #9,084,459 · #10,016,036 · #10,561,213 · #11,116,298.",
+  },
+] as const;
+
+const LITE_18_FAQ_ITEMS = [
+  {
+    question: "What is the Lay-n-Go LITE?",
+    answer:
+      'The Lay-n-Go LITE is a patented 18" personal activity play mat that converts into a carry-all storage bag in seconds. It\'s designed for kids to play, clean up, store, and travel with their small toys — all in one product.',
+  },
+  {
+    question: "How does it work?",
+    answer:
+      "Lay the mat flat for playtime, then simply pull the drawstring to cinch everything closed into a fully sealed bag for storage or travel. No dumping bins, no chasing pieces — cleanup takes seconds.",
+  },
+  {
+    question: "What is the containment lip?",
+    answer:
+      "The LITE features a raised edge around the perimeter that keeps small toys, Lego® bricks, and other tiny pieces contained on the mat during play so nothing rolls away or gets lost.",
+  },
+  {
+    question: "What size is it?",
+    answer:
+      'The LITE measures 18" in diameter, including the cord channel edge, making it the perfect personal-sized play space for one child.',
+  },
+  {
+    question: "Is it good for Lego®?",
+    answer:
+      "Yes. The raised containment lip is ideal for keeping Lego® bricks and other small pieces corralled in one place during play, making cleanup fast and easy.",
+  },
+  {
+    question: "Where can I use it?",
+    answer:
+      "The LITE is designed to go anywhere — on an airplane, in the car, at a restaurant, or at home. Its compact size makes it easy to bring along wherever your child goes.",
+  },
+  {
+    question: "What does the 4-in-1 solution mean?",
+    answer:
+      "The LITE serves as an activity mat, cleanup tool, storage bag, and carry-all — four functions in one product, replacing the need for separate toy bins, bags, and mats.",
+  },
+  {
+    question: "Is it machine washable?",
+    answer:
+      "Yes. The LITE is fully machine washable for easy cleaning after play.",
+  },
+  {
+    question: "Does it have a handle?",
+    answer:
+      "Yes. The LITE includes a convenient carrying handle for easy transport once cinched closed.",
+  },
+  {
+    question: "Is it reversible?",
+    answer:
+      "Yes. The LITE features a reversible play mat with two colors, giving kids options for their play surface.",
+  },
+  {
+    question: "Are toys included?",
+    answer:
+      "No. Toys are not included with the Lay-n-Go LITE.",
+  },
+  {
+    question: "Is the design patented?",
+    answer:
+      "Yes. The LITE is protected by four U.S. patents: #9,084,459 · #10,016,036 · #10,561,213 · #11,116,298.",
+  },
+] as const;
+
+const LIFESTYLE_44_FAQ_ITEMS = [
+  {
+    question: "What is the Lay-n-Go LIFESTYLE?",
+    answer:
+      'The Lay-n-Go LIFESTYLE is a patented 44" high-quality backpack activity play mat designed for quick, effortless toy cleanup. Play for hours, then pull the drawstring to cinch it completely closed for storage and travel — no more dumping bins and baskets.',
+  },
+  {
+    question: "How does it work?",
+    answer:
+      "Lay the mat flat for playtime with the patented raised lip keeping toys contained. When you're done, pull the drawstring and the machine-washable LIFESTYLE cinches completely closed into a sealed backpack you can carry, hang, or store.",
+  },
+  {
+    question: "What is the containment lip?",
+    answer:
+      "The patented raised lip around the perimeter keeps toys on the mat during play so pieces stay contained for hours without rolling away or getting lost.",
+  },
+  {
+    question: "What size is it?",
+    answer:
+      'The LIFESTYLE measures 44" in diameter, providing a spacious activity surface for extended play.',
+  },
+  {
+    question: "What does the 4-in-1 solution mean?",
+    answer:
+      "The LIFESTYLE is a smart all-in-one solution: activity mat, cleanup tool, storage bag, and carry-all — four functions in one product.",
+  },
+  {
+    question: "What pockets does it include?",
+    answer:
+      "The LIFESTYLE includes four mesh velcroed interior pockets for storing special pieces and smaller items.",
+  },
+  {
+    question: "Does it have backpack straps?",
+    answer:
+      "Yes. Convenient backpack straps make it easy to carry once cinched closed, plus an extra handle between the straps for hanging or carrying.",
+  },
+  {
+    question: "What is the purple inner liner?",
+    answer:
+      "The LIFESTYLE includes an additional purple inner rip-stop liner for added durability.",
+  },
+  {
+    question: "Is it machine washable?",
+    answer:
+      "Yes. The LIFESTYLE is fully machine washable for easy cleaning after play.",
+  },
+  {
+    question: "Are toys included?",
+    answer:
+      "No. Toys are not included with the Lay-n-Go LIFESTYLE.",
+  },
+  {
+    question: "Is the design patented?",
+    answer:
+      "Yes. The LIFESTYLE is protected by four U.S. patents: #9,084,459 · #10,016,036 · #10,561,213 · #11,116,298.",
+  },
+] as const;
+
+const LARGE_60_FAQ_ITEMS = [
+  {
+    question: "What is the Lay-n-Go LARGE?",
+    answer:
+      'The Lay-n-Go LARGE is a patented 60" activity play mat that converts into a fully cinched carry-all in seconds. It\'s designed for kids to play, clean up, store, and travel with their toys — all in one product.',
+  },
+  {
+    question: "How does it work?",
+    answer:
+      "Lay the mat flat for playtime, then simply pull the drawstring to cinch all the toys closed into a fully sealed bag for storage or travel. No dumping bins, no chasing pieces — cleanup takes seconds.",
+  },
+  {
+    question: "What is the containment lip?",
+    answer:
+      "The LARGE features a raised edge around the perimeter that keeps Lego® bricks, toys, and other small pieces contained on the mat during play so nothing rolls away or gets lost.",
+  },
+  {
+    question: "What size is it?",
+    answer:
+      'The LARGE measures 60" in diameter, making it the biggest play surface in the Lay-n-Go lineup — ideal for large toy collections or multiple children playing together.',
+  },
+  {
+    question: "Does it have pockets?",
+    answer:
+      "Yes. The LARGE includes four interior mesh pockets to store special pieces, figures, or accessories separately so they stay organized and easy to find.",
+  },
+  {
+    question: "How do I carry it?",
+    answer:
+      "The LARGE includes a wide carry strap, cord lock, cord pocket, and handle making it easy to carry over the shoulder, hang on a hook, or store out of the way when not in use.",
+  },
+  {
+    question: "Where can I use it?",
+    answer:
+      "The LARGE is designed for use at home, outdoors, at the beach, on vacation, or anywhere kids want to play. Its generous 60\" size gives kids plenty of room to spread out.",
+  },
+  {
+    question: "What does the 4-in-1 solution mean?",
+    answer:
+      "The LARGE serves as an activity mat, cleanup tool, storage bag, and carry-all — four functions in one product, replacing the need for separate toy bins, bags, and mats.",
+  },
+  {
+    question: "Is it good for Lego®?",
+    answer:
+      "Yes. The raised containment lip is ideal for keeping Lego® bricks and other small pieces corralled in one place during play, making cleanup fast and effortless.",
+  },
+  {
+    question: "Is it machine washable?",
+    answer:
+      "Yes. The LARGE is fully machine washable for easy cleaning after play.",
+  },
+  {
+    question: "Are toys included?",
+    answer:
+      "No. Toys are not included with the Lay-n-Go LARGE.",
+  },
+  {
+    question: "Is the design patented?",
+    answer:
+      "Yes. The LARGE is protected by four U.S. patents: #9,084,459 · #10,016,036 · #10,561,213 · #11,116,298.",
+  },
+] as const;
+
 /** Shopify “PT##” art for Traveler — feature/sizing/travel diagrams, not product photography. */
 function isLayNGoTraveler20InfographicImageUrl(url: string): boolean {
   return /B00F1TI8T0\.PT\d+/i.test(url);
@@ -604,8 +1005,11 @@ const ProductDetail = () => {
   );
   const layNGoHandle = product?.handle.toLowerCase() ?? "";
   const isLayNGoLarge60 = layNGoHandle === "lay-n-go-large-60";
+  const showLarge60Faq = isLayNGoLarge60;
   const isLayNGoLifestyle44 = layNGoHandle === "lay-n-go-lifestyle-44";
+  const showLifestyle44Faq = isLayNGoLifestyle44;
   const isLayNGoLite18 = layNGoHandle === "lay-n-go-lite-18";
+  const showLite18Faq = isLayNGoLite18;
   const hasLayNGoLargeStoryLayout =
     layNGoHandle === "lay-n-go-large-60" ||
     layNGoHandle === "lay-n-go-lifestyle-44" ||
@@ -616,9 +1020,13 @@ const ProductDetail = () => {
     layNGoHandle.includes("traveler") ||
     layNGoHandle.includes("tech");
   const isLayNGoTraveler20 = layNGoHandle === "lay-n-go-traveler-20";
+  const showTraveler20Faq = isLayNGoTraveler20;
   const isLayNGoTravelDogBed44 = layNGoHandle === "lay-n-go-travel-dog-bed-44";
+  const showDogBed44Faq = isLayNGoTravelDogBed44;
   const isLayNGoDefenderMini16 = layNGoHandle === "lay-n-go-defender-mini-16";
+  const showDefenderMiniFaq = isLayNGoDefenderMini16;
   const isLayNGoDefenderTactical20 = layNGoHandle === "lay-n-go-tactical-bag-20";
+  const showDefenderTacticalFaq = isLayNGoDefenderTactical20;
   const isLayNGoNailspa18 = layNGoHandle === "lay-n-go-nailspa-18";
   const isLayNGoDefender = isLayNGoDefenderMini16 || isLayNGoDefenderTactical20;
   const colorOptionName = useMemo(() => {
@@ -1548,6 +1956,167 @@ const ProductDetail = () => {
                       key={item.question}
                       value={isNailspaPdp ? `nailspa-faq-${idx}` : `cosmo-faq-${idx}`}
                     >
+                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
+            ) : null}
+
+            {showDefenderMiniFaq ? (
+              <section
+                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
+                aria-label="Defender mini FAQ"
+              >
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Defender mini FAQ
+                </h2>
+                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
+                  {DEFENDER_MINI_FAQ_ITEMS.map((item, idx) => (
+                    <AccordionItem key={item.question} value={`defender-mini-faq-${idx}`}>
+                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
+            ) : null}
+
+            {showDefenderTacticalFaq ? (
+              <section
+                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
+                aria-label="Defender Tactical FAQ"
+              >
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Defender Tactical FAQ
+                </h2>
+                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
+                  {DEFENDER_TACTICAL_FAQ_ITEMS.map((item, idx) => (
+                    <AccordionItem key={item.question} value={`defender-tactical-faq-${idx}`}>
+                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
+            ) : null}
+
+            {showDogBed44Faq ? (
+              <section
+                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
+                aria-label="DogBed FAQ"
+              >
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  DogBed FAQ
+                </h2>
+                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
+                  {DOG_BED_44_FAQ_ITEMS.map((item, idx) => (
+                    <AccordionItem key={item.question} value={`dog-bed-44-faq-${idx}`}>
+                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
+            ) : null}
+
+            {showTraveler20Faq ? (
+              <section
+                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
+                aria-label="Traveler FAQ"
+              >
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Traveler FAQ
+                </h2>
+                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
+                  {TRAVELER_20_FAQ_ITEMS.map((item, idx) => (
+                    <AccordionItem key={item.question} value={`traveler-20-faq-${idx}`}>
+                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
+            ) : null}
+
+            {showLite18Faq ? (
+              <section
+                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
+                aria-label="Lite FAQ"
+              >
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Lite FAQ
+                </h2>
+                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
+                  {LITE_18_FAQ_ITEMS.map((item, idx) => (
+                    <AccordionItem key={item.question} value={`lite-18-faq-${idx}`}>
+                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
+            ) : null}
+
+            {showLifestyle44Faq ? (
+              <section
+                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
+                aria-label="Lifestyle FAQ"
+              >
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Lifestyle FAQ
+                </h2>
+                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
+                  {LIFESTYLE_44_FAQ_ITEMS.map((item, idx) => (
+                    <AccordionItem key={item.question} value={`lifestyle-44-faq-${idx}`}>
+                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
+                        {item.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
+                        {item.answer}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
+            ) : null}
+
+            {showLarge60Faq ? (
+              <section
+                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
+                aria-label="Large FAQ"
+              >
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  Large FAQ
+                </h2>
+                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
+                  {LARGE_60_FAQ_ITEMS.map((item, idx) => (
+                    <AccordionItem key={item.question} value={`large-60-faq-${idx}`}>
                       <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
                         {item.question}
                       </AccordionTrigger>
