@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { averageReviewRating, type CustomerReview } from "@/data/customerReviews";
+import {
+  averageReviewRating,
+  isLayNGoPlayReviewsPdp,
+  PLAY_CUSTOMER_REVIEWS_DISCLAIMER,
+  type CustomerReview,
+} from "@/data/customerReviews";
 import { fetchSubmittedReviews } from "@/lib/reviewApi";
 import { StarRating } from "@/components/StarRating";
 import { SubmitReviewDialog } from "@/components/SubmitReviewDialog";
@@ -109,6 +114,11 @@ export function CustomerReviewsSection({
           >
             {heading}
           </h2>
+          {isLayNGoPlayReviewsPdp(productHandle) ? (
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              {PLAY_CUSTOMER_REVIEWS_DISCLAIMER}
+            </p>
+          ) : null}
           {reviews.length > 0 ? (
             <div className="mt-4 flex items-center gap-3">
               <StarRating rating={averageRating} size="lg" />

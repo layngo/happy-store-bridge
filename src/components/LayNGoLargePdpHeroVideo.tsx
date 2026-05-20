@@ -1,17 +1,14 @@
 import { cn } from "@/lib/utils";
 import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 
-const NAILSPA_VIMEO_ID = "1191237502";
+const LARGE_VIMEO_ID = "1194113086";
 
-type NailspaPdpHeroVideoProps = {
+type LayNGoLargePdpHeroVideoProps = {
   className?: string;
 };
 
-/**
- * 16:9 Vimeo embed sized to fill the frame (CollectionCard / home hero pattern).
- * Avoids scaling the iframe itself, which can collapse the player to zero height.
- */
-export function NailspaPdpHeroVideo({ className }: NailspaPdpHeroVideoProps) {
+/** 16:9 Vimeo embed with pause control — matches Nailspa / home hero pattern. */
+export function LayNGoLargePdpHeroVideo({ className }: LayNGoLargePdpHeroVideoProps) {
   return (
     <div
       className={cn(
@@ -23,8 +20,8 @@ export function NailspaPdpHeroVideo({ className }: NailspaPdpHeroVideoProps) {
         <div className="absolute left-1/2 top-1/2 aspect-video h-full -translate-x-1/2 -translate-y-1/2">
           <PausableAutoplayEmbed
             provider="vimeo"
-            videoId={NAILSPA_VIMEO_ID}
-            title="Lay-n-Go NAILSPA product video"
+            videoId={LARGE_VIMEO_ID}
+            title="Lay-n-Go Large product video"
             className="absolute inset-0 h-full w-full"
             iframeClassName="absolute inset-0 h-full w-full border-0"
           />

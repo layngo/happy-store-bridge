@@ -154,6 +154,17 @@ const LIFESTYLE_MESH_POCKET_DY_HALF_20PX = 1.33 + (20 / 768) * 100 * 0.5;
 
 type CalloutKey = "cord" | "lip" | "mesh" | "handle";
 
+/** Lite 18″ detail assets have extra padding — zoom so handle, cord/pocket, and lip fill the circle. */
+const LITE_18_THUMB_CROP: Partial<Record<CalloutKey, string>> = {
+  handle: "origin-center scale-[1.52] object-cover object-center",
+  cord: "origin-center scale-[1.4] object-cover object-[50%_44%]",
+  lip: "origin-center scale-[1.42] object-cover object-[34%_center]",
+};
+
+function lite18ThumbCropClass(calloutKey: CalloutKey) {
+  return LITE_18_THUMB_CROP[calloutKey] ?? "object-cover object-center";
+}
+
 type Pt = { x: number; y: number };
 
 type LayoutState = {
@@ -784,15 +795,13 @@ function FloatingCallout({
   const lifestyleThumb = diagramUsesLifestyleChrome(variant);
   /** Lifestyle 44″ only — Lite uses full-size cord thumb and lip-like stacking (see `textAbove`). */
   const cordLifestyleCompact = lifestyleThumb && calloutKey === "cord" && variant !== "lite-18";
-  const cordLiteCrop = variant === "lite-18" && calloutKey === "cord";
-  const handleLiteCrop = variant === "lite-18" && calloutKey === "handle";
+  const lite18Thumb = variant === "lite-18";
   const textAbove = variant === "lite-18" && calloutKey === "cord" ? false : metaTextAbove;
-  const lipLifestyleTightCrop = lifestyleThumb && calloutKey === "lip";
+  const lipLifestyleTightCrop = lifestyleThumb && calloutKey === "lip" && variant !== "lite-18";
   const meshLifestyleTightCrop = lifestyleThumb && calloutKey === "mesh";
 
   const thumbCropClass = (() => {
-    if (cordLiteCrop) return "object-cover object-[50%_40%]";
-    if (handleLiteCrop) return "object-cover object-center";
+    if (lite18Thumb) return lite18ThumbCropClass(calloutKey);
     if (cordLifestyleCompact) return "origin-center scale-[1.26] object-[center_18%]";
     if (lipLifestyleTightCrop) return "origin-center scale-[1.24] object-[30%_center]";
     if (meshLifestyleTightCrop) return "origin-center scale-[1.24] object-[58%_center]";
@@ -1126,13 +1135,15 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           mobileCalloutKeysForVariant(variant).map((k) => {
           const m = CALLOUT_META[k];
           const mobileThumbCrop = cn(
-            variant === "lite-18" && k === "cord" && "object-cover object-[50%_40%]",
-            variant === "lite-18" && k === "handle" && "object-cover object-center",
+            variant === "lite-18" && lite18ThumbCropClass(k),
             diagramUsesLifestyleChrome(variant) &&
               k === "cord" &&
               variant !== "lite-18" &&
               "origin-center scale-[1.26] object-[center_18%]",
-            diagramUsesLifestyleChrome(variant) && k === "lip" && "origin-center scale-[1.24] object-[30%_center]",
+            diagramUsesLifestyleChrome(variant) &&
+              k === "lip" &&
+              variant !== "lite-18" &&
+              "origin-center scale-[1.24] object-[30%_center]",
             diagramUsesLifestyleChrome(variant) && k === "mesh" && "origin-center scale-[1.24] object-[58%_center]",
           );
           const thumb = (

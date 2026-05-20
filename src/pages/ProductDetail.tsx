@@ -36,6 +36,7 @@ import {
   isNailspa18Product,
 } from "@/components/Nailspa18ColorSelector";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
+import { LayNGoLargePdpHeroVideo } from "@/components/LayNGoLargePdpHeroVideo";
 import { NailspaPdpHeroVideo } from "@/components/NailspaPdpHeroVideo";
 import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
@@ -1672,7 +1673,12 @@ const ProductDetail = () => {
   );
 
   return (
-    <div className={cn("min-h-dvh flex flex-col", isCosmoPdp ? "bg-white" : "bg-background")}>
+    <div
+      className={cn(
+        "min-h-dvh flex flex-col",
+        isNailspaPdp ? "bg-background" : isCosmoPdp ? "bg-white" : "bg-background",
+      )}
+    >
       <Header />
       <main id="main-content" className="container py-8 flex-1">
         <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6">
@@ -1726,7 +1732,12 @@ const ProductDetail = () => {
               </h1>
             </header>
 
-            <section className="-mx-4 overflow-x-hidden bg-white px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10">
+            <section
+              className={cn(
+                "-mx-4 overflow-x-hidden px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10",
+                isNailspaPdp ? "bg-background" : "bg-white",
+              )}
+            >
               <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
                 <div className="min-w-0 space-y-4">
                   <div
@@ -1884,7 +1895,11 @@ const ProductDetail = () => {
               className="mt-14 sm:mt-16"
               aria-label={
                 layNGoHeroGallery
-                  ? "Product image showcase"
+                  ? isLayNGoLarge60
+                    ? "Lay-n-Go Large product video"
+                    : isNailspa18Product(product.handle)
+                      ? "NAILSPA product video"
+                      : "Product image showcase"
                   : isNailspa18Product(product.handle)
                     ? "NAILSPA product video"
                     : cosmoYoutubeId
@@ -1984,17 +1999,25 @@ const ProductDetail = () => {
                         </Button>
                       </div>
                     </div>
+                    {isNailspaPdp ? (
+                      <div className="mt-8 w-full sm:mt-10">
+                        <NailspaPdpHeroVideo />
+                      </div>
+                    ) : null}
+                    {isLayNGoLarge60 ? (
+                      <div className="mt-8 w-full sm:mt-10">
+                        <LayNGoLargePdpHeroVideo />
+                      </div>
+                    ) : null}
                   </div>
                 ) : (
                   <div
                     className={cn(
-                      "relative w-full overflow-hidden rounded-2xl border border-border bg-white shadow-inner",
-                      isNailspa18Product(product.handle) ? "aspect-[4/3]" : "aspect-video bg-muted/40",
+                      "relative w-full overflow-hidden rounded-2xl border border-border bg-white shadow-inner aspect-video",
+                      !cosmoYoutubeId && "bg-muted/40",
                     )}
                   >
-                    {isNailspa18Product(product.handle) ? (
-                      <NailspaPdpHeroVideo variant="bottom" />
-                    ) : cosmoYoutubeId ? (
+                    {cosmoYoutubeId ? (
                       <PausableAutoplayEmbed
                         provider="youtube"
                         videoId={cosmoYoutubeId}
@@ -2015,14 +2038,6 @@ const ProductDetail = () => {
                 )}
               </div>
             </section>
-
-            {isNailspaPdp ? (
-              <section className="mt-14 sm:mt-16" aria-label="NAILSPA product video">
-                <div className="mx-auto w-full max-w-4xl">
-                  <NailspaPdpHeroVideo variant="card" />
-                </div>
-              </section>
-            ) : null}
 
             {isCosmoStoryPdp ? <CosmoPdpVideoGallery /> : null}
 

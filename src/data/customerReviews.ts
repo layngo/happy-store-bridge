@@ -589,6 +589,10 @@ export function isLayNGoPlayReviewsPdp(handle: string): boolean {
   return h === "lay-n-go-large-60" || h === "lay-n-go-lifestyle-44" || h === "lay-n-go-lite-18";
 }
 
+/** Shown under “What Our Customers Are Saying” on Large, Lifestyle, and Lite PDPs. */
+export const PLAY_CUSTOMER_REVIEWS_DISCLAIMER =
+  "Reviews in this section are shared across Lay-n-Go play products—the Large (60\"), Lifestyle (44\"), and Lite (18\") mats—not only the product on this page.";
+
 const DEFENDER_UTILITY_PHOTOS = [
   "/products/lay-n-go-tactical-bag-20/reviews/utility-open-1.jpg",
   "/products/lay-n-go-tactical-bag-20/reviews/utility-scale-2.jpg",

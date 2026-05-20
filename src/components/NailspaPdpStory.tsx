@@ -953,7 +953,7 @@ function MainImageCallouts({
 function BottomProductImage({ className }: { className?: string }) {
   return (
     <div
-      className={cn("relative w-full bg-white", className)}
+      className={cn("relative w-full bg-background", className)}
       aria-label="Lay-n-Go NAILSPA closed with carry handle"
     >
       <img
@@ -1046,7 +1046,7 @@ export function NailspaPdpStory() {
 
   return (
     <section
-      className="relative left-1/2 -ml-[50vw] w-screen bg-white pt-10 text-foreground sm:pt-12 md:pt-14"
+      className="relative left-1/2 -ml-[50vw] w-screen bg-background pt-10 text-foreground sm:pt-12 md:pt-14"
       aria-labelledby="nailspa-story-headline"
     >
       <div className="fixed right-3 top-3 z-[320]">
@@ -1156,7 +1156,7 @@ export function NailspaPdpStory() {
       </div>
 
       {/* Mobile: tiny spacer — bottom hero + cards sit closer to cord callouts */}
-      <div className="pointer-events-none h-1 w-full shrink-0 bg-white md:hidden" aria-hidden />
+      <div className="pointer-events-none h-1 w-full shrink-0 bg-background md:hidden" aria-hidden />
 
       {/* Bottom — closed bag photo, full-bleed left (hand at page edge) */}
       <div className="w-full pb-14 pt-0 sm:pb-16 sm:pt-6 md:pt-10">

@@ -89,9 +89,8 @@ function DefenderFlankStrip({
     "block h-auto w-full max-w-none object-cover",
     flankMaxH,
   );
-  const defenderFlankUncrop =
-    variant === "defender-mini-16" || variant === "defender-tactical-20";
-  const liteFlankLeftUncrop = variant === "lite-18";
+  const flankUncrop =
+    variant === "defender-mini-16" || variant === "defender-tactical-20" || variant === "lite-18";
 
   const flankContainCell = cn(
     "flex min-h-0 w-full items-center justify-center bg-white px-2 py-3 sm:px-3 sm:py-4",
@@ -100,7 +99,7 @@ function DefenderFlankStrip({
   const flankContainImg = cn(
     "block h-auto w-full max-w-full object-contain",
     flankMaxH,
-    variant === "defender-mini-16" || liteFlankLeftUncrop ? "object-left" : "object-center",
+    variant === "defender-mini-16" || variant === "lite-18" ? "object-left" : "object-center",
   );
   const flankContainImgRight = cn(
     "block h-auto w-full max-w-full object-contain object-right",
@@ -113,7 +112,7 @@ function DefenderFlankStrip({
       aria-label={ariaLabel}
     >
       <div className="grid w-full grid-cols-2 gap-0 bg-white">
-        {defenderFlankUncrop ? (
+        {flankUncrop ? (
           <>
             <div className={flankContainCell}>
               <img src={leftSrc} alt={leftAlt} className={flankContainImg} loading="lazy" decoding="async" />
@@ -121,19 +120,6 @@ function DefenderFlankStrip({
             <div className={flankContainCell}>
               <img src={rightSrc} alt={rightAlt} className={flankContainImgRight} loading="lazy" decoding="async" />
             </div>
-          </>
-        ) : liteFlankLeftUncrop ? (
-          <>
-            <div className={flankContainCell}>
-              <img src={leftSrc} alt={leftAlt} className={flankContainImg} loading="lazy" decoding="async" />
-            </div>
-            <img
-              src={rightSrc}
-              alt={rightAlt}
-              className={cn(flankCoverClass, "object-right")}
-              loading="lazy"
-              decoding="async"
-            />
           </>
         ) : (
           <>
