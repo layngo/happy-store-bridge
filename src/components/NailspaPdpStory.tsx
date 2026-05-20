@@ -2,7 +2,7 @@
  * Editorial strip below NAILSPA PDP hero — matches Cosmo full-bleed white story rhythm.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const HEADLINE = "THE NAIL BAG THAT ACTUALLY GETS IT.";
@@ -94,13 +94,40 @@ const ARROWS: ArrowMap = {
   },
 };
 
-const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v3";
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v4";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
+const MAIN_CALLOUT_BOXES_STORAGE_KEY = "nailspa-story-main-callout-boxes-v1";
 const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 68.19598858173077, bottom: 5.593950320512818 };
 const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 91, y: 86 };
 const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 27.992304437924677, y: 46.79633617401123 };
+
+type MainCalloutBoxKey = "mesh" | "lipHandle" | "tools" | "wash";
+type MainCalloutAnchor = "start" | "end" | "end-center" | "end-bottom";
+
+type MainCalloutBoxes = Record<MainCalloutBoxKey, BoxPos>;
+
+const DEFAULT_MAIN_CALLOUT_BOXES: MainCalloutBoxes = {
+  mesh: { x: 4, y: 14 },
+  lipHandle: { x: 97, y: 2 },
+  tools: { x: 98, y: 38 },
+  wash: { x: 95, y: 91 },
+};
+
+const MAIN_CALLOUT_ANCHOR: Record<MainCalloutBoxKey, MainCalloutAnchor> = {
+  mesh: "start",
+  lipHandle: "end",
+  tools: "end-center",
+  wash: "end-bottom",
+};
+
+function anchorTransform(anchor: MainCalloutAnchor): string | undefined {
+  if (anchor === "end") return "translate(-100%, 0)";
+  if (anchor === "end-center") return "translate(-100%, -50%)";
+  if (anchor === "end-bottom") return "translate(-100%, -100%)";
+  return undefined;
+}
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -156,6 +183,74 @@ function loadBoxPosFromStorage(key: string): BoxPos | null {
   } catch {
     return null;
   }
+}
+
+function loadMainCalloutBoxesFromStorage(): MainCalloutBoxes | null {
+  try {
+    const raw = localStorage.getItem(MAIN_CALLOUT_BOXES_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as MainCalloutBoxes;
+  } catch {
+    return null;
+  }
+}
+
+function DraggableMainCallout({
+  boxKey,
+  pos,
+  anchor,
+  editorMode,
+  stageRef,
+  onPosChange,
+  alignItems,
+  children,
+}: {
+  boxKey: MainCalloutBoxKey;
+  pos: BoxPos;
+  anchor: MainCalloutAnchor;
+  editorMode?: boolean;
+  stageRef: React.RefObject<HTMLDivElement | null>;
+  onPosChange: (key: MainCalloutBoxKey, next: BoxPos) => void;
+  alignItems: "items-start" | "items-end";
+  children: ReactNode;
+}) {
+  const [dragging, setDragging] = useState(false);
+
+  return (
+    <div
+      className={cn(
+        "absolute z-10 flex max-w-[min(54%,340px)] touch-none flex-col sm:max-w-[360px]",
+        alignItems,
+        editorMode && "cursor-move",
+      )}
+      style={{
+        left: `${pos.x}%`,
+        top: `${pos.y}%`,
+        transform: anchorTransform(anchor),
+      }}
+      onPointerDown={(e) => {
+        if (!editorMode) return;
+        e.preventDefault();
+        e.stopPropagation();
+        e.currentTarget.setPointerCapture(e.pointerId);
+        setDragging(true);
+      }}
+      onPointerMove={(e) => {
+        if (!editorMode || !dragging || !stageRef.current) return;
+        const r = stageRef.current.getBoundingClientRect();
+        const xPct = clamp(((e.clientX - r.left) / r.width) * 100, 0, 100);
+        const yPct = clamp(((e.clientY - r.top) / r.height) * 100, 0, 100);
+        onPosChange(boxKey, { x: xPct, y: yPct });
+      }}
+      onPointerUp={() => setDragging(false)}
+      onPointerCancel={() => setDragging(false)}
+    >
+      {editorMode ? (
+        <p className="mb-1 self-stretch text-[10px] font-semibold text-neutral-700">Drag box — {boxKey}</p>
+      ) : null}
+      {children}
+    </div>
+  );
 }
 
 function RenderArrow({
@@ -300,6 +395,8 @@ function MainImageCallouts({
   arrows,
   editorMode,
   onArrowChange,
+  mainCalloutBoxes,
+  onMainCalloutBoxChange,
   cordBoxPos,
   onCordBoxPosChange,
 }: {
@@ -307,6 +404,8 @@ function MainImageCallouts({
   arrows: ArrowMap;
   editorMode?: boolean;
   onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  mainCalloutBoxes: MainCalloutBoxes;
+  onMainCalloutBoxChange: (key: MainCalloutBoxKey, next: BoxPos) => void;
   cordBoxPos: CordBoxPos;
   onCordBoxPosChange: (next: CordBoxPos) => void;
 }) {
@@ -332,8 +431,15 @@ function MainImageCallouts({
       onPointerUp={() => setDragCordBox(false)}
       onPointerCancel={() => setDragCordBox(false)}
     >
-      {/* Mesh — left */}
-      <div className="absolute left-[1%] top-[14%] z-10 flex max-w-[min(48%,220px)] flex-col items-start sm:left-[3%] sm:top-[12%] sm:max-w-[240px] md:left-[4%] md:top-[14%] md:max-w-[260px] lg:max-w-[280px]">
+      <DraggableMainCallout
+        boxKey="mesh"
+        pos={mainCalloutBoxes.mesh}
+        anchor={MAIN_CALLOUT_ANCHOR.mesh}
+        editorMode={editorMode}
+        stageRef={boxRef}
+        onPosChange={onMainCalloutBoxChange}
+        alignItems="items-start"
+      >
         <div className={CALLOUT_PANEL}>
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Mesh pockets
@@ -349,10 +455,18 @@ function MainImageCallouts({
           onArrowChange={onArrowChange}
           className={MAIN_CALLOUT_ARROW_CLASS_START}
         />
-      </div>
+      </DraggableMainCallout>
 
-      {/* Containment lip + carrying handle — combined, ~12–2 o'clock */}
-      <div className="absolute right-[1%] top-[-2%] z-10 flex max-w-[min(54%,300px)] flex-col items-end sm:right-[2%] sm:top-[-1%] sm:max-w-[320px] md:right-[3%] md:max-w-[340px]">
+      {/* Containment lip + carrying handle — two arrows (lip + handle) */}
+      <DraggableMainCallout
+        boxKey="lipHandle"
+        pos={mainCalloutBoxes.lipHandle}
+        anchor={MAIN_CALLOUT_ANCHOR.lipHandle}
+        editorMode={editorMode}
+        stageRef={boxRef}
+        onPosChange={onMainCalloutBoxChange}
+        alignItems="items-end"
+      >
         <div className={CALLOUT_PANEL}>
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             {LIP_HANDLE_CALLOUT_TITLE}
@@ -361,7 +475,7 @@ function MainImageCallouts({
             {LIP_HANDLE_CALLOUT_BODY}
           </p>
         </div>
-        <div className="flex w-full max-w-[38rem] flex-wrap justify-end gap-1 sm:gap-2">
+        <div className="flex w-full max-w-[38rem] flex-col items-end gap-0">
           <CalloutArrow
             variant="lipTop"
             arrows={arrows}
@@ -377,10 +491,17 @@ function MainImageCallouts({
             className={MAIN_CALLOUT_ARROW_CLASS_END}
           />
         </div>
-      </div>
+      </DraggableMainCallout>
 
-      {/* Tool area — 3 o'clock, arrow to mat center */}
-      <div className="absolute right-[1%] top-[36%] z-10 flex max-w-[min(48%,240px)] -translate-y-1/2 flex-col items-end sm:right-[2%] sm:max-w-[260px] md:top-[38%] md:max-w-[280px]">
+      <DraggableMainCallout
+        boxKey="tools"
+        pos={mainCalloutBoxes.tools}
+        anchor={MAIN_CALLOUT_ANCHOR.tools}
+        editorMode={editorMode}
+        stageRef={boxRef}
+        onPosChange={onMainCalloutBoxChange}
+        alignItems="items-end"
+      >
         <div className={CALLOUT_PANEL}>
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Room for every tool
@@ -396,10 +517,17 @@ function MainImageCallouts({
           onArrowChange={onArrowChange}
           className={MAIN_CALLOUT_ARROW_CLASS_END}
         />
-      </div>
+      </DraggableMainCallout>
 
-      {/* Washable surface — ~5 o'clock, finger painting */}
-      <div className="absolute right-[3%] bottom-[10%] z-10 flex max-w-[min(52%,260px)] flex-col items-end sm:right-[4%] sm:bottom-[11%] sm:max-w-[280px] md:right-[5%] md:bottom-[9%] md:max-w-[300px]">
+      <DraggableMainCallout
+        boxKey="wash"
+        pos={mainCalloutBoxes.wash}
+        anchor={MAIN_CALLOUT_ANCHOR.wash}
+        editorMode={editorMode}
+        stageRef={boxRef}
+        onPosChange={onMainCalloutBoxChange}
+        alignItems="items-end"
+      >
         <div className={CALLOUT_PANEL}>
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Washable application surface
@@ -415,7 +543,7 @@ function MainImageCallouts({
           onArrowChange={onArrowChange}
           className={MAIN_CALLOUT_ARROW_CLASS_END}
         />
-      </div>
+      </DraggableMainCallout>
 
       {/* Cord lock — lower right */}
       <div
@@ -685,6 +813,7 @@ function NailMatCalloutEditor({
 export function NailspaPdpStory() {
   const [arrows, setArrows] = useState<ArrowMap>(ARROWS);
   const [editorMode, setEditorMode] = useState(false);
+  const [mainCalloutBoxes, setMainCalloutBoxes] = useState<MainCalloutBoxes>(DEFAULT_MAIN_CALLOUT_BOXES);
   const [cordBoxPos, setCordBoxPos] = useState<CordBoxPos>(DEFAULT_CORD_BOX_POS);
   const [carryBoxPos, setCarryBoxPos] = useState<BoxPos>(DEFAULT_CARRY_BOX_POS);
   const [nailMatBoxPos, setNailMatBoxPos] = useState<BoxPos>(DEFAULT_NAIL_MAT_BOX_POS);
@@ -696,6 +825,7 @@ export function NailspaPdpStory() {
     setEditorMode(enabled);
     if (enabled) {
       setArrows(loadArrowsFromStorage() ?? ARROWS);
+      setMainCalloutBoxes(loadMainCalloutBoxesFromStorage() ?? DEFAULT_MAIN_CALLOUT_BOXES);
       setCordBoxPos(loadCordBoxFromStorage() ?? DEFAULT_CORD_BOX_POS);
       setCarryBoxPos(loadBoxPosFromStorage(CARRY_BOX_STORAGE_KEY) ?? DEFAULT_CARRY_BOX_POS);
       setNailMatBoxPos(loadBoxPosFromStorage(NAIL_MAT_BOX_STORAGE_KEY) ?? DEFAULT_NAIL_MAT_BOX_POS);
@@ -706,9 +836,14 @@ export function NailspaPdpStory() {
     setArrows((prev) => ({ ...prev, [key]: next }));
   };
 
+  const updateMainCalloutBox = (key: MainCalloutBoxKey, next: BoxPos) => {
+    setMainCalloutBoxes((prev) => ({ ...prev, [key]: next }));
+  };
+
   const save = () => {
     try {
       localStorage.setItem(ARROW_STORAGE_KEY, JSON.stringify(arrows));
+      localStorage.setItem(MAIN_CALLOUT_BOXES_STORAGE_KEY, JSON.stringify(mainCalloutBoxes));
       localStorage.setItem(CORD_BOX_STORAGE_KEY, JSON.stringify(cordBoxPos));
       localStorage.setItem(CARRY_BOX_STORAGE_KEY, JSON.stringify(carryBoxPos));
       localStorage.setItem(NAIL_MAT_BOX_STORAGE_KEY, JSON.stringify(nailMatBoxPos));
@@ -724,6 +859,7 @@ export function NailspaPdpStory() {
         JSON.stringify(
           {
             arrows,
+            mainCalloutBoxes,
             cordBoxPos,
             carryBoxPos,
             nailMatBoxPos,
@@ -750,14 +886,15 @@ export function NailspaPdpStory() {
       JSON.stringify(
         {
           arrows,
+          mainCalloutBoxes,
           cordBoxPos,
-            carryBoxPos,
-            nailMatBoxPos,
+          carryBoxPos,
+          nailMatBoxPos,
         },
         null,
         2,
       ),
-    [arrows, cordBoxPos, carryBoxPos, nailMatBoxPos],
+    [arrows, mainCalloutBoxes, cordBoxPos, carryBoxPos, nailMatBoxPos],
   );
 
   return (
@@ -768,15 +905,27 @@ export function NailspaPdpStory() {
       <div className="fixed right-3 top-3 z-[320]">
         <button
           type="button"
-          onClick={() => setEditorMode((v) => !v)}
+          onClick={() => {
+            setEditorMode((v) => {
+              const next = !v;
+              if (next) {
+                setArrows(loadArrowsFromStorage() ?? ARROWS);
+                setMainCalloutBoxes(loadMainCalloutBoxesFromStorage() ?? DEFAULT_MAIN_CALLOUT_BOXES);
+                setCordBoxPos(loadCordBoxFromStorage() ?? DEFAULT_CORD_BOX_POS);
+                setCarryBoxPos(loadBoxPosFromStorage(CARRY_BOX_STORAGE_KEY) ?? DEFAULT_CARRY_BOX_POS);
+                setNailMatBoxPos(loadBoxPosFromStorage(NAIL_MAT_BOX_STORAGE_KEY) ?? DEFAULT_NAIL_MAT_BOX_POS);
+              }
+              return next;
+            });
+          }}
           className="rounded-md border border-neutral-300 bg-white/95 px-3 py-1.5 text-xs font-semibold text-neutral-900 shadow-sm backdrop-blur-sm"
         >
-          {editorMode ? "Stop editing arrows" : "Edit arrows"}
+          {editorMode ? "Stop editing" : "Edit diagram"}
         </button>
       </div>
       {editorMode ? (
         <div className="sticky top-0 z-[250] border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
-          <strong>Arrow edit mode</strong> - drag dots on arrows, then Save/Copy.
+          <strong>Arrow edit mode</strong> — drag callout boxes and arrow dots (blue start, green curve, red tip), then Save/Copy.
         </div>
       ) : null}
       <div className="px-5 pb-12 sm:px-8 sm:pb-14 md:pb-16 lg:pb-20">
@@ -805,6 +954,8 @@ export function NailspaPdpStory() {
             arrows={arrows}
             editorMode={editorMode}
             onArrowChange={updateArrow}
+            mainCalloutBoxes={mainCalloutBoxes}
+            onMainCalloutBoxChange={updateMainCalloutBox}
             cordBoxPos={cordBoxPos}
             onCordBoxPosChange={setCordBoxPos}
           />

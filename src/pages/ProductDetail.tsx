@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
-import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronLeft, ChevronRight, Home, Star } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronLeft, ChevronRight, Home } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
@@ -39,6 +39,16 @@ import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
 import { LayNGoTravelDogBedPdpStrip } from "@/components/LayNGoTravelDogBedPdpStrip";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
+import { CustomerReviewsSection } from "@/components/CustomerReviewsSection";
+import {
+  COSMO_CUSTOMER_REVIEWS,
+  NAILSPA_CUSTOMER_REVIEWS,
+  TRAVELER_CUSTOMER_REVIEWS,
+  PLAY_CUSTOMER_REVIEWS,
+  isLayNGoPlayReviewsPdp,
+  DEFENDER_CUSTOMER_REVIEWS,
+  isLayNGoDefenderReviewsPdp,
+} from "@/data/customerReviews";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
@@ -278,10 +288,6 @@ const LAY_N_GO_TRAVEL_DOG_BED_44_BULLETS = [
 ] as const;
 
 const COSMO_AUTOPLAY_YOUTUBE_ID = "G3E80xl9lSM";
-const COSMO_AMAZON_REVIEWS_URL =
-  "https://www.amazon.com/Lay-n-Go-Cosmo-Cosmetic-Bag-Black/dp/B00B04V3PQ/ref=sr_1_2?crid=319SA2P59OD6R&dib=eyJ2IjoiMSJ9.yZpPmIN6c0isZ7qkwNkUWg.XsRHQlPyJ9UrcTBLmVdjiQ0rxRkojK3Ksfzjf7LjOYg&dib_tag=se&keywords=cosmo%2Blayngo&qid=1778181094&sprefix=cosmo%2Blayng%2Caps%2C106&sr=8-2&th=1#averageCustomerReviewsAnchor";
-const NAILSPA_AMAZON_REVIEWS_URL =
-  "https://www.amazon.com/Lay-n-Go-NailSpa-Manicure-Pedicure-Pattern/dp/B082M13J4H#averageCustomerReviewsAnchor";
 const COSMO_FAQ_ITEMS = [
   {
     question: "What sizes does the Cosmo come in?",
@@ -2129,46 +2135,18 @@ const ProductDetail = () => {
               </section>
             ) : null}
 
-            {showCosmoStyleBottomExtras ? (
-              <section
-                className="mx-auto mt-8 w-full max-w-4xl sm:mt-10"
-                aria-label={isNailspaPdp ? "Nailspa ratings" : "Cosmo ratings"}
-              >
-                <div className="px-5 py-2 text-center sm:px-7">
-                  <div
-                    className="mx-auto mb-3 flex items-center justify-center gap-1.5"
-                    aria-label={isNailspaPdp ? "4.2 out of 5 stars" : "4.5 out of 5 stars"}
-                  >
-                    <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
-                    <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
-                    <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
-                    <Star className="h-5 w-5 fill-[#f4b400] stroke-none sm:h-6 sm:w-6" aria-hidden />
-                    <span className="relative block h-5 w-5 sm:h-6 sm:w-6" aria-hidden>
-                      <Star className="h-full w-full fill-[#c7c9cf] stroke-none" />
-                      <Star
-                        className={cn(
-                          "absolute inset-0 h-full w-full fill-[#f4b400] stroke-none",
-                          isNailspaPdp ? "[clip-path:inset(0_68%_0_0)]" : "[clip-path:inset(0_50%_0_0)]",
-                        )}
-                      />
-                    </span>
-                  </div>
-                  <p className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                    {isNailspaPdp ? "4.2 out of 5" : "4.5 out of 5"}
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-muted-foreground sm:text-base">
-                    {isNailspaPdp ? "Highly rated on Amazon" : "14,817 global ratings"}
-                  </p>
-                  <a
-                    href={isNailspaPdp ? NAILSPA_AMAZON_REVIEWS_URL : COSMO_AMAZON_REVIEWS_URL}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="mt-4 inline-flex text-sm font-semibold text-primary underline-offset-4 hover:underline sm:text-base"
-                  >
-                    See reviews
-                  </a>
-                </div>
-              </section>
+            {isCosmoStoryPdp ? <CustomerReviewsSection reviews={COSMO_CUSTOMER_REVIEWS} /> : null}
+
+            {isNailspaPdp ? <CustomerReviewsSection reviews={NAILSPA_CUSTOMER_REVIEWS} /> : null}
+
+            {isLayNGoTraveler20 ? <CustomerReviewsSection reviews={TRAVELER_CUSTOMER_REVIEWS} /> : null}
+
+            {product && isLayNGoPlayReviewsPdp(product.handle) ? (
+              <CustomerReviewsSection reviews={PLAY_CUSTOMER_REVIEWS} />
+            ) : null}
+
+            {product && isLayNGoDefenderReviewsPdp(product.handle) ? (
+              <CustomerReviewsSection reviews={DEFENDER_CUSTOMER_REVIEWS} />
             ) : null}
           </>
         ) : (

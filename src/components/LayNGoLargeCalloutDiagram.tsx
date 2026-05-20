@@ -17,6 +17,7 @@ const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containment-lip.png";
 const CALLOUT_LIP_LITE = "/products/lay-n-go-lite-18/callout-containment-lip.png";
 const CALLOUT_CORD_LITE = "/products/lay-n-go-lite-18/callout-cord-pocket-handle.png";
+const CALLOUT_HANDLE_LITE = "/products/lay-n-go-lite-18/callout-handle.png";
 /** Circular callout thumbs (white bg) — Defender Tactical 20″ diagram. */
 const DEFENDER_TACTICAL_CALLOUT_MESH =
   "/products/lay-n-go-tactical-bag-20/callout-mesh.png";
@@ -124,7 +125,7 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v11";
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v12";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
 const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v1";
@@ -151,7 +152,7 @@ const LIFESTYLE_MESH_POCKET_DX_20PX = 2.65;
 /** ~20px × 2 closer vertically on ~768px stage (y half-delta per pocket dot, 0–100 space). */
 const LIFESTYLE_MESH_POCKET_DY_HALF_20PX = 1.33 + (20 / 768) * 100 * 0.5;
 
-type CalloutKey = "cord" | "lip" | "mesh";
+type CalloutKey = "cord" | "lip" | "mesh" | "handle";
 
 type Pt = { x: number; y: number };
 
@@ -165,11 +166,13 @@ const DEFAULT_LAYOUT: LayoutState = {
     cord: { x: 50, y: 23 },
     lip: { x: 27, y: 49 },
     mesh: { x: 52, y: 70 },
+    handle: { x: 50, y: 14 },
   },
   anchors: {
     cord: { x: 50, y: 10 },
     lip: { x: 12, y: 48 },
     mesh: { x: 86, y: 46 },
+    handle: { x: 50, y: 4 },
   },
 };
 
@@ -185,11 +188,13 @@ const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
     cord: { x: 50, y: -4 + LIFESTYLE_CORD_CALLOUT_DOWN_75PX_DY },
     lip: { x: 24 - LIFESTYLE_LIP_DOT_DX_50PX + LIFESTYLE_MESH_POCKET_DX_20PX, y: 49 },
     mesh: { x: 52, y: 50 },
+    handle: DEFAULT_LAYOUT.dots.handle,
   },
   anchors: {
     cord: { x: 50, y: -26 + LIFESTYLE_CORD_CALLOUT_DOWN_75PX_DY },
     lip: { x: 9, y: 48 },
     mesh: DEFAULT_LAYOUT.anchors.mesh,
+    handle: DEFAULT_LAYOUT.anchors.handle,
   },
 };
 
@@ -199,11 +204,13 @@ const LITE_LIP_DOT_DX_10PX = (LIFESTYLE_MESH_POCKET_DX_20PX / 20) * 10;
 /** Lite 18″: cord/mesh thumbnail anchors swapped vs Lifestyle; lip mat dot nudged for 18″ hero. Cord dot on 6 o'clock drawstring (container %, not image file %). */
 const DEFAULT_LAYOUT_LITE: LayoutState = {
   dots: {
+    handle: { x: 50, y: 14 },
     cord: { x: 50, y: 79 },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.mesh },
     lip: { x: 31 - LITE_LIP_DOT_DX_10PX, y: 49 },
   },
   anchors: {
+    handle: { x: 50, y: 4 },
     cord: { x: DEFAULT_LAYOUT_LIFESTYLE.anchors.mesh.x, y: DEFAULT_LAYOUT_LIFESTYLE.anchors.lip.y },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.cord },
     lip: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.lip },
@@ -224,12 +231,12 @@ function isDefenderDiagramVariant(variant: LayNGoCalloutDiagramVariant) {
 
 function calloutKeysForVariant(variant: LayNGoCalloutDiagramVariant): CalloutKey[] {
   if (isDefenderDiagramVariant(variant)) return [];
-  return variant === "lite-18" ? ["cord", "lip"] : ALL_CALLOUT_KEYS;
+  return variant === "lite-18" ? ["handle", "cord", "lip"] : ALL_CALLOUT_KEYS;
 }
 
 function mobileCalloutKeysForVariant(variant: LayNGoCalloutDiagramVariant): CalloutKey[] {
   if (isDefenderDiagramVariant(variant)) return [];
-  return variant === "lite-18" ? ["cord", "lip"] : MOBILE_CALLOUT_KEYS;
+  return variant === "lite-18" ? ["handle", "cord", "lip"] : MOBILE_CALLOUT_KEYS;
 }
 
 function diagramUsesLifestyleChrome(variant: LayNGoCalloutDiagramVariant) {
@@ -258,6 +265,12 @@ const CALLOUT_META: Record<
     label: "4 mesh pockets to hold special pieces",
     textAbove: false,
   },
+  handle: {
+    imageSrc: CALLOUT_HANDLE_LITE,
+    imageAlt: "Built-in carry handle on Lay-n-Go Lite",
+    label: "Built in handle",
+    textAbove: true,
+  },
 };
 
 function clamp(n: number, min: number, max: number) {
@@ -276,11 +289,13 @@ function loadLayout(storageKey: string, fallback: LayoutState = DEFAULT_LAYOUT):
         cord: dots.cord ?? fallback.dots.cord,
         lip: dots.lip ?? fallback.dots.lip,
         mesh: dots.mesh ?? fallback.dots.mesh,
+        handle: dots.handle ?? fallback.dots.handle,
       },
       anchors: {
         cord: anchors.cord ?? fallback.anchors.cord,
         lip: anchors.lip ?? fallback.anchors.lip,
         mesh: anchors.mesh ?? fallback.anchors.mesh,
+        handle: anchors.handle ?? fallback.anchors.handle,
       },
     };
   } catch {
@@ -330,6 +345,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       meshCalloutSrc: CALLOUT_MESH_LIFESTYLE,
       lipCalloutSrc: CALLOUT_LIP_LIFESTYLE,
       cordCalloutSrc: CALLOUT_CORD_LIFESTYLE,
+      handleCalloutSrc: undefined,
     };
   }
   if (variant === "defender-mini-16") {
@@ -348,6 +364,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP,
       cordCalloutSrc: CALLOUT_CORD,
+      handleCalloutSrc: undefined,
     };
   }
   if (variant === "defender-tactical-20") {
@@ -366,6 +383,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP,
       cordCalloutSrc: CALLOUT_CORD,
+      handleCalloutSrc: undefined,
     };
   }
   if (variant === "lite-18") {
@@ -385,6 +403,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP_LITE,
       cordCalloutSrc: CALLOUT_CORD_LITE,
+      handleCalloutSrc: CALLOUT_HANDLE_LITE,
     };
   }
   return {
@@ -401,6 +420,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
     meshCalloutSrc: CALLOUT_MESH,
     lipCalloutSrc: CALLOUT_LIP,
     cordCalloutSrc: CALLOUT_CORD,
+    handleCalloutSrc: undefined,
   };
 }
 
@@ -551,7 +571,7 @@ function DefenderHeroCalloutThumb({
 }) {
   return (
     <div className={cn(DEFENDER_CALLOUT_THUMB_FRAME, CALLOUT_THUMB_SHADOW)}>
-      <div className={cn(CALLOUT_THUMB_INNER_CLIP, "bg-white")}>
+      <div className={CALLOUT_THUMB_INNER_CLIP}>
         <img
           src={src}
           alt={alt}
@@ -765,12 +785,14 @@ function FloatingCallout({
   /** Lifestyle 44″ only — Lite uses full-size cord thumb and lip-like stacking (see `textAbove`). */
   const cordLifestyleCompact = lifestyleThumb && calloutKey === "cord" && variant !== "lite-18";
   const cordLiteCrop = variant === "lite-18" && calloutKey === "cord";
+  const handleLiteCrop = variant === "lite-18" && calloutKey === "handle";
   const textAbove = variant === "lite-18" && calloutKey === "cord" ? false : metaTextAbove;
   const lipLifestyleTightCrop = lifestyleThumb && calloutKey === "lip";
   const meshLifestyleTightCrop = lifestyleThumb && calloutKey === "mesh";
 
   const thumbCropClass = (() => {
-    if (cordLiteCrop) return "origin-center scale-[0.84] object-cover object-[50%_38%]";
+    if (cordLiteCrop) return "object-cover object-[50%_40%]";
+    if (handleLiteCrop) return "object-cover object-center";
     if (cordLifestyleCompact) return "origin-center scale-[1.26] object-[center_18%]";
     if (lipLifestyleTightCrop) return "origin-center scale-[1.24] object-[30%_center]";
     if (meshLifestyleTightCrop) return "origin-center scale-[1.24] object-[58%_center]";
@@ -1104,7 +1126,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           mobileCalloutKeysForVariant(variant).map((k) => {
           const m = CALLOUT_META[k];
           const mobileThumbCrop = cn(
-            variant === "lite-18" && k === "cord" && "origin-center scale-[0.84] object-cover object-[50%_38%]",
+            variant === "lite-18" && k === "cord" && "object-cover object-[50%_40%]",
+            variant === "lite-18" && k === "handle" && "object-cover object-center",
             diagramUsesLifestyleChrome(variant) &&
               k === "cord" &&
               variant !== "lite-18" &&
@@ -1123,11 +1146,13 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               <div className={CALLOUT_THUMB_INNER_CLIP}>
                 <img
                   src={
-                    k === "cord"
-                      ? config.cordCalloutSrc
-                      : k === "lip"
-                        ? config.lipCalloutSrc
-                        : config.meshCalloutSrc
+                    k === "handle"
+                      ? config.handleCalloutSrc
+                      : k === "cord"
+                        ? config.cordCalloutSrc
+                        : k === "lip"
+                          ? config.lipCalloutSrc
+                          : config.meshCalloutSrc
                   }
                   alt={m.imageAlt}
                   className={cn("h-full w-full object-cover object-center", mobileThumbCrop)}
@@ -1201,7 +1226,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             aria-hidden
           >
             {lineEnds
-              .filter((le) => variant !== "lite-18" || le.k === "lip" || le.k === "cord")
+              .filter((le) => variant !== "lite-18" || le.k === "lip" || le.k === "cord" || le.k === "handle")
               .map(({ k, x1, y1, x2, y2, meshUpperStart, meshLowerStart, meshUpperEnd, meshLowerEnd }) =>
               k === "mesh" && meshUpperStart && meshLowerStart && meshUpperEnd && meshLowerEnd ? (
                 <g key={k}>
@@ -1343,13 +1368,15 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               onAnchorPointerDown={onAnchorPointerDown}
               variant={variant}
               imageSrcOverride={
-                k === "cord"
-                  ? config.cordCalloutSrc
-                  : k === "lip"
-                    ? config.lipCalloutSrc
-                    : k === "mesh"
-                      ? config.meshCalloutSrc
-                      : undefined
+                k === "handle"
+                  ? config.handleCalloutSrc
+                  : k === "cord"
+                    ? config.cordCalloutSrc
+                    : k === "lip"
+                      ? config.lipCalloutSrc
+                      : k === "mesh"
+                        ? config.meshCalloutSrc
+                        : undefined
               }
             />
           ))}
