@@ -93,7 +93,7 @@ function DefenderFlankStrip({
     variant === "defender-mini-16" || variant === "defender-tactical-20" || variant === "lite-18";
 
   const flankContainCell = cn(
-    "flex min-h-0 w-full items-center justify-center bg-white px-2 py-3 sm:px-3 sm:py-4",
+    "flex min-h-0 w-full items-center justify-center bg-background px-2 py-3 sm:px-3 sm:py-4",
     flankMaxH,
   );
   const flankContainImg = cn(
@@ -142,12 +142,86 @@ function DefenderFlankStrip({
     );
   }
 
+  const defenderDiskFrame = cn(
+    "mx-auto max-w-full bg-transparent transition-transform duration-200 ease-out will-change-transform",
+    "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
+  );
+
+  if (variant === "defender-mini-16" || variant === "defender-tactical-20") {
+    return (
+      <div
+        className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 bg-background sm:mt-10"
+        aria-label={ariaLabel}
+        style={{
+          containerType: "inline-size",
+          ["--defender-disk-band-min" as string]: `min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2)`,
+        }}
+      >
+        <div className="grid w-full grid-cols-2 gap-0 bg-background">
+          <div
+            className={cn(
+              "flex min-h-[var(--defender-disk-band-min)] w-full items-end justify-center overflow-visible py-3 sm:py-4",
+              flankMaxH,
+            )}
+          >
+            <div
+              className={defenderDiskFrame}
+              style={{
+                width:
+                  variant === "defender-mini-16"
+                    ? "calc((18 / 20) * min(20.5rem, (100cqw - 1rem) / 2))"
+                    : "min(20.5rem, (100cqw - 1rem) / 2)",
+                aspectRatio: "1",
+              }}
+            >
+              <img
+                src={leftSrc}
+                alt={leftAlt}
+                className={cn(
+                  "block h-full w-full object-contain object-center drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]",
+                  "transition-[filter] duration-200 group-hover:drop-shadow-[0_5px_14px_rgba(0,0,0,0.34)]",
+                )}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+          <div
+            className={cn(
+              "flex min-h-[var(--defender-disk-band-min)] w-full items-end justify-center overflow-visible py-3 sm:py-4",
+              flankMaxH,
+            )}
+          >
+            <div
+              className={defenderDiskFrame}
+              style={{
+                width: "min(20.5rem, (100cqw - 1rem) / 2)",
+                aspectRatio: "1",
+              }}
+            >
+              <img
+                src={rightSrc}
+                alt={rightAlt}
+                className={cn(
+                  "block h-full w-full object-contain object-center drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]",
+                  "transition-[filter] duration-200 group-hover:drop-shadow-[0_5px_14px_rgba(0,0,0,0.34)]",
+                )}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
-      className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 bg-white sm:mt-10"
+      className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 bg-background sm:mt-10"
       aria-label={ariaLabel}
     >
-      <div className="grid w-full grid-cols-2 gap-0 bg-white">
+      <div className="grid w-full grid-cols-2 gap-0 bg-background">
         {flankUncrop ? (
           <>
             <div className={flankContainCell}>

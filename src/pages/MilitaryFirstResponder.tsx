@@ -104,7 +104,9 @@ const MilitaryFirstResponder = () => {
   const sizeColumns = useMemo(() => {
     const cols = sizedProducts.map(({ spec, product }) => {
       const cap = `min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2)`;
-      const circleWidth = `calc((${spec.inches} / 20) * ${cap})`;
+      /** Mini disk — larger on screen; 20″ cap unchanged. Ratio 18:20 ≈ +12.5% vs true 16:20. */
+      const sizeRatio = spec.inches === 16 ? 18 : spec.inches;
+      const circleWidth = `calc((${sizeRatio} / 20) * ${cap})`;
       return {
         spec,
         product,
