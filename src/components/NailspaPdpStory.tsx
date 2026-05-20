@@ -2,7 +2,7 @@
  * Editorial strip below NAILSPA PDP hero — matches Cosmo full-bleed white story rhythm.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const HEADLINE = "THE NAIL BAG THAT ACTUALLY GETS IT.";
@@ -285,15 +285,21 @@ function clientToViewBoxPoint(clientX: number, clientY: number, container: DOMRe
   return pctToPoint(xPct, yPct, viewBox);
 }
 
-function viewBoxPointToHandleStyle(point: Point, container: DOMRect, viewBox: string) {
+function viewBoxPointToStagePos(point: Point, container: DOMRect, viewBox: string): BoxPos {
   const fit = viewBoxFitRect(container, viewBox);
   const vb = parseViewBox(viewBox);
   const px = fit.left + ((point.x - vb.minX) / vb.width) * fit.width;
   const py = fit.top + ((point.y - vb.minY) / vb.height) * fit.height;
   return {
-    left: `${((px - container.left) / container.width) * 100}%`,
-    top: `${((py - container.top) / container.height) * 100}%`,
+    x: ((px - container.left) / container.width) * 100,
+    y: ((py - container.top) / container.height) * 100,
   };
+}
+
+function stagePosToViewBoxPoint(pos: BoxPos, container: DOMRect, viewBox: string): Point {
+  const clientX = container.left + (pos.x / 100) * container.width;
+  const clientY = container.top + (pos.y / 100) * container.height;
+  return clientToViewBoxPoint(clientX, clientY, container, viewBox);
 }
 
 function arrowPivot(geom: Pick<ArrowGeom, "start" | "control" | "end">) {
@@ -410,6 +416,25 @@ function DraggableMainCallout({
   );
 }
 
+function ArrowJointGuides({ geom }: { geom: ArrowGeom }) {
+  const { start, control, end } = geom;
+  return (
+    <g className="pointer-events-none" aria-hidden>
+      <polyline
+        points={`${start.x},${start.y} ${control.x},${control.y} ${end.x},${end.y}`}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={1}
+        strokeDasharray="4 4"
+        className="text-neutral-400/70"
+      />
+      <circle cx={start.x} cy={start.y} r={5} className="fill-blue-500 stroke-white" strokeWidth={2} />
+      <circle cx={control.x} cy={control.y} r={5} className="fill-emerald-500 stroke-white" strokeWidth={2} />
+      <circle cx={end.x} cy={end.y} r={5} className="fill-rose-500 stroke-white" strokeWidth={2} />
+    </g>
+  );
+}
+
 function ArrowPaths({ geom }: { geom: ArrowGeom }) {
   const { start, control, end } = geom;
   const strokeWidth = geom.strokeWidth ?? DEFAULT_ARROW_STROKE;
@@ -463,6 +488,67 @@ function RenderArrow({
   );
 }
 
+/** Draggable joint — same stage % drag model as callout text boxes. */
+function DraggableArrowJoint({
+  jointKey,
+  jointLabel,
+  pos,
+  stageRef,
+  dotClass,
+  onMove,
+  yClampMin = -28,
+  yClampMax = 100,
+}: {
+  jointKey: ArrowPointKey;
+  jointLabel: string;
+  pos: BoxPos;
+  stageRef: React.RefObject<HTMLDivElement | null>;
+  dotClass: string;
+  onMove: (key: ArrowPointKey, next: BoxPos) => void;
+  yClampMin?: number;
+  yClampMax?: number;
+}) {
+  const [dragging, setDragging] = useState(false);
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      title={jointLabel}
+      aria-label={jointLabel}
+      className={cn(
+        "absolute z-50 flex touch-none cursor-grab flex-col items-center active:cursor-grabbing",
+        dragging && "scale-110",
+      )}
+      style={{
+        left: `${pos.x}%`,
+        top: `${pos.y}%`,
+        transform: "translate(-50%, -50%)",
+      }}
+      onPointerDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.currentTarget.setPointerCapture(e.pointerId);
+        setDragging(true);
+      }}
+      onPointerMove={(e) => {
+        if (!dragging || !stageRef.current) return;
+        const r = stageRef.current.getBoundingClientRect();
+        const xPct = clamp(((e.clientX - r.left) / r.width) * 100, 0, 100);
+        const yPct = clamp(((e.clientY - r.top) / r.height) * 100, yClampMin, yClampMax);
+        onMove(jointKey, { x: xPct, y: yPct });
+      }}
+      onPointerUp={() => setDragging(false)}
+      onPointerCancel={() => setDragging(false)}
+    >
+      <span className="mb-0.5 whitespace-nowrap rounded bg-white/95 px-1 py-0.5 text-[9px] font-semibold text-neutral-800 shadow-sm ring-1 ring-neutral-200">
+        {jointLabel}
+      </span>
+      <span className={cn("block h-7 w-7 rounded-full border-2 border-white shadow-lg ring-2 ring-amber-400/80", dotClass)} />
+    </div>
+  );
+}
+
 function ArrowEditorHandles({
   geom,
   setGeom,
@@ -476,14 +562,10 @@ function ArrowEditorHandles({
   label?: string;
   mapViewBox?: string;
 }) {
-  const [dragKey, setDragKey] = useState<ArrowPointKey | null>(null);
-  const dragKeyRef = useRef<ArrowPointKey | null>(null);
-  const [handleBox, setHandleBox] = useState<DOMRect | null>(null);
+  const [stageTick, setStageTick] = useState(0);
 
-  useEffect(() => {
-    const sync = () => {
-      if (dragLayerRef.current) setHandleBox(dragLayerRef.current.getBoundingClientRect());
-    };
+  useLayoutEffect(() => {
+    const sync = () => setStageTick((n) => n + 1);
     sync();
     window.addEventListener("resize", sync);
     window.addEventListener("scroll", sync, true);
@@ -493,70 +575,42 @@ function ArrowEditorHandles({
     };
   }, [dragLayerRef, geom]);
 
-  const move = useCallback(
-    (ev: React.PointerEvent) => {
-      const key = dragKeyRef.current;
-      if (!key || !dragLayerRef.current) return;
-      const r = dragLayerRef.current.getBoundingClientRect();
-      setGeom((prev) => ({
-        ...prev,
-        [key]: clientToViewBoxPoint(ev.clientX, ev.clientY, r, mapViewBox),
-      }));
-    },
-    [setGeom, dragLayerRef, mapViewBox],
-  );
+  const stageRect = dragLayerRef.current?.getBoundingClientRect();
+  if (!stageRect) return null;
 
-  const endDrag = useCallback(() => {
-    dragKeyRef.current = null;
-    setDragKey(null);
-  }, []);
+  void stageTick;
 
-  if (!handleBox) return null;
+  const joints: { key: ArrowPointKey; jointLabel: string; dotClass: string }[] = [
+    { key: "start", jointLabel: "Joint 1", dotClass: "bg-blue-500" },
+    { key: "control", jointLabel: "Joint 2", dotClass: "bg-emerald-500" },
+    { key: "end", jointLabel: "Joint 3", dotClass: "bg-rose-500" },
+  ];
 
-  const points = (
-    [
-      { key: "start" as const, point: geom.start, color: "bg-blue-500", pointLabel: "Start (anchor)" },
-      { key: "control" as const, point: geom.control, color: "bg-emerald-500", pointLabel: "Curve" },
-      { key: "end" as const, point: geom.end, color: "bg-rose-500", pointLabel: "Tip" },
-    ] as const
-  ).map(({ key, point, color, pointLabel }) => ({
-    key,
-    color,
-    pointLabel,
-    style: viewBoxPointToHandleStyle(point, handleBox, mapViewBox),
-  }));
+  const moveJoint = (key: ArrowPointKey, stagePos: BoxPos) => {
+    if (!dragLayerRef.current) return;
+    const r = dragLayerRef.current.getBoundingClientRect();
+    setGeom((prev) => ({
+      ...prev,
+      [key]: stagePosToViewBoxPoint(stagePos, r, mapViewBox),
+    }));
+  };
 
   return (
-    <div
-      className="pointer-events-none absolute inset-0 z-[35] overflow-visible"
-      onPointerMove={move}
-      onPointerUp={endDrag}
-      onPointerCancel={endDrag}
-    >
+    <div className="pointer-events-none absolute inset-0 z-[35] overflow-visible">
       {label ? (
         <span className="pointer-events-none absolute left-2 top-2 z-50 rounded bg-amber-100 px-2 py-1 text-[10px] font-bold text-amber-950 shadow-sm ring-1 ring-amber-300">
-          Editing: {label}
+          Editing: {label} — drag joints 1–3
         </span>
       ) : null}
-      {points.map(({ key, style, color, pointLabel }) => (
-        <button
+      {joints.map(({ key, jointLabel, dotClass }) => (
+        <DraggableArrowJoint
           key={key}
-          type="button"
-          title={pointLabel}
-          aria-label={`Move ${pointLabel}${label ? ` (${label})` : ""}`}
-          className={cn(
-            "pointer-events-auto absolute z-50 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-lg cursor-grab touch-none active:cursor-grabbing",
-            color,
-            dragKey === key && "scale-110 ring-2 ring-amber-400",
-          )}
-          style={style}
-          onPointerDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            (e.currentTarget as HTMLButtonElement).setPointerCapture(e.pointerId);
-            dragKeyRef.current = key;
-            setDragKey(key);
-          }}
+          jointKey={key}
+          jointLabel={jointLabel}
+          pos={viewBoxPointToStagePos(geom[key], stageRect, mapViewBox)}
+          stageRef={dragLayerRef}
+          dotClass={dotClass}
+          onMove={moveJoint}
         />
       ))}
     </div>
@@ -595,6 +649,7 @@ function MainDiagramArrowLayer({
         {MAIN_CALLOUT_ARROW_KEYS.map((key) => (
           <g key={key} opacity={editorMode && key !== activeKey ? 0.28 : 1}>
             <ArrowPaths geom={arrows[key]} />
+            {editorMode && key === activeKey ? <ArrowJointGuides geom={arrows[key]} /> : null}
           </g>
         ))}
       </svg>
@@ -631,7 +686,17 @@ function EditableArrow({
     <div ref={layerRef} className={cn("relative overflow-visible", className)}>
       <RenderArrow className="h-full w-full overflow-visible" geom={geom} />
       {editorMode && onChange && showHandles ? (
-        <ArrowEditorHandles geom={geom} setGeom={onChange} dragLayerRef={layerRef} mapViewBox={geom.viewBox} />
+        <>
+          <svg
+            className="pointer-events-none absolute inset-0 size-full overflow-visible"
+            viewBox={geom.viewBox}
+            preserveAspectRatio="xMidYMid meet"
+            aria-hidden
+          >
+            <ArrowJointGuides geom={geom} />
+          </svg>
+          <ArrowEditorHandles geom={geom} setGeom={onChange} dragLayerRef={layerRef} mapViewBox={geom.viewBox} />
+        </>
       ) : null}
     </div>
   );
@@ -1174,7 +1239,7 @@ export function NailspaPdpStory() {
       </div>
       {editorMode ? (
         <div className="sticky top-0 z-[250] border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
-          <strong>Arrow edit mode</strong> — choose an arrow, drag blue (start), green (curve), and red (tip) on the image. Adjust thickness, head size, and rotation in the panel below. Save when finished.
+          <strong>Arrow edit mode</strong> — choose an arrow, drag joints 1–3 on the image (same as moving a text box). Adjust line, head, and rotation below. Save when finished.
         </div>
       ) : null}
       <div className="px-5 pb-12 sm:px-8 sm:pb-14 md:pb-16 lg:pb-20">
