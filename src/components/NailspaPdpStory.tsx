@@ -11,15 +11,20 @@ const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png";
 
 const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:px-4 sm:py-3";
 
+/** Match sliding cord lock callout — arrow footprint under each main-diagram label. */
+const MAIN_CALLOUT_ARROW_CLASS_END =
+  "mt-2 mr-6 h-[6.6rem] w-[18rem] shrink-0 sm:mr-10 sm:h-[7.2rem] sm:w-[19.5rem] md:mr-12";
+const MAIN_CALLOUT_ARROW_CLASS_START =
+  "mt-2 ml-6 h-[6.6rem] w-[18rem] shrink-0 sm:ml-10 sm:h-[7.2rem] sm:w-[19.5rem] md:ml-12";
+
 /** Local arrow box under a single callout (nail mat section). */
 const CALLOUT_ARROW_BOX = "mt-2 h-[6.6rem] w-[18rem] shrink-0 sm:h-[7.2rem] sm:w-[19.5rem]";
 
-/** Main diagram arrows use stage % coords (0–100) on a full-bleed overlay — not per-label boxes. */
-const MAIN_ARROW_VIEWBOX = "0 0 100 100";
-const ARROW_STROKE_WIDTH = 2.35;
-const ARROW_DASH = "5 5";
-const ARROW_HEAD_SIZE = 7.5;
-const ARROW_HEAD_SPREAD = 4.5;
+/** Large workspace so tips can extend past the label without clipping. */
+const MAIN_ARROW_WORKSPACE = "-80 -30 240 110";
+const DEFAULT_ARROW_STROKE = 1.25;
+const MIN_ARROW_STROKE = 0.75;
+const MAX_ARROW_STROKE = 4;
 
 /** Lip + handle callout — wide panel so title/body wrap on fewer lines. */
 const LIP_HANDLE_CALLOUT_PANEL =
@@ -42,7 +47,13 @@ const LIP_HANDLE_CALLOUT_BODY =
   "The raised lip keeps polish and tools from falling off the counter, while the built-in handle makes it easy to grab and go after you cinch it closed.";
 
 type Point = { x: number; y: number };
-type ArrowGeom = { viewBox: string; start: Point; control: Point; end: Point };
+type ArrowGeom = {
+  viewBox: string;
+  start: Point;
+  control: Point;
+  end: Point;
+  strokeWidth?: number;
+};
 type ArrowKey = "mesh" | "lipTop" | "handleRight" | "toolsCenter" | "washSurface" | "cord" | "carry" | "nailMat";
 type MainCalloutArrowKey = "mesh" | "lipTop" | "handleRight" | "toolsCenter" | "washSurface" | "cord";
 type ArrowMap = Record<ArrowKey, ArrowGeom>;
@@ -50,36 +61,62 @@ type ArrowPointKey = keyof Pick<ArrowGeom, "start" | "control" | "end">;
 type CordBoxPos = { right: number; bottom: number };
 type BoxPos = { x: number; y: number };
 
+const LEGACY_MAIN_VIEWBOX = "0 0 120 52";
 const MAIN_CALLOUT_ARROW_KEYS = ["mesh", "lipTop", "handleRight", "toolsCenter", "washSurface", "cord"] as const;
 
-/** Map original 120×52 editor coords to stage percentages (matches callout box % positions). */
-function legacyMainToStage(p: Point): Point {
-  return { x: (p.x / 120) * 100, y: (p.y / 52) * 100 };
+function mapLegacyMainPoint(p: Point): Point {
+  const { minX, minY, width, height } = parseViewBox(LEGACY_MAIN_VIEWBOX);
+  const ws = parseViewBox(MAIN_ARROW_WORKSPACE);
+  return {
+    x: ws.minX + ((p.x - minX) / width) * ws.width,
+    y: ws.minY + ((p.y - minY) / height) * ws.height,
+  };
 }
 
 function mainArrowGeom(start: Point, control: Point, end: Point): ArrowGeom {
   return {
-    viewBox: MAIN_ARROW_VIEWBOX,
-    start: legacyMainToStage(start),
-    control: legacyMainToStage(control),
-    end: legacyMainToStage(end),
+    viewBox: MAIN_ARROW_WORKSPACE,
+    start: mapLegacyMainPoint(start),
+    control: mapLegacyMainPoint(control),
+    end: mapLegacyMainPoint(end),
+    strokeWidth: DEFAULT_ARROW_STROKE,
   };
 }
 
 function migrateMainArrowGeom(geom: ArrowGeom): ArrowGeom {
   const vb = parseViewBox(geom.viewBox);
-  if (vb.width >= 95 && vb.width <= 105 && vb.minX === 0 && vb.minY === 0) {
-    return { ...geom, viewBox: MAIN_ARROW_VIEWBOX };
+  const ws = parseViewBox(MAIN_ARROW_WORKSPACE);
+  const strokeWidth = geom.strokeWidth ?? DEFAULT_ARROW_STROKE;
+
+  if (vb.width >= 200) {
+    return { ...geom, viewBox: MAIN_ARROW_WORKSPACE, strokeWidth };
   }
-  const toStage = (p: Point) => ({
-    x: ((p.x - vb.minX) / vb.width) * 100,
-    y: ((p.y - vb.minY) / vb.height) * 100,
+
+  if (vb.width >= 95 && vb.width <= 105 && vb.minX === 0 && vb.minY === 0) {
+    const fromStage = (p: Point) => ({
+      x: ws.minX + (p.x / 100) * ws.width,
+      y: ws.minY + (p.y / 100) * ws.height,
+    });
+    return {
+      viewBox: MAIN_ARROW_WORKSPACE,
+      start: fromStage(geom.start),
+      control: fromStage(geom.control),
+      end: fromStage(geom.end),
+      strokeWidth,
+    };
+  }
+
+  const { minX, minY, width: w, height: h } = parseViewBox(LEGACY_MAIN_VIEWBOX);
+  const map = (p: Point) => ({
+    x: ws.minX + ((p.x - minX) / w) * ws.width,
+    y: ws.minY + ((p.y - minY) / h) * ws.height,
   });
   return {
-    viewBox: MAIN_ARROW_VIEWBOX,
-    start: toStage(geom.start),
-    control: toStage(geom.control),
-    end: toStage(geom.end),
+    viewBox: MAIN_ARROW_WORKSPACE,
+    start: map(geom.start),
+    control: map(geom.control),
+    end: map(geom.end),
+    strokeWidth,
   };
 }
 
@@ -137,7 +174,7 @@ const ARROWS: ArrowMap = {
   },
 };
 
-const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v8";
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v9";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
@@ -304,42 +341,6 @@ function DraggableMainCallout({
   );
 }
 
-function arrowHeadPoints(end: Point, control: Point) {
-  const dx = end.x - control.x;
-  const dy = end.y - control.y;
-  const len = Math.hypot(dx, dy) || 1;
-  const ux = dx / len;
-  const uy = dy / len;
-  return {
-    left: {
-      x: end.x - ux * ARROW_HEAD_SIZE - uy * ARROW_HEAD_SPREAD,
-      y: end.y - uy * ARROW_HEAD_SIZE + ux * ARROW_HEAD_SPREAD,
-    },
-    right: {
-      x: end.x - ux * ARROW_HEAD_SIZE + uy * ARROW_HEAD_SPREAD,
-      y: end.y - uy * ARROW_HEAD_SIZE - ux * ARROW_HEAD_SPREAD,
-    },
-  };
-}
-
-function ArrowPaths({ geom }: { geom: ArrowGeom }) {
-  const { start, control, end } = geom;
-  const { left, right } = arrowHeadPoints(end, control);
-  return (
-    <g className="text-neutral-800/90">
-      <path
-        d={`M${start.x} ${start.y} Q${control.x} ${control.y} ${end.x} ${end.y}`}
-        stroke="currentColor"
-        strokeWidth={ARROW_STROKE_WIDTH}
-        strokeDasharray={ARROW_DASH}
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-      />
-      <path d={`M${end.x} ${end.y} L${left.x} ${left.y} L${right.x} ${right.y} Z`} fill="currentColor" />
-    </g>
-  );
-}
-
 function RenderArrow({
   className,
   geom,
@@ -347,16 +348,37 @@ function RenderArrow({
   className?: string;
   geom: ArrowGeom;
 }) {
+  const { start, control, end, viewBox } = geom;
+  const strokeWidth = geom.strokeWidth ?? DEFAULT_ARROW_STROKE;
+  const dx = end.x - control.x;
+  const dy = end.y - control.y;
+  const len = Math.hypot(dx, dy) || 1;
+  const ux = dx / len;
+  const uy = dy / len;
+  const headScale = strokeWidth / DEFAULT_ARROW_STROKE;
+  const size = 6 * headScale;
+  const spread = 3.8 * headScale;
+  const left = { x: end.x - ux * size - uy * spread, y: end.y - uy * size + ux * spread };
+  const right = { x: end.x - ux * size + uy * spread, y: end.y - uy * size - ux * spread };
+
   return (
     <svg
       className={cn(className, "overflow-visible")}
-      viewBox={geom.viewBox}
+      viewBox={viewBox}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
       overflow="visible"
     >
-      <ArrowPaths geom={geom} />
+      <path
+        d={`M${start.x} ${start.y} Q${control.x} ${control.y} ${end.x} ${end.y}`}
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeDasharray="3 4"
+        strokeLinecap="round"
+        className="text-neutral-800/85"
+      />
+      <path d={`M${end.x} ${end.y} L${left.x} ${left.y} L${right.x} ${right.y} Z`} fill="currentColor" className="text-neutral-800/85" />
     </svg>
   );
 }
@@ -364,34 +386,34 @@ function RenderArrow({
 function ArrowEditorHandles({
   geom,
   setGeom,
-  layerRef,
+  dragLayerRef,
   label,
 }: {
   geom: ArrowGeom;
   setGeom: (next: ArrowGeom) => void;
-  layerRef: React.RefObject<HTMLDivElement | null>;
+  dragLayerRef: React.RefObject<HTMLDivElement | null>;
   label?: string;
 }) {
   const [dragKey, setDragKey] = useState<ArrowPointKey | null>(null);
 
   const move = useCallback(
     (ev: React.PointerEvent) => {
-      if (!dragKey || !layerRef.current) return;
-      const r = layerRef.current.getBoundingClientRect();
+      if (!dragKey || !dragLayerRef.current) return;
+      const r = dragLayerRef.current.getBoundingClientRect();
       const xPct = ((ev.clientX - r.left) / r.width) * 100;
       const yPct = ((ev.clientY - r.top) / r.height) * 100;
       setGeom({ ...geom, [dragKey]: pctToPoint(xPct, yPct, geom.viewBox) });
     },
-    [dragKey, geom, setGeom, layerRef],
+    [dragKey, geom, setGeom, dragLayerRef],
   );
 
   const startPct = pointToPct(geom.start, geom.viewBox);
   const controlPct = pointToPct(geom.control, geom.viewBox);
   const endPct = pointToPct(geom.end, geom.viewBox);
   const points = [
-    { key: "start" as const, pt: startPct, color: "bg-blue-500", label: "Start" },
-    { key: "control" as const, pt: controlPct, color: "bg-emerald-500", label: "Curve" },
-    { key: "end" as const, pt: endPct, color: "bg-rose-500", label: "Tip" },
+    { key: "start" as const, pt: startPct, color: "bg-blue-500", pointLabel: "Start" },
+    { key: "control" as const, pt: controlPct, color: "bg-emerald-500", pointLabel: "Curve" },
+    { key: "end" as const, pt: endPct, color: "bg-rose-500", pointLabel: "Tip" },
   ];
 
   return (
@@ -402,11 +424,11 @@ function ArrowEditorHandles({
       onPointerCancel={() => setDragKey(null)}
     >
       {label ? (
-        <span className="pointer-events-none absolute left-1 top-1 rounded bg-white/90 px-1 py-0.5 text-[9px] font-semibold text-neutral-600 shadow-sm">
+        <span className="pointer-events-none absolute left-0 top-0 rounded bg-white/95 px-1.5 py-0.5 text-[9px] font-semibold text-neutral-700 shadow-sm">
           {label}
         </span>
       ) : null}
-      {points.map(({ key, pt, color, label: pointLabel }) => (
+      {points.map(({ key, pt, color, pointLabel }) => (
         <button
           key={key}
           type="button"
@@ -420,7 +442,7 @@ function ArrowEditorHandles({
           onPointerDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            layerRef.current?.setPointerCapture(e.pointerId);
+            dragLayerRef.current?.setPointerCapture(e.pointerId);
             setDragKey(key);
           }}
         />
@@ -429,48 +451,26 @@ function ArrowEditorHandles({
   );
 }
 
-function MainDiagramArrowsOverlay({
+function MainArrowStageEditor({
   arrows,
-  editorMode,
+  stageRef,
   onArrowChange,
 }: {
   arrows: ArrowMap;
-  editorMode?: boolean;
+  stageRef: React.RefObject<HTMLDivElement | null>;
   onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
 }) {
-  const layerRef = useRef<HTMLDivElement>(null);
-
   return (
-    <div
-      ref={layerRef}
-      className={cn(
-        "absolute inset-0 overflow-visible",
-        editorMode ? "z-[25] pointer-events-auto" : "z-[8] pointer-events-none",
-      )}
-      aria-hidden={!editorMode}
-    >
-      <svg
-        className="h-full w-full overflow-visible text-neutral-800/90"
-        viewBox={MAIN_ARROW_VIEWBOX}
-        preserveAspectRatio="none"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {MAIN_CALLOUT_ARROW_KEYS.map((key) => (
-          <ArrowPaths key={key} geom={arrows[key]} />
-        ))}
-      </svg>
-      {editorMode
-        ? MAIN_CALLOUT_ARROW_KEYS.map((key) => (
-            <ArrowEditorHandles
-              key={key}
-              label={key}
-              geom={arrows[key]}
-              layerRef={layerRef}
-              setGeom={(next) => onArrowChange?.(key, next)}
-            />
-          ))
-        : null}
+    <div className="pointer-events-none absolute inset-0 z-[25] overflow-visible">
+      {MAIN_CALLOUT_ARROW_KEYS.map((key) => (
+        <ArrowEditorHandles
+          key={key}
+          label={key}
+          geom={arrows[key]}
+          dragLayerRef={stageRef}
+          setGeom={(next) => onArrowChange?.(key, next)}
+        />
+      ))}
     </div>
   );
 }
@@ -480,19 +480,50 @@ function EditableArrow({
   geom,
   editorMode,
   onChange,
+  showHandles = true,
 }: {
   className?: string;
   geom: ArrowGeom;
   editorMode?: boolean;
   onChange?: (next: ArrowGeom) => void;
+  showHandles?: boolean;
 }) {
   const layerRef = useRef<HTMLDivElement>(null);
 
   return (
     <div ref={layerRef} className={cn("relative overflow-visible", className)}>
       <RenderArrow className="h-full w-full overflow-visible" geom={geom} />
-      {editorMode && onChange ? <ArrowEditorHandles geom={geom} setGeom={onChange} layerRef={layerRef} /> : null}
+      {editorMode && onChange && showHandles ? (
+        <ArrowEditorHandles geom={geom} setGeom={onChange} dragLayerRef={layerRef} />
+      ) : null}
     </div>
+  );
+}
+
+function CalloutArrow({
+  className,
+  variant,
+  arrows,
+  editorMode,
+  onArrowChange,
+  useStageEditor,
+}: {
+  className?: string;
+  variant: MainCalloutArrowKey;
+  arrows: ArrowMap;
+  editorMode?: boolean;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  useStageEditor?: boolean;
+}) {
+  const geom = arrows[variant];
+  return (
+    <EditableArrow
+      className={className}
+      geom={geom}
+      editorMode={editorMode}
+      showHandles={!useStageEditor}
+      onChange={(next) => onArrowChange?.(variant, next)}
+    />
   );
 }
 
@@ -554,6 +585,14 @@ function MainImageCallouts({
             Eight elastic mesh pockets to hold your favorite polishes.
           </p>
         </div>
+        <CalloutArrow
+          variant="mesh"
+          arrows={arrows}
+          editorMode={editorMode}
+          onArrowChange={onArrowChange}
+          useStageEditor={editorMode}
+          className={MAIN_CALLOUT_ARROW_CLASS_START}
+        />
       </DraggableMainCallout>
 
       {/* Containment lip + carrying handle — compact box, two arrows (lip rim + handle) */}
@@ -577,6 +616,24 @@ function MainImageCallouts({
             {LIP_HANDLE_CALLOUT_BODY}
           </p>
         </div>
+        <div className={cn("relative shrink-0 overflow-visible", MAIN_CALLOUT_ARROW_CLASS_END)}>
+          <CalloutArrow
+            variant="lipTop"
+            arrows={arrows}
+            editorMode={editorMode}
+            onArrowChange={onArrowChange}
+            useStageEditor={editorMode}
+            className="absolute inset-0 h-full w-full"
+          />
+          <CalloutArrow
+            variant="handleRight"
+            arrows={arrows}
+            editorMode={editorMode}
+            onArrowChange={onArrowChange}
+            useStageEditor={editorMode}
+            className="absolute inset-0 z-[1] h-full w-full"
+          />
+        </div>
       </DraggableMainCallout>
 
       <DraggableMainCallout
@@ -596,6 +653,14 @@ function MainImageCallouts({
             A convenient area for all your nail tools in the middle.
           </p>
         </div>
+        <CalloutArrow
+          variant="toolsCenter"
+          arrows={arrows}
+          editorMode={editorMode}
+          onArrowChange={onArrowChange}
+          useStageEditor={editorMode}
+          className={MAIN_CALLOUT_ARROW_CLASS_END}
+        />
       </DraggableMainCallout>
 
       <DraggableMainCallout
@@ -615,6 +680,14 @@ function MainImageCallouts({
             Mess-free manicures on a wipeable surface—spills clean up in seconds.
           </p>
         </div>
+        <CalloutArrow
+          variant="washSurface"
+          arrows={arrows}
+          editorMode={editorMode}
+          onArrowChange={onArrowChange}
+          useStageEditor={editorMode}
+          className={MAIN_CALLOUT_ARROW_CLASS_END}
+        />
       </DraggableMainCallout>
 
       {/* Cord lock — lower right */}
@@ -638,9 +711,17 @@ function MainImageCallouts({
             Pull the drawstring cord and Lay-n-Go NAILSPA cinches completely closed.
           </p>
         </div>
+        <CalloutArrow
+          variant="cord"
+          arrows={arrows}
+          editorMode={editorMode}
+          onArrowChange={onArrowChange}
+          useStageEditor={editorMode}
+          className={MAIN_CALLOUT_ARROW_CLASS_END}
+        />
       </div>
 
-      <MainDiagramArrowsOverlay arrows={arrows} editorMode={editorMode} onArrowChange={onArrowChange} />
+      {editorMode ? <MainArrowStageEditor arrows={arrows} stageRef={boxRef} onArrowChange={onArrowChange} /> : null}
     </div>
   );
 }
@@ -880,6 +961,7 @@ function NailMatCalloutEditor({
 export function NailspaPdpStory() {
   const [arrows, setArrows] = useState<ArrowMap>(ARROWS);
   const [editorMode, setEditorMode] = useState(false);
+  const [editArrowKey, setEditArrowKey] = useState<MainCalloutArrowKey>("lipTop");
   const [mainCalloutBoxes, setMainCalloutBoxes] = useState<MainCalloutBoxes>(DEFAULT_MAIN_CALLOUT_BOXES);
   const [cordBoxPos, setCordBoxPos] = useState<CordBoxPos>(DEFAULT_CORD_BOX_POS);
   const [carryBoxPos, setCarryBoxPos] = useState<BoxPos>(DEFAULT_CARRY_BOX_POS);
@@ -901,6 +983,18 @@ export function NailspaPdpStory() {
 
   const updateArrow = (key: ArrowKey, next: ArrowGeom) => {
     setArrows((prev) => ({ ...prev, [key]: next }));
+    if (MAIN_CALLOUT_ARROW_KEYS.includes(key as MainCalloutArrowKey)) {
+      setEditArrowKey(key as MainCalloutArrowKey);
+    }
+  };
+
+  const editArrowStroke = arrows[editArrowKey].strokeWidth ?? DEFAULT_ARROW_STROKE;
+
+  const setEditArrowStroke = (strokeWidth: number) => {
+    setArrows((prev) => ({
+      ...prev,
+      [editArrowKey]: { ...prev[editArrowKey], strokeWidth },
+    }));
   };
 
   const updateMainCalloutBox = (key: MainCalloutBoxKey, next: BoxPos) => {
@@ -992,7 +1086,7 @@ export function NailspaPdpStory() {
       </div>
       {editorMode ? (
         <div className="sticky top-0 z-[250] border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
-          <strong>Arrow edit mode</strong> — drag callout boxes; drag arrow dots anywhere on the diagram (blue start, green curve, red tip), then Save/Copy.
+          <strong>Arrow edit mode</strong> — drag callout boxes; drag blue/green/red dots anywhere on the diagram; adjust thickness per arrow below; then Save/Copy.
         </div>
       ) : null}
       <div className="px-5 pb-12 sm:px-8 sm:pb-14 md:pb-16 lg:pb-20">
@@ -1113,7 +1207,34 @@ export function NailspaPdpStory() {
       </div>
       {editorMode ? (
         <div className="fixed bottom-0 left-0 right-0 z-[300] border-t border-neutral-200 bg-white/95 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-sm md:left-1/2 md:right-auto md:mx-auto md:w-[min(100%,42rem)] md:-translate-x-1/2 md:rounded-t-xl md:border-x md:border-t">
-          <div className="flex flex-wrap items-center justify-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <label className="flex items-center gap-2 text-xs font-medium text-neutral-800">
+              Arrow
+              <select
+                value={editArrowKey}
+                onChange={(e) => setEditArrowKey(e.target.value as MainCalloutArrowKey)}
+                className="rounded border border-neutral-300 bg-white px-2 py-1 text-xs"
+              >
+                {MAIN_CALLOUT_ARROW_KEYS.map((key) => (
+                  <option key={key} value={key}>
+                    {key}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="flex min-w-[10rem] flex-1 items-center gap-2 text-xs font-medium text-neutral-800 sm:max-w-[14rem]">
+              Thickness
+              <input
+                type="range"
+                min={MIN_ARROW_STROKE}
+                max={MAX_ARROW_STROKE}
+                step={0.25}
+                value={editArrowStroke}
+                onChange={(e) => setEditArrowStroke(Number(e.target.value))}
+                className="w-full"
+              />
+              <span className="tabular-nums text-neutral-600">{editArrowStroke.toFixed(2)}</span>
+            </label>
             <button type="button" onClick={save} className="rounded-md bg-black px-3 py-1.5 text-xs font-semibold text-white">
               Save to this browser
             </button>
