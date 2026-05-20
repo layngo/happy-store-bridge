@@ -30,11 +30,11 @@ const MAX_ARROW_ROTATION = 45;
 const LIP_HANDLE_CALLOUT_PANEL =
   "w-[min(92vw,28rem)] min-w-[min(72%,18rem)] max-w-none shrink-0 rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:w-[26rem] sm:px-4 sm:py-3 md:w-[30rem]";
 
-/** Tools + wash callouts on the right — wide horizontal strip (extends left from edge anchor). */
-const EDGE_RIGHT_CALLOUT_PANEL =
-  "w-[min(calc(100vw-1.5rem),28rem)] min-w-[11rem] max-w-none shrink-0 rounded-md bg-white/[0.82] px-3 py-2 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:w-[26rem] sm:px-4 sm:py-2.5 md:w-[30rem]";
+/** Tools + wash — compact; drag point is the right edge of the text (end anchor). */
+const COMPACT_EDGE_CALLOUT_PANEL =
+  "w-max max-w-[min(46vw,12rem)] shrink-0 rounded-md bg-white/[0.82] px-2.5 py-2 text-right shadow-lg shadow-black/[0.06] backdrop-blur-md sm:max-w-[13rem] sm:px-3 sm:py-2.5";
 
-const EDGE_RIGHT_CALLOUT_WRAPPER = "!max-w-none w-max";
+const COMPACT_EDGE_CALLOUT_WRAPPER = "w-max max-w-[min(54%,280px)]";
 
 /** Bordered cards for the two stacked NAILSPA copy blocks under the closed-bag still (mobile). */
 const NAILSPA_STACKED_CALLOUT =
@@ -191,70 +191,84 @@ function normalizeArrowMap(map: ArrowMap): ArrowMap {
   return next;
 }
 
-// Shipped defaults (saved layout; toolsCenter tip kept on-canvas).
+// Shipped defaults — editor-saved layout (May 2026).
 const ARROWS: ArrowMap = normalizeArrowMap({
   mesh: {
     viewBox: MAIN_ARROW_WORKSPACE,
-    start: { x: -57.00055531093052, y: -9.46614837646484 },
-    control: { x: -32.20609991891043, y: 0.7793873378208716 },
-    end: { x: -1.324401310512016, y: 0.33388519287109375 },
-    strokeWidth: 1.25,
+    start: { x: -113.209395136152, y: -36.65659849984306 },
+    control: { x: -69.5764322280884, y: -4.810273034232026 },
+    end: { x: -22.44458539145333, y: -30.63073594229561 },
+    strokeWidth: 1.5,
+    headScale: 1,
+    rotation: 0,
   },
   lipTop: {
     viewBox: MAIN_ARROW_WORKSPACE,
-    start: { x: 107.67886902195363, y: -64.71631951528511 },
-    control: { x: 121.47009302941902, y: -75.82329177893085 },
-    end: { x: 118.99223913517486, y: -47.223756470308615 },
-    strokeWidth: 1.25,
+    start: { x: -40.1893380028861, y: -118.9363351549421 },
+    control: { x: -72.72777816227503, y: -106.03788157871791 },
+    end: { x: -44.66602911267961, y: -88.62298202514648 },
+    strokeWidth: 1.75,
+    headScale: 1,
+    rotation: 0,
   },
   handleRight: {
     viewBox: MAIN_ARROW_WORKSPACE,
-    start: { x: 4.504283905029297, y: -66.55971200125556 },
-    control: { x: -23.137951571979144, y: -55.23465582480266 },
-    end: { x: 0.9146998961665673, y: -42.737689850055 },
-    strokeWidth: 1.25,
+    start: { x: 132.72857679639543, y: -118.59763445172992 },
+    control: { x: 176.13033090318953, y: -103.35039247785296 },
+    end: { x: 147.91544355664934, y: -91.98049000331335 },
+    strokeWidth: 1.75,
+    headScale: 1,
+    rotation: 0,
   },
   toolsCenter: {
     viewBox: MAIN_ARROW_WORKSPACE,
-    start: { x: 135.94736080116496, y: 29.937766550774285 },
-    control: { x: 89.88117523169717, y: 45.55474110702835 },
-    end: { x: 28, y: 40 },
-    strokeWidth: 1.25,
+    start: { x: 185.47249180929998, y: 33.94399164404189 },
+    control: { x: 95.4866683142526, y: 50.92153070654189 },
+    end: { x: 51.890504155840176, y: 21.310610209192546 },
+    strokeWidth: 1.75,
     rotation: -20,
+    headScale: 1,
   },
   washSurface: {
     viewBox: MAIN_ARROW_WORKSPACE,
-    start: { x: 132.84878594534737, y: 81.96707861764091 },
-    control: { x: 84.72006280081612, y: 103.66722324916296 },
-    end: { x: 81.36254937308178, y: 80.26971871512278 },
-    strokeWidth: 1.25,
+    start: { x: 144.66688224247525, y: 118.49593816484725 },
+    control: { x: 115.12371948787143, y: 147.95223971775604 },
+    end: { x: 82.64123330797472, y: 126.36990765162875 },
+    strokeWidth: 1.75,
+    headScale: 1,
+    rotation: 0,
   },
   cord: {
     viewBox: MAIN_ARROW_WORKSPACE,
-    start: { x: -64.8893209184919, y: 89.62146759033203 },
-    control: { x: -62.71205302647182, y: 105.46503448486328 },
-    end: { x: -37.66089684622629, y: 105.7998559134347 },
-    strokeWidth: 1.25,
+    start: { x: -136.86957263946533, y: 126.18140983581549 },
+    control: { x: -127.92061683109827, y: 162.5000103541783 },
+    end: { x: -103.78185367584229, y: 154.2137219565255 },
+    strokeWidth: 1.75,
+    headScale: 1,
+    rotation: 0,
   },
   carry: {
     viewBox: "0 0 100 100",
-    start: { x: 97.5, y: 30 },
+    start: { x: 105.44645971070787, y: 24.31438651154527 },
     control: { x: 84, y: 40 },
     end: { x: 66.5, y: 38 },
+    strokeWidth: 1.25,
+    headScale: 1.1,
   },
   nailMat: {
     viewBox: "-120 -80 360 220",
     start: { x: 118, y: 12 },
     control: { x: 52, y: 28 },
-    end: { x: -102.65920651068159, y: 393.37890625 },
+    end: { x: -227.81859206792302, y: 140 },
+    strokeWidth: 4,
   },
 });
 
-const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v12";
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v13";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
-const MAIN_CALLOUT_BOXES_STORAGE_KEY = "nailspa-story-main-callout-boxes-v3";
+const MAIN_CALLOUT_BOXES_STORAGE_KEY = "nailspa-story-main-callout-boxes-v5";
 const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 91, y: 86 };
 const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 27.992304437924677, y: 46.79633617401123 };
 
@@ -266,16 +280,19 @@ type MainCalloutBoxes = Record<MainCalloutBoxKey, BoxPos>;
 const DEFAULT_MAIN_CALLOUT_BOXES: MainCalloutBoxes = {
   mesh: { x: 0, y: 18.30925399713033 },
   lipHandle: { x: 78.33745918117191, y: -10 },
-  tools: { x: 97.15595994676862, y: 56.292369930276784 },
-  wash: { x: 75.14803954533168, y: 68.23949953791303 },
+  tools: { x: 100, y: 43.219866223481226 },
+  wash: { x: 100, y: 83.05276358084807 },
 };
+
+/** Right-edge callouts: drag along the far right of the diagram only. */
+const EDGE_CALLOUT_X_CLAMP = { min: 88, max: 100 } as const;
 
 const DEFAULT_CORD_BOX_POS: CordBoxPos = { right: 77.64717987605503, bottom: 14.289849469150397 };
 
 const MAIN_CALLOUT_ANCHOR: Record<MainCalloutBoxKey, MainCalloutAnchor> = {
   mesh: "start",
   lipHandle: "end",
-  tools: "end-center",
+  tools: "end",
   wash: "end-bottom",
 };
 
@@ -418,6 +435,8 @@ function DraggableMainCallout({
   alignItems,
   yClampMin = 0,
   yClampMax = 100,
+  xClampMin = 0,
+  xClampMax = 100,
   boxClassName,
   children,
 }: {
@@ -431,6 +450,9 @@ function DraggableMainCallout({
   /** Allow dragging above the diagram (e.g. lip/handle callout). Percent of stage height. */
   yClampMin?: number;
   yClampMax?: number;
+  /** Horizontal drag bounds (% of stage width). */
+  xClampMin?: number;
+  xClampMax?: number;
   boxClassName?: string;
   children: ReactNode;
 }) {
@@ -459,7 +481,7 @@ function DraggableMainCallout({
       onPointerMove={(e) => {
         if (!editorMode || !dragging || !stageRef.current) return;
         const r = stageRef.current.getBoundingClientRect();
-        const xPct = clamp(((e.clientX - r.left) / r.width) * 100, 0, 100);
+        const xPct = clamp(((e.clientX - r.left) / r.width) * 100, xClampMin, xClampMax);
         const yPct = clamp(((e.clientY - r.top) / r.height) * 100, yClampMin, yClampMax);
         onPosChange(boxKey, { x: xPct, y: yPct });
       }}
@@ -901,13 +923,15 @@ function MainImageCallouts({
         stageRef={boxRef}
         onPosChange={onMainCalloutBoxChange}
         alignItems="items-end"
-        boxClassName={EDGE_RIGHT_CALLOUT_WRAPPER}
+        xClampMin={EDGE_CALLOUT_X_CLAMP.min}
+        xClampMax={EDGE_CALLOUT_X_CLAMP.max}
+        boxClassName={COMPACT_EDGE_CALLOUT_WRAPPER}
       >
-        <div className={EDGE_RIGHT_CALLOUT_PANEL}>
-          <h2 className="font-heading text-sm font-bold leading-tight tracking-tight text-foreground sm:text-base md:text-lg">
+        <div className={COMPACT_EDGE_CALLOUT_PANEL}>
+          <h2 className="font-heading text-[13px] font-bold leading-snug tracking-tight text-foreground sm:text-sm">
             Room for every tool
           </h2>
-          <p className="mt-0.5 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
+          <p className="mt-0.5 text-[10px] leading-snug text-neutral-700 sm:text-[11px]">
             A convenient area for all your nail tools in the middle.
           </p>
         </div>
@@ -921,13 +945,15 @@ function MainImageCallouts({
         stageRef={boxRef}
         onPosChange={onMainCalloutBoxChange}
         alignItems="items-end"
-        boxClassName={EDGE_RIGHT_CALLOUT_WRAPPER}
+        xClampMin={EDGE_CALLOUT_X_CLAMP.min}
+        xClampMax={EDGE_CALLOUT_X_CLAMP.max}
+        boxClassName={COMPACT_EDGE_CALLOUT_WRAPPER}
       >
-        <div className={EDGE_RIGHT_CALLOUT_PANEL}>
-          <h2 className="font-heading text-sm font-bold leading-tight tracking-tight text-foreground sm:text-base md:text-lg">
+        <div className={COMPACT_EDGE_CALLOUT_PANEL}>
+          <h2 className="font-heading text-[13px] font-bold leading-snug tracking-tight text-foreground sm:text-sm">
             Washable application surface
           </h2>
-          <p className="mt-0.5 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
+          <p className="mt-0.5 text-[10px] leading-snug text-neutral-700 sm:text-[11px]">
             Mess-free manicures on a wipeable surface—spills clean up in seconds.
           </p>
         </div>
@@ -1404,17 +1430,15 @@ export function NailspaPdpStory() {
             <h2 className="font-heading text-base font-bold tracking-tight text-foreground">{LIP_HANDLE_CALLOUT_TITLE}</h2>
             <p className="mt-1 text-xs leading-snug text-neutral-700">{LIP_HANDLE_CALLOUT_BODY}</p>
           </div>
-          <div className={cn(EDGE_RIGHT_CALLOUT_PANEL, "w-full min-w-0")}>
-            <h2 className="font-heading text-base font-bold leading-tight tracking-tight text-foreground">Room for every tool</h2>
-            <p className="mt-0.5 text-xs leading-snug text-neutral-700">
+          <div className={CALLOUT_PANEL}>
+            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Room for every tool</h2>
+            <p className="mt-1 text-xs leading-snug text-neutral-700">
               A convenient area for all your nail tools in the middle.
             </p>
           </div>
-          <div className={cn(EDGE_RIGHT_CALLOUT_PANEL, "w-full min-w-0")}>
-            <h2 className="font-heading text-base font-bold leading-tight tracking-tight text-foreground">
-              Washable application surface
-            </h2>
-            <p className="mt-0.5 text-xs leading-snug text-neutral-700">
+          <div className={CALLOUT_PANEL}>
+            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Washable application surface</h2>
+            <p className="mt-1 text-xs leading-snug text-neutral-700">
               Mess-free manicures on a wipeable surface—spills clean up in seconds.
             </p>
           </div>
