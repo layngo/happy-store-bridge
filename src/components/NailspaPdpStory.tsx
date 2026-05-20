@@ -17,11 +17,9 @@ const MAIN_CALLOUT_ARROW_CLASS_END =
 const MAIN_CALLOUT_ARROW_CLASS_START =
   "mt-2 ml-6 h-[6.6rem] w-[18rem] shrink-0 sm:ml-10 sm:h-[7.2rem] sm:w-[19.5rem] md:ml-12";
 
-/** Lip + handle callout — slightly smaller box and arrows than other main-diagram labels. */
+/** Lip + handle callout — wide panel so title/body wrap on fewer lines. */
 const LIP_HANDLE_CALLOUT_PANEL =
-  "rounded-md bg-white/[0.82] px-2.5 py-2 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:px-3 sm:py-2.5 max-w-[min(46%,300px)] origin-top-right scale-[0.9]";
-const LIP_HANDLE_ARROW_CLASS_END =
-  "mt-1 mr-4 h-[5.25rem] w-[14.5rem] shrink-0 sm:mr-7 sm:h-[5.75rem] sm:w-[15.5rem] md:mr-9";
+  "w-[min(92vw,28rem)] min-w-[min(72%,18rem)] max-w-none shrink-0 rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:w-[26rem] sm:px-4 sm:py-3 md:w-[30rem]";
 
 /** Bordered cards for the two stacked NAILSPA copy blocks under the closed-bag still (mobile). */
 const NAILSPA_STACKED_CALLOUT =
@@ -48,44 +46,96 @@ type ArrowPointKey = keyof Pick<ArrowGeom, "start" | "control" | "end">;
 type CordBoxPos = { right: number; bottom: number };
 type BoxPos = { x: number; y: number };
 
+/** Large coordinate space for main-diagram arrows — avoids clipping when tips extend past the label. */
+const MAIN_ARROW_WORKSPACE = "-80 -30 240 110";
+const LEGACY_MAIN_VIEWBOX = "0 0 120 52";
+const MAIN_CALLOUT_ARROW_KEYS = ["mesh", "lipTop", "handleRight", "toolsCenter", "washSurface", "cord"] as const;
+
+function mapLegacyMainPoint(p: Point): Point {
+  const { minX, minY, width, height } = parseViewBox(LEGACY_MAIN_VIEWBOX);
+  const ws = parseViewBox(MAIN_ARROW_WORKSPACE);
+  return {
+    x: ws.minX + ((p.x - minX) / width) * ws.width,
+    y: ws.minY + ((p.y - minY) / height) * ws.height,
+  };
+}
+
+function mainArrowGeom(start: Point, control: Point, end: Point): ArrowGeom {
+  return {
+    viewBox: MAIN_ARROW_WORKSPACE,
+    start: mapLegacyMainPoint(start),
+    control: mapLegacyMainPoint(control),
+    end: mapLegacyMainPoint(end),
+  };
+}
+
+function migrateMainArrowGeom(geom: ArrowGeom): ArrowGeom {
+  const { width } = parseViewBox(geom.viewBox);
+  if (width >= 200) return { ...geom, viewBox: MAIN_ARROW_WORKSPACE };
+  const { minX, minY, width: w, height: h } = parseViewBox(LEGACY_MAIN_VIEWBOX);
+  const ws = parseViewBox(MAIN_ARROW_WORKSPACE);
+  const map = (p: Point) => ({
+    x: ws.minX + ((p.x - minX) / w) * ws.width,
+    y: ws.minY + ((p.y - minY) / h) * ws.height,
+  });
+  return {
+    viewBox: MAIN_ARROW_WORKSPACE,
+    start: map(geom.start),
+    control: map(geom.control),
+    end: map(geom.end),
+  };
+}
+
+function normalizeArrowMap(map: ArrowMap): ArrowMap {
+  const next = { ...map };
+  for (const key of MAIN_CALLOUT_ARROW_KEYS) {
+    next[key] = migrateMainArrowGeom(next[key]);
+  }
+  return next;
+}
+
+function fitArrowViewBox(geom: ArrowGeom, pad = 14): string {
+  const xs = [geom.start.x, geom.control.x, geom.end.x];
+  const ys = [geom.start.y, geom.control.y, geom.end.y];
+  const minX = Math.min(...xs) - pad;
+  const minY = Math.min(...ys) - pad;
+  const width = Math.max(Math.max(...xs) - minX + pad, 48);
+  const height = Math.max(Math.max(...ys) - minY + pad, 32);
+  return `${minX} ${minY} ${width} ${height}`;
+}
+
 // Shipped defaults (match saved browser layout when no localStorage).
 const ARROWS: ArrowMap = {
-  mesh: {
-    viewBox: "0 0 120 52",
-    start: { x: 52, y: 2 },
-    control: { x: 62, y: 50 },
-    end: { x: 118, y: 50 },
-  },
-  lipTop: {
-    viewBox: "0 0 120 52",
-    start: { x: 105, y: 3 },
-    control: { x: 74, y: 12 },
-    end: { x: 22, y: 9 },
-  },
-  handleRight: {
-    viewBox: "0 0 120 52",
-    start: { x: 105, y: 3 },
-    control: { x: 90, y: 26 },
-    end: { x: 116, y: 44 },
-  },
-  toolsCenter: {
-    viewBox: "0 0 120 52",
-    start: { x: 103.51176891130173, y: 3.912429658033902 },
-    control: { x: 63.83284476954719, y: 31.734448605743918 },
-    end: { x: -39.900950779786537, y: 5.036993003056402 },
-  },
-  washSurface: {
-    viewBox: "0 0 120 52",
-    start: { x: 84.58127121398606, y: 1.7299204937928203 },
-    control: { x: 54.532862170627816, y: 18.766787929361666 },
-    end: { x: -5.408713627804482, y: 6.768883369924071 },
-  },
-  cord: {
-    viewBox: "0 0 120 52",
-    start: { x: 81.57602163461539, y: 0 },
-    control: { x: 60.98257211538461, y: 28.715496778569005 },
-    end: { x: 89.48617788461539, y: 50.33014581213971 },
-  },
+  mesh: mainArrowGeom(
+    { x: 52, y: 2 },
+    { x: 62, y: 50 },
+    { x: 118, y: 50 },
+  ),
+  lipTop: mainArrowGeom(
+    { x: 105, y: 3 },
+    { x: 74, y: 12 },
+    { x: 22, y: 9 },
+  ),
+  handleRight: mainArrowGeom(
+    { x: 105, y: 3 },
+    { x: 90, y: 26 },
+    { x: 116, y: 44 },
+  ),
+  toolsCenter: mainArrowGeom(
+    { x: 103.51176891130173, y: 3.912429658033902 },
+    { x: 63.83284476954719, y: 31.734448605743918 },
+    { x: -39.900950779786537, y: 5.036993003056402 },
+  ),
+  washSurface: mainArrowGeom(
+    { x: 84.58127121398606, y: 1.7299204937928203 },
+    { x: 54.532862170627816, y: 18.766787929361666 },
+    { x: -5.408713627804482, y: 6.768883369924071 },
+  ),
+  cord: mainArrowGeom(
+    { x: 81.57602163461539, y: 0 },
+    { x: 60.98257211538461, y: 28.715496778569005 },
+    { x: 89.48617788461539, y: 50.33014581213971 },
+  ),
   carry: {
     viewBox: "0 0 100 100",
     start: { x: 97.5, y: 30 },
@@ -100,7 +150,7 @@ const ARROWS: ArrowMap = {
   },
 };
 
-const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v6";
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v7";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
@@ -147,8 +197,8 @@ function parseViewBox(viewBox: string) {
 function pointToPct(point: Point, viewBox: string) {
   const { minX, minY, width, height } = parseViewBox(viewBox);
   return {
-    x: clamp(((point.x - minX) / width) * 100, 0, 100),
-    y: clamp(((point.y - minY) / height) * 100, 0, 100),
+    x: ((point.x - minX) / width) * 100,
+    y: ((point.y - minY) / height) * 100,
   };
 }
 
@@ -165,7 +215,7 @@ function loadArrowsFromStorage(): ArrowMap | null {
     const raw = localStorage.getItem(ARROW_STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as ArrowMap;
-    return parsed;
+    return normalizeArrowMap(parsed);
   } catch {
     return null;
   }
@@ -232,7 +282,7 @@ function DraggableMainCallout({
   return (
     <div
       className={cn(
-        "absolute z-10 flex max-w-[min(54%,340px)] touch-none flex-col sm:max-w-[360px]",
+        "absolute z-10 flex max-w-[min(54%,340px)] touch-none flex-col overflow-visible sm:max-w-[360px]",
         alignItems,
         editorMode && "cursor-move",
         boxClassName,
@@ -285,8 +335,17 @@ function RenderArrow({
   const left = { x: end.x - ux * size - uy * spread, y: end.y - uy * size + ux * spread };
   const right = { x: end.x - ux * size + uy * spread, y: end.y - uy * size - ux * spread };
 
+  const displayViewBox = fitArrowViewBox({ start, control, end, viewBox });
+
   return (
-    <svg className={className} viewBox={viewBox} fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+    <svg
+      className={cn(className, "overflow-visible")}
+      viewBox={displayViewBox}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+      overflow="visible"
+    >
       <path
         d={`M${start.x} ${start.y} Q${control.x} ${control.y} ${end.x} ${end.y}`}
         stroke="currentColor"
@@ -333,7 +392,7 @@ function ArrowEditorHandles({
   return (
     <div
       ref={boxRef}
-      className="pointer-events-none absolute inset-0 z-20"
+      className="pointer-events-none absolute inset-0 z-20 overflow-visible"
       onPointerMove={move}
       onPointerUp={() => setDragKey(null)}
       onPointerCancel={() => setDragKey(null)}
@@ -373,8 +432,8 @@ function EditableArrow({
   onChange?: (next: ArrowGeom) => void;
 }) {
   return (
-    <div className={cn("relative", className)}>
-      <RenderArrow className="h-full w-full" geom={geom} />
+    <div className={cn("relative overflow-visible", className)}>
+      <RenderArrow className="h-full w-full overflow-visible" geom={geom} />
       {editorMode && onChange ? <ArrowEditorHandles geom={geom} setGeom={onChange} /> : null}
     </div>
   );
@@ -482,17 +541,17 @@ function MainImageCallouts({
         alignItems="items-end"
         yClampMin={-28}
         yClampMax={100}
-        boxClassName="max-w-[min(48%,320px)] sm:max-w-[300px]"
+        boxClassName="!max-w-[min(92%,560px)] sm:!max-w-none w-max"
       >
         <div className={LIP_HANDLE_CALLOUT_PANEL}>
           <h2 className="font-heading text-sm font-bold leading-snug tracking-tight text-foreground sm:text-base md:text-lg">
             {LIP_HANDLE_CALLOUT_TITLE}
           </h2>
-          <p className="mt-0.5 text-[10px] leading-snug text-neutral-700 sm:text-[11px] md:text-xs">
+          <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
             {LIP_HANDLE_CALLOUT_BODY}
           </p>
         </div>
-        <div className={cn("relative shrink-0", LIP_HANDLE_ARROW_CLASS_END)}>
+        <div className={cn("relative shrink-0 overflow-visible", MAIN_CALLOUT_ARROW_CLASS_END)}>
           <CalloutArrow
             variant="lipTop"
             arrows={arrows}
@@ -505,7 +564,7 @@ function MainImageCallouts({
             arrows={arrows}
             editorMode={editorMode}
             onArrowChange={onArrowChange}
-            className="absolute inset-0 h-full w-full"
+            className="absolute inset-0 z-[1] h-full w-full"
           />
         </div>
       </DraggableMainCallout>
