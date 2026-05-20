@@ -1,10 +1,14 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { averageReviewRating, type CustomerReview } from "@/data/customerReviews";
+import { fetchSubmittedReviews } from "@/lib/reviewApi";
 import { StarRating } from "@/components/StarRating";
+import { SubmitReviewDialog } from "@/components/SubmitReviewDialog";
 import { cn } from "@/lib/utils";
 
 type CustomerReviewsSectionProps = {
   reviews: CustomerReview[];
+  /** Required for order verification and saving new reviews */
+  productHandle: string;
   heading?: string;
   className?: string;
 };
@@ -50,45 +54,76 @@ function ReviewCard({ review }: { review: CustomerReview }) {
 }
 
 export function CustomerReviewsSection({
-  reviews,
+  reviews: staticReviews,
+  productHandle,
   heading = "What Our Customers Are Saying",
   className,
 }: CustomerReviewsSectionProps) {
+  const [submittedReviews, setSubmittedReviews] = useState<CustomerReview[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchSubmittedReviews(productHandle).then((list) => {
+      if (!cancelled) setSubmittedReviews(list);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [productHandle]);
+
+  const reviews = useMemo(
+    () => [...staticReviews, ...submittedReviews],
+    [staticReviews, submittedReviews],
+  );
+
   const averageRating = useMemo(() => averageReviewRating(reviews), [reviews]);
 
-  if (reviews.length === 0) return null;
+  const handleReviewSubmitted = (review: CustomerReview) => {
+    setSubmittedReviews((prev) => [...prev, review]);
+  };
 
   return (
     <section
       className={cn("mx-auto mt-14 w-full max-w-4xl border-t border-border pt-10 sm:mt-16", className)}
       aria-labelledby="customer-reviews-heading"
     >
-      <div className="px-4 sm:px-0">
-        <h2
-          id="customer-reviews-heading"
-          className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
-        >
-          {heading}
-        </h2>
-        <div className="mt-4 flex items-center gap-3">
-          <StarRating rating={averageRating} size="lg" />
+      <div className="flex flex-col gap-4 px-4 sm:flex-row sm:items-start sm:justify-between sm:px-0">
+        <div>
+          <h2
+            id="customer-reviews-heading"
+            className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+          >
+            {heading}
+          </h2>
+          {reviews.length > 0 ? (
+            <div className="mt-4 flex items-center gap-3">
+              <StarRating rating={averageRating} size="lg" />
+            </div>
+          ) : null}
         </div>
+        <SubmitReviewDialog productHandle={productHandle} onReviewSubmitted={handleReviewSubmitted} />
       </div>
 
-      <div
-        className={cn(
-          "mt-6 flex gap-4 overflow-x-auto scroll-smooth px-4 pb-3 sm:px-0",
-          "snap-x snap-mandatory [-webkit-overflow-scrolling:touch]",
-          "[scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5",
-        )}
-        tabIndex={0}
-        role="region"
-        aria-label="Customer reviews"
-      >
-        {reviews.map((review) => (
-          <ReviewCard key={review.id} review={review} />
-        ))}
-      </div>
+      {reviews.length > 0 ? (
+        <div
+          className={cn(
+            "mt-6 flex gap-4 overflow-x-auto scroll-smooth px-4 pb-3 sm:px-0",
+            "snap-x snap-mandatory [-webkit-overflow-scrolling:touch]",
+            "[scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5",
+          )}
+          tabIndex={0}
+          role="region"
+          aria-label="Customer reviews"
+        >
+          {reviews.map((review) => (
+            <ReviewCard key={review.id} review={review} />
+          ))}
+        </div>
+      ) : (
+        <p className="mt-6 px-4 text-sm text-muted-foreground sm:px-0">
+          No reviews yet—be the first to share your experience.
+        </p>
+      )}
     </section>
   );
 }

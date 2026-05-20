@@ -8,7 +8,7 @@ const SIZE_CLASS = {
 } as const;
 
 type StarRatingProps = {
-  /** 0–5; supports half-star display when fractional */
+  /** 0–5; each star fills proportionally (e.g. 4.7 → four full + 70% on the fifth) */
   rating: number;
   size?: keyof typeof SIZE_CLASS;
   className?: string;
@@ -16,32 +16,39 @@ type StarRatingProps = {
   label?: string;
 };
 
+/** 0–1 fill amount for star index (0 = first star). */
+function starFillAmount(rating: number, index: number): number {
+  return Math.min(1, Math.max(0, rating - index));
+}
+
 export function StarRating({ rating, size = "md", className, label }: StarRatingProps) {
   const clamped = Math.min(5, Math.max(0, rating));
-  const fullStars = Math.floor(clamped);
-  const fraction = clamped - fullStars;
-  const hasHalf = fraction >= 0.25 && fraction < 0.75;
-  const roundUp = fraction >= 0.75;
-  const filledCount = roundUp ? fullStars + 1 : fullStars;
-  const showHalf = hasHalf && filledCount < 5;
   const starClass = SIZE_CLASS[size];
   const ariaLabel = label ?? `${clamped.toFixed(1)} out of 5 stars`;
 
   return (
     <span className={cn("inline-flex items-center gap-0.5 text-[#e8a317]", className)} role="img" aria-label={ariaLabel}>
       {Array.from({ length: 5 }, (_, i) => {
-        if (i < filledCount) {
+        const fill = starFillAmount(clamped, i);
+
+        if (fill >= 1) {
           return <Star key={i} className={cn(starClass, "fill-current stroke-none")} aria-hidden />;
         }
-        if (i === filledCount && showHalf) {
-          return (
-            <span key={i} className={cn("relative inline-block", starClass)} aria-hidden>
-              <Star className={cn(starClass, "fill-[#e5e7eb] stroke-none")} />
-              <Star className={cn(starClass, "absolute inset-0 fill-current stroke-none [clip-path:inset(0_50%_0_0)]")} />
-            </span>
-          );
+
+        if (fill <= 0) {
+          return <Star key={i} className={cn(starClass, "fill-[#e5e7eb] stroke-none")} aria-hidden />;
         }
-        return <Star key={i} className={cn(starClass, "fill-[#e5e7eb] stroke-none")} aria-hidden />;
+
+        const clipRight = Math.round((1 - fill) * 100);
+        return (
+          <span key={i} className={cn("relative inline-block", starClass)} aria-hidden>
+            <Star className={cn(starClass, "fill-[#e5e7eb] stroke-none")} />
+            <Star
+              className={cn(starClass, "absolute inset-0 fill-current stroke-none")}
+              style={{ clipPath: `inset(0 ${clipRight}% 0 0)` }}
+            />
+          </span>
+        );
       })}
     </span>
   );

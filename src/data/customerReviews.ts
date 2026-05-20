@@ -6,7 +6,8 @@
 export type CustomerReview = {
   id: string;
   name: string;
-  rating: 1 | 2 | 3 | 4 | 5;
+  /** 1–5 in 0.5 steps for customer-submitted reviews */
+  rating: number;
   text: string;
   /** Optional short headline shown above the review body */
   title?: string;

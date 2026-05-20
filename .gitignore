@@ -11,6 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+
+# Customer reviews submitted via the site (dev / self-hosted API)
+data/submitted-reviews.json
 
 # Editor directories and files
 .vscode/*

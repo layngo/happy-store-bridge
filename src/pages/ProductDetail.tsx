@@ -2135,18 +2135,24 @@ const ProductDetail = () => {
               </section>
             ) : null}
 
-            {isCosmoStoryPdp ? <CustomerReviewsSection reviews={COSMO_CUSTOMER_REVIEWS} /> : null}
+            {isCosmoStoryPdp && product ? (
+              <CustomerReviewsSection reviews={COSMO_CUSTOMER_REVIEWS} productHandle={product.handle} />
+            ) : null}
 
-            {isNailspaPdp ? <CustomerReviewsSection reviews={NAILSPA_CUSTOMER_REVIEWS} /> : null}
+            {isNailspaPdp && product ? (
+              <CustomerReviewsSection reviews={NAILSPA_CUSTOMER_REVIEWS} productHandle={product.handle} />
+            ) : null}
 
-            {isLayNGoTraveler20 ? <CustomerReviewsSection reviews={TRAVELER_CUSTOMER_REVIEWS} /> : null}
+            {isLayNGoTraveler20 && product ? (
+              <CustomerReviewsSection reviews={TRAVELER_CUSTOMER_REVIEWS} productHandle={product.handle} />
+            ) : null}
 
             {product && isLayNGoPlayReviewsPdp(product.handle) ? (
-              <CustomerReviewsSection reviews={PLAY_CUSTOMER_REVIEWS} />
+              <CustomerReviewsSection reviews={PLAY_CUSTOMER_REVIEWS} productHandle={product.handle} />
             ) : null}
 
             {product && isLayNGoDefenderReviewsPdp(product.handle) ? (
-              <CustomerReviewsSection reviews={DEFENDER_CUSTOMER_REVIEWS} />
+              <CustomerReviewsSection reviews={DEFENDER_CUSTOMER_REVIEWS} productHandle={product.handle} />
             ) : null}
           </>
         ) : (
