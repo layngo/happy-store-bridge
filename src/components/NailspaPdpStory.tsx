@@ -11,6 +11,12 @@ const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png";
 
 const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:px-4 sm:py-3";
 
+/** Match sliding cord lock callout — same arrow footprint on every main-diagram label. */
+const MAIN_CALLOUT_ARROW_CLASS_END =
+  "mt-2 mr-6 h-[6.6rem] w-[18rem] shrink-0 sm:mr-10 sm:h-[7.2rem] sm:w-[19.5rem] md:mr-12";
+const MAIN_CALLOUT_ARROW_CLASS_START =
+  "mt-2 ml-6 h-[6.6rem] w-[18rem] shrink-0 sm:ml-10 sm:h-[7.2rem] sm:w-[19.5rem] md:ml-12";
+
 /** Bordered cards for the two stacked NAILSPA copy blocks under the closed-bag still (mobile). */
 const NAILSPA_STACKED_CALLOUT =
   "rounded-lg border-2 border-neutral-300 bg-white px-3 py-2.5 shadow-md shadow-black/[0.08] sm:px-4 sm:py-3";
@@ -35,34 +41,34 @@ type BoxPos = { x: number; y: number };
 // Shipped defaults (match saved browser layout when no localStorage).
 const ARROWS: ArrowMap = {
   mesh: {
-    viewBox: "0 0 120 48",
-    start: { x: 51.10607315690805, y: 1.1182095625635808 },
-    control: { x: 61.828486724506256, y: 48 },
-    end: { x: 120, y: 48 },
+    viewBox: "0 0 120 52",
+    start: { x: 52, y: 2 },
+    control: { x: 62, y: 50 },
+    end: { x: 118, y: 50 },
   },
   lipTop: {
-    viewBox: "0 0 80 72",
-    start: { x: 40, y: 0 },
-    control: { x: 40, y: 36 },
-    end: { x: 40, y: 72 },
+    viewBox: "0 0 120 52",
+    start: { x: 24, y: 52 },
+    control: { x: 58, y: 18 },
+    end: { x: 92, y: 6 },
   },
   handleRight: {
-    viewBox: "0 0 120 56",
-    start: { x: 88.21240558480201, y: 0 },
-    control: { x: 109.49416342412451, y: 22.980118590861533 },
-    end: { x: 101.21309224078736, y: 56 },
+    viewBox: "0 0 120 52",
+    start: { x: 18, y: 52 },
+    control: { x: 72, y: 32 },
+    end: { x: 108, y: 48 },
   },
   toolsCenter: {
-    viewBox: "0 0 160 80",
-    start: { x: 152, y: 40 },
-    control: { x: 80, y: 38 },
-    end: { x: 12, y: 42 },
+    viewBox: "0 0 120 52",
+    start: { x: 108, y: 26 },
+    control: { x: 62, y: 26 },
+    end: { x: 14, y: 28 },
   },
   washSurface: {
-    viewBox: "0 0 140 100",
-    start: { x: 18, y: 12 },
-    control: { x: 72, y: 58 },
-    end: { x: 118, y: 88 },
+    viewBox: "0 0 120 52",
+    start: { x: 22, y: 8 },
+    control: { x: 68, y: 34 },
+    end: { x: 102, y: 46 },
   },
   cord: {
     viewBox: "0 0 120 52",
@@ -84,7 +90,7 @@ const ARROWS: ArrowMap = {
   },
 };
 
-const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v2";
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v3";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
@@ -337,12 +343,12 @@ function MainImageCallouts({
           arrows={arrows}
           editorMode={editorMode}
           onArrowChange={onArrowChange}
-          className="mt-1 ml-6 h-16 w-40 shrink-0 sm:ml-10 sm:h-[4.8rem] sm:w-[11.2rem] md:ml-14"
+          className={MAIN_CALLOUT_ARROW_CLASS_START}
         />
       </div>
 
-      {/* Containment lip — 12 o'clock (top) */}
-      <div className="absolute left-1/2 top-[2%] z-10 flex max-w-[min(78%,320px)] -translate-x-1/2 flex-col items-center text-center sm:top-[3%] md:max-w-[340px]">
+      {/* Containment lip + carrying handle — combined, ~12–2 o'clock */}
+      <div className="absolute right-[1%] top-[-2%] z-10 flex max-w-[min(54%,300px)] flex-col items-end sm:right-[2%] sm:top-[-1%] sm:max-w-[320px] md:right-[3%] md:max-w-[340px]">
         <div className={CALLOUT_PANEL}>
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Convenient containment lip
@@ -350,33 +356,29 @@ function MainImageCallouts({
           <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
             The raised lip keeps polish and tools from falling off the counter.
           </p>
-        </div>
-        <CalloutArrow
-          variant="lipTop"
-          arrows={arrows}
-          editorMode={editorMode}
-          onArrowChange={onArrowChange}
-          className="mt-1 h-14 w-28 shrink-0 sm:h-16 sm:w-32"
-        />
-      </div>
-
-      {/* Carrying handle — ~2 o'clock (former lip position) */}
-      <div className="absolute right-[1%] top-[10%] z-10 flex max-w-[min(50%,240px)] flex-col items-end sm:right-[2%] sm:max-w-[260px] md:right-[3%] md:max-w-[280px] lg:max-w-[300px]">
-        <div className={CALLOUT_PANEL}>
-          <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
+          <h2 className="mt-2.5 font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Carrying handle
           </h2>
           <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
             Built-in handle for easy grab-and-go after you cinch it closed.
           </p>
         </div>
-        <CalloutArrow
-          variant="handleRight"
-          arrows={arrows}
-          editorMode={editorMode}
-          onArrowChange={onArrowChange}
-          className="mt-2 mr-8 h-[4.8rem] w-44 shrink-0 sm:mr-12 sm:h-[5.6rem] sm:w-[12.8rem] md:mr-14"
-        />
+        <div className="flex w-full max-w-[38rem] flex-wrap justify-end gap-1 sm:gap-2">
+          <CalloutArrow
+            variant="lipTop"
+            arrows={arrows}
+            editorMode={editorMode}
+            onArrowChange={onArrowChange}
+            className={MAIN_CALLOUT_ARROW_CLASS_END}
+          />
+          <CalloutArrow
+            variant="handleRight"
+            arrows={arrows}
+            editorMode={editorMode}
+            onArrowChange={onArrowChange}
+            className={MAIN_CALLOUT_ARROW_CLASS_END}
+          />
+        </div>
       </div>
 
       {/* Tool area — 3 o'clock, arrow to mat center */}
@@ -394,7 +396,7 @@ function MainImageCallouts({
           arrows={arrows}
           editorMode={editorMode}
           onArrowChange={onArrowChange}
-          className="mt-2 mr-4 h-12 w-48 shrink-0 sm:mr-6 sm:h-14 sm:w-52"
+          className={MAIN_CALLOUT_ARROW_CLASS_END}
         />
       </div>
 
@@ -413,7 +415,7 @@ function MainImageCallouts({
           arrows={arrows}
           editorMode={editorMode}
           onArrowChange={onArrowChange}
-          className="mt-2 mr-6 h-[5.2rem] w-40 shrink-0 sm:mr-8 sm:h-[5.8rem] sm:w-44"
+          className={MAIN_CALLOUT_ARROW_CLASS_END}
         />
       </div>
 
@@ -443,7 +445,7 @@ function MainImageCallouts({
           arrows={arrows}
           editorMode={editorMode}
           onArrowChange={onArrowChange}
-          className="mt-2 mr-6 h-[6.6rem] w-[18rem] shrink-0 sm:mr-10 sm:h-[7.2rem] sm:w-[19.5rem] md:mr-12"
+          className={MAIN_CALLOUT_ARROW_CLASS_END}
         />
       </div>
     </div>
@@ -671,7 +673,7 @@ function NailMatCalloutEditor({
             </p>
           </div>
           <EditableArrow
-            className="mt-2 h-10 w-[7.25rem] text-neutral-800 sm:h-11 sm:w-[9.6rem]"
+            className={cn(MAIN_CALLOUT_ARROW_CLASS_END, "text-neutral-800")}
             geom={arrows.nailMat}
             editorMode={editorMode}
             onChange={(next) => onArrowChange?.("nailMat", next)}
@@ -779,7 +781,7 @@ export function NailspaPdpStory() {
           <strong>Arrow edit mode</strong> - drag dots on arrows, then Save/Copy.
         </div>
       ) : null}
-      <div className="px-5 pb-8 sm:px-8 sm:pb-10 md:pb-12">
+      <div className="px-5 pb-12 sm:px-8 sm:pb-14 md:pb-16 lg:pb-20">
         <p
           id="nailspa-story-headline"
           className="text-center font-heading text-[clamp(2rem,7.5vw,4.75rem)] font-black uppercase leading-[1.02] tracking-tight text-foreground md:text-[clamp(2.35rem,5.5vw,5.25rem)] md:leading-[1.03]"
@@ -788,8 +790,8 @@ export function NailspaPdpStory() {
         </p>
       </div>
 
-      {/* Main hero — image 1 + three callouts */}
-      <div className="relative px-4 pb-6 sm:px-6 sm:pb-10 md:px-10 md:pb-16 lg:px-14">
+      {/* Main hero — image 1 + callouts */}
+      <div className="relative mt-6 px-4 pb-6 sm:mt-8 sm:px-6 sm:pb-10 md:mt-10 md:px-10 md:pb-16 lg:mt-12 lg:px-14">
         <div className="relative mx-auto max-w-[min(100%,1120px)]">
           <img src={IMG_MAIN} alt="" className="relative z-0 block h-auto w-full" loading="lazy" draggable={false} />
           {/* Vignette on the main story still — desktop + mobile */}
@@ -823,9 +825,7 @@ export function NailspaPdpStory() {
             <p className="mt-1 text-xs leading-snug text-neutral-700">
               The raised lip keeps polish and tools from falling off the counter.
             </p>
-          </div>
-          <div className={CALLOUT_PANEL}>
-            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Carrying handle</h2>
+            <h2 className="mt-2.5 font-heading text-base font-bold tracking-tight text-foreground">Carrying handle</h2>
             <p className="mt-1 text-xs leading-snug text-neutral-700">
               Built-in handle for easy grab-and-go after you cinch it closed.
             </p>
