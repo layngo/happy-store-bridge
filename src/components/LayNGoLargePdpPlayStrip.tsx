@@ -25,8 +25,10 @@ const DEFENDER_MINI_16_FLANK_LEFT = "/products/lay-n-go-defender-mini-16/story-f
 const DEFENDER_MINI_16_FLANK_RIGHT = "/products/lay-n-go-defender-mini-16/story-flank-right.png";
 const DEFENDER_TACTICAL_20_FLANK_LEFT = "/products/lay-n-go-tactical-bag-20/story-flank-left.png";
 const DEFENDER_TACTICAL_20_FLANK_RIGHT = "/products/lay-n-go-tactical-bag-20/story-flank-right.png";
+const LITE_18_FLANK_LEFT = "/products/lay-n-go-lite-18/story-flank-left.png";
+const LITE_18_FLANK_RIGHT = "/products/lay-n-go-lite-18/story-flank-right.png";
 
-const DEFENDER_FLANK_STRIPS: Partial<
+const FLANK_STRIPS_BY_VARIANT: Partial<
   Record<
     LayNGoCalloutDiagramVariant,
     { leftSrc: string; rightSrc: string; leftAlt: string; rightAlt: string; ariaLabel: string }
@@ -47,6 +49,14 @@ const DEFENDER_FLANK_STRIPS: Partial<
     rightAlt: "Cinched Lay-n-Go Defender Tactical 20 with American flag patch on olive drab fabric",
     ariaLabel: "Defender Tactical lifestyle photos",
   },
+  "lite-18": {
+    leftSrc: LITE_18_FLANK_LEFT,
+    rightSrc: LITE_18_FLANK_RIGHT,
+    leftAlt:
+      "Lay-n-Go Lite 18 inch mat open flat with magnetic tiles, drawstring cord lock, and Lay-n-Go Lite pocket",
+    rightAlt: "Cinched Lay-n-Go Lite 18 inch bag with green and blue panels and carry strap",
+    ariaLabel: "Lay-n-Go Lite lifestyle photos",
+  },
 };
 
 type LayNGoLargePdpPlayStripProps = {
@@ -65,36 +75,65 @@ function DefenderFlankStrip({
   leftAlt,
   rightAlt,
   ariaLabel,
+  variant,
 }: {
   leftSrc: string;
   rightSrc: string;
   leftAlt: string;
   rightAlt: string;
   ariaLabel: string;
+  variant?: LayNGoCalloutDiagramVariant;
 }) {
-  const flankImgClass =
-    "block h-auto w-full max-w-none object-cover max-h-[min(52vh,540px)] sm:max-h-[min(58vh,620px)] md:max-h-[min(62vh,680px)]";
+  const flankMaxH = "max-h-[min(52vh,540px)] sm:max-h-[min(58vh,620px)] md:max-h-[min(62vh,680px)]";
+  const flankCoverClass = cn(
+    "block h-auto w-full max-w-none object-cover",
+    flankMaxH,
+  );
+  const defenderFlankUncrop =
+    variant === "defender-mini-16" || variant === "defender-tactical-20";
+
+  const flankContainCell = cn(
+    "flex min-h-0 w-full items-center justify-center bg-white px-2 py-3 sm:px-3 sm:py-4",
+    flankMaxH,
+  );
+  const flankContainImg = cn(
+    "block h-auto w-full max-w-full object-contain object-center",
+    flankMaxH,
+  );
 
   return (
     <div
-      className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 sm:mt-10"
+      className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 bg-white sm:mt-10"
       aria-label={ariaLabel}
     >
-      <div className="grid w-full grid-cols-2 gap-0">
-        <img
-          src={leftSrc}
-          alt={leftAlt}
-          className={cn(flankImgClass, "object-left")}
-          loading="lazy"
-          decoding="async"
-        />
-        <img
-          src={rightSrc}
-          alt={rightAlt}
-          className={cn(flankImgClass, "object-right")}
-          loading="lazy"
-          decoding="async"
-        />
+      <div className="grid w-full grid-cols-2 gap-0 bg-white">
+        {defenderFlankUncrop ? (
+          <>
+            <div className={flankContainCell}>
+              <img src={leftSrc} alt={leftAlt} className={flankContainImg} loading="lazy" decoding="async" />
+            </div>
+            <div className={flankContainCell}>
+              <img src={rightSrc} alt={rightAlt} className={flankContainImg} loading="lazy" decoding="async" />
+            </div>
+          </>
+        ) : (
+          <>
+            <img
+              src={leftSrc}
+              alt={leftAlt}
+              className={cn(flankCoverClass, "object-left")}
+              loading="lazy"
+              decoding="async"
+            />
+            <img
+              src={rightSrc}
+              alt={rightAlt}
+              className={cn(flankCoverClass, "object-right")}
+              loading="lazy"
+              decoding="async"
+            />
+          </>
+        )}
       </div>
     </div>
   );
@@ -209,7 +248,7 @@ function TravelerDetailCalloutSection() {
           />
 
           {/* Lip: bottom-center of top-right thumb → raised rim on outer edge (x1 tracks thumb; x2,y2 on bag perimeter) */}
-          <TravelerLeaderPair x1={978} y1={122} x2={812} y2={158} />
+          <TravelerLeaderPair x1={1012} y1={122} x2={812} y2={158} />
           <circle
             cx="812"
             cy="158"
@@ -232,7 +271,7 @@ function TravelerDetailCalloutSection() {
           />
         </div>
 
-        <div className="absolute left-[-1.25rem] top-[62%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[-1.75rem] sm:max-w-[13rem]">
+        <div className="absolute left-[-2.75rem] top-[62%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[-3.5rem] sm:max-w-[13rem] md:left-[-4.25rem] lg:left-[-5rem]">
           <TravelerCalloutThumb
             src={TRAVELER_CALLOUT_CORD}
             alt="Cord lock and handle closeup"
@@ -243,7 +282,7 @@ function TravelerDetailCalloutSection() {
           </p>
         </div>
 
-        <div className="absolute right-0 top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:right-0 sm:top-[3%] sm:max-w-[13rem]">
+        <div className="absolute right-[-2rem] top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:right-[-2.75rem] sm:top-[3%] sm:max-w-[13rem] md:right-[-3.5rem] lg:right-[-4.25rem]">
           <TravelerCalloutThumb
             src={TRAVELER_CALLOUT_LIP}
             alt="Containment lip closeup"
@@ -419,8 +458,8 @@ export function LayNGoLargePdpPlayStrip({
         {headline}
       </h2>
 
-      {calloutVariant && DEFENDER_FLANK_STRIPS[calloutVariant] ? (
-        <DefenderFlankStrip {...DEFENDER_FLANK_STRIPS[calloutVariant]!} />
+      {calloutVariant && FLANK_STRIPS_BY_VARIANT[calloutVariant] ? (
+        <DefenderFlankStrip {...FLANK_STRIPS_BY_VARIANT[calloutVariant]!} variant={calloutVariant} />
       ) : null}
 
       {calloutVariant !== "lite-18" && !calloutVariant.startsWith("defender-") ? (

@@ -7,13 +7,9 @@ import { getCollectionGridSwatchPreview } from "@/components/ProductCard";
 import { cn } from "@/lib/utils";
 import { Loader2, ChevronRight, Home } from "lucide-react";
 
-/** Drop shadow only — no white padding ring (unlike CALLOUT_THUMB_SHADOW). */
-const DEFENDER_DISK_SHADOW =
-  "rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.32),0_5px_16px_rgba(0,0,0,0.26)]";
-
-/** Transparent PNG — full mat visible (lip, straps, cord); no zoom crop. */
+/** Transparent PNG — full mat, lip, cord lock, and handle visible; soft shadow on product only. */
 const DEFENDER_DISK_IMAGE_CLASS =
-  "block h-full w-full object-contain object-center p-[4%] sm:p-[5%]";
+  "block h-full w-full object-contain object-center drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]";
 
 export const MILITARY_FIRST_RESPONDER_PATH = "/collections/military-first-responder";
 
@@ -227,22 +223,21 @@ const MilitaryFirstResponder = () => {
                   */}
                   <div
                     className={cn(
-                      "mx-auto max-w-full transition-[transform,box-shadow] duration-200 ease-out will-change-transform",
-                      DEFENDER_DISK_SHADOW,
+                      "mx-auto max-w-full bg-transparent transition-transform duration-200 ease-out will-change-transform",
                       "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
-                      "group-hover:shadow-[0_4px_12px_rgba(0,0,0,0.38),0_10px_24px_rgba(0,0,0,0.28)]",
                     )}
                     style={{ width: circleWidth, aspectRatio: "1" }}
                   >
-                    <div className="relative h-full w-full rounded-full bg-transparent">
-                      <img
-                        src={spec.imageSrc}
-                        alt={spec.imageAlt}
-                        className={DEFENDER_DISK_IMAGE_CLASS}
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </div>
+                    <img
+                      src={spec.imageSrc}
+                      alt={spec.imageAlt}
+                      className={cn(
+                        DEFENDER_DISK_IMAGE_CLASS,
+                        "transition-[filter] duration-200 group-hover:drop-shadow-[0_5px_14px_rgba(0,0,0,0.34)]",
+                      )}
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </div>
                 </div>
 

@@ -29,6 +29,10 @@ const CARRY_CALLOUT_TITLE = "High quality nail mat";
 const CARRY_CALLOUT_BODY =
   "Machine washable and wipeable. spilled polish? no problem, just clean it off with polish remover";
 
+const LIP_HANDLE_CALLOUT_TITLE = "Convenient Containment Lip & Carrying Handle";
+const LIP_HANDLE_CALLOUT_BODY =
+  "The raised lip keeps polish and tools from falling off the counter, while the built-in handle makes it easy to grab and go after you cinch it closed.";
+
 type Point = { x: number; y: number };
 type ArrowGeom = { viewBox: string; start: Point; control: Point; end: Point };
 type ArrowKey = "mesh" | "lipTop" | "handleRight" | "toolsCenter" | "washSurface" | "cord" | "carry" | "nailMat";
@@ -66,9 +70,9 @@ const ARROWS: ArrowMap = {
   },
   washSurface: {
     viewBox: "0 0 120 52",
-    start: { x: 22, y: 8 },
-    control: { x: 68, y: 34 },
-    end: { x: 102, y: 46 },
+    start: { x: 98, y: 44 },
+    control: { x: 52, y: 26 },
+    end: { x: 14, y: 14 },
   },
   cord: {
     viewBox: "0 0 120 52",
@@ -351,16 +355,10 @@ function MainImageCallouts({
       <div className="absolute right-[1%] top-[-2%] z-10 flex max-w-[min(54%,300px)] flex-col items-end sm:right-[2%] sm:top-[-1%] sm:max-w-[320px] md:right-[3%] md:max-w-[340px]">
         <div className={CALLOUT_PANEL}>
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
-            Convenient containment lip
+            {LIP_HANDLE_CALLOUT_TITLE}
           </h2>
           <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
-            The raised lip keeps polish and tools from falling off the counter.
-          </p>
-          <h2 className="mt-2.5 font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
-            Carrying handle
-          </h2>
-          <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
-            Built-in handle for easy grab-and-go after you cinch it closed.
+            {LIP_HANDLE_CALLOUT_BODY}
           </p>
         </div>
         <div className="flex w-full max-w-[38rem] flex-wrap justify-end gap-1 sm:gap-2">
@@ -401,7 +399,7 @@ function MainImageCallouts({
       </div>
 
       {/* Washable surface — ~5 o'clock, finger painting */}
-      <div className="absolute right-[8%] bottom-[32%] z-10 flex max-w-[min(52%,260px)] flex-col items-end sm:right-[10%] sm:bottom-[34%] sm:max-w-[280px] md:max-w-[300px]">
+      <div className="absolute right-[3%] bottom-[10%] z-10 flex max-w-[min(52%,260px)] flex-col items-end sm:right-[4%] sm:bottom-[11%] sm:max-w-[280px] md:right-[5%] md:bottom-[9%] md:max-w-[300px]">
         <div className={CALLOUT_PANEL}>
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Washable application surface
@@ -821,14 +819,8 @@ export function NailspaPdpStory() {
             </p>
           </div>
           <div className={CALLOUT_PANEL}>
-            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Convenient containment lip</h2>
-            <p className="mt-1 text-xs leading-snug text-neutral-700">
-              The raised lip keeps polish and tools from falling off the counter.
-            </p>
-            <h2 className="mt-2.5 font-heading text-base font-bold tracking-tight text-foreground">Carrying handle</h2>
-            <p className="mt-1 text-xs leading-snug text-neutral-700">
-              Built-in handle for easy grab-and-go after you cinch it closed.
-            </p>
+            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">{LIP_HANDLE_CALLOUT_TITLE}</h2>
+            <p className="mt-1 text-xs leading-snug text-neutral-700">{LIP_HANDLE_CALLOUT_BODY}</p>
           </div>
           <div className={CALLOUT_PANEL}>
             <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Room for every tool</h2>

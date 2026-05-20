@@ -18,8 +18,13 @@ const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containme
 const CALLOUT_LIP_LITE = "/products/lay-n-go-lite-18/callout-containment-lip.png";
 const CALLOUT_CORD_LITE = "/products/lay-n-go-lite-18/callout-cord-pocket-handle.png";
 /** Circular callout thumbs (white bg) — Defender Tactical 20″ diagram. */
-const DEFENDER_CALLOUT_ZIPPER = "/products/lay-n-go-defender-callouts/callout-zipper.png";
-/** Circular callout thumbs (white bg) — shared by Defender Mini 16″ and Tactical 20″. */
+const DEFENDER_TACTICAL_CALLOUT_MESH =
+  "/products/lay-n-go-tactical-bag-20/callout-mesh.png";
+const DEFENDER_TACTICAL_CALLOUT_ZIPPER =
+  "/products/lay-n-go-tactical-bag-20/callout-zipper.png";
+const DEFENDER_TACTICAL_CALLOUT_STRAP =
+  "/products/lay-n-go-tactical-bag-20/callout-strap.png";
+/** Circular callout thumbs (white bg) — Defender Mini 16″ diagram. */
 const DEFENDER_CALLOUT_STRAP = "/products/lay-n-go-defender-callouts/callout-strap.png";
 const DEFENDER_CALLOUT_LIP = "/products/lay-n-go-defender-callouts/callout-lip.png";
 const DEFENDER_CALLOUT_DRAWSTRING = "/products/lay-n-go-defender-callouts/callout-drawstring.png";
@@ -44,15 +49,15 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
   {
     key: "mesh",
     label: "Dual mesh pockets",
-    thumbSrc: CALLOUT_MESH,
+    thumbSrc: DEFENDER_TACTICAL_CALLOUT_MESH,
     thumbAlt: "Mesh pockets on the Defender Tactical interior",
-    thumbClassName: "origin-center scale-[1.24] object-[58%_center]",
+    thumbClassName: "object-cover object-center",
     labelAbove: true,
   },
   {
     key: "zipper",
     label: "Zipper pocket",
-    thumbSrc: DEFENDER_CALLOUT_ZIPPER,
+    thumbSrc: DEFENDER_TACTICAL_CALLOUT_ZIPPER,
     thumbAlt: "Zipper pocket closeup on Defender Tactical",
     thumbClassName: "object-cover object-center",
     labelAbove: true,
@@ -60,7 +65,7 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
   {
     key: "strap",
     label: "Reinforced carry strap",
-    thumbSrc: DEFENDER_CALLOUT_STRAP,
+    thumbSrc: DEFENDER_TACTICAL_CALLOUT_STRAP,
     thumbAlt: "Reinforced carry strap on Defender Tactical",
     thumbClassName: "object-cover object-center",
     labelAbove: true,
@@ -119,7 +124,7 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v10";
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v11";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
 const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v1";
@@ -191,10 +196,10 @@ const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
 /** ~10px left on the same width scale as `LIFESTYLE_MESH_POCKET_DX_20PX`, for Lite lip mat dot. */
 const LITE_LIP_DOT_DX_10PX = (LIFESTYLE_MESH_POCKET_DX_20PX / 20) * 10;
 
-/** Lite 18″: cord/mesh thumbnail anchors swapped vs Lifestyle; lip mat dot nudged for 18″ hero. Cord mat dot sits on the bottom drawstring/cord lock on the Lite hero. Cord callout anchor Y matches lip. */
+/** Lite 18″: cord/mesh thumbnail anchors swapped vs Lifestyle; lip mat dot nudged for 18″ hero. Cord dot on 6 o'clock drawstring (container %, not image file %). */
 const DEFAULT_LAYOUT_LITE: LayoutState = {
   dots: {
-    cord: { x: 50, y: 91 },
+    cord: { x: 50, y: 79 },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.mesh },
     lip: { x: 31 - LITE_LIP_DOT_DX_10PX, y: 49 },
   },
@@ -759,11 +764,13 @@ function FloatingCallout({
   const lifestyleThumb = diagramUsesLifestyleChrome(variant);
   /** Lifestyle 44″ only — Lite uses full-size cord thumb and lip-like stacking (see `textAbove`). */
   const cordLifestyleCompact = lifestyleThumb && calloutKey === "cord" && variant !== "lite-18";
+  const cordLiteCrop = variant === "lite-18" && calloutKey === "cord";
   const textAbove = variant === "lite-18" && calloutKey === "cord" ? false : metaTextAbove;
   const lipLifestyleTightCrop = lifestyleThumb && calloutKey === "lip";
   const meshLifestyleTightCrop = lifestyleThumb && calloutKey === "mesh";
 
   const thumbCropClass = (() => {
+    if (cordLiteCrop) return "origin-center scale-[0.84] object-cover object-[50%_38%]";
     if (cordLifestyleCompact) return "origin-center scale-[1.26] object-[center_18%]";
     if (lipLifestyleTightCrop) return "origin-center scale-[1.24] object-[30%_center]";
     if (meshLifestyleTightCrop) return "origin-center scale-[1.24] object-[58%_center]";
@@ -1097,6 +1104,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           mobileCalloutKeysForVariant(variant).map((k) => {
           const m = CALLOUT_META[k];
           const mobileThumbCrop = cn(
+            variant === "lite-18" && k === "cord" && "origin-center scale-[0.84] object-cover object-[50%_38%]",
             diagramUsesLifestyleChrome(variant) &&
               k === "cord" &&
               variant !== "lite-18" &&
