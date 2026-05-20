@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 const HERO_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/hero-callout-main.png";
 const HERO_CALLOUT_LIFESTYLE = "/products/lay-n-go-lifestyle-44/hero-callout-main.png";
 const HERO_CALLOUT_LITE = "/products/lay-n-go-lite-18/hero-callout-main.png";
+const HERO_CALLOUT_DEFENDER_MINI = "/products/lay-n-go-defender-mini-16/hero-callout-main.png";
+const HERO_CALLOUT_DEFENDER_TACTICAL = "/products/lay-n-go-tactical-bag-20/hero-callout-main.png";
 const CALLOUT_CORD = "/products/lay-n-go-large-pdp/callout-cord-pocket.png";
 const CALLOUT_CORD_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-cord-pocket.png";
 const CALLOUT_MESH = "/products/lay-n-go-large-pdp/callout-mesh-pockets.png";
@@ -25,13 +27,24 @@ const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v10";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
+const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v1";
+const LAYOUT_SYNC_EVENT_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout";
+
+const STORAGE_KEY_DEFENDER_TACTICAL = "lay-n-go-tactical-bag-20-callout-layout-v1";
+const LAYOUT_SYNC_EVENT_DEFENDER_TACTICAL = "lay-n-go-tactical-bag-20-callout-layout";
+
 /** Circular diagram callouts: thin white rim + black drop shadow. Use on outer wrapper; inner needs `overflow-hidden rounded-full` for the image. */
 export const CALLOUT_THUMB_SHADOW =
   "rounded-full bg-white p-[2px] shadow-[0_2px_8px_rgba(0,0,0,0.32),0_5px_16px_rgba(0,0,0,0.26)]";
 
 export const CALLOUT_THUMB_INNER_CLIP = "relative h-full w-full overflow-hidden rounded-full";
 
-export type LayNGoCalloutDiagramVariant = "large-60" | "lifestyle-44" | "lite-18";
+export type LayNGoCalloutDiagramVariant =
+  | "large-60"
+  | "lifestyle-44"
+  | "lite-18"
+  | "defender-mini-16"
+  | "defender-tactical-20";
 
 /** ~20px on a typical md stage, as 0–100 viewBox deltas (see `preserveAspectRatio="none"`). */
 const LIFESTYLE_MESH_POCKET_DX_20PX = 2.65;
@@ -100,17 +113,23 @@ const DEFAULT_LAYOUT_LITE: LayoutState = {
 const ALL_CALLOUT_KEYS: CalloutKey[] = ["cord", "lip", "mesh"];
 const MOBILE_CALLOUT_KEYS: CalloutKey[] = ["cord", "mesh", "lip"];
 
-/** Lite omits the mesh pocket callout (no circle or label). */
+/** Lite omits the mesh pocket callout (no circle or label). Defender: diagram image only until callouts are added. */
+function isDefenderDiagramVariant(variant: LayNGoCalloutDiagramVariant) {
+  return variant === "defender-mini-16" || variant === "defender-tactical-20";
+}
+
 function calloutKeysForVariant(variant: LayNGoCalloutDiagramVariant): CalloutKey[] {
+  if (isDefenderDiagramVariant(variant)) return [];
   return variant === "lite-18" ? ["cord", "lip"] : ALL_CALLOUT_KEYS;
 }
 
 function mobileCalloutKeysForVariant(variant: LayNGoCalloutDiagramVariant): CalloutKey[] {
+  if (isDefenderDiagramVariant(variant)) return [];
   return variant === "lite-18" ? ["cord", "lip"] : MOBILE_CALLOUT_KEYS;
 }
 
 function diagramUsesLifestyleChrome(variant: LayNGoCalloutDiagramVariant) {
-  return variant === "lifestyle-44" || variant === "lite-18";
+  return variant === "lifestyle-44" || variant === "lite-18" || isDefenderDiagramVariant(variant);
 }
 
 const CALLOUT_META: Record<
@@ -209,6 +228,42 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       cordCalloutSrc: CALLOUT_CORD_LIFESTYLE,
     };
   }
+  if (variant === "defender-mini-16") {
+    return {
+      storageKey: STORAGE_KEY_DEFENDER_MINI,
+      layoutEvent: LAYOUT_SYNC_EVENT_DEFENDER_MINI,
+      heroSrc: HERO_CALLOUT_DEFENDER_MINI,
+      heroAlt:
+        "Lay-n-Go Defender Mini 16 inch tactical mat from above with everyday carry gear organized on olive drab fabric",
+      diameterInches: 16,
+      containerMinHClass: "min-h-[min(76.8vh,768px)]",
+      heroWidthClass: "w-[min(75.2vw,736px)]",
+      dimensionWrapClass:
+        "relative z-20 mx-auto -mt-[4.25rem] w-[min(75.2vw,736px)] pt-3 pb-2 sm:-mt-[4.75rem] sm:pt-4 sm:pb-3 md:-mt-[6.25rem] md:pt-5 md:pb-4 lg:-mt-[7.25rem] lg:pt-6 lg:pb-5",
+      mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
+      meshCalloutSrc: CALLOUT_MESH,
+      lipCalloutSrc: CALLOUT_LIP,
+      cordCalloutSrc: CALLOUT_CORD,
+    };
+  }
+  if (variant === "defender-tactical-20") {
+    return {
+      storageKey: STORAGE_KEY_DEFENDER_TACTICAL,
+      layoutEvent: LAYOUT_SYNC_EVENT_DEFENDER_TACTICAL,
+      heroSrc: HERO_CALLOUT_DEFENDER_TACTICAL,
+      heroAlt:
+        "Lay-n-Go Defender Tactical 20 inch bag from above, open flat with mesh pockets and everyday carry gear on olive drab fabric",
+      diameterInches: 20,
+      containerMinHClass: "min-h-[min(76.8vh,768px)]",
+      heroWidthClass: "w-[min(75.2vw,736px)]",
+      dimensionWrapClass:
+        "relative z-20 mx-auto -mt-[4.25rem] w-[min(75.2vw,736px)] pt-3 pb-2 sm:-mt-[4.75rem] sm:pt-4 sm:pb-3 md:-mt-[6.25rem] md:pt-5 md:pb-4 lg:-mt-[7.25rem] lg:pt-6 lg:pb-5",
+      mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
+      meshCalloutSrc: CALLOUT_MESH,
+      lipCalloutSrc: CALLOUT_LIP,
+      cordCalloutSrc: CALLOUT_CORD,
+    };
+  }
   if (variant === "lite-18") {
     return {
       storageKey: STORAGE_KEY_LITE,
@@ -259,10 +314,16 @@ function DiameterLine({
 }) {
   const lifestyle44 = variant === "lifestyle-44";
   const lite18 = variant === "lite-18";
+  const defenderMini16 = variant === "defender-mini-16";
+  const defenderTactical20 = variant === "defender-tactical-20";
   const traveler20 = variant === "traveler-20";
   const large60 = variant === "large-60";
   const lifestyleChrome =
-    variant === "lifestyle-44" || variant === "lite-18" || variant === "traveler-20";
+    variant === "lifestyle-44" ||
+    variant === "lite-18" ||
+    defenderMini16 ||
+    defenderTactical20 ||
+    variant === "traveler-20";
 
   const bracketWidthClass = lifestyle44
     ? /** Mobile vs md+ tuned separately — hero mat is nearly full width; old 74→48% read far inside the rim */
@@ -270,6 +331,12 @@ function DiameterLine({
     : lite18
       ? /** Lite hero: mat is inset in the asset — narrow bracket so ticks track the green disc (mobile + desktop). */
         "mx-auto w-[min(100%,72%)] sm:w-[min(100%,70%)] md:w-[min(100%,68%)] lg:w-[min(100%,66%)]"
+      : defenderMini16
+        ? /** Defender 16″ hero: mat nearly fills the frame — bracket tracks the olive disc. */
+          "mx-auto w-[min(100%,88%)] sm:w-[min(100%,86%)] md:w-[min(100%,84%)] lg:w-[min(100%,82%)]"
+        : defenderTactical20
+          ? /** Defender 20″ hero: mat nearly fills the frame — bracket tracks the olive disc. */
+            "mx-auto w-[min(100%,90%)] sm:w-[min(100%,88%)] md:w-[min(100%,86%)] lg:w-[min(100%,84%)]"
     : traveler20
       ? /** Traveler callout hero — mat nearly full width; mobile vs md+ tuned separately */
         "mx-auto w-[min(100%,93%)] sm:w-[min(100%,91%)] md:w-[min(100%,88%)] lg:w-[min(100%,85%)]"
@@ -288,8 +355,8 @@ function DiameterLine({
       <p
         className={cn(
           "font-heading font-semibold tabular-nums text-neutral-900",
-          lifestyleChrome && !lite18 && "mt-2 text-xl sm:text-2xl",
-          lite18 && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
+          lifestyleChrome && !lite18 && !defenderMini16 && !defenderTactical20 && "mt-2 text-xl sm:text-2xl",
+          (lite18 || defenderMini16 || defenderTactical20) && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
           !lifestyleChrome && "mt-1 text-lg sm:text-xl",
         )}
       >
@@ -622,7 +689,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           ? "Lay-n-Go Lifestyle product details"
           : variant === "lite-18"
             ? "Lay-n-Go Lite product details"
-            : "Lay-n-Go Large product details"
+            : variant === "defender-mini-16"
+              ? "Lay-n-Go Defender Mini product details"
+              : variant === "defender-tactical-20"
+                ? "Lay-n-Go Defender Tactical product details"
+                : "Lay-n-Go Large product details"
       }
     >
       {editorMode ? (
@@ -659,6 +730,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             variant === "large-60" && "-mt-2 shrink-0 pb-0",
             variant === "lifestyle-44" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
             variant === "lite-18" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
+            variant === "defender-mini-16" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
+            variant === "defender-tactical-20" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
           )}
         />
         {mobileCalloutKeysForVariant(variant).map((k) => {

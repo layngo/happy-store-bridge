@@ -350,7 +350,7 @@ export function LayNGoLargePdpPlayStrip({
         {headline}
       </h2>
 
-      {calloutVariant !== "lite-18" ? (
+      {calloutVariant !== "lite-18" && !calloutVariant.startsWith("defender-") ? (
         <div className="mx-auto mt-8 max-w-[min(100%,64rem)] sm:mt-10">
           <img
             src={headlineImageSrc}
@@ -366,7 +366,7 @@ export function LayNGoLargePdpPlayStrip({
 
       {showLowerSections ? (
         <>
-          {calloutVariant !== "lite-18" ? (
+          {calloutVariant !== "lite-18" && !calloutVariant.startsWith("defender-") ? (
             <div
               className="mx-auto mt-14 max-w-[min(100%,90rem)] pt-12 sm:mt-16 sm:pt-14"
               aria-label={

@@ -25,7 +25,8 @@ const CARRY_CALLOUT_BODY =
 
 type Point = { x: number; y: number };
 type ArrowGeom = { viewBox: string; start: Point; control: Point; end: Point };
-type ArrowKey = "mesh" | "lipRight" | "cord" | "carry" | "nailMat";
+type ArrowKey = "mesh" | "lipTop" | "handleRight" | "toolsCenter" | "washSurface" | "cord" | "carry" | "nailMat";
+type MainCalloutArrowKey = "mesh" | "lipTop" | "handleRight" | "toolsCenter" | "washSurface" | "cord";
 type ArrowMap = Record<ArrowKey, ArrowGeom>;
 type ArrowPointKey = keyof Pick<ArrowGeom, "start" | "control" | "end">;
 type CordBoxPos = { right: number; bottom: number };
@@ -39,11 +40,29 @@ const ARROWS: ArrowMap = {
     control: { x: 61.828486724506256, y: 48 },
     end: { x: 120, y: 48 },
   },
-  lipRight: {
+  lipTop: {
+    viewBox: "0 0 80 72",
+    start: { x: 40, y: 0 },
+    control: { x: 40, y: 36 },
+    end: { x: 40, y: 72 },
+  },
+  handleRight: {
     viewBox: "0 0 120 56",
     start: { x: 88.21240558480201, y: 0 },
     control: { x: 109.49416342412451, y: 22.980118590861533 },
     end: { x: 101.21309224078736, y: 56 },
+  },
+  toolsCenter: {
+    viewBox: "0 0 160 80",
+    start: { x: 152, y: 40 },
+    control: { x: 80, y: 38 },
+    end: { x: 12, y: 42 },
+  },
+  washSurface: {
+    viewBox: "0 0 140 100",
+    start: { x: 18, y: 12 },
+    control: { x: 72, y: 58 },
+    end: { x: 118, y: 88 },
   },
   cord: {
     viewBox: "0 0 120 52",
@@ -65,7 +84,7 @@ const ARROWS: ArrowMap = {
   },
 };
 
-const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v1";
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v2";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
@@ -250,21 +269,20 @@ function CalloutArrow({
   onArrowChange,
 }: {
   className?: string;
-  variant: "mesh" | "lipRight" | "cord";
+  variant: MainCalloutArrowKey;
   arrows: ArrowMap;
   editorMode?: boolean;
   onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
 }) {
-  if (variant === "mesh") {
-    return <EditableArrow className={className} geom={arrows.mesh} editorMode={editorMode} onChange={(next) => onArrowChange?.("mesh", next)} />;
-  }
-  if (variant === "lipRight") {
-    return <EditableArrow className={className} geom={arrows.lipRight} editorMode={editorMode} onChange={(next) => onArrowChange?.("lipRight", next)} />;
-  }
-  if (variant === "cord") {
-    return <EditableArrow className={className} geom={arrows.cord} editorMode={editorMode} onChange={(next) => onArrowChange?.("cord", next)} />;
-  }
-  return null;
+  const geom = arrows[variant];
+  return (
+    <EditableArrow
+      className={className}
+      geom={geom}
+      editorMode={editorMode}
+      onChange={(next) => onArrowChange?.(variant, next)}
+    />
+  );
 }
 
 function MainImageCallouts({
@@ -323,8 +341,8 @@ function MainImageCallouts({
         />
       </div>
 
-      {/* Containment lip — right */}
-      <div className="absolute right-[1%] top-[10%] z-10 flex max-w-[min(50%,240px)] flex-col items-end sm:right-[2%] sm:max-w-[260px] md:right-[3%] md:max-w-[280px] lg:max-w-[300px]">
+      {/* Containment lip — 12 o'clock (top) */}
+      <div className="absolute left-1/2 top-[2%] z-10 flex max-w-[min(78%,320px)] -translate-x-1/2 flex-col items-center text-center sm:top-[3%] md:max-w-[340px]">
         <div className={CALLOUT_PANEL}>
           <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
             Convenient containment lip
@@ -334,11 +352,68 @@ function MainImageCallouts({
           </p>
         </div>
         <CalloutArrow
-          variant="lipRight"
+          variant="lipTop"
+          arrows={arrows}
+          editorMode={editorMode}
+          onArrowChange={onArrowChange}
+          className="mt-1 h-14 w-28 shrink-0 sm:h-16 sm:w-32"
+        />
+      </div>
+
+      {/* Carrying handle — ~2 o'clock (former lip position) */}
+      <div className="absolute right-[1%] top-[10%] z-10 flex max-w-[min(50%,240px)] flex-col items-end sm:right-[2%] sm:max-w-[260px] md:right-[3%] md:max-w-[280px] lg:max-w-[300px]">
+        <div className={CALLOUT_PANEL}>
+          <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
+            Carrying handle
+          </h2>
+          <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
+            Built-in handle for easy grab-and-go after you cinch it closed.
+          </p>
+        </div>
+        <CalloutArrow
+          variant="handleRight"
           arrows={arrows}
           editorMode={editorMode}
           onArrowChange={onArrowChange}
           className="mt-2 mr-8 h-[4.8rem] w-44 shrink-0 sm:mr-12 sm:h-[5.6rem] sm:w-[12.8rem] md:mr-14"
+        />
+      </div>
+
+      {/* Tool area — 3 o'clock, arrow to mat center */}
+      <div className="absolute right-[1%] top-[36%] z-10 flex max-w-[min(48%,240px)] -translate-y-1/2 flex-col items-end sm:right-[2%] sm:max-w-[260px] md:top-[38%] md:max-w-[280px]">
+        <div className={CALLOUT_PANEL}>
+          <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
+            Room for every tool
+          </h2>
+          <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
+            A convenient area for all your nail tools in the middle.
+          </p>
+        </div>
+        <CalloutArrow
+          variant="toolsCenter"
+          arrows={arrows}
+          editorMode={editorMode}
+          onArrowChange={onArrowChange}
+          className="mt-2 mr-4 h-12 w-48 shrink-0 sm:mr-6 sm:h-14 sm:w-52"
+        />
+      </div>
+
+      {/* Washable surface — ~5 o'clock, finger painting */}
+      <div className="absolute right-[8%] bottom-[32%] z-10 flex max-w-[min(52%,260px)] flex-col items-end sm:right-[10%] sm:bottom-[34%] sm:max-w-[280px] md:max-w-[300px]">
+        <div className={CALLOUT_PANEL}>
+          <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg md:text-xl">
+            Washable application surface
+          </h2>
+          <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
+            Mess-free manicures on a wipeable surface—spills clean up in seconds.
+          </p>
+        </div>
+        <CalloutArrow
+          variant="washSurface"
+          arrows={arrows}
+          editorMode={editorMode}
+          onArrowChange={onArrowChange}
+          className="mt-2 mr-6 h-[5.2rem] w-40 shrink-0 sm:mr-8 sm:h-[5.8rem] sm:w-44"
         />
       </div>
 
@@ -360,7 +435,7 @@ function MainImageCallouts({
             Sliding cord lock and cord pocket
           </h2>
           <p className="mt-1 text-[11px] leading-snug text-neutral-700 sm:text-xs md:text-sm">
-            Pull the drawstring cord and Lay-n-Go NAILSPA cinches completely closed. Grab the handle on the go.
+            Pull the drawstring cord and Lay-n-Go NAILSPA cinches completely closed.
           </p>
         </div>
         <CalloutArrow
@@ -750,11 +825,29 @@ export function NailspaPdpStory() {
             </p>
           </div>
           <div className={CALLOUT_PANEL}>
+            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Carrying handle</h2>
+            <p className="mt-1 text-xs leading-snug text-neutral-700">
+              Built-in handle for easy grab-and-go after you cinch it closed.
+            </p>
+          </div>
+          <div className={CALLOUT_PANEL}>
+            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Room for every tool</h2>
+            <p className="mt-1 text-xs leading-snug text-neutral-700">
+              A convenient area for all your nail tools in the middle.
+            </p>
+          </div>
+          <div className={CALLOUT_PANEL}>
+            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Washable application surface</h2>
+            <p className="mt-1 text-xs leading-snug text-neutral-700">
+              Mess-free manicures on a wipeable surface—spills clean up in seconds.
+            </p>
+          </div>
+          <div className={CALLOUT_PANEL}>
             <h2 className="font-heading text-base font-bold tracking-tight text-foreground">
               Sliding cord lock and cord pocket
             </h2>
             <p className="mt-1 text-xs leading-snug text-neutral-700">
-              Pull the drawstring cord and Lay-n-Go NAILSPA cinches completely closed. Grab the handle on the go.
+              Pull the drawstring cord and Lay-n-Go NAILSPA cinches completely closed.
             </p>
           </div>
         </div>

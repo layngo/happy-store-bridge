@@ -149,6 +149,36 @@ const LAY_N_GO_TRAVEL_DOG_BED_44_GALLERY_SLIDES = [
   },
 ] as const;
 
+const LAY_N_GO_DEFENDER_MINI_16_GALLERY_SLIDES = [
+  {
+    src: "/products/lay-n-go-defender-mini-16/gallery-1.png",
+    alt: "Lay-n-Go Defender Mini cinched bag with American flag patch on a military vehicle hood",
+  },
+  {
+    src: "/products/lay-n-go-defender-mini-16/gallery-2.png",
+    alt: "Person in olive flight suit cinching a Lay-n-Go Defender Mini bag on a vehicle hood",
+  },
+  {
+    src: "/products/lay-n-go-defender-mini-16/gallery-3.png",
+    alt: "Lay-n-Go Defender Mini open as an organizer mat with everyday carry gear beside backpacks and a Jeep tire",
+  },
+] as const;
+
+const LAY_N_GO_DEFENDER_TACTICAL_20_GALLERY_SLIDES = [
+  {
+    src: "/products/lay-n-go-tactical-bag-20/gallery-1.png",
+    alt: "Lay-n-Go Defender Tactical 20 cinched bag with American flag patch on a military vehicle hood",
+  },
+  {
+    src: "/products/lay-n-go-tactical-bag-20/gallery-2.png",
+    alt: "Person in olive flight jacket cinching a Lay-n-Go Defender Tactical 20 bag on a vehicle hood",
+  },
+  {
+    src: "/products/lay-n-go-tactical-bag-20/gallery-3.png",
+    alt: "Lay-n-Go Defender Tactical 20 open in a vehicle trunk with tactical gear organized on the mat",
+  },
+] as const;
+
 const LAY_N_GO_LARGE_60_BULLETS = [
   `Lay-n-Go Large 60" diameter activity play mat with patented raised lip to keep LEGOs and small toys contained`,
   "Play for hours, clean up in seconds — just pull the drawstring and it closes completely",
@@ -359,6 +389,8 @@ const ProductDetail = () => {
   const [layNGoLite18SlideIndex, setLayNGoLite18SlideIndex] = useState(0);
   const [layNGoTraveler20SlideIndex, setLayNGoTraveler20SlideIndex] = useState(0);
   const [layNGoTravelDogBed44SlideIndex, setLayNGoTravelDogBed44SlideIndex] = useState(0);
+  const [layNGoDefenderMini16SlideIndex, setLayNGoDefenderMini16SlideIndex] = useState(0);
+  const [layNGoDefenderTactical20SlideIndex, setLayNGoDefenderTactical20SlideIndex] = useState(0);
   const [showStickyAddToCart, setShowStickyAddToCart] = useState(false);
   const [stickyConfirmOpen, setStickyConfirmOpen] = useState(false);
   const primaryAddToCartRef = useRef<HTMLDivElement | null>(null);
@@ -418,6 +450,25 @@ const ProductDetail = () => {
     if (greenIdx < 0) return;
     setSelectedVariantIdx(greenIdx);
     const variant = product.variants.edges[greenIdx]?.node;
+    const variantImageUrl = variant?.image?.url;
+    if (variantImageUrl) {
+      const imgs = getOrderedImagesForProduct(product);
+      const imageIdx = imgs.findIndex((img) => img.node.url === variantImageUrl);
+      if (imageIdx >= 0) setSelectedImage(imageIdx);
+    }
+  }, [product?.id, product?.handle]);
+
+  useEffect(() => {
+    if (!product || product.handle.toLowerCase() !== "lay-n-go-travel-dog-bed-44") return;
+    const colorName = product.options.find((opt) => isColorOptionName(opt.name))?.name;
+    if (!colorName) return;
+    const navyIdx = product.variants.edges.findIndex((edge) => {
+      const val = edge.node.selectedOptions.find((o) => o.name === colorName)?.value ?? "";
+      return val.trim().toLowerCase().includes("navy");
+    });
+    if (navyIdx < 0) return;
+    setSelectedVariantIdx(navyIdx);
+    const variant = product.variants.edges[navyIdx]?.node;
     const variantImageUrl = variant?.image?.url;
     if (variantImageUrl) {
       const imgs = getOrderedImagesForProduct(product);
@@ -578,6 +629,9 @@ const ProductDetail = () => {
         return 0;
       });
     }
+    if (product.handle.toLowerCase() === "lay-n-go-travel-dog-bed-44") {
+      return [...choices].sort((a, b) => dogBedColorSortKey(a.rawValue) - dogBedColorSortKey(b.rawValue));
+    }
     return choices;
   }, [colorOptionName, product]);
 
@@ -602,6 +656,14 @@ const ProductDetail = () => {
   }, [isLayNGoTravelDogBed44, product?.id]);
 
   useEffect(() => {
+    setLayNGoDefenderMini16SlideIndex(0);
+  }, [isLayNGoDefenderMini16, product?.id]);
+
+  useEffect(() => {
+    setLayNGoDefenderTactical20SlideIndex(0);
+  }, [isLayNGoDefenderTactical20, product?.id]);
+
+  useEffect(() => {
     if (!product) return;
     const h = product.handle.toLowerCase();
     if (
@@ -609,7 +671,9 @@ const ProductDetail = () => {
       h !== "lay-n-go-lifestyle-44" &&
       h !== "lay-n-go-lite-18" &&
       h !== "lay-n-go-traveler-20" &&
-      h !== "lay-n-go-travel-dog-bed-44"
+      h !== "lay-n-go-travel-dog-bed-44" &&
+      h !== "lay-n-go-defender-mini-16" &&
+      h !== "lay-n-go-tactical-bag-20"
     )
       return;
     const slides =
@@ -621,7 +685,11 @@ const ProductDetail = () => {
             ? LAY_N_GO_LITE_18_GALLERY_SLIDES
             : h === "lay-n-go-traveler-20"
               ? LAY_N_GO_TRAVELER_20_GALLERY_SLIDES
-              : LAY_N_GO_TRAVEL_DOG_BED_44_GALLERY_SLIDES;
+              : h === "lay-n-go-travel-dog-bed-44"
+                ? LAY_N_GO_TRAVEL_DOG_BED_44_GALLERY_SLIDES
+                : h === "lay-n-go-defender-mini-16"
+                  ? LAY_N_GO_DEFENDER_MINI_16_GALLERY_SLIDES
+                  : LAY_N_GO_DEFENDER_TACTICAL_20_GALLERY_SLIDES;
     const origin = window.location.origin;
     const links: HTMLLinkElement[] = [];
     for (const slide of slides) {
@@ -716,7 +784,21 @@ const ProductDetail = () => {
                 setSlideIndex: setLayNGoTravelDogBed44SlideIndex,
                 galleryAriaLabel: "Lay-n-Go Travel Dog Bed lifestyle photos",
               }
-            : null;
+            : isLayNGoDefenderMini16
+              ? {
+                  slides: [...LAY_N_GO_DEFENDER_MINI_16_GALLERY_SLIDES],
+                  slideIndex: layNGoDefenderMini16SlideIndex,
+                  setSlideIndex: setLayNGoDefenderMini16SlideIndex,
+                  galleryAriaLabel: "Lay-n-Go Defender Mini lifestyle photos",
+                }
+              : isLayNGoDefenderTactical20
+                ? {
+                    slides: [...LAY_N_GO_DEFENDER_TACTICAL_20_GALLERY_SLIDES],
+                    slideIndex: layNGoDefenderTactical20SlideIndex,
+                    setSlideIndex: setLayNGoDefenderTactical20SlideIndex,
+                    galleryAriaLabel: "Lay-n-Go Defender Tactical lifestyle photos",
+                  }
+                : null;
   const layNGoGalleryArrowBtnClassName =
     "h-10 w-10 shrink-0 self-center rounded-full border-0 bg-black text-white hover:bg-neutral-900 hover:text-white focus-visible:ring-white/40 sm:h-11 sm:w-11";
   const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
@@ -849,7 +931,15 @@ const ProductDetail = () => {
       {!isCosmo22Product(product.handle) &&
       !isCosmo20Product(product.handle) &&
       !isNailspa18Product(product.handle) &&
-      !(isLayNGoLarge60 || isLayNGoLifestyle44 || isLayNGoLite18 || isLayNGoTraveler20 || isLayNGoTravelDogBed44) &&
+      !(
+        isLayNGoLarge60 ||
+        isLayNGoLifestyle44 ||
+        isLayNGoLite18 ||
+        isLayNGoTraveler20 ||
+        isLayNGoTravelDogBed44 ||
+        isLayNGoDefenderMini16 ||
+        isLayNGoDefenderTactical20
+      ) &&
       orderedImages.length > 1 ? (
         <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Product photo gallery">
           {orderedImages.map((img, i) => (
@@ -927,13 +1017,25 @@ const ProductDetail = () => {
           <div key={optIdx} className="space-y-2">
             <label className="text-sm font-medium text-foreground">{option.name}</label>
             <div className="flex flex-wrap gap-2">
-              {product.variants.edges.map((v, vIdx) => {
-                const optValue = v.node.selectedOptions.find((o) => o.name === option.name)?.value;
-                const displayOptValue = displayOptionValue(product.handle, optValue || "");
-                const prevSame = product.variants.edges.findIndex(
-                  (pv) => pv.node.selectedOptions.find((o) => o.name === option.name)?.value === optValue,
-                );
-                if (prevSame !== vIdx) return null;
+              {(isColorOption && colorVariantChoices.length > 0
+                ? colorVariantChoices.map((choice) => ({
+                    vIdx: choice.idx,
+                    node: choice.node,
+                    optValue: choice.rawValue,
+                    displayOptValue: choice.displayValue,
+                  }))
+                : product.variants.edges
+                    .map((v, vIdx) => {
+                      const optValue = v.node.selectedOptions.find((o) => o.name === option.name)?.value;
+                      const displayOptValue = displayOptionValue(product.handle, optValue || "");
+                      const prevSame = product.variants.edges.findIndex(
+                        (pv) => pv.node.selectedOptions.find((o) => o.name === option.name)?.value === optValue,
+                      );
+                      if (prevSame !== vIdx) return null;
+                      return { vIdx, node: v.node, optValue: optValue || "", displayOptValue };
+                    })
+                    .filter((item): item is NonNullable<typeof item> => item !== null)
+              ).map(({ vIdx, node, optValue, displayOptValue }) => {
                 const isColor = /color|colour/i.test(option.name);
                 return (
                   <button
@@ -951,22 +1053,22 @@ const ProductDetail = () => {
                         : vIdx === selectedVariantIdx
                           ? "border-primary bg-primary/10 text-primary"
                           : "border-border text-muted-foreground hover:border-foreground",
-                      !v.node.availableForSale ? "line-through opacity-40" : "",
+                      !node.availableForSale ? "line-through opacity-40" : "",
                     )}
                     style={
                       isColor
                         ? isCosmoMini16
-                          ? cosmoMiniSwatchStyle(v.node)
+                          ? cosmoMiniSwatchStyle(node)
                           : product.handle.toLowerCase() === "lay-n-go-traveler-20"
                             ? travelerSwatchStyle(optValue || "")
                             : product.handle.toLowerCase() === "lay-n-go-travel-dog-bed-44"
                               ? dogBedSwatchStyle(optValue || "")
                               : isLayNGoPlayMatProduct(product.handle)
                                 ? layNGoPlayMatSwatchStyle(optValue || "")
-                                : variantImageSwatchStyle(v.node, optValue || "")
+                                : variantImageSwatchStyle(node, optValue || "")
                         : undefined
                     }
-                    disabled={!v.node.availableForSale}
+                    disabled={!node.availableForSale}
                     aria-label={displayOptValue}
                     title={displayOptValue}
                   >
@@ -1224,7 +1326,15 @@ const ProductDetail = () => {
                       : undefined
                 }
                 calloutVariant={
-                  isLayNGoLifestyle44 ? "lifestyle-44" : isLayNGoLite18 ? "lite-18" : "large-60"
+                  isLayNGoDefenderMini16
+                    ? "defender-mini-16"
+                    : isLayNGoDefenderTactical20
+                      ? "defender-tactical-20"
+                      : isLayNGoLifestyle44
+                        ? "lifestyle-44"
+                        : isLayNGoLite18
+                          ? "lite-18"
+                          : "large-60"
                 }
               />
             ) : null}
@@ -1686,6 +1796,11 @@ function travelerSwatchStyle(optionValue: string): CSSProperties {
   const key = optionValue.trim().toLowerCase();
   if (key.includes("black")) return { backgroundColor: "#1a1a1a" };
   return { backgroundColor: "#6f6f6f" };
+}
+
+/** Pet Solutions dog bed: Navy before Burgundy Chocolate (red) in swatch order. */
+function dogBedColorSortKey(optionValue: string): number {
+  return optionValue.trim().toLowerCase().includes("navy") ? 0 : 1;
 }
 
 /** Lay-n-Go Travel Dog Bed (44″) — solid swatches aligned to product fabric (Burgundy Chocolate / Navy). */
