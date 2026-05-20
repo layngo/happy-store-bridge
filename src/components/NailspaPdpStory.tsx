@@ -952,11 +952,14 @@ function MainImageCallouts({
 
 function BottomProductImage({ className }: { className?: string }) {
   return (
-    <div className={cn("relative w-full bg-white", className)} aria-label="Lay-n-Go NAILSPA closed with carry handle">
+    <div
+      className={cn("relative w-full bg-white", className)}
+      aria-label="Lay-n-Go NAILSPA closed with carry handle"
+    >
       <img
         src={IMG_BOTTOM}
         alt=""
-        className="block h-auto w-full max-w-none object-contain object-left"
+        className="block h-auto w-1/2 max-w-[50%] object-contain object-left"
         draggable={false}
         loading="lazy"
       />

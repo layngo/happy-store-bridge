@@ -1988,7 +1988,8 @@ const ProductDetail = () => {
                 ) : (
                   <div
                     className={cn(
-                      "relative w-full overflow-hidden rounded-2xl border border-border bg-muted/40 shadow-inner aspect-video",
+                      "relative w-full overflow-hidden rounded-2xl border border-border bg-white shadow-inner",
+                      isNailspa18Product(product.handle) ? "aspect-[4/3]" : "aspect-video bg-muted/40",
                     )}
                   >
                     {isNailspa18Product(product.handle) ? (
