@@ -383,7 +383,7 @@ function DraggableMainCallout({
       className={cn(
         "absolute z-10 flex max-w-[min(54%,340px)] touch-none flex-col overflow-visible sm:max-w-[360px]",
         alignItems,
-        editorMode && "cursor-move",
+        editorMode && "z-[12] cursor-move",
         boxClassName,
       )}
       style={{
@@ -496,6 +496,8 @@ function DraggableArrowJoint({
   stageRef,
   dotClass,
   onMove,
+  onDragStart,
+  onDragEnd,
   yClampMin = -28,
   yClampMax = 100,
 }: {
@@ -505,10 +507,25 @@ function DraggableArrowJoint({
   stageRef: React.RefObject<HTMLDivElement | null>;
   dotClass: string;
   onMove: (key: ArrowPointKey, next: BoxPos) => void;
+  onDragStart: () => void;
+  onDragEnd: () => void;
   yClampMin?: number;
   yClampMax?: number;
 }) {
   const [dragging, setDragging] = useState(false);
+
+  const moveFromEvent = (e: React.PointerEvent) => {
+    if (!stageRef.current) return;
+    const r = stageRef.current.getBoundingClientRect();
+    const xPct = clamp(((e.clientX - r.left) / r.width) * 100, 0, 100);
+    const yPct = clamp(((e.clientY - r.top) / r.height) * 100, yClampMin, yClampMax);
+    onMove(jointKey, { x: xPct, y: yPct });
+  };
+
+  const endDrag = () => {
+    setDragging(false);
+    onDragEnd();
+  };
 
   return (
     <div
@@ -517,7 +534,7 @@ function DraggableArrowJoint({
       title={jointLabel}
       aria-label={jointLabel}
       className={cn(
-        "absolute z-50 flex touch-none cursor-grab flex-col items-center active:cursor-grabbing",
+        "pointer-events-auto absolute z-[60] flex touch-none cursor-grab flex-col items-center p-3 active:cursor-grabbing",
         dragging && "scale-110",
       )}
       style={{
@@ -528,23 +545,23 @@ function DraggableArrowJoint({
       onPointerDown={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        onDragStart();
+        if (stageRef.current) stageRef.current.setPointerCapture(e.pointerId);
         e.currentTarget.setPointerCapture(e.pointerId);
         setDragging(true);
+        moveFromEvent(e);
       }}
       onPointerMove={(e) => {
-        if (!dragging || !stageRef.current) return;
-        const r = stageRef.current.getBoundingClientRect();
-        const xPct = clamp(((e.clientX - r.left) / r.width) * 100, 0, 100);
-        const yPct = clamp(((e.clientY - r.top) / r.height) * 100, yClampMin, yClampMax);
-        onMove(jointKey, { x: xPct, y: yPct });
+        if (!dragging) return;
+        moveFromEvent(e);
       }}
-      onPointerUp={() => setDragging(false)}
-      onPointerCancel={() => setDragging(false)}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
     >
       <span className="mb-0.5 whitespace-nowrap rounded bg-white/95 px-1 py-0.5 text-[9px] font-semibold text-neutral-800 shadow-sm ring-1 ring-neutral-200">
         {jointLabel}
       </span>
-      <span className={cn("block h-7 w-7 rounded-full border-2 border-white shadow-lg ring-2 ring-amber-400/80", dotClass)} />
+      <span className={cn("block h-8 w-8 shrink-0 rounded-full border-2 border-white shadow-lg ring-2 ring-amber-400/80", dotClass)} />
     </div>
   );
 }
@@ -563,6 +580,7 @@ function ArrowEditorHandles({
   mapViewBox?: string;
 }) {
   const [stageTick, setStageTick] = useState(0);
+  const dragJointRef = useRef<ArrowPointKey | null>(null);
 
   useLayoutEffect(() => {
     const sync = () => setStageTick((n) => n + 1);
@@ -575,6 +593,21 @@ function ArrowEditorHandles({
     };
   }, [dragLayerRef, geom]);
 
+  const applyStagePointer = useCallback(
+    (clientX: number, clientY: number) => {
+      const key = dragJointRef.current;
+      if (!key || !dragLayerRef.current) return;
+      const r = dragLayerRef.current.getBoundingClientRect();
+      const xPct = clamp(((clientX - r.left) / r.width) * 100, 0, 100);
+      const yPct = clamp(((clientY - r.top) / r.height) * 100, -28, 100);
+      setGeom((prev) => ({
+        ...prev,
+        [key]: stagePosToViewBoxPoint({ x: xPct, y: yPct }, r, mapViewBox),
+      }));
+    },
+    [setGeom, dragLayerRef, mapViewBox],
+  );
+
   const stageRect = dragLayerRef.current?.getBoundingClientRect();
   if (!stageRect) return null;
 
@@ -586,17 +619,19 @@ function ArrowEditorHandles({
     { key: "end", jointLabel: "Joint 3", dotClass: "bg-rose-500" },
   ];
 
-  const moveJoint = (key: ArrowPointKey, stagePos: BoxPos) => {
-    if (!dragLayerRef.current) return;
-    const r = dragLayerRef.current.getBoundingClientRect();
-    setGeom((prev) => ({
-      ...prev,
-      [key]: stagePosToViewBoxPoint(stagePos, r, mapViewBox),
-    }));
-  };
-
   return (
-    <div className="pointer-events-none absolute inset-0 z-[35] overflow-visible">
+    <div
+      className="pointer-events-none absolute inset-0 z-[50] overflow-visible"
+      onPointerMove={(e) => {
+        if (dragJointRef.current) applyStagePointer(e.clientX, e.clientY);
+      }}
+      onPointerUp={() => {
+        dragJointRef.current = null;
+      }}
+      onPointerCancel={() => {
+        dragJointRef.current = null;
+      }}
+    >
       {label ? (
         <span className="pointer-events-none absolute left-2 top-2 z-50 rounded bg-amber-100 px-2 py-1 text-[10px] font-bold text-amber-950 shadow-sm ring-1 ring-amber-300">
           Editing: {label} — drag joints 1–3
@@ -610,7 +645,20 @@ function ArrowEditorHandles({
           pos={viewBoxPointToStagePos(geom[key], stageRect, mapViewBox)}
           stageRef={dragLayerRef}
           dotClass={dotClass}
-          onMove={moveJoint}
+          onDragStart={() => {
+            dragJointRef.current = key;
+          }}
+          onDragEnd={() => {
+            if (dragJointRef.current === key) dragJointRef.current = null;
+          }}
+          onMove={(jointKey, stagePos) => {
+            if (!dragLayerRef.current) return;
+            const r = dragLayerRef.current.getBoundingClientRect();
+            setGeom((prev) => ({
+              ...prev,
+              [jointKey]: stagePosToViewBoxPoint(stagePos, r, mapViewBox),
+            }));
+          }}
         />
       ))}
     </div>
@@ -635,12 +683,12 @@ function MainDiagramArrowLayer({
     <div
       className={cn(
         "absolute inset-0 overflow-visible",
-        editorMode ? "z-[25] pointer-events-auto" : "z-[8] pointer-events-none",
+        editorMode ? "z-[45] pointer-events-none" : "z-[8] pointer-events-none",
       )}
       aria-hidden={!editorMode}
     >
       <svg
-        className="h-full w-full overflow-visible"
+        className="pointer-events-none h-full w-full overflow-visible"
         viewBox={MAIN_ARROW_WORKSPACE}
         preserveAspectRatio="xMidYMid meet"
         fill="none"
@@ -745,14 +793,6 @@ function MainImageCallouts({
       onPointerUp={() => setDragCordBox(false)}
       onPointerCancel={() => setDragCordBox(false)}
     >
-      <MainDiagramArrowLayer
-        arrows={arrows}
-        editorMode={editorMode}
-        activeKey={activeArrowKey}
-        stageRef={boxRef}
-        onArrowChange={onArrowChange}
-      />
-
       <DraggableMainCallout
         boxKey="mesh"
         pos={mainCalloutBoxes.mesh}
@@ -855,6 +895,15 @@ function MainImageCallouts({
           </p>
         </div>
       </div>
+
+      {/* Arrows + joints on top so handles are always tappable (above callout boxes). */}
+      <MainDiagramArrowLayer
+        arrows={arrows}
+        editorMode={editorMode}
+        activeKey={activeArrowKey}
+        stageRef={boxRef}
+        onArrowChange={onArrowChange}
+      />
     </div>
   );
 }
