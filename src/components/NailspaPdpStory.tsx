@@ -1,5 +1,5 @@
 /**
- * Editorial strip below NAILSPA PDP hero — matches Cosmo full-bleed white story rhythm.
+ * Editorial strip below NAILSPA PDP hero — full-bleed on `bg-background` to match the site.
  */
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -1090,16 +1090,8 @@ export function NailspaPdpStory() {
 
       {/* Main hero — image 1 + callouts */}
       <div className="relative mt-6 px-4 pb-6 sm:mt-8 sm:px-6 sm:pb-10 md:mt-10 md:px-10 md:pb-16 lg:mt-12 lg:px-14">
-        <div className="relative mx-auto max-w-[min(100%,1120px)] overflow-visible">
+        <div className="relative mx-auto max-w-[min(100%,1120px)] overflow-visible bg-background">
           <img src={IMG_MAIN} alt="" className="relative z-0 block h-auto w-full" loading="lazy" draggable={false} />
-          {/* Vignette on the main story still — desktop + mobile */}
-          <div
-            className="pointer-events-none absolute inset-0 z-[1]"
-            style={{
-              background:
-                "linear-gradient(to right, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.98) 100%), linear-gradient(to bottom, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 90%, rgba(255,255,255,0.96) 100%)",
-            }}
-          />
           <MainImageCallouts
             className={cn(
               "absolute inset-0 z-10 overflow-visible",

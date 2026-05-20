@@ -7,21 +7,15 @@ import { getCollectionGridSwatchPreview } from "@/components/ProductCard";
 import { cn } from "@/lib/utils";
 import { Loader2, ChevronRight, Home } from "lucide-react";
 
-/** Full product visible — natural fabric edge, cord lock & handle outside the mat; soft shadow only. */
+/** Transparent PNG — full mat, lip, cord lock, and handle visible; soft shadow on product only. */
 const DEFENDER_DISK_IMAGE_CLASS =
-  "block h-auto w-full max-w-full object-contain object-center drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]";
-
-/** 16″ hero art is wider than tall; 20″ disk is square — do not force both into a 1:1 crop. */
-const DEFENDER_IMAGE_ASPECT: Record<16 | 20, string> = {
-  16: "1024 / 600",
-  20: "1 / 1",
-};
+  "block h-full w-full object-contain object-center drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]";
 
 export const MILITARY_FIRST_RESPONDER_PATH = "/collections/military-first-responder";
 
 const COLLECTION_HANDLE = "military-first-responder";
 
-const IMG_16 = "/military-first-responder-v2/defender-mini-16-wide.png";
+const IMG_16 = "/military-first-responder-v2/defender-mini-16.png";
 const IMG_20 = "/military-first-responder-v2/defender-tactical-20.png";
 
 /** Largest circle (20″) width; 16″ derives from 16:20 ratio. */
@@ -225,17 +219,14 @@ const MilitaryFirstResponder = () => {
                   )}
                 >
                   {/*
-                    Width scales 16″ vs 20″; height follows each asset so edges stay natural (no hard circle crop).
+                    Fixed square disks (aspect 1) so 16″ and 20″ widths read as real size steps.
                   */}
                   <div
                     className={cn(
-                      "mx-auto max-w-full overflow-visible bg-transparent transition-transform duration-200 ease-out will-change-transform",
+                      "mx-auto max-w-full bg-transparent transition-transform duration-200 ease-out will-change-transform",
                       "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
                     )}
-                    style={{
-                      width: circleWidth,
-                      aspectRatio: DEFENDER_IMAGE_ASPECT[spec.inches],
-                    }}
+                    style={{ width: circleWidth, aspectRatio: "1" }}
                   >
                     <img
                       src={spec.imageSrc}

@@ -1676,7 +1676,11 @@ const ProductDetail = () => {
     <div
       className={cn(
         "min-h-dvh flex flex-col",
-        isNailspaPdp ? "bg-background" : isCosmoPdp ? "bg-white" : "bg-background",
+        isNailspaPdp || isLayNGoLifestyle44
+          ? "bg-background"
+          : isCosmoPdp
+            ? "bg-white"
+            : "bg-background",
       )}
     >
       <Header />
@@ -1735,14 +1739,15 @@ const ProductDetail = () => {
             <section
               className={cn(
                 "-mx-4 overflow-x-hidden px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10",
-                isNailspaPdp ? "bg-background" : "bg-white",
+                isNailspaPdp || isLayNGoLifestyle44 ? "bg-background" : "bg-white",
               )}
             >
               <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
                 <div className="min-w-0 space-y-4">
                   <div
                     className={cn(
-                      "relative flex aspect-square w-full min-w-0 items-center justify-center overflow-hidden bg-white lg:mx-auto lg:max-h-[min(92vh,920px)]",
+                      "relative flex aspect-square w-full min-w-0 items-center justify-center overflow-hidden lg:mx-auto lg:max-h-[min(92vh,920px)]",
+                      isNailspaPdp || isLayNGoLifestyle44 ? "bg-background" : "bg-white",
                       isLayNGoLarge60 &&
                         "max-md:aspect-auto max-md:max-h-[min(62vmin,430px)] max-md:min-h-[200px] max-md:py-2",
                     )}
@@ -1911,7 +1916,10 @@ const ProductDetail = () => {
                 {layNGoHeroGallery ? (
                   <div className="mx-auto w-full max-w-full md:w-[80%]">
                     <div
-                      className="flex flex-col gap-3 rounded-2xl bg-white p-2 shadow-sm sm:gap-3 sm:p-3 md:flex-row md:items-stretch"
+                      className={cn(
+                        "flex flex-col gap-3 rounded-2xl p-2 shadow-sm sm:gap-3 sm:p-3 md:flex-row md:items-stretch",
+                        isLayNGoLifestyle44 || isNailspaPdp ? "bg-background" : "bg-white",
+                      )}
                       aria-roledescription="carousel"
                       aria-label={layNGoHeroGallery.galleryAriaLabel}
                     >
@@ -1933,7 +1941,12 @@ const ProductDetail = () => {
                       >
                         <ChevronLeft className="h-5 w-5 shrink-0 text-white" aria-hidden />
                       </Button>
-                      <div className="relative min-h-0 w-full min-w-0 flex-1 overflow-hidden rounded-xl bg-white pt-[56.34%]">
+                      <div
+                        className={cn(
+                          "relative min-h-0 w-full min-w-0 flex-1 overflow-hidden rounded-xl pt-[56.34%]",
+                          isLayNGoLifestyle44 || isNailspaPdp ? "bg-background" : "bg-white",
+                        )}
+                      >
                         <div className="absolute inset-0 overflow-hidden">
                           <div
                             className="flex h-full transition-transform duration-700 ease-in-out"

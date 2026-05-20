@@ -157,7 +157,7 @@ type CalloutKey = "cord" | "lip" | "mesh" | "handle";
 /** Lite 18″ detail assets have extra padding — zoom so handle, cord/pocket, and lip fill the circle. */
 const LITE_18_THUMB_CROP: Partial<Record<CalloutKey, string>> = {
   handle: "origin-center scale-[1.52] object-cover object-center",
-  cord: "origin-center scale-[1.4] object-cover object-[50%_44%]",
+  cord: "origin-center scale-[1.4] object-cover object-[50%_58%]",
   lip: "origin-center scale-[1.42] object-cover object-[34%_center]",
 };
 
@@ -252,6 +252,11 @@ function mobileCalloutKeysForVariant(variant: LayNGoCalloutDiagramVariant): Call
 
 function diagramUsesLifestyleChrome(variant: LayNGoCalloutDiagramVariant) {
   return variant === "lifestyle-44" || variant === "lite-18" || usesFixedDefenderCalloutStage(variant);
+}
+
+/** Mat/diagram stage — Lifestyle & Lite match site `bg-background`; Cosmo bags & Defender stay white. */
+function diagramMatSurfaceBg(variant: LayNGoCalloutDiagramVariant) {
+  return variant === "lifestyle-44" || variant === "lite-18" ? "bg-background" : "bg-white";
 }
 
 const CALLOUT_META: Record<
@@ -1074,7 +1079,10 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         variant === "defender-mini-16"
           ? "mt-8 rounded-2xl bg-white px-0 sm:mt-10 sm:px-2"
           : diagramUsesLifestyleChrome(variant)
-            ? "mt-[calc(3.5rem+100px)] rounded-2xl bg-white px-2 sm:mt-[calc(4rem+100px)] sm:px-4"
+            ? cn(
+                "mt-[calc(3.5rem+100px)] rounded-2xl px-2 sm:mt-[calc(4rem+100px)] sm:px-4",
+                diagramMatSurfaceBg(variant),
+              )
             : "mt-14 sm:mt-16",
       )}
       aria-label={
@@ -1109,7 +1117,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           className={cn(
             "w-full object-contain",
             config.mobileHeroMaxClass,
-            diagramUsesLifestyleChrome(variant) && "rounded-xl bg-white",
+            diagramUsesLifestyleChrome(variant) && cn("rounded-xl", diagramMatSurfaceBg(variant)),
           )}
           loading="lazy"
           decoding="async"
@@ -1224,7 +1232,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           className={cn(
             "relative mx-auto w-full",
             config.containerMinHClass,
-            diagramUsesLifestyleChrome(variant) && "rounded-xl bg-white",
+            diagramUsesLifestyleChrome(variant) && cn("rounded-xl", diagramMatSurfaceBg(variant)),
           )}
           onPointerMove={editorMode ? onPointerMove : undefined}
           onPointerUp={editorMode ? (e) => endDrag(e) : undefined}
@@ -1329,7 +1337,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             className={cn(
               "pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2",
               config.heroWidthClass,
-              diagramUsesLifestyleChrome(variant) && "rounded-lg bg-white",
+              diagramUsesLifestyleChrome(variant) && cn("rounded-lg", diagramMatSurfaceBg(variant)),
             )}
           >
             <img
@@ -1337,7 +1345,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               alt={config.heroAlt}
               className={cn(
                 "relative z-10 w-full object-contain",
-                diagramUsesLifestyleChrome(variant) && "rounded-lg bg-white",
+                diagramUsesLifestyleChrome(variant) && cn("rounded-lg", diagramMatSurfaceBg(variant)),
               )}
               loading="lazy"
               decoding="async"

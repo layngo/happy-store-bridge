@@ -106,6 +106,42 @@ function DefenderFlankStrip({
     flankMaxH,
   );
 
+  if (variant === "lite-18") {
+    return (
+      <div
+        className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 bg-background sm:mt-10"
+        aria-label={ariaLabel}
+        style={{
+          containerType: "inline-size",
+          ["--defender-disk-band-min" as string]: `min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2)`,
+        }}
+      >
+        <div className="grid w-full grid-cols-2 gap-0 bg-background">
+          <div
+            className={cn(
+              "flex min-h-[var(--defender-disk-band-min)] w-full items-end justify-start overflow-visible py-3 sm:py-4",
+              flankMaxH,
+            )}
+          >
+            <img
+              src={leftSrc}
+              alt={leftAlt}
+              className={cn(
+                "block h-auto w-full max-w-none object-contain object-left",
+                flankMaxH,
+              )}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div className={cn(flankContainCell, "bg-background")}>
+            <img src={rightSrc} alt={rightAlt} className={flankContainImgRight} loading="lazy" decoding="async" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 bg-white sm:mt-10"
@@ -450,7 +486,12 @@ export function LayNGoLargePdpPlayStrip({
 
   return (
     <section
-      className="relative left-1/2 -ml-[50vw] w-screen overflow-x-clip bg-white px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8"
+      className={cn(
+        "relative left-1/2 -ml-[50vw] w-screen overflow-x-clip px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8",
+        calloutVariant === "lite-18" || calloutVariant === "lifestyle-44"
+          ? "bg-background"
+          : "bg-white",
+      )}
       aria-labelledby="lay-n-go-large-play-strip-heading"
     >
       <h2
