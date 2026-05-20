@@ -58,11 +58,17 @@ type ArrowKey = "mesh" | "lipTop" | "handleRight" | "toolsCenter" | "washSurface
 type MainCalloutArrowKey = "mesh" | "lipTop" | "handleRight" | "toolsCenter" | "washSurface" | "cord";
 type ArrowMap = Record<ArrowKey, ArrowGeom>;
 type ArrowPointKey = keyof Pick<ArrowGeom, "start" | "control" | "end">;
+type ArrowGeomUpdater = ArrowGeom | ((prev: ArrowGeom) => ArrowGeom);
+
+function resolveArrowGeom(prev: ArrowGeom, next: ArrowGeomUpdater): ArrowGeom {
+  return typeof next === "function" ? next(prev) : next;
+}
 type CordBoxPos = { right: number; bottom: number };
 type BoxPos = { x: number; y: number };
 
 const LEGACY_MAIN_VIEWBOX = "0 0 120 52";
 const MAIN_CALLOUT_ARROW_KEYS = ["mesh", "lipTop", "handleRight", "toolsCenter", "washSurface", "cord"] as const;
+const EDITOR_ARROW_KEYS: ArrowKey[] = [...MAIN_CALLOUT_ARROW_KEYS, "carry", "nailMat"];
 
 function mapLegacyMainPoint(p: Point): Point {
   const { minX, minY, width, height } = parseViewBox(LEGACY_MAIN_VIEWBOX);
@@ -84,9 +90,14 @@ function mainArrowGeom(start: Point, control: Point, end: Point): ArrowGeom {
 }
 
 function migrateMainArrowGeom(geom: ArrowGeom): ArrowGeom {
+  const strokeWidth = geom.strokeWidth ?? DEFAULT_ARROW_STROKE;
+
+  if (geom.viewBox === MAIN_ARROW_WORKSPACE) {
+    return { ...geom, strokeWidth };
+  }
+
   const vb = parseViewBox(geom.viewBox);
   const ws = parseViewBox(MAIN_ARROW_WORKSPACE);
-  const strokeWidth = geom.strokeWidth ?? DEFAULT_ARROW_STROKE;
 
   if (vb.width >= 200) {
     return { ...geom, viewBox: MAIN_ARROW_WORKSPACE, strokeWidth };
@@ -174,7 +185,7 @@ const ARROWS: ArrowMap = {
   },
 };
 
-const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v9";
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v10";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
 const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
@@ -390,22 +401,32 @@ function ArrowEditorHandles({
   label,
 }: {
   geom: ArrowGeom;
-  setGeom: (next: ArrowGeom) => void;
+  setGeom: (next: ArrowGeomUpdater) => void;
   dragLayerRef: React.RefObject<HTMLDivElement | null>;
   label?: string;
 }) {
   const [dragKey, setDragKey] = useState<ArrowPointKey | null>(null);
+  const dragKeyRef = useRef<ArrowPointKey | null>(null);
 
   const move = useCallback(
     (ev: React.PointerEvent) => {
-      if (!dragKey || !dragLayerRef.current) return;
+      const key = dragKeyRef.current;
+      if (!key || !dragLayerRef.current) return;
       const r = dragLayerRef.current.getBoundingClientRect();
       const xPct = ((ev.clientX - r.left) / r.width) * 100;
       const yPct = ((ev.clientY - r.top) / r.height) * 100;
-      setGeom({ ...geom, [dragKey]: pctToPoint(xPct, yPct, geom.viewBox) });
+      setGeom((prev) => ({
+        ...prev,
+        [key]: pctToPoint(xPct, yPct, prev.viewBox),
+      }));
     },
-    [dragKey, geom, setGeom, dragLayerRef],
+    [setGeom, dragLayerRef],
   );
+
+  const endDrag = useCallback(() => {
+    dragKeyRef.current = null;
+    setDragKey(null);
+  }, []);
 
   const startPct = pointToPct(geom.start, geom.viewBox);
   const controlPct = pointToPct(geom.control, geom.viewBox);
@@ -420,8 +441,8 @@ function ArrowEditorHandles({
     <div
       className="pointer-events-none absolute inset-0 z-30 overflow-visible"
       onPointerMove={move}
-      onPointerUp={() => setDragKey(null)}
-      onPointerCancel={() => setDragKey(null)}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
     >
       {label ? (
         <span className="pointer-events-none absolute left-0 top-0 rounded bg-white/95 px-1.5 py-0.5 text-[9px] font-semibold text-neutral-700 shadow-sm">
@@ -437,12 +458,14 @@ function ArrowEditorHandles({
           className={cn(
             "pointer-events-auto absolute z-40 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-md cursor-grab touch-none active:cursor-grabbing",
             color,
+            dragKey === key && "ring-2 ring-amber-400",
           )}
           style={{ left: `${pt.x}%`, top: `${pt.y}%` }}
           onPointerDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
             dragLayerRef.current?.setPointerCapture(e.pointerId);
+            dragKeyRef.current = key;
             setDragKey(key);
           }}
         />
@@ -454,23 +477,23 @@ function ArrowEditorHandles({
 function MainArrowStageEditor({
   arrows,
   stageRef,
+  activeKey,
   onArrowChange,
 }: {
   arrows: ArrowMap;
   stageRef: React.RefObject<HTMLDivElement | null>;
-  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  activeKey: MainCalloutArrowKey;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeomUpdater) => void;
 }) {
   return (
     <div className="pointer-events-none absolute inset-0 z-[25] overflow-visible">
-      {MAIN_CALLOUT_ARROW_KEYS.map((key) => (
-        <ArrowEditorHandles
-          key={key}
-          label={key}
-          geom={arrows[key]}
-          dragLayerRef={stageRef}
-          setGeom={(next) => onArrowChange?.(key, next)}
-        />
-      ))}
+      <ArrowEditorHandles
+        key={activeKey}
+        label={activeKey}
+        geom={arrows[activeKey]}
+        dragLayerRef={stageRef}
+        setGeom={(next) => onArrowChange?.(activeKey, next)}
+      />
     </div>
   );
 }
@@ -485,7 +508,7 @@ function EditableArrow({
   className?: string;
   geom: ArrowGeom;
   editorMode?: boolean;
-  onChange?: (next: ArrowGeom) => void;
+  onChange?: (next: ArrowGeomUpdater) => void;
   showHandles?: boolean;
 }) {
   const layerRef = useRef<HTMLDivElement>(null);
@@ -512,7 +535,7 @@ function CalloutArrow({
   variant: MainCalloutArrowKey;
   arrows: ArrowMap;
   editorMode?: boolean;
-  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeomUpdater) => void;
   useStageEditor?: boolean;
 }) {
   const geom = arrows[variant];
@@ -532,6 +555,7 @@ function MainImageCallouts({
   arrows,
   editorMode,
   onArrowChange,
+  activeArrowKey,
   mainCalloutBoxes,
   onMainCalloutBoxChange,
   cordBoxPos,
@@ -540,7 +564,8 @@ function MainImageCallouts({
   className?: string;
   arrows: ArrowMap;
   editorMode?: boolean;
-  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeomUpdater) => void;
+  activeArrowKey: MainCalloutArrowKey;
   mainCalloutBoxes: MainCalloutBoxes;
   onMainCalloutBoxChange: (key: MainCalloutBoxKey, next: BoxPos) => void;
   cordBoxPos: CordBoxPos;
@@ -721,7 +746,14 @@ function MainImageCallouts({
         />
       </div>
 
-      {editorMode ? <MainArrowStageEditor arrows={arrows} stageRef={boxRef} onArrowChange={onArrowChange} /> : null}
+      {editorMode ? (
+        <MainArrowStageEditor
+          arrows={arrows}
+          stageRef={boxRef}
+          activeKey={activeArrowKey}
+          onArrowChange={onArrowChange}
+        />
+      ) : null}
     </div>
   );
 }
@@ -732,12 +764,14 @@ function CarryingHandleOverlay({
   onArrowChange,
   carryBoxPos,
   onCarryBoxPosChange,
+  activeEditKey,
 }: {
   arrows: ArrowMap;
   editorMode?: boolean;
-  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeomUpdater) => void;
   carryBoxPos: BoxPos;
   onCarryBoxPosChange: (next: BoxPos) => void;
+  activeEditKey: ArrowKey;
 }) {
   const boxRef = useRef<HTMLDivElement>(null);
   const [dragCarryBox, setDragCarryBox] = useState(false);
@@ -800,6 +834,7 @@ function CarryingHandleOverlay({
         className="absolute inset-0 size-full text-neutral-900"
         geom={arrows.carry}
         editorMode={editorMode}
+        showHandles={editorMode && activeEditKey === "carry"}
         onChange={(next) => onArrowChange?.("carry", next)}
       />
     </div>
@@ -813,13 +848,15 @@ function BottomProductImage({
   onArrowChange,
   carryBoxPos,
   onCarryBoxPosChange,
+  activeEditKey,
 }: {
   className?: string;
   arrows: ArrowMap;
   editorMode?: boolean;
-  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeomUpdater) => void;
   carryBoxPos: BoxPos;
   onCarryBoxPosChange: (next: BoxPos) => void;
+  activeEditKey: ArrowKey;
 }) {
   return (
     <div
@@ -881,6 +918,7 @@ function BottomProductImage({
           onArrowChange={onArrowChange}
           carryBoxPos={carryBoxPos}
           onCarryBoxPosChange={onCarryBoxPosChange}
+          activeEditKey={activeEditKey}
         />
       </div>
     </div>
@@ -893,12 +931,14 @@ function NailMatCalloutEditor({
   onArrowChange,
   nailMatBoxPos,
   onNailMatBoxPosChange,
+  activeEditKey,
 }: {
   arrows: ArrowMap;
   editorMode?: boolean;
-  onArrowChange?: (key: ArrowKey, next: ArrowGeom) => void;
+  onArrowChange?: (key: ArrowKey, next: ArrowGeomUpdater) => void;
   nailMatBoxPos: BoxPos;
   onNailMatBoxPosChange: (next: BoxPos) => void;
+  activeEditKey: ArrowKey;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [dragBox, setDragBox] = useState(false);
@@ -950,6 +990,7 @@ function NailMatCalloutEditor({
             className={cn(CALLOUT_ARROW_BOX, "text-neutral-800")}
             geom={arrows.nailMat}
             editorMode={editorMode}
+            showHandles={editorMode && activeEditKey === "nailMat"}
             onChange={(next) => onArrowChange?.("nailMat", next)}
           />
         </div>
@@ -961,7 +1002,7 @@ function NailMatCalloutEditor({
 export function NailspaPdpStory() {
   const [arrows, setArrows] = useState<ArrowMap>(ARROWS);
   const [editorMode, setEditorMode] = useState(false);
-  const [editArrowKey, setEditArrowKey] = useState<MainCalloutArrowKey>("lipTop");
+  const [editArrowKey, setEditArrowKey] = useState<ArrowKey>("lipTop");
   const [mainCalloutBoxes, setMainCalloutBoxes] = useState<MainCalloutBoxes>(DEFAULT_MAIN_CALLOUT_BOXES);
   const [cordBoxPos, setCordBoxPos] = useState<CordBoxPos>(DEFAULT_CORD_BOX_POS);
   const [carryBoxPos, setCarryBoxPos] = useState<BoxPos>(DEFAULT_CARRY_BOX_POS);
@@ -981,14 +1022,15 @@ export function NailspaPdpStory() {
     }
   }, []);
 
-  const updateArrow = (key: ArrowKey, next: ArrowGeom) => {
-    setArrows((prev) => ({ ...prev, [key]: next }));
-    if (MAIN_CALLOUT_ARROW_KEYS.includes(key as MainCalloutArrowKey)) {
-      setEditArrowKey(key as MainCalloutArrowKey);
-    }
-  };
+  const updateArrow = useCallback((key: ArrowKey, next: ArrowGeomUpdater) => {
+    setArrows((prev) => ({
+      ...prev,
+      [key]: resolveArrowGeom(prev[key], next),
+    }));
+    setEditArrowKey(key);
+  }, []);
 
-  const editArrowStroke = arrows[editArrowKey].strokeWidth ?? DEFAULT_ARROW_STROKE;
+  const editArrowStroke = arrows[editArrowKey]?.strokeWidth ?? DEFAULT_ARROW_STROKE;
 
   const setEditArrowStroke = (strokeWidth: number) => {
     setArrows((prev) => ({
@@ -1086,7 +1128,7 @@ export function NailspaPdpStory() {
       </div>
       {editorMode ? (
         <div className="sticky top-0 z-[250] border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
-          <strong>Arrow edit mode</strong> — drag callout boxes; drag blue/green/red dots anywhere on the diagram; adjust thickness per arrow below; then Save/Copy.
+          <strong>Arrow edit mode</strong> — pick an arrow below, then drag its blue (start), green (curve), and red (tip) dots on the diagram. Thickness applies to the selected arrow only. Save/Copy when done.
         </div>
       ) : null}
       <div className="px-5 pb-12 sm:px-8 sm:pb-14 md:pb-16 lg:pb-20">
@@ -1118,6 +1160,11 @@ export function NailspaPdpStory() {
             arrows={arrows}
             editorMode={editorMode}
             onArrowChange={updateArrow}
+            activeArrowKey={
+              MAIN_CALLOUT_ARROW_KEYS.includes(editArrowKey as MainCalloutArrowKey)
+                ? (editArrowKey as MainCalloutArrowKey)
+                : "lipTop"
+            }
             mainCalloutBoxes={mainCalloutBoxes}
             onMainCalloutBoxChange={updateMainCalloutBox}
             cordBoxPos={cordBoxPos}
@@ -1173,6 +1220,7 @@ export function NailspaPdpStory() {
               onArrowChange={updateArrow}
               carryBoxPos={carryBoxPos}
               onCarryBoxPosChange={setCarryBoxPos}
+              activeEditKey={editArrowKey}
             />
             {!editorMode ? (
               <div className="relative z-10 mx-auto mt-0 flex w-full max-w-none flex-col gap-2 px-0 pt-1 md:hidden">
@@ -1201,6 +1249,7 @@ export function NailspaPdpStory() {
               onArrowChange={updateArrow}
               nailMatBoxPos={nailMatBoxPos}
               onNailMatBoxPosChange={setNailMatBoxPos}
+              activeEditKey={editArrowKey}
             />
           </div>
         </div>
@@ -1212,10 +1261,10 @@ export function NailspaPdpStory() {
               Arrow
               <select
                 value={editArrowKey}
-                onChange={(e) => setEditArrowKey(e.target.value as MainCalloutArrowKey)}
+                onChange={(e) => setEditArrowKey(e.target.value as ArrowKey)}
                 className="rounded border border-neutral-300 bg-white px-2 py-1 text-xs"
               >
-                {MAIN_CALLOUT_ARROW_KEYS.map((key) => (
+                {EDITOR_ARROW_KEYS.map((key) => (
                   <option key={key} value={key}>
                     {key}
                   </option>
