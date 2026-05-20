@@ -25,6 +25,7 @@ const DEFENDER_MINI_16_FLANK_LEFT = "/products/lay-n-go-defender-mini-16/story-f
 const DEFENDER_MINI_16_FLANK_RIGHT = "/products/lay-n-go-defender-mini-16/story-flank-right.png";
 const DEFENDER_TACTICAL_20_FLANK_LEFT = "/products/lay-n-go-tactical-bag-20/story-flank-left.png";
 const DEFENDER_TACTICAL_20_FLANK_RIGHT = "/products/lay-n-go-tactical-bag-20/story-flank-right.png";
+const DEFENDER_CIRCLE_BASE_REM = 20.5;
 const LITE_18_FLANK_LEFT = "/products/lay-n-go-lite-18/story-flank-left.png";
 const LITE_18_FLANK_RIGHT = "/products/lay-n-go-lite-18/story-flank-right.png";
 
