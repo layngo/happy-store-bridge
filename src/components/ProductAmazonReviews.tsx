@@ -1,8 +1,10 @@
-import { useMemo, useState } from "react";
-import { ChevronDown, Star } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Star } from "lucide-react";
 import type { ProductAmazonReview } from "@/data/productAmazonReviews";
+import { Button } from "@/components/ui/button";
+import { PRODUCT_REVIEWS_SECTION_ID } from "@/components/ProductReviewsSummary";
 
-const INITIAL_VISIBLE = 5;
+const REVIEWS_PAGE_SIZE = 7;
 
 type ProductAmazonReviewsProps = {
   reviews: ProductAmazonReview[];
@@ -25,18 +27,23 @@ function Stars({ rating = 5 }: { rating?: number }) {
 }
 
 export function ProductAmazonReviews({ reviews, amazonListingUrl }: ProductAmazonReviewsProps) {
-  const [expanded, setExpanded] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(REVIEWS_PAGE_SIZE);
 
-  const { visible, restCount } = useMemo(() => {
-    const visible = expanded ? reviews : reviews.slice(0, INITIAL_VISIBLE);
-    const restCount = Math.max(0, reviews.length - INITIAL_VISIBLE);
-    return { visible, restCount };
-  }, [reviews, expanded]);
+  useEffect(() => {
+    setVisibleCount(REVIEWS_PAGE_SIZE);
+  }, [reviews.length]);
+
+  const visible = useMemo(() => reviews.slice(0, visibleCount), [reviews, visibleCount]);
+  const hasMore = visibleCount < reviews.length;
 
   if (reviews.length === 0) return null;
 
   return (
-    <section className="mt-14 border-t border-neutral-200 pt-10 sm:mt-16" aria-labelledby="amazon-reviews-heading">
+    <section
+      id={PRODUCT_REVIEWS_SECTION_ID}
+      className="mt-14 scroll-mt-24 border-t border-neutral-200 pt-10 sm:mt-16"
+      aria-labelledby="amazon-reviews-heading"
+    >
       <div className="mx-auto max-w-3xl px-4 pb-8 sm:px-6">
         <h2 id="amazon-reviews-heading" className="text-lg font-normal text-[#0f1111]">
           Customer reviews
@@ -65,29 +72,16 @@ export function ProductAmazonReviews({ reviews, amazonListingUrl }: ProductAmazo
           ))}
         </ul>
 
-        {restCount > 0 && !expanded ? (
-          <div className="border-b border-neutral-200 py-3">
-            <button
+        {hasMore ? (
+          <div className="flex justify-center border-b border-neutral-200 py-4">
+            <Button
               type="button"
-              onClick={() => setExpanded(true)}
-              className="inline-flex items-center gap-1.5 text-sm font-normal text-[#007185] hover:text-[#c7511f] hover:underline"
+              variant="outline"
+              className="min-w-[10rem] font-medium"
+              onClick={() => setVisibleCount((count) => count + REVIEWS_PAGE_SIZE)}
             >
-              See more reviews
-              <span className="text-[#565959]">({restCount} more)</span>
-              <ChevronDown className="h-4 w-4 shrink-0 opacity-70" aria-hidden />
-            </button>
-          </div>
-        ) : null}
-
-        {expanded && restCount > 0 ? (
-          <div className="border-b border-neutral-200 py-3">
-            <button
-              type="button"
-              onClick={() => setExpanded(false)}
-              className="text-sm text-[#007185] hover:text-[#c7511f] hover:underline"
-            >
-              Show fewer reviews
-            </button>
+              View more
+            </Button>
           </div>
         ) : null}
 

@@ -17,20 +17,25 @@ import {
   Cosmo20ColorSelector,
   getCosmo20HeroImageUrls,
   getCosmo20InitialSelection,
+  getCosmo20SwatchBackgroundStyle,
   isCosmo20Product,
 } from "@/components/Cosmo20ColorSelector";
 import {
   Cosmo22ColorSelector,
+  COSMO_22_SWATCHES,
   getCosmo22HeroImageUrls,
   getCosmo22InitialSelection,
+  getCosmo22SwatchStyle,
   isCosmo22Product,
 } from "@/components/Cosmo22ColorSelector";
 import {
   Nailspa18ColorSelector,
   getNailspa18HeroImageUrls,
   getNailspa18InitialSelection,
+  getNailspa18SwatchBackgroundStyle,
   isNailspa18Product,
 } from "@/components/Nailspa18ColorSelector";
+import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 import { NailspaPdpHeroVideo } from "@/components/NailspaPdpHeroVideo";
 import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
@@ -40,6 +45,7 @@ import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
 import { LayNGoTravelDogBedPdpStrip } from "@/components/LayNGoTravelDogBedPdpStrip";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
 import { CustomerReviewsSection } from "@/components/CustomerReviewsSection";
+import { ProductReviewsSummary } from "@/components/ProductReviewsSummary";
 import {
   COSMO_CUSTOMER_REVIEWS,
   NAILSPA_CUSTOMER_REVIEWS,
@@ -48,6 +54,7 @@ import {
   isLayNGoPlayReviewsPdp,
   DEFENDER_CUSTOMER_REVIEWS,
   isLayNGoDefenderReviewsPdp,
+  type CustomerReview,
 } from "@/data/customerReviews";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -239,6 +246,20 @@ const LAY_N_GO_LITE_18_BULLETS = [
   "Machine washable",
   "4-in-1: activity mat, cleanup, storage, and carry-all in one",
   "Toys not included",
+] as const;
+
+const LAY_N_GO_NAILSPA_18_BULLETS = [
+  `Patented 18" portable nail station that opens flat for a clean, contained work surface`,
+  "See all your polishes and tools at once — no more digging through a traditional bag or shoebox",
+  "Eight elastic mesh pockets hold your favorite polishes, plus a large circular center pocket for tools and accessories",
+  "Raised containment lip keeps polish and tools from rolling off the counter",
+  "Machine washable and wipeable for easy cleaning and everyday use",
+  "Pull the drawstring to cinch completely closed for storage or travel",
+  "Compact enough to pack in a suitcase or overnight bag — fits anywhere",
+  "Built-in carrying handle for easy grab-and-go",
+  "Smart 4-in-1 solution — clean surface, quick cleanup, carry-all, and storage in one",
+  "Protected by four U.S. patents: #9,084,459 · #10,016,036 · #10,561,213 · #11,116,298",
+  "Nail polish, cosmetics, and accessories not included",
 ] as const;
 
 const LAY_N_GO_TRAVELER_20_BULLETS = [
@@ -926,6 +947,12 @@ const ProductDetail = () => {
         : "Back to collections";
 
   const isCosmoMini16 = product ? isCosmoMini16Product(product.handle, product.title) : false;
+  const stickyConfirmPreviewUrl = useMemo(() => {
+    if (!product) return null;
+    const variant = product.variants.edges[selectedVariantIdx]?.node;
+    if (!variant) return null;
+    return pdpColorHeroPreviewUrl(product, variant, isCosmoMini16);
+  }, [product, selectedVariantIdx, isCosmoMini16]);
   const orderedImages = useMemo(() => {
     if (!product) return [];
     return getOrderedImagesForProduct(product);
@@ -1009,6 +1036,24 @@ const ProductDetail = () => {
     () => (product ? getAmazonReviewsForProduct(product.handle) : { reviews: [], amazonListingUrl: undefined }),
     [product],
   );
+
+  const nativeCustomerReviews = useMemo((): CustomerReview[] | null => {
+    if (!product) return null;
+    const handle = product.handle;
+    if (
+      isCosmo20Product(handle) ||
+      isCosmo22Product(handle) ||
+      isCosmoMini16Product(handle, product.title)
+    ) {
+      return COSMO_CUSTOMER_REVIEWS;
+    }
+    if (isNailspa18Product(handle)) return NAILSPA_CUSTOMER_REVIEWS;
+    if (handle.toLowerCase() === "lay-n-go-traveler-20") return TRAVELER_CUSTOMER_REVIEWS;
+    if (isLayNGoPlayReviewsPdp(handle)) return PLAY_CUSTOMER_REVIEWS;
+    if (isLayNGoDefenderReviewsPdp(handle)) return DEFENDER_CUSTOMER_REVIEWS;
+    return null;
+  }, [product]);
+
   const layNGoHandle = product?.handle.toLowerCase() ?? "";
   const isLayNGoLarge60 = layNGoHandle === "lay-n-go-large-60";
   const showLarge60Faq = isLayNGoLarge60;
@@ -1508,15 +1553,7 @@ const ProductDetail = () => {
                     )}
                     style={
                       isColor
-                        ? isCosmoMini16
-                          ? cosmoMiniSwatchStyle(node)
-                          : product.handle.toLowerCase() === "lay-n-go-traveler-20"
-                            ? travelerSwatchStyle(optValue || "")
-                            : product.handle.toLowerCase() === "lay-n-go-travel-dog-bed-44"
-                              ? dogBedSwatchStyle(optValue || "")
-                              : isLayNGoPlayMatProduct(product.handle)
-                                ? layNGoPlayMatSwatchStyle(optValue || "")
-                                : variantImageSwatchStyle(node, optValue || "")
+                        ? pdpColorCircleSwatchStyle(product.handle, isCosmoMini16, optValue || "", node)
                         : undefined
                     }
                     disabled={!node.availableForSale}
@@ -1612,8 +1649,22 @@ const ProductDetail = () => {
     </Button>
   );
 
+  const showChooseColorsUi = !isLayNGoDefender;
+  const hasColorChoices = colorVariantChoices.length > 0;
+  const showReviewsSummary =
+    Boolean(nativeCustomerReviews?.length) || amazonReviewsBundle.reviews.length > 0;
+
+  const productReviewsSummary: ReactNode = showReviewsSummary ? (
+    <ProductReviewsSummary
+      productHandle={product.handle}
+      staticNativeReviews={nativeCustomerReviews ?? undefined}
+      amazonReviews={nativeCustomerReviews ? undefined : amazonReviewsBundle.reviews}
+    />
+  ) : null;
+
   const optionPickersAndPurchase: ReactNode = (
     <>
+      {hasColorChoices ? productReviewsSummary : null}
       {optionPickersOnly}
       {quantityPicker}
       <div ref={primaryAddToCartRef}>{addToCartButton}</div>
@@ -1691,14 +1742,27 @@ const ProductDetail = () => {
                 </div>
 
                 <div className="flex flex-col gap-6 px-0 py-0">
-                  {!isLayNGoDefender ? (
+                  {showChooseColorsUi ? (
                     <div>
-                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Choose colors</p>
-                      <div className="mt-3">{optionPickersOnly}</div>
+                      {hasColorChoices ? productReviewsSummary : null}
+                      {hasColorChoices ? (
+                        <p
+                          className={cn(
+                            "text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground",
+                            showReviewsSummary ? "mt-4" : undefined,
+                          )}
+                        >
+                          Choose colors
+                        </p>
+                      ) : null}
+                      <div className={cn(hasColorChoices && "mt-3")}>{optionPickersOnly}</div>
                     </div>
                   ) : null}
 
                   <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-5 border-b border-neutral-200/80 pb-6">
+                    {(!showChooseColorsUi || !hasColorChoices) && productReviewsSummary ? (
+                      <div className="mb-2 w-full basis-full">{productReviewsSummary}</div>
+                    ) : null}
                     <div>
                       <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500">Price</p>
                       <p className="font-cosmo-cta mt-1 text-3xl font-semibold tabular-nums text-neutral-800 sm:text-[2.125rem]">
@@ -1718,38 +1782,43 @@ const ProductDetail = () => {
                   isLayNGoTraveler20 ||
                   isLayNGoTravelDogBed44 ||
                   isLayNGoDefenderMini16 ||
-                  isLayNGoDefenderTactical20 ? (
+                  isLayNGoDefenderTactical20 ||
+                  isLayNGoNailspa18 ? (
                     <ul
                       className="mt-5 list-disc space-y-2.5 pl-5 text-left text-sm font-medium leading-relaxed text-neutral-700 marker:text-neutral-900"
                       aria-label={
-                        isLayNGoTraveler20
-                          ? "Lay-n-Go Traveler highlights"
-                          : isLayNGoTravelDogBed44
-                            ? "Lay-n-Go Travel Dog Bed highlights"
-                            : isLayNGoDefenderMini16
-                              ? "Lay-n-Go DEFENDER mini highlights"
-                              : isLayNGoDefenderTactical20
-                                ? "Lay-n-Go DEFENDER Tactical highlights"
-                                : isLayNGoLarge60
-                                  ? "Lay-n-Go Large highlights"
-                                  : isLayNGoLifestyle44
-                                    ? "Lay-n-Go Lifestyle highlights"
-                                    : "Lay-n-Go Lite highlights"
+                        isLayNGoNailspa18
+                          ? "Lay-n-Go NAILSPA highlights"
+                          : isLayNGoTraveler20
+                            ? "Lay-n-Go Traveler highlights"
+                            : isLayNGoTravelDogBed44
+                              ? "Lay-n-Go Travel Dog Bed highlights"
+                              : isLayNGoDefenderMini16
+                                ? "Lay-n-Go DEFENDER mini highlights"
+                                : isLayNGoDefenderTactical20
+                                  ? "Lay-n-Go DEFENDER Tactical highlights"
+                                  : isLayNGoLarge60
+                                    ? "Lay-n-Go Large highlights"
+                                    : isLayNGoLifestyle44
+                                      ? "Lay-n-Go Lifestyle highlights"
+                                      : "Lay-n-Go Lite highlights"
                       }
                     >
-                      {(isLayNGoTraveler20
-                        ? LAY_N_GO_TRAVELER_20_BULLETS
-                        : isLayNGoTravelDogBed44
-                          ? LAY_N_GO_TRAVEL_DOG_BED_44_BULLETS
-                          : isLayNGoDefenderMini16
-                            ? LAY_N_GO_DEFENDER_MINI_16_BULLETS
-                            : isLayNGoDefenderTactical20
-                              ? LAY_N_GO_DEFENDER_TACTICAL_20_BULLETS
-                              : isLayNGoLarge60
-                                ? LAY_N_GO_LARGE_60_BULLETS
-                                : isLayNGoLifestyle44
-                                  ? LAY_N_GO_LIFESTYLE_44_BULLETS
-                                  : LAY_N_GO_LITE_18_BULLETS
+                      {(isLayNGoNailspa18
+                        ? LAY_N_GO_NAILSPA_18_BULLETS
+                        : isLayNGoTraveler20
+                          ? LAY_N_GO_TRAVELER_20_BULLETS
+                          : isLayNGoTravelDogBed44
+                            ? LAY_N_GO_TRAVEL_DOG_BED_44_BULLETS
+                            : isLayNGoDefenderMini16
+                              ? LAY_N_GO_DEFENDER_MINI_16_BULLETS
+                              : isLayNGoDefenderTactical20
+                                ? LAY_N_GO_DEFENDER_TACTICAL_20_BULLETS
+                                : isLayNGoLarge60
+                                  ? LAY_N_GO_LARGE_60_BULLETS
+                                  : isLayNGoLifestyle44
+                                    ? LAY_N_GO_LIFESTYLE_44_BULLETS
+                                    : LAY_N_GO_LITE_18_BULLETS
                       ).map((line) => (
                         <li key={line} className="pl-0.5">
                           {line}
@@ -1946,6 +2015,14 @@ const ProductDetail = () => {
               </div>
             </section>
 
+            {isNailspaPdp ? (
+              <section className="mt-14 sm:mt-16" aria-label="NAILSPA product video">
+                <div className="mx-auto w-full max-w-4xl">
+                  <NailspaPdpHeroVideo variant="card" />
+                </div>
+              </section>
+            ) : null}
+
             {isCosmoStoryPdp ? <CosmoPdpVideoGallery /> : null}
 
             {showCosmoStyleBottomExtras ? (
@@ -2135,25 +2212,6 @@ const ProductDetail = () => {
               </section>
             ) : null}
 
-            {isCosmoStoryPdp && product ? (
-              <CustomerReviewsSection reviews={COSMO_CUSTOMER_REVIEWS} productHandle={product.handle} />
-            ) : null}
-
-            {isNailspaPdp && product ? (
-              <CustomerReviewsSection reviews={NAILSPA_CUSTOMER_REVIEWS} productHandle={product.handle} />
-            ) : null}
-
-            {isLayNGoTraveler20 && product ? (
-              <CustomerReviewsSection reviews={TRAVELER_CUSTOMER_REVIEWS} productHandle={product.handle} />
-            ) : null}
-
-            {product && isLayNGoPlayReviewsPdp(product.handle) ? (
-              <CustomerReviewsSection reviews={PLAY_CUSTOMER_REVIEWS} productHandle={product.handle} />
-            ) : null}
-
-            {product && isLayNGoDefenderReviewsPdp(product.handle) ? (
-              <CustomerReviewsSection reviews={DEFENDER_CUSTOMER_REVIEWS} productHandle={product.handle} />
-            ) : null}
           </>
         ) : (
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
@@ -2167,7 +2225,12 @@ const ProductDetail = () => {
             <div className="space-y-6">
               <div>
                 <h1 className="font-heading text-3xl font-bold text-foreground">{product.title}</h1>
-                <p className="mt-2 text-2xl font-bold text-primary">${priceDisplay}</p>
+                {!hasColorChoices && productReviewsSummary ? (
+                  <div className="mt-3">{productReviewsSummary}</div>
+                ) : null}
+                <p className={cn("text-2xl font-bold text-primary", productReviewsSummary && !hasColorChoices ? "mt-3" : "mt-2")}>
+                  ${priceDisplay}
+                </p>
               </div>
 
               {descHtml ? (
@@ -2186,13 +2249,6 @@ const ProductDetail = () => {
           </div>
         )}
 
-        {!showCosmoStyleBottomExtras && amazonReviewsBundle.reviews.length > 0 ? (
-          <ProductAmazonReviews
-            reviews={amazonReviewsBundle.reviews}
-            amazonListingUrl={amazonReviewsBundle.amazonListingUrl}
-          />
-        ) : null}
-
         {related.length > 0 ? (
           <section className={cn("border-t border-border pt-12", isCosmoPdp ? "mt-20 sm:mt-24" : "mt-20")}>
             <h2 className="font-heading text-2xl font-bold text-foreground mb-8">Related products</h2>
@@ -2202,6 +2258,17 @@ const ProductDetail = () => {
               ))}
             </div>
           </section>
+        ) : null}
+
+        {nativeCustomerReviews && product ? (
+          <CustomerReviewsSection reviews={nativeCustomerReviews} productHandle={product.handle} />
+        ) : null}
+
+        {!nativeCustomerReviews && amazonReviewsBundle.reviews.length > 0 ? (
+          <ProductAmazonReviews
+            reviews={amazonReviewsBundle.reviews}
+            amazonListingUrl={amazonReviewsBundle.amazonListingUrl}
+          />
         ) : null}
       </main>
 
@@ -2248,41 +2315,51 @@ const ProductDetail = () => {
             </DialogDescription>
           </DialogHeader>
 
+          {stickyConfirmPreviewUrl ? (
+            <div className="mx-auto flex w-full max-w-[220px] justify-center sm:max-w-[260px]">
+              <img
+                src={stickyConfirmPreviewUrl}
+                alt=""
+                className="h-auto max-h-[min(42vh,280px)] w-full object-contain"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+          ) : null}
+
           {colorVariantChoices.length > 0 ? (
             <div className="space-y-2">
               <p className="text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground">Edit color</p>
               <div className="flex flex-wrap gap-2">
-                {colorVariantChoices.map((choice) => {
-                  const solidSwatch = isSolidStickyConfirmSwatch(product.handle, isCosmoMini16, choice.node);
-                  return (
-                    <button
-                      key={`${choice.rawValue}-${choice.idx}`}
-                      type="button"
-                      onClick={() => handleVariantSelection(choice.idx)}
-                      className={cn(
-                        "h-10 w-10 shrink-0 rounded-full transition-[box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                        solidSwatch
-                          ? choice.idx === selectedVariantIdx
-                            ? "ring-2 ring-neutral-900 ring-offset-[3px] ring-offset-white"
-                            : "ring-0"
-                          : cn(
-                              "border border-foreground/25 bg-cover bg-center bg-no-repeat",
-                              choice.idx === selectedVariantIdx
-                                ? "ring-2 ring-foreground ring-offset-2 ring-offset-background"
-                                : "",
-                            ),
-                        !choice.node.availableForSale ? "line-through opacity-40" : "",
-                      )}
-                      style={stickyConfirmSwatchStyle(product.handle, isCosmoMini16, choice)}
-                      disabled={!choice.node.availableForSale}
-                      aria-label={choice.displayValue}
-                      title={choice.displayValue}
-                      aria-pressed={choice.idx === selectedVariantIdx}
-                    >
-                      <span className="sr-only">{choice.displayValue}</span>
-                    </button>
-                  );
-                })}
+                {colorVariantChoices.map((choice) => (
+                  <button
+                    key={`${choice.rawValue}-${choice.idx}`}
+                    type="button"
+                    onClick={() => handleVariantSelection(choice.idx)}
+                    className={cn(
+                      "relative h-10 w-10 shrink-0 rounded-full bg-muted/25 transition-[box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                      choice.idx === selectedVariantIdx
+                        ? "ring-2 ring-neutral-900 ring-offset-[3px] ring-offset-white"
+                        : "ring-0",
+                      !choice.node.availableForSale ? "opacity-40" : "",
+                    )}
+                    style={pdpColorCircleSwatchStyle(product.handle, isCosmoMini16, choice.rawValue, choice.node)}
+                    disabled={!choice.node.availableForSale}
+                    aria-label={choice.displayValue}
+                    title={choice.displayValue}
+                    aria-pressed={choice.idx === selectedVariantIdx}
+                  >
+                    {!choice.node.availableForSale ? (
+                      <span
+                        className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden rounded-full"
+                        aria-hidden
+                      >
+                        <span className="h-[2px] w-[140%] rotate-45 bg-foreground/55" />
+                      </span>
+                    ) : null}
+                    <span className="sr-only">{choice.displayValue}</span>
+                  </button>
+                ))}
               </div>
             </div>
           ) : null}
@@ -2336,25 +2413,41 @@ function isCosmoBlackVariant(v: ShopifyProduct["node"]["variants"]["edges"][numb
 
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
 
-function stickyConfirmSwatchStyle(
+/** Color circles for PDP pickers — fabric swatch or solid fill, never the variant hero photo. */
+function pdpColorCircleSwatchStyle(
   handle: string,
   isCosmoMini16Product: boolean,
-  choice: { rawValue: string; node: VariantNode },
+  rawValue: string,
+  variant: VariantNode,
 ): CSSProperties {
+  if (isCosmoMini16Product) return cosmoMiniSwatchStyle(variant);
   const h = handle.toLowerCase();
-  if (isCosmoMini16Product) return cosmoMiniSwatchStyle(choice.node);
-  if (h === "lay-n-go-travel-dog-bed-44") return dogBedSwatchStyle(choice.rawValue);
-  if (h === "lay-n-go-traveler-20") return travelerSwatchStyle(choice.rawValue);
-  if (isLayNGoPlayMatProduct(handle)) return layNGoPlayMatSwatchStyle(choice.rawValue);
-  return variantImageSwatchStyle(choice.node, choice.rawValue);
+  if (isCosmo20Product(handle)) return getCosmo20SwatchBackgroundStyle(rawValue, undefined);
+  if (isCosmo22Product(handle)) {
+    const def = COSMO_22_SWATCHES.find((s) => s.shopifyColor === rawValue);
+    return getCosmo22SwatchStyle(def, rawValue);
+  }
+  if (isNailspa18Product(handle)) return getNailspa18SwatchBackgroundStyle(rawValue, undefined);
+  if (h === "lay-n-go-travel-dog-bed-44") return dogBedSwatchStyle(rawValue);
+  if (h === "lay-n-go-traveler-20") return travelerSwatchStyle(rawValue);
+  if (isLayNGoPlayMatProduct(handle)) return layNGoPlayMatSwatchStyle(rawValue);
+  return { backgroundColor: colorNameToApproximateHex(rawValue) };
 }
 
-function isSolidStickyConfirmSwatch(handle: string, isCosmoMini16Product: boolean, variant: VariantNode): boolean {
-  if (isLayNGoPlayMatProduct(handle)) return true;
-  if (handle.toLowerCase() === "lay-n-go-travel-dog-bed-44") return true;
-  if (handle.toLowerCase() === "lay-n-go-traveler-20") return true;
-  if (isCosmoMini16Product && isCosmoBlackVariant(variant)) return true;
-  return false;
+function pdpColorHeroPreviewUrl(
+  product: ShopifyProduct["node"],
+  variant: VariantNode,
+  isCosmoMini16Product: boolean,
+): string | null {
+  const color = variant.selectedOptions.find((o) => isColorOptionName(o.name))?.value ?? "";
+  if (isCosmoMini16Product) {
+    if (isCosmoBlackVariant(variant)) return variant.image?.url ?? null;
+    return COSMO_MINI_CROSSMARKS_HERO;
+  }
+  if (isCosmo20Product(product.handle)) return getCosmo20HeroImageUrls(color, variant)[0] ?? null;
+  if (isCosmo22Product(product.handle)) return getCosmo22HeroImageUrls(color, variant)[0] ?? null;
+  if (isNailspa18Product(product.handle)) return getNailspa18HeroImageUrls(color, variant)[0] ?? null;
+  return variant.image?.url ?? null;
 }
 
 function cosmoMiniSwatchStyle(
@@ -2399,48 +2492,8 @@ function displayOptionValue(handle: string, rawValue: string): string {
   return value;
 }
 
-function colorToHex(value: string): string {
-  const key = value.trim().toLowerCase();
-  const map: Record<string, string> = {
-    black: "#111111",
-    white: "#f5f5f5",
-    gray: "#8b8b8b",
-    grey: "#8b8b8b",
-    silver: "#b6b6b6",
-    charcoal: "#44464d",
-    navy: "#223049",
-    blue: "#4b5f8c",
-    red: "#b23b3b",
-    pink: "#d58aa4",
-    rose: "#cf8ea3",
-    green: "#7e9880",
-    olive: "#879173",
-    tan: "#c0aa8a",
-    beige: "#d3c5ad",
-    brown: "#7c6653",
-    purple: "#7a6e9c",
-    teal: "#5e8c8c",
-    orange: "#d08a4d",
-    yellow: "#d6be67",
-    gold: "#c3a86f",
-    clear: "#d9d9d9",
-  };
-  return map[key] ?? "#9aa3b2";
-}
-
 function isColorOptionName(name: string): boolean {
   return /color|colour/i.test(name);
-}
-
-function variantImageSwatchStyle(variant: VariantNode, fallbackColor: string): CSSProperties {
-  if (variant.image?.url) {
-    return {
-      backgroundImage: `url(${variant.image.url})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-    };
-  }
-  return { backgroundColor: colorToHex(fallbackColor) };
 }
 
 /** Pull first YouTube id from Shopify product HTML (e.g. embedded iframe in description). */

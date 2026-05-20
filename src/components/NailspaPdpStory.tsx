@@ -11,9 +11,6 @@ const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png";
 
 const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:px-4 sm:py-3";
 
-/** Local arrow box under a single callout (nail mat section). */
-const CALLOUT_ARROW_BOX = "mt-2 h-[6.6rem] w-[18rem] shrink-0 sm:h-[7.2rem] sm:w-[19.5rem]";
-
 /** Large workspace — must fit dragged joints; old saves used points outside -80..160. */
 const MAIN_ARROW_WORKSPACE = "-170 -85 380 210";
 const LEGACY_MAIN_ARROW_WORKSPACE_OLD = "-80 -30 240 110";
@@ -36,18 +33,6 @@ const COMPACT_EDGE_CALLOUT_PANEL =
 
 const COMPACT_EDGE_CALLOUT_WRAPPER = "w-max max-w-[min(54%,280px)]";
 
-/** Bordered cards for the two stacked NAILSPA copy blocks under the closed-bag still (mobile). */
-const NAILSPA_STACKED_CALLOUT =
-  "rounded-lg border-2 border-neutral-300 bg-white px-3 py-2.5 shadow-md shadow-black/[0.08] sm:px-4 sm:py-3";
-
-/** Mobile-only: softens the rounded image frame so the border reads less harsh against white. */
-const MOBILE_BOTTOM_HERO_EDGE_FADE =
-  "inset 0 0 0 1px rgba(255,255,255,0.92), inset 0 1.25rem 1.75rem rgba(255,255,255,0.65), inset 0 -1.25rem 1.75rem rgba(255,255,255,0.65), inset 0.85rem 0 1.25rem rgba(255,255,255,0.5), inset -0.85rem 0 1.25rem rgba(255,255,255,0.5)";
-
-const CARRY_CALLOUT_TITLE = "High quality nail mat";
-const CARRY_CALLOUT_BODY =
-  "Machine washable and wipeable. spilled polish? no problem, just clean it off with polish remover";
-
 const LIP_HANDLE_CALLOUT_TITLE = "Convenient Containment Lip & Carrying Handle";
 const LIP_HANDLE_CALLOUT_BODY =
   "The raised lip keeps polish and tools from falling off the counter, while the built-in handle makes it easy to grab and go after you cinch it closed.";
@@ -64,8 +49,8 @@ type ArrowGeom = {
   /** Degrees around the curve centroid. */
   rotation?: number;
 };
-type ArrowKey = "mesh" | "lipTop" | "handleRight" | "toolsCenter" | "washSurface" | "cord" | "carry" | "nailMat";
-type MainCalloutArrowKey = "mesh" | "lipTop" | "handleRight" | "toolsCenter" | "washSurface" | "cord";
+type ArrowKey = "mesh" | "lipTop" | "handleRight" | "toolsCenter" | "washSurface" | "cord";
+type MainCalloutArrowKey = ArrowKey;
 type ArrowMap = Record<ArrowKey, ArrowGeom>;
 type ArrowPointKey = keyof Pick<ArrowGeom, "start" | "control" | "end">;
 type ArrowGeomUpdater = ArrowGeom | ((prev: ArrowGeom) => ArrowGeom);
@@ -78,7 +63,7 @@ type BoxPos = { x: number; y: number };
 
 const LEGACY_MAIN_VIEWBOX = "0 0 120 52";
 const MAIN_CALLOUT_ARROW_KEYS = ["mesh", "lipTop", "handleRight", "toolsCenter", "washSurface", "cord"] as const;
-const EDITOR_ARROW_KEYS: ArrowKey[] = [...MAIN_CALLOUT_ARROW_KEYS, "carry", "nailMat"];
+const EDITOR_ARROW_KEYS: ArrowKey[] = [...MAIN_CALLOUT_ARROW_KEYS];
 
 function mapLegacyMainPoint(p: Point): Point {
   const { minX, minY, width, height } = parseViewBox(LEGACY_MAIN_VIEWBOX);
@@ -222,9 +207,9 @@ const ARROWS: ArrowMap = normalizeArrowMap({
   },
   toolsCenter: {
     viewBox: MAIN_ARROW_WORKSPACE,
-    start: { x: 185.47249180929998, y: 33.94399164404189 },
-    control: { x: 95.4866683142526, y: 50.92153070654189 },
-    end: { x: 51.890504155840176, y: 21.310610209192546 },
+    start: { x: 176.85781547001432, y: 56.63961369650704 },
+    control: { x: 156.4800470897129, y: 77.52690083639962 },
+    end: { x: 66.67977046966553, y: 15.510052953447612 },
     strokeWidth: 1.75,
     rotation: -20,
     headScale: 1,
@@ -233,7 +218,7 @@ const ARROWS: ArrowMap = normalizeArrowMap({
     viewBox: MAIN_ARROW_WORKSPACE,
     start: { x: 144.66688224247525, y: 118.49593816484725 },
     control: { x: 115.12371948787143, y: 147.95223971775604 },
-    end: { x: 82.64123330797472, y: 126.36990765162875 },
+    end: { x: 82.02714770180842, y: 107.99634061540874 },
     strokeWidth: 1.75,
     headScale: 1,
     rotation: 0,
@@ -247,30 +232,11 @@ const ARROWS: ArrowMap = normalizeArrowMap({
     headScale: 1,
     rotation: 0,
   },
-  carry: {
-    viewBox: "0 0 100 100",
-    start: { x: 105.44645971070787, y: 24.31438651154527 },
-    control: { x: 84, y: 40 },
-    end: { x: 66.5, y: 38 },
-    strokeWidth: 1.25,
-    headScale: 1.1,
-  },
-  nailMat: {
-    viewBox: "-120 -80 360 220",
-    start: { x: 118, y: 12 },
-    control: { x: 52, y: 28 },
-    end: { x: -227.81859206792302, y: 140 },
-    strokeWidth: 4,
-  },
 });
 
-const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v13";
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v14";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
-const CARRY_BOX_STORAGE_KEY = "nailspa-story-carry-box-v1";
-const NAIL_MAT_BOX_STORAGE_KEY = "nailspa-story-nailmat-box-v1";
-const MAIN_CALLOUT_BOXES_STORAGE_KEY = "nailspa-story-main-callout-boxes-v5";
-const DEFAULT_CARRY_BOX_POS: BoxPos = { x: 91, y: 86 };
-const DEFAULT_NAIL_MAT_BOX_POS: BoxPos = { x: 27.992304437924677, y: 46.79633617401123 };
+const MAIN_CALLOUT_BOXES_STORAGE_KEY = "nailspa-story-main-callout-boxes-v6";
 
 type MainCalloutBoxKey = "mesh" | "lipHandle" | "tools" | "wash";
 type MainCalloutAnchor = "start" | "end" | "end-center" | "end-bottom";
@@ -280,8 +246,8 @@ type MainCalloutBoxes = Record<MainCalloutBoxKey, BoxPos>;
 const DEFAULT_MAIN_CALLOUT_BOXES: MainCalloutBoxes = {
   mesh: { x: 0, y: 18.30925399713033 },
   lipHandle: { x: 78.33745918117191, y: -10 },
-  tools: { x: 100, y: 43.219866223481226 },
-  wash: { x: 100, y: 83.05276358084807 },
+  tools: { x: 100, y: 45.5109109053177 },
+  wash: { x: 100, y: 83.72963796491074 },
 };
 
 /** Right-edge callouts: drag along the far right of the diagram only. */
@@ -400,16 +366,6 @@ function loadCordBoxFromStorage(): CordBoxPos | null {
     const raw = localStorage.getItem(CORD_BOX_STORAGE_KEY);
     if (!raw) return null;
     return JSON.parse(raw) as CordBoxPos;
-  } catch {
-    return null;
-  }
-}
-
-function loadBoxPosFromStorage(key: string): BoxPos | null {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return null;
-    return JSON.parse(raw) as BoxPos;
   } catch {
     return null;
   }
@@ -994,244 +950,17 @@ function MainImageCallouts({
   );
 }
 
-function CarryingHandleOverlay({
-  arrows,
-  editorMode,
-  onArrowChange,
-  carryBoxPos,
-  onCarryBoxPosChange,
-  activeEditKey,
-}: {
-  arrows: ArrowMap;
-  editorMode?: boolean;
-  onArrowChange?: (key: ArrowKey, next: ArrowGeomUpdater) => void;
-  carryBoxPos: BoxPos;
-  onCarryBoxPosChange: (next: BoxPos) => void;
-  activeEditKey: ArrowKey;
-}) {
-  const boxRef = useRef<HTMLDivElement>(null);
-  const [dragCarryBox, setDragCarryBox] = useState(false);
-
-  const moveCarryBox = useCallback(
-    (ev: React.PointerEvent) => {
-      if (!editorMode || !dragCarryBox || !boxRef.current) return;
-      const r = boxRef.current.getBoundingClientRect();
-      const xPct = ((ev.clientX - r.left) / r.width) * 100;
-      const yPct = ((ev.clientY - r.top) / r.height) * 100;
-      onCarryBoxPosChange({ x: xPct, y: yPct });
-    },
-    [dragCarryBox, editorMode, onCarryBoxPosChange],
-  );
-
+function BottomProductImage({ className }: { className?: string }) {
   return (
-    <div
-      ref={boxRef}
-      className={cn(
-        "absolute inset-0 z-20 overflow-visible",
-        editorMode ? "pointer-events-auto" : "pointer-events-none",
-      )}
-      aria-hidden
-      onPointerMove={moveCarryBox}
-      onPointerUp={() => setDragCarryBox(false)}
-      onPointerCancel={() => setDragCarryBox(false)}
-    >
-      <div
-        className={cn(
-          "absolute cursor-move touch-none rounded-lg border border-neutral-200/60 bg-white/[0.9] px-3 py-2 shadow-md shadow-black/[0.06] backdrop-blur-md sm:px-5 sm:py-3",
-          "inline-flex min-w-0 w-max max-w-[min(40rem,calc(100vw-2rem))] flex-col items-start gap-1.5 sm:max-w-[min(42rem,calc(100vw-2.5rem))]",
-        )}
-        style={{ left: `${carryBoxPos.x}%`, top: `${carryBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
-        onPointerDown={(e) => {
-          if (!editorMode) return;
-          e.preventDefault();
-          e.stopPropagation();
-          e.currentTarget.setPointerCapture(e.pointerId);
-          setDragCarryBox(true);
-        }}
-        onPointerMove={(e) => {
-          if (!editorMode || !dragCarryBox || !boxRef.current) return;
-          const r = boxRef.current.getBoundingClientRect();
-          const xPct = ((e.clientX - r.left) / r.width) * 100;
-          const yPct = ((e.clientY - r.top) / r.height) * 100;
-          onCarryBoxPosChange({ x: xPct, y: yPct });
-        }}
-        onPointerUp={() => setDragCarryBox(false)}
-        onPointerCancel={() => setDragCarryBox(false)}
-      >
-        {editorMode ? <p className="mb-0.5 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
-        <p className="font-heading text-base font-bold leading-tight tracking-tight text-foreground sm:text-lg md:text-xl">
-          {CARRY_CALLOUT_TITLE}
-        </p>
-        <p className="max-w-none text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">
-          {CARRY_CALLOUT_BODY}
-        </p>
-      </div>
-      <EditableArrow
-        className="absolute inset-0 size-full text-neutral-900"
-        geom={arrows.carry}
-        editorMode={editorMode}
-        showHandles={editorMode && activeEditKey === "carry"}
-        onChange={(next) => onArrowChange?.("carry", next)}
+    <div className={cn("relative w-full bg-white", className)} aria-label="Lay-n-Go NAILSPA closed with carry handle">
+      <img
+        src={IMG_BOTTOM}
+        alt=""
+        className="block h-auto w-full max-w-none object-contain object-left"
+        draggable={false}
+        loading="lazy"
       />
     </div>
-  );
-}
-
-function BottomProductImage({
-  className,
-  arrows,
-  editorMode,
-  onArrowChange,
-  carryBoxPos,
-  onCarryBoxPosChange,
-  activeEditKey,
-}: {
-  className?: string;
-  arrows: ArrowMap;
-  editorMode?: boolean;
-  onArrowChange?: (key: ArrowKey, next: ArrowGeomUpdater) => void;
-  carryBoxPos: BoxPos;
-  onCarryBoxPosChange: (next: BoxPos) => void;
-  activeEditKey: ArrowKey;
-}) {
-  return (
-    <div
-      className={cn("relative w-full overflow-visible border-0 bg-transparent shadow-none ring-0", className)}
-      aria-label="Lay-n-Go NAILSPA closed with carry handle"
-    >
-      {/* Clip only art + vignette; callouts sit in a sibling layer so wide panels are not cut off */}
-      <div className="relative min-h-[min(38vh,300px)] w-full overflow-hidden rounded-2xl sm:min-h-[min(54vh,480px)] md:min-h-[min(56vh,560px)] lg:min-h-[min(58vh,620px)]">
-        <img
-          src={IMG_BOTTOM}
-          alt=""
-          className="absolute inset-0 size-full object-contain object-[30%_center] max-md:object-[32%_center]"
-          draggable={false}
-          loading="lazy"
-        />
-        {/* Mobile: top edge only — tight fade into hand; no radial tail bleeding over cards below */}
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-[2] h-[18%] md:hidden"
-          style={{
-            background:
-              "linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.92) 14%, rgba(255,255,255,0.45) 32%, rgba(255,255,255,0) 100%)",
-          }}
-          aria-hidden
-        />
-        {/* Mobile: inset light wash to soften the rounded photo border against the page */}
-        <div
-          className="pointer-events-none absolute inset-0 z-[3] rounded-2xl md:hidden"
-          style={{ boxShadow: MOBILE_BOTTOM_HERO_EDGE_FADE }}
-          aria-hidden
-        />
-        {/* Desktop: top band + right + left/bottom rails (unchanged) */}
-        <div
-          className="pointer-events-none absolute inset-x-0 top-[14%] z-[2] hidden h-[30%] md:block"
-          style={{
-            background:
-              "linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.88) 28%, rgba(255,255,255,0.38) 62%, rgba(255,255,255,0) 100%)",
-          }}
-          aria-hidden
-        />
-        {/* Right: fade — desktop only */}
-        <div
-          className="pointer-events-none absolute inset-y-0 right-0 z-[2] hidden w-[30%] md:block"
-          style={{ background: "linear-gradient(to left, rgba(255,255,255,1) 0%, rgba(255,255,255,0.7) 35%, rgba(255,255,255,0) 100%)" }}
-          aria-hidden
-        />
-        {/* Left + bottom rails — desktop only */}
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] hidden md:block"
-          style={{
-            background:
-              "linear-gradient(to right, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 100%), linear-gradient(to top, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0) 8%, rgba(255,255,255,0) 100%)",
-          }}
-        />
-      </div>
-      <div className={cn("pointer-events-none absolute inset-0 z-20 overflow-visible", editorMode ? "block" : "hidden md:block")}>
-        <CarryingHandleOverlay
-          arrows={arrows}
-          editorMode={editorMode}
-          onArrowChange={onArrowChange}
-          carryBoxPos={carryBoxPos}
-          onCarryBoxPosChange={onCarryBoxPosChange}
-          activeEditKey={activeEditKey}
-        />
-      </div>
-    </div>
-  );
-}
-
-function NailMatCalloutEditor({
-  arrows,
-  editorMode,
-  onArrowChange,
-  nailMatBoxPos,
-  onNailMatBoxPosChange,
-  activeEditKey,
-}: {
-  arrows: ArrowMap;
-  editorMode?: boolean;
-  onArrowChange?: (key: ArrowKey, next: ArrowGeomUpdater) => void;
-  nailMatBoxPos: BoxPos;
-  onNailMatBoxPosChange: (next: BoxPos) => void;
-  activeEditKey: ArrowKey;
-}) {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const [dragBox, setDragBox] = useState(false);
-
-  const moveBox = useCallback(
-    (ev: React.PointerEvent) => {
-      if (!editorMode || !dragBox || !wrapRef.current) return;
-      const r = wrapRef.current.getBoundingClientRect();
-      const xPct = ((ev.clientX - r.left) / r.width) * 100;
-      const yPct = ((ev.clientY - r.top) / r.height) * 100;
-      onNailMatBoxPosChange({ x: xPct, y: yPct });
-    },
-    [dragBox, editorMode, onNailMatBoxPosChange],
-  );
-
-  return (
-    <>
-      <div
-        ref={wrapRef}
-        className={cn(
-          "relative min-h-[min(320px,52vh)] w-full",
-          editorMode ? "pointer-events-auto block" : "pointer-events-none hidden md:block",
-        )}
-        onPointerMove={moveBox}
-        onPointerUp={() => setDragBox(false)}
-        onPointerCancel={() => setDragBox(false)}
-      >
-        <div
-          className="absolute z-10 w-[min(90%,360px)] max-w-full cursor-move touch-none"
-          style={{ left: `${nailMatBoxPos.x}%`, top: `${nailMatBoxPos.y}%`, transform: "translate(-50%, -50%)" }}
-          onPointerDown={(e) => {
-            if (!editorMode) return;
-            e.preventDefault();
-            e.stopPropagation();
-            e.currentTarget.setPointerCapture(e.pointerId);
-            setDragBox(true);
-          }}
-        >
-          <div className={CALLOUT_PANEL}>
-            {editorMode ? <p className="mb-1 text-[10px] font-semibold text-neutral-700">Drag box</p> : null}
-            <h3 className="font-heading text-lg font-bold tracking-tight text-foreground sm:text-xl md:text-2xl">
-              Carrying handle for easy travel
-            </h3>
-            <p className="mt-2 text-sm leading-snug text-neutral-700 sm:text-base">
-              The Nailspa is machine washable and wipeable.
-            </p>
-          </div>
-          <EditableArrow
-            className={cn(CALLOUT_ARROW_BOX, "text-neutral-800")}
-            geom={arrows.nailMat}
-            editorMode={editorMode}
-            showHandles={editorMode && activeEditKey === "nailMat"}
-            onChange={(next) => onArrowChange?.("nailMat", next)}
-          />
-        </div>
-      </div>
-    </>
   );
 }
 
@@ -1241,8 +970,6 @@ export function NailspaPdpStory() {
   const [editArrowKey, setEditArrowKey] = useState<ArrowKey>("lipTop");
   const [mainCalloutBoxes, setMainCalloutBoxes] = useState<MainCalloutBoxes>(DEFAULT_MAIN_CALLOUT_BOXES);
   const [cordBoxPos, setCordBoxPos] = useState<CordBoxPos>(DEFAULT_CORD_BOX_POS);
-  const [carryBoxPos, setCarryBoxPos] = useState<BoxPos>(DEFAULT_CARRY_BOX_POS);
-  const [nailMatBoxPos, setNailMatBoxPos] = useState<BoxPos>(DEFAULT_NAIL_MAT_BOX_POS);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1253,8 +980,6 @@ export function NailspaPdpStory() {
       setArrows(loadArrowsFromStorage() ?? ARROWS);
       setMainCalloutBoxes(loadMainCalloutBoxesFromStorage() ?? DEFAULT_MAIN_CALLOUT_BOXES);
       setCordBoxPos(loadCordBoxFromStorage() ?? DEFAULT_CORD_BOX_POS);
-      setCarryBoxPos(loadBoxPosFromStorage(CARRY_BOX_STORAGE_KEY) ?? DEFAULT_CARRY_BOX_POS);
-      setNailMatBoxPos(loadBoxPosFromStorage(NAIL_MAT_BOX_STORAGE_KEY) ?? DEFAULT_NAIL_MAT_BOX_POS);
     }
   }, []);
 
@@ -1270,8 +995,6 @@ export function NailspaPdpStory() {
   const editArrowStroke = editArrow?.strokeWidth ?? DEFAULT_ARROW_STROKE;
   const editHeadScale = editArrow?.headScale ?? DEFAULT_HEAD_SCALE;
   const editRotation = editArrow?.rotation ?? 0;
-  const isMainDiagramArrow = MAIN_CALLOUT_ARROW_KEYS.includes(editArrowKey as MainCalloutArrowKey);
-
   const patchEditArrow = (patch: Partial<ArrowGeom>) => {
     setArrows((prev) => ({
       ...prev,
@@ -1288,8 +1011,6 @@ export function NailspaPdpStory() {
       localStorage.setItem(ARROW_STORAGE_KEY, JSON.stringify(arrows));
       localStorage.setItem(MAIN_CALLOUT_BOXES_STORAGE_KEY, JSON.stringify(mainCalloutBoxes));
       localStorage.setItem(CORD_BOX_STORAGE_KEY, JSON.stringify(cordBoxPos));
-      localStorage.setItem(CARRY_BOX_STORAGE_KEY, JSON.stringify(carryBoxPos));
-      localStorage.setItem(NAIL_MAT_BOX_STORAGE_KEY, JSON.stringify(nailMatBoxPos));
       window.dispatchEvent(new Event("nailspa-arrows-updated"));
     } catch {
       // no-op
@@ -1299,17 +1020,7 @@ export function NailspaPdpStory() {
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(
-        JSON.stringify(
-          {
-            arrows,
-            mainCalloutBoxes,
-            cordBoxPos,
-            carryBoxPos,
-            nailMatBoxPos,
-          },
-          null,
-          2,
-        ),
+        JSON.stringify({ arrows, mainCalloutBoxes, cordBoxPos }, null, 2),
       );
     } catch {
       // no-op
@@ -1326,18 +1037,8 @@ export function NailspaPdpStory() {
 
   const arrowJson = useMemo(
     () =>
-      JSON.stringify(
-        {
-          arrows,
-          mainCalloutBoxes,
-          cordBoxPos,
-          carryBoxPos,
-          nailMatBoxPos,
-        },
-        null,
-        2,
-      ),
-    [arrows, mainCalloutBoxes, cordBoxPos, carryBoxPos, nailMatBoxPos],
+      JSON.stringify({ arrows, mainCalloutBoxes, cordBoxPos }, null, 2),
+    [arrows, mainCalloutBoxes, cordBoxPos],
   );
 
   return (
@@ -1361,8 +1062,6 @@ export function NailspaPdpStory() {
                 setArrows(loadArrowsFromStorage() ?? ARROWS);
                 setMainCalloutBoxes(loadMainCalloutBoxesFromStorage() ?? DEFAULT_MAIN_CALLOUT_BOXES);
                 setCordBoxPos(loadCordBoxFromStorage() ?? DEFAULT_CORD_BOX_POS);
-                setCarryBoxPos(loadBoxPosFromStorage(CARRY_BOX_STORAGE_KEY) ?? DEFAULT_CARRY_BOX_POS);
-                setNailMatBoxPos(loadBoxPosFromStorage(NAIL_MAT_BOX_STORAGE_KEY) ?? DEFAULT_NAIL_MAT_BOX_POS);
               }
               return next;
             });
@@ -1456,49 +1155,9 @@ export function NailspaPdpStory() {
       {/* Mobile: tiny spacer — bottom hero + cards sit closer to cord callouts */}
       <div className="pointer-events-none h-1 w-full shrink-0 bg-white md:hidden" aria-hidden />
 
-      {/* Bottom — closed bag photo + nail mat copy (desktop: cluster centered as one unit) */}
-      <div className="px-4 pb-14 pt-0 sm:px-6 sm:pb-16 sm:pt-8 md:px-10 md:pt-12 lg:px-14">
-        <div className="mx-auto flex w-full max-w-[min(100%,1200px)] flex-col gap-1 overflow-visible max-md:-mt-3 md:flex-row md:items-start md:justify-center md:mt-0 md:gap-10 md:pt-0 lg:gap-12">
-          <div className="relative z-10 w-full shrink-0 md:w-[min(46%,560px)] lg:w-[min(48%,600px)]">
-            <BottomProductImage
-              arrows={arrows}
-              editorMode={editorMode}
-              onArrowChange={updateArrow}
-              carryBoxPos={carryBoxPos}
-              onCarryBoxPosChange={setCarryBoxPos}
-              activeEditKey={editArrowKey}
-            />
-            {!editorMode ? (
-              <div className="relative z-10 mx-auto mt-0 flex w-full max-w-none flex-col gap-2 px-0 pt-1 md:hidden">
-                <div className={cn(NAILSPA_STACKED_CALLOUT, "w-full px-3 py-2")}>
-                  <p className="font-heading text-base font-bold leading-tight tracking-tight text-foreground sm:text-lg">
-                    {CARRY_CALLOUT_TITLE}
-                  </p>
-                  <p className="mt-1 text-sm leading-relaxed text-neutral-700 sm:text-[0.95rem]">{CARRY_CALLOUT_BODY}</p>
-                </div>
-                <div className={cn(NAILSPA_STACKED_CALLOUT, "px-3 py-2")}>
-                  <h3 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">
-                    Carrying handle for easy travel
-                  </h3>
-                  <p className="mt-2 text-xs leading-snug text-neutral-700 sm:text-sm">
-                    The Nailspa is machine washable and wipeable.
-                  </p>
-                </div>
-              </div>
-            ) : null}
-          </div>
-
-          <div className="relative z-30 flex w-full shrink-0 flex-col overflow-visible md:w-[min(44%,520px)] md:max-w-lg md:justify-center md:pt-4">
-            <NailMatCalloutEditor
-              arrows={arrows}
-              editorMode={editorMode}
-              onArrowChange={updateArrow}
-              nailMatBoxPos={nailMatBoxPos}
-              onNailMatBoxPosChange={setNailMatBoxPos}
-              activeEditKey={editArrowKey}
-            />
-          </div>
-        </div>
+      {/* Bottom — closed bag photo, full-bleed left (hand at page edge) */}
+      <div className="w-full pb-14 pt-0 sm:pb-16 sm:pt-6 md:pt-10">
+        <BottomProductImage className="max-md:-mt-3" />
       </div>
       {editorMode ? (
         <div className="fixed bottom-0 left-0 right-0 z-[300] border-t border-neutral-200 bg-white/95 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-sm md:left-1/2 md:right-auto md:mx-auto md:w-[min(100%,42rem)] md:-translate-x-1/2 md:rounded-t-xl md:border-x md:border-t">
@@ -1554,11 +1213,6 @@ export function NailspaPdpStory() {
               />
               <span className="tabular-nums text-neutral-600">{editRotation}°</span>
             </label>
-            {!isMainDiagramArrow ? (
-              <span className="w-full text-center text-[10px] text-neutral-600">
-                Drag dots on the bottom section for carry / nailMat arrows.
-              </span>
-            ) : null}
             <button type="button" onClick={save} className="rounded-md bg-black px-3 py-1.5 text-xs font-semibold text-white">
               Save to this browser
             </button>

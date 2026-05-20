@@ -3,7 +3,11 @@ import { averageReviewRating, type CustomerReview } from "@/data/customerReviews
 import { fetchSubmittedReviews } from "@/lib/reviewApi";
 import { StarRating } from "@/components/StarRating";
 import { SubmitReviewDialog } from "@/components/SubmitReviewDialog";
+import { Button } from "@/components/ui/button";
+import { PRODUCT_REVIEWS_SECTION_ID } from "@/components/ProductReviewsSummary";
 import { cn } from "@/lib/utils";
+
+const REVIEWS_PAGE_SIZE = 7;
 
 type CustomerReviewsSectionProps = {
   reviews: CustomerReview[];
@@ -13,25 +17,26 @@ type CustomerReviewsSectionProps = {
   className?: string;
 };
 
+function reviewsWithImagesFirst(reviews: CustomerReview[]): CustomerReview[] {
+  return [...reviews].sort((a, b) => {
+    const aHasImages = Boolean(a.images?.length);
+    const bHasImages = Boolean(b.images?.length);
+    if (aHasImages === bHasImages) return 0;
+    return aHasImages ? -1 : 1;
+  });
+}
+
 function ReviewCard({ review }: { review: CustomerReview }) {
   const hasImages = Boolean(review.images?.length);
 
   return (
-    <article
-      className={cn(
-        "flex h-full shrink-0 snap-start flex-col",
-        "rounded-2xl border border-border bg-card p-5 shadow-sm",
-        hasImages ? "w-[min(100%,21.5rem)] sm:w-[24rem]" : "w-[min(100%,19.5rem)] sm:w-[22rem]",
-      )}
-    >
+    <article className="w-full rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
       <StarRating rating={review.rating} size="sm" />
       <p className="mt-3 font-heading text-base font-semibold tracking-tight text-foreground">{review.name}</p>
       {review.title ? (
         <p className="mt-1 text-sm font-medium leading-snug text-foreground/90">{review.title}</p>
       ) : null}
-      <blockquote className="mt-3 min-h-0 flex-1 overflow-y-auto text-sm leading-relaxed text-muted-foreground [scrollbar-width:thin]">
-        {review.text}
-      </blockquote>
+      <blockquote className="mt-3 text-sm leading-relaxed text-muted-foreground">{review.text}</blockquote>
       {hasImages ? (
         <ul className="mt-4 flex flex-wrap gap-2" aria-label="Photos from this review">
           {review.images!.map((src) => (
@@ -60,6 +65,7 @@ export function CustomerReviewsSection({
   className,
 }: CustomerReviewsSectionProps) {
   const [submittedReviews, setSubmittedReviews] = useState<CustomerReview[]>([]);
+  const [visibleCount, setVisibleCount] = useState(REVIEWS_PAGE_SIZE);
 
   useEffect(() => {
     let cancelled = false;
@@ -72,9 +78,16 @@ export function CustomerReviewsSection({
   }, [productHandle]);
 
   const reviews = useMemo(
-    () => [...staticReviews, ...submittedReviews],
+    () => reviewsWithImagesFirst([...staticReviews, ...submittedReviews]),
     [staticReviews, submittedReviews],
   );
+
+  useEffect(() => {
+    setVisibleCount(REVIEWS_PAGE_SIZE);
+  }, [productHandle, reviews.length]);
+
+  const visibleReviews = reviews.slice(0, visibleCount);
+  const hasMore = visibleCount < reviews.length;
 
   const averageRating = useMemo(() => averageReviewRating(reviews), [reviews]);
 
@@ -84,7 +97,8 @@ export function CustomerReviewsSection({
 
   return (
     <section
-      className={cn("mx-auto mt-14 w-full max-w-4xl border-t border-border pt-10 sm:mt-16", className)}
+      id={PRODUCT_REVIEWS_SECTION_ID}
+      className={cn("mx-auto mt-14 w-full max-w-4xl scroll-mt-24 border-t border-border pt-10 sm:mt-16", className)}
       aria-labelledby="customer-reviews-heading"
     >
       <div className="flex flex-col gap-4 px-4 sm:flex-row sm:items-start sm:justify-between sm:px-0">
@@ -105,20 +119,25 @@ export function CustomerReviewsSection({
       </div>
 
       {reviews.length > 0 ? (
-        <div
-          className={cn(
-            "mt-6 flex gap-4 overflow-x-auto scroll-smooth px-4 pb-3 sm:px-0",
-            "snap-x snap-mandatory [-webkit-overflow-scrolling:touch]",
-            "[scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5",
-          )}
-          tabIndex={0}
-          role="region"
-          aria-label="Customer reviews"
-        >
-          {reviews.map((review) => (
-            <ReviewCard key={review.id} review={review} />
-          ))}
-        </div>
+        <>
+          <div className="mt-6 flex flex-col gap-4 px-4 sm:px-0">
+            {visibleReviews.map((review) => (
+              <ReviewCard key={review.id} review={review} />
+            ))}
+          </div>
+          {hasMore ? (
+            <div className="mt-6 flex justify-center px-4 sm:px-0">
+              <Button
+                type="button"
+                variant="outline"
+                className="min-w-[10rem] font-medium"
+                onClick={() => setVisibleCount((count) => count + REVIEWS_PAGE_SIZE)}
+              >
+                View more
+              </Button>
+            </div>
+          ) : null}
+        </>
       ) : (
         <p className="mt-6 px-4 text-sm text-muted-foreground sm:px-0">
           No reviews yet—be the first to share your experience.

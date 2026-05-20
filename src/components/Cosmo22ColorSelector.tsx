@@ -139,7 +139,7 @@ export function Cosmo22ColorSelector({ product, selectedVariantIdx, onVariantCha
 }
 
 /** Only curated SS64 fabric circles — never variant hero photos (those read as “bag” in a tiny circle). */
-function getCosmo22SwatchStyle(def: Cosmo22SwatchDef | undefined, shopifyColor: string): CSSProperties {
+export function getCosmo22SwatchStyle(def: Cosmo22SwatchDef | undefined, shopifyColor: string): CSSProperties {
   if (def?.swatchImageUrl) {
     return {
       backgroundImage: `url(${def.swatchImageUrl})`,
