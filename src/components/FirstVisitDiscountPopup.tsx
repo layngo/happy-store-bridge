@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,7 @@ export function FirstVisitDiscountPopup() {
   const [step, setStep] = useState<Step>("intro");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [marketingConsent, setMarketingConsent] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -33,6 +35,7 @@ export function FirstVisitDiscountPopup() {
       setStep("intro");
       setEmail("");
       setPhone("");
+      setMarketingConsent(false);
       setOpen(true);
       return;
     }
@@ -45,6 +48,7 @@ export function FirstVisitDiscountPopup() {
     setStep("intro");
     setEmail("");
     setPhone("");
+    setMarketingConsent(false);
     const id = window.setTimeout(() => setOpen(true), 600);
     return () => window.clearTimeout(id);
   }, [location.pathname, location.key]);
@@ -70,6 +74,10 @@ export function FirstVisitDiscountPopup() {
 
   const submitPhone = (e: FormEvent) => {
     e.preventDefault();
+    if (!marketingConsent) {
+      toast.error("Please agree to receive texts and marketing emails from Lay-n-Go.");
+      return;
+    }
     const digits = phone.replace(/\D/g, "");
     if (digits.length < 10) {
       toast.error("Please enter a valid phone number.");
@@ -193,10 +201,26 @@ export function FirstVisitDiscountPopup() {
                       className={cn(redeemFieldClass, "h-11 text-right text-sm sm:h-12 sm:text-base")}
                       required
                     />
+                    <div className="flex items-start justify-end gap-2 rounded-md border border-neutral-200/90 bg-white/90 px-2.5 py-2 text-left shadow-sm backdrop-blur-sm">
+                      <Checkbox
+                        id="discount-marketing-consent"
+                        checked={marketingConsent}
+                        onCheckedChange={(checked) => setMarketingConsent(checked === true)}
+                        className="mt-0.5 border-neutral-700 data-[state=checked]:bg-neutral-800"
+                        aria-required
+                      />
+                      <label
+                        htmlFor="discount-marketing-consent"
+                        className="min-w-0 cursor-pointer text-[0.65rem] font-medium leading-snug text-neutral-800 sm:text-xs"
+                      >
+                        I agree to receive text and marketing emails from Lay-n-Go
+                      </label>
+                    </div>
                     <Button
                       type="submit"
                       size="lg"
-                      className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] sm:h-12 sm:text-base"
+                      disabled={!marketingConsent}
+                      className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
                     >
                       Get my code
                     </Button>
