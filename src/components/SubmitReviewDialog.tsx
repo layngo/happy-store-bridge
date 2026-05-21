@@ -58,7 +58,7 @@ export function SubmitReviewDialog({ productHandle, onReviewSubmitted }: SubmitR
     setVerifying(true);
     try {
       const result = await verifyOrderForReview(orderNumber, productHandle);
-      if (!result.ok) {
+      if (result.ok === false) {
         toast.error(result.error);
         return;
       }
@@ -111,7 +111,7 @@ export function SubmitReviewDialog({ productHandle, onReviewSubmitted }: SubmitR
         text,
         imageBase64,
       });
-      if (!result.ok) {
+      if (result.ok === false) {
         toast.error(result.error);
         return;
       }
