@@ -7,6 +7,7 @@ import {
 } from "@/data/customerReviews";
 import { fetchSubmittedReviews } from "@/lib/reviewApi";
 import { StarRating } from "@/components/StarRating";
+import { ReviewPhotoGallery } from "@/components/ReviewPhotoGallery";
 import { SubmitReviewDialog } from "@/components/SubmitReviewDialog";
 import { PRODUCT_REVIEWS_SECTION_ID } from "@/components/ProductReviewsSummary";
 import { cn } from "@/lib/utils";
@@ -31,8 +32,6 @@ function reviewsWithImagesFirst(reviews: CustomerReview[]): CustomerReview[] {
 }
 
 function ReviewCard({ review }: { review: CustomerReview }) {
-  const hasImages = Boolean(review.images?.length);
-
   return (
     <article className="brand-review-card px-5 py-6 sm:px-7 sm:py-7">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -45,22 +44,8 @@ function ReviewCard({ review }: { review: CustomerReview }) {
         </p>
       ) : null}
       <blockquote className={cn("brand-review-body", review.title ? "mt-2" : "mt-4")}>{review.text}</blockquote>
-      {hasImages ? (
-        <ul className="mt-5 flex flex-wrap gap-2 border-t border-foreground/10 pt-5" aria-label="Photos from this review">
-          {review.images!.map((src) => (
-            <li key={src} className="shrink-0">
-              <img
-                src={src}
-                alt=""
-                width={88}
-                height={88}
-                loading="lazy"
-                decoding="async"
-                className="h-[4.5rem] w-[4.5rem] border border-foreground/15 object-cover sm:h-20 sm:w-20"
-              />
-            </li>
-          ))}
-        </ul>
+      {review.images?.length ? (
+        <ReviewPhotoGallery images={review.images} photoLabel={review.name} />
       ) : null}
     </article>
   );

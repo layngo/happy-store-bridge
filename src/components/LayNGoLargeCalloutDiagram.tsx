@@ -139,14 +139,7 @@ const LAYOUT_SYNC_EVENT_DEFENDER_TACTICAL = "lay-n-go-tactical-bag-20-callout-la
 export const CALLOUT_THUMB_SHADOW =
   "rounded-full bg-white p-[2px] shadow-[0_2px_8px_rgba(0,0,0,0.32),0_5px_16px_rgba(0,0,0,0.26)]";
 
-/** Lite callouts on `bg-background` — no white rim or drop shadow (avoids halo on #fafafa). */
-export const CALLOUT_THUMB_FRAME_LITE = "rounded-full bg-background";
-
 export const CALLOUT_THUMB_INNER_CLIP = "relative h-full w-full overflow-hidden rounded-full";
-
-function calloutThumbFrameClass(variant: LayNGoCalloutDiagramVariant) {
-  return variant === "lite-18" ? CALLOUT_THUMB_FRAME_LITE : CALLOUT_THUMB_SHADOW;
-}
 
 export type LayNGoCalloutDiagramVariant =
   | "large-60"
@@ -838,7 +831,7 @@ function FloatingCallout({
         cordLifestyleCompact
           ? "h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32"
           : "h-[7.25rem] w-[7.25rem] sm:h-32 sm:w-32 md:h-40 md:w-40",
-        calloutThumbFrameClass(variant),
+        CALLOUT_THUMB_SHADOW,
       )}
     >
       <div className={CALLOUT_THUMB_INNER_CLIP}>
@@ -1176,7 +1169,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             <div
               className={cn(
                 "aspect-square shrink-0",
-                calloutThumbFrameClass(variant),
+                CALLOUT_THUMB_SHADOW,
                 diagramUsesLifestyleChrome(variant) && k === "cord" && variant !== "lite-18" ? "h-28 w-28" : "h-32 w-32",
               )}
             >
