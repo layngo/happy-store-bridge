@@ -4,23 +4,62 @@ import { toast } from "sonner";
 import type { CustomerReview } from "@/data/customerReviews";
 import { verifyOrderForReview, submitCustomerReview } from "@/lib/reviewApi";
 import { StarRatingInput } from "@/components/StarRatingInput";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 type SubmitReviewDialogProps = {
   productHandle: string;
   onReviewSubmitted: (review: CustomerReview) => void;
 };
+
+function ReviewDialogProgress({ step }: { step: 1 | 2 }) {
+  return (
+    <div
+      className="px-6 pb-5 pt-5 pr-14 sm:px-8 sm:pb-6 sm:pr-16 sm:pt-6"
+      aria-label="Review steps"
+    >
+      <div className="grid grid-cols-2 gap-x-4 pb-4 sm:gap-x-8 sm:pb-5">
+        <span
+          className={cn(
+            "min-w-0 font-heading text-[0.7rem] font-bold uppercase leading-snug tracking-[0.12em] sm:text-xs sm:tracking-[0.14em]",
+            step === 1 ? "text-foreground" : "text-muted-foreground",
+          )}
+        >
+          Verify
+        </span>
+        <span
+          className={cn(
+            "min-w-0 font-heading text-[0.7rem] font-bold uppercase leading-snug tracking-[0.12em] sm:text-xs sm:tracking-[0.14em]",
+            step === 2 ? "text-foreground" : "text-muted-foreground",
+          )}
+        >
+          Write a review
+        </span>
+      </div>
+      <div
+        className="relative h-[2px] w-full bg-foreground/15"
+        role="progressbar"
+        aria-valuenow={step}
+        aria-valuemin={1}
+        aria-valuemax={2}
+        aria-label={step === 1 ? "Step 1 of 2: Verify" : "Step 2 of 2: Write a review"}
+      >
+        <div
+          className="absolute inset-y-0 w-1/2 bg-foreground transition-[left] duration-300 ease-out"
+          style={{ left: step === 1 ? "0%" : "50%" }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export function SubmitReviewDialog({ productHandle, onReviewSubmitted }: SubmitReviewDialogProps) {
   const [open, setOpen] = useState(false);
@@ -127,6 +166,7 @@ export function SubmitReviewDialog({ productHandle, onReviewSubmitted }: SubmitR
   };
 
   const verified = Boolean(verificationToken);
+  const step: 1 | 2 = verified ? 2 : 1;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -135,93 +175,121 @@ export function SubmitReviewDialog({ productHandle, onReviewSubmitted }: SubmitR
           Write a review
         </button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-none sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="brand-display text-xl text-foreground">Write a review</DialogTitle>
-          <DialogDescription className="brand-review-body text-muted-foreground">
-            Verify your Shopify order, then share your experience.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent
+        className={cn(
+          "gap-0 overflow-hidden rounded-none p-0 sm:max-w-lg",
+          "[&>button]:right-5 [&>button]:top-5 [&>button]:flex [&>button]:h-10 [&>button]:w-10 [&>button]:items-center [&>button]:justify-center sm:[&>button]:right-6 sm:[&>button]:top-6",
+          "[&>button_svg]:h-5 [&>button_svg]:w-5",
+        )}
+      >
+        <ReviewDialogProgress step={step} />
 
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="review-name">Your name</Label>
-            <Input
-              id="review-name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="First name or display name"
-              autoComplete="name"
-            />
-          </div>
+        <div className="max-h-[min(70vh,34rem)] overflow-y-auto px-6 pb-8 pt-6 sm:px-8 sm:pb-9 sm:pt-7">
+          <DialogTitle className="brand-display text-lg text-foreground">
+            Write a review
+          </DialogTitle>
+          <p className="brand-review-body mt-2 text-muted-foreground">
+            Verify your order, then share your experience.
+          </p>
 
-          <div className="space-y-2">
-            <Label htmlFor="review-order">Order number</Label>
-            <div className="flex gap-2">
-              <Input
-                id="review-order"
-                value={orderNumber}
-                onChange={(e) => {
-                  setOrderNumber(e.target.value);
-                  setVerificationToken(null);
-                  setVerifiedOrderName(null);
-                }}
-                placeholder="e.g. 1234 or #1234"
-                disabled={verified}
-              />
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={handleVerify}
-                disabled={verifying || !orderNumber.trim() || verified}
-              >
-                {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : "Verify"}
-              </Button>
-            </div>
-            {verifiedOrderName ? (
-              <p className="text-xs text-green-700">Verified order {verifiedOrderName}</p>
-            ) : (
-              <p className="text-xs text-muted-foreground">
-                We check your order in Shopify to confirm you bought this product.
-              </p>
-            )}
-          </div>
-
-          {verified ? (
-            <>
+          {step === 1 ? (
+            <div className="mt-6 space-y-6">
               <div className="space-y-2">
-                <Label>Your rating</Label>
+                <Label htmlFor="review-name" className="brand-eyebrow text-foreground/70">
+                  Your name
+                </Label>
+                <Input
+                  id="review-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="First name or display name"
+                  autoComplete="name"
+                  className="brand-field-underline"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="review-order" className="brand-eyebrow text-foreground/70">
+                  Order number
+                </Label>
+                <div className="flex items-end gap-4">
+                  <Input
+                    id="review-order"
+                    value={orderNumber}
+                    onChange={(e) => {
+                      setOrderNumber(e.target.value);
+                      setVerificationToken(null);
+                      setVerifiedOrderName(null);
+                    }}
+                    placeholder="e.g. 1234 or #1234"
+                    className="brand-field-underline min-w-0 flex-1"
+                  />
+                  <button
+                    type="button"
+                    className="brand-btn-editorial shrink-0 disabled:cursor-not-allowed disabled:opacity-40"
+                    onClick={handleVerify}
+                    disabled={verifying || !orderNumber.trim()}
+                  >
+                    {verifying ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      "Verify"
+                    )}
+                  </button>
+                </div>
+                {verifiedOrderName ? (
+                  <p className="brand-eyebrow text-green-800">Order {verifiedOrderName} verified</p>
+                ) : null}
+              </div>
+            </div>
+          ) : (
+            <div className="mt-6 space-y-6">
+              {verifiedOrderName ? (
+                <p className="brand-eyebrow text-foreground/60">Order {verifiedOrderName}</p>
+              ) : null}
+
+              <div className="space-y-2">
+                <Label className="brand-eyebrow text-foreground/70">Your rating</Label>
                 <StarRatingInput value={rating} onChange={setRating} />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="review-title">Headline (optional)</Label>
+                <Label htmlFor="review-title" className="brand-eyebrow text-foreground/70">
+                  Headline (optional)
+                </Label>
                 <Input
                   id="review-title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Sum up your experience"
+                  className="brand-field-underline"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="review-text">Your review</Label>
+                <Label htmlFor="review-text" className="brand-eyebrow text-foreground/70">
+                  Your review
+                </Label>
                 <Textarea
                   id="review-text"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   placeholder="What did you like? How do you use it?"
                   rows={5}
+                  className="brand-textarea-underline"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor={photoId}>Photo (optional)</Label>
+                <Label htmlFor={photoId} className="brand-eyebrow text-foreground/70">
+                  Photo (optional)
+                </Label>
                 <Input
                   id={photoId}
                   type="file"
                   accept="image/*"
                   onChange={(e) => handlePhoto(e.target.files?.[0])}
+                  className="brand-field-underline cursor-pointer file:font-heading file:text-xs file:uppercase file:tracking-[0.1em] file:text-foreground"
                 />
                 {imagePreview ? (
                   <img
@@ -232,7 +300,12 @@ export function SubmitReviewDialog({ productHandle, onReviewSubmitted }: SubmitR
                 ) : null}
               </div>
 
-              <Button type="button" className="w-full" onClick={handleSubmit} disabled={submitting}>
+              <button
+                type="button"
+                className="brand-btn-editorial w-full disabled:cursor-not-allowed disabled:opacity-40"
+                onClick={handleSubmit}
+                disabled={submitting || !text.trim()}
+              >
                 {submitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -241,9 +314,9 @@ export function SubmitReviewDialog({ productHandle, onReviewSubmitted }: SubmitR
                 ) : (
                   "Submit review"
                 )}
-              </Button>
-            </>
-          ) : null}
+              </button>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

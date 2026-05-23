@@ -8,6 +8,19 @@ import { cn } from "@/lib/utils";
 const HEADLINE = "THE NAIL BAG THAT ACTUALLY GETS IT.";
 const IMG_MAIN = "/nailspa-pdp/story/image1.png";
 const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png";
+const IMG_BOTTOM_HOOK = "/nailspa-pdp/story/bottom-hook.png";
+
+/** Soft edge fade so the diagram white field blends into `bg-background` (restores pre-cleanup look). */
+function NailspaDiagramEdgeVignette() {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-[1]" aria-hidden>
+      <div className="absolute inset-x-0 top-0 h-[min(18%,120px)] bg-gradient-to-b from-background via-background/80 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-[min(16%,110px)] bg-gradient-to-t from-background via-background/80 to-transparent" />
+      <div className="absolute inset-y-0 left-0 w-[min(14%,88px)] bg-gradient-to-r from-background via-background/75 to-transparent sm:w-[min(12%,100px)]" />
+      <div className="absolute inset-y-0 right-0 w-[min(14%,88px)] bg-gradient-to-l from-background via-background/75 to-transparent sm:w-[min(12%,100px)]" />
+    </div>
+  );
+}
 
 const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:px-4 sm:py-3";
 
@@ -954,15 +967,34 @@ function BottomProductImage({ className }: { className?: string }) {
   return (
     <div
       className={cn("relative w-full bg-background", className)}
-      aria-label="Lay-n-Go NAILSPA closed with carry handle"
+      aria-label="Lay-n-Go NAILSPA portable and ready to go"
     >
-      <img
-        src={IMG_BOTTOM}
-        alt=""
-        className="block h-auto w-1/2 max-w-[50%] object-contain object-left"
-        draggable={false}
-        loading="lazy"
-      />
+      <div className="flex flex-col md:flex-row md:items-end">
+        {/* Hand + bag — flush to viewport left and section bottom */}
+        <div className="relative w-full shrink-0 overflow-hidden leading-none md:w-[min(54vw,620px)] lg:w-[min(50vw,640px)]">
+          <img
+            src={IMG_BOTTOM}
+            alt="Lay-n-Go NAILSPA cinched closed with carry handle"
+            className="block h-auto w-[min(140vw,780px)] max-w-none object-contain object-left-bottom sm:w-[min(135vw,740px)] md:w-[min(125%,54vw)] lg:w-[min(118%,50vw)]"
+            draggable={false}
+            loading="lazy"
+          />
+        </div>
+
+        <div className="relative flex min-w-0 flex-1 flex-col items-center justify-center gap-6 px-4 py-8 sm:px-6 sm:py-10 md:items-start md:gap-8 md:px-10 md:pb-12 md:pt-6 lg:px-14 lg:pb-14">
+          <img
+            src={IMG_BOTTOM_HOOK}
+            alt="Lay-n-Go NAILSPA hanging on a wall hook"
+            className="block h-auto w-full max-w-[min(100%,340px)] object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.1)] md:max-w-[380px]"
+            draggable={false}
+            loading="lazy"
+          />
+
+          <p className="w-full max-w-md text-center font-heading text-xl font-bold uppercase leading-[1.15] tracking-tight text-foreground sm:text-2xl md:text-left md:text-[1.75rem]">
+            Portable, anywhere.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -1046,7 +1078,7 @@ export function NailspaPdpStory() {
 
   return (
     <section
-      className="relative left-1/2 -ml-[50vw] w-screen bg-background pt-10 text-foreground sm:pt-12 md:pt-14"
+      className="relative left-1/2 -ml-[50vw] w-screen overflow-x-hidden bg-background pt-10 text-foreground sm:pt-12 md:pt-14"
       aria-labelledby="nailspa-story-headline"
     >
       <div className="fixed right-3 top-3 z-[320]">
@@ -1079,10 +1111,10 @@ export function NailspaPdpStory() {
           <strong>Arrow edit mode</strong> — choose an arrow, drag joints 1–3 on the image (same as moving a text box). Adjust line, head, and rotation below. Save when finished.
         </div>
       ) : null}
-      <div className="px-5 pb-12 sm:px-8 sm:pb-14 md:pb-16 lg:pb-20">
+      <div className="relative px-5 pb-12 sm:px-8 sm:pb-14 md:pb-16 lg:pb-20">
         <p
           id="nailspa-story-headline"
-          className="text-center font-heading text-[clamp(2rem,7.5vw,4.75rem)] font-black uppercase leading-[1.02] tracking-tight text-foreground md:text-[clamp(2.35rem,5.5vw,5.25rem)] md:leading-[1.03]"
+          className="relative z-[2] text-center font-heading text-[clamp(2rem,7.5vw,4.75rem)] font-black uppercase leading-[1.02] tracking-tight text-foreground md:text-[clamp(2.35rem,5.5vw,5.25rem)] md:leading-[1.03]"
         >
           {HEADLINE}
         </p>
@@ -1091,7 +1123,10 @@ export function NailspaPdpStory() {
       {/* Main hero — image 1 + callouts */}
       <div className="relative mt-6 px-4 pb-6 sm:mt-8 sm:px-6 sm:pb-10 md:mt-10 md:px-10 md:pb-16 lg:mt-12 lg:px-14">
         <div className="relative mx-auto max-w-[min(100%,1120px)] overflow-visible bg-background">
-          <img src={IMG_MAIN} alt="" className="relative z-0 block h-auto w-full" loading="lazy" draggable={false} />
+          <div className="relative">
+            <img src={IMG_MAIN} alt="" className="relative z-0 block h-auto w-full" loading="lazy" draggable={false} />
+            <NailspaDiagramEdgeVignette />
+          </div>
           <MainImageCallouts
             className={cn(
               "absolute inset-0 z-10 overflow-visible",
@@ -1151,7 +1186,7 @@ export function NailspaPdpStory() {
       <div className="pointer-events-none h-1 w-full shrink-0 bg-background md:hidden" aria-hidden />
 
       {/* Bottom — closed bag photo, full-bleed left (hand at page edge) */}
-      <div className="w-full pb-14 pt-0 sm:pb-16 sm:pt-6 md:pt-10">
+      <div className="relative w-full pb-14 pt-0 sm:pb-16 sm:pt-6 md:pt-10">
         <BottomProductImage className="max-md:-mt-3" />
       </div>
       {editorMode ? (

@@ -18,6 +18,7 @@ import {
   getNailspa18SwatchBackgroundStyle,
   isNailspa18Product,
   NAILSPA_18_SWATCHES,
+  NAILSPA_PRODUCT_IMAGE_CLASS,
 } from "@/components/Nailspa18ColorSelector";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPlayMat";
@@ -230,7 +231,11 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
         to={`/product/${node.handle}`}
           className={cn(
             "group relative block aspect-square w-full shrink-0 overflow-hidden",
-            isCosmo20Interactive || isCosmo22Interactive || isNailspa18Interactive ? "bg-white" : "bg-muted",
+            isNailspa18Interactive
+              ? "bg-background"
+              : isCosmo20Interactive || isCosmo22Interactive
+                ? "bg-white"
+                : "bg-muted",
           )}
       >
         {displayImage ? (
@@ -239,9 +244,11 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
             alt={displayImage.altText || node.title}
             className={cn(
               "h-full w-full transition-transform duration-500 group-hover:scale-[1.02]",
-              isCosmo20Interactive || isCosmo22Interactive || isNailspa18Interactive
-                ? "object-contain object-center p-3 sm:p-4"
-                : "object-cover object-center",
+              isNailspa18Interactive
+                ? cn(NAILSPA_PRODUCT_IMAGE_CLASS, "h-full w-full p-3 sm:p-4")
+                : isCosmo20Interactive || isCosmo22Interactive
+                  ? "object-contain object-center p-3 sm:p-4"
+                  : "object-cover object-center",
             )}
             loading="lazy"
           />

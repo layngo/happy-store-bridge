@@ -15,13 +15,16 @@ export interface Nailspa18SwatchDef {
   galleryImageUrls?: string[];
 }
 
-/** Curated heroes + swatches for Lay-n-Go NAILSPA (18″). Source: Amazon listing imagery. */
+/** Transparent PNG heroes on `bg-background` — no white product mat. */
+const NAILSPA_18_HERO_BASE = "/products/lay-n-go-nailspa-18/heroes";
+
+/** Curated heroes + swatches for Lay-n-Go NAILSPA (18″). */
 export const NAILSPA_18_SWATCHES: Nailspa18SwatchDef[] = [
   {
     shopifyColor: "Violet Femme",
     selectedLabel: "Violet Femme",
     tooltip: "Violet Femme",
-    bagImageUrl: "https://m.media-amazon.com/images/I/81ozPQRqXIL._AC_SX679_.jpg",
+    bagImageUrl: `${NAILSPA_18_HERO_BASE}/violet-femme.png`,
     swatchImageUrl: "/swatches/nailspa-18-violet-femme.png",
   },
   {
@@ -29,14 +32,14 @@ export const NAILSPA_18_SWATCHES: Nailspa18SwatchDef[] = [
     shopifyColor: "Dorothys Slipper",
     selectedLabel: "Dorothy's Slipper (Red)",
     tooltip: "Dorothy's Slipper (Red)",
-    bagImageUrl: "https://m.media-amazon.com/images/I/81v4P34K++L._AC_SX679_.jpg",
+    bagImageUrl: `${NAILSPA_18_HERO_BASE}/dorothys-slipper.png`,
     swatchHex: "#DC2626",
   },
   {
     shopifyColor: "Dot Calm",
     selectedLabel: "Dot Calm",
     tooltip: "Dot Calm",
-    bagImageUrl: "https://m.media-amazon.com/images/I/81HrzKwdXAL._AC_SX679_.jpg",
+    bagImageUrl: `${NAILSPA_18_HERO_BASE}/dot-calm.png`,
     swatchImageUrl: "/swatches/nailspa-18-dot-calm.png",
   },
   {
@@ -44,7 +47,7 @@ export const NAILSPA_18_SWATCHES: Nailspa18SwatchDef[] = [
     shopifyColor: "What a Doll",
     selectedLabel: "What A Doll (Pink)",
     tooltip: "What A Doll (Pink)",
-    bagImageUrl: "https://m.media-amazon.com/images/I/81XoiKB+gYL._AC_SX679_.jpg",
+    bagImageUrl: `${NAILSPA_18_HERO_BASE}/what-a-doll.png`,
     swatchHex: "#E6007E",
   },
   {
@@ -52,11 +55,14 @@ export const NAILSPA_18_SWATCHES: Nailspa18SwatchDef[] = [
     shopifyColor: "Pretty in Paisley",
     selectedLabel: "Pretty in Paisley",
     tooltip: "Pretty in Paisley",
-    bagImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/lay-n-go-nailspa-18nailspa-18lay-n-golayngo-new-28937728.jpg?v=1626120447",
+    bagImageUrl: `${NAILSPA_18_HERO_BASE}/pretty-in-paisley.png`,
     swatchImageUrl: "/swatches/nailspa-18-pretty-in-paisley.png",
   },
 ];
+
+/** PDP / card product shot — soft shadow only, no white mat. */
+export const NAILSPA_PRODUCT_IMAGE_CLASS =
+  "max-h-full max-w-full object-contain object-center drop-shadow-[0_14px_32px_rgba(0,0,0,0.14)]";
 
 /** Normalize legacy / shorthand option labels to Shopify’s canonical Color value. */
 export const NAILSPA_18_SHOPIFY_ALIASES: Record<string, string> = {

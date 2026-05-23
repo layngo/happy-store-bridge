@@ -25,9 +25,9 @@ export const DEFAULT_EVERYTHING_PTS: EverythingPts = (() => {
 })();
 
 export const DEFAULT_PACKUP_PTS: PackupPts = {
-  m: { x: 1.8272569444444446, y: 11.412992931547619 },
-  q: { x: 30.409071180555557, y: 0 },
-  end: { x: 47.17339409722222, y: 4.2596726190476195 },
+  m: { x: 40, y: 11.2 },
+  q: { x: 45, y: 0.5 },
+  end: { x: 58, y: 4.3 },
 };
 
 export function clamp(n: number, lo: number, hi: number) {

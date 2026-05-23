@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
-import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronLeft, ChevronRight, Home } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronRight, Home } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
@@ -34,6 +34,7 @@ import {
   getNailspa18InitialSelection,
   getNailspa18SwatchBackgroundStyle,
   isNailspa18Product,
+  NAILSPA_PRODUCT_IMAGE_CLASS,
 } from "@/components/Nailspa18ColorSelector";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 import { LayNGoLargePdpHeroVideo } from "@/components/LayNGoLargePdpHeroVideo";
@@ -42,6 +43,7 @@ import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
 import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
+import { ProductLifestyleGallery } from "@/components/ProductLifestyleGallery";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
 import { LayNGoTravelDogBedPdpStrip } from "@/components/LayNGoTravelDogBedPdpStrip";
 import { ProductAmazonReviews } from "@/components/ProductAmazonReviews";
@@ -804,10 +806,7 @@ function getOrderedImagesForProduct(product: ShopifyProduct["node"]) {
     imgs = imgs.filter((img) => !isLayNGoTraveler20InfographicImageUrl(img.node.url));
   }
 
-  if (!isCosmoMini16Product(product.handle, product.title) || imgs.length < 4) return imgs;
-  const next = [...imgs];
-  [next[1], next[3]] = [next[3], next[1]];
-  return next;
+  return imgs;
 }
 
 const ProductDetail = () => {
@@ -832,14 +831,6 @@ const ProductDetail = () => {
   const [cosmo20GalleryIndex, setCosmo20GalleryIndex] = useState(0);
   const [cosmo22GalleryIndex, setCosmo22GalleryIndex] = useState(0);
   const [nailspa18GalleryIndex, setNailspa18GalleryIndex] = useState(0);
-  const [layNGoLargeSlideIndex, setLayNGoLargeSlideIndex] = useState(0);
-  const [layNGoLifestyle44SlideIndex, setLayNGoLifestyle44SlideIndex] = useState(0);
-  const [layNGoLite18SlideIndex, setLayNGoLite18SlideIndex] = useState(0);
-  const [layNGoTraveler20SlideIndex, setLayNGoTraveler20SlideIndex] = useState(0);
-  const [layNGoTravelDogBed44SlideIndex, setLayNGoTravelDogBed44SlideIndex] = useState(0);
-  const [layNGoDefenderMini16SlideIndex, setLayNGoDefenderMini16SlideIndex] = useState(0);
-  const [layNGoDefenderTactical20SlideIndex, setLayNGoDefenderTactical20SlideIndex] = useState(0);
-  const [layNGoNailspa18SlideIndex, setLayNGoNailspa18SlideIndex] = useState(0);
   const [showStickyAddToCart, setShowStickyAddToCart] = useState(false);
   const [stickyConfirmOpen, setStickyConfirmOpen] = useState(false);
   const primaryAddToCartRef = useRef<HTMLDivElement | null>(null);
@@ -954,6 +945,10 @@ const ProductDetail = () => {
     if (!variant) return null;
     return pdpColorHeroPreviewUrl(product, variant, isCosmoMini16);
   }, [product, selectedVariantIdx, isCosmoMini16]);
+
+  /** Cosmo Mini: variant heroes only (Black / CrossMarks) — no Shopify PT/lifestyle/features strip. */
+  const cosmoMiniHeroUrl = isCosmoMini16 ? stickyConfirmPreviewUrl : null;
+
   const orderedImages = useMemo(() => {
     if (!product) return [];
     return getOrderedImagesForProduct(product);
@@ -1119,38 +1114,6 @@ const ProductDetail = () => {
   }, [colorOptionName, product]);
 
   useEffect(() => {
-    setLayNGoLargeSlideIndex(0);
-  }, [isLayNGoLarge60, product?.id]);
-
-  useEffect(() => {
-    setLayNGoLifestyle44SlideIndex(0);
-  }, [isLayNGoLifestyle44, product?.id]);
-
-  useEffect(() => {
-    setLayNGoLite18SlideIndex(0);
-  }, [isLayNGoLite18, product?.id]);
-
-  useEffect(() => {
-    setLayNGoTraveler20SlideIndex(0);
-  }, [isLayNGoTraveler20, product?.id]);
-
-  useEffect(() => {
-    setLayNGoTravelDogBed44SlideIndex(0);
-  }, [isLayNGoTravelDogBed44, product?.id]);
-
-  useEffect(() => {
-    setLayNGoDefenderMini16SlideIndex(0);
-  }, [isLayNGoDefenderMini16, product?.id]);
-
-  useEffect(() => {
-    setLayNGoDefenderTactical20SlideIndex(0);
-  }, [isLayNGoDefenderTactical20, product?.id]);
-
-  useEffect(() => {
-    setLayNGoNailspa18SlideIndex(0);
-  }, [isLayNGoNailspa18, product?.id]);
-
-  useEffect(() => {
     if (!product) return;
     const h = product.handle.toLowerCase();
     if (
@@ -1239,65 +1202,32 @@ const ProductDetail = () => {
   }
 
   const selectedVariant = product.variants.edges[selectedVariantIdx]?.node;
-  const layNGoHeroGallery = isLayNGoLarge60
-    ? {
-        slides: [...LAY_N_GO_LARGE_60_GALLERY_SLIDES],
-        slideIndex: layNGoLargeSlideIndex,
-        setSlideIndex: setLayNGoLargeSlideIndex,
-        galleryAriaLabel: "Lay-n-Go Large lifestyle photos",
-      }
+  const layNGoLifestyleGallery = isLayNGoLarge60
+    ? { slides: LAY_N_GO_LARGE_60_GALLERY_SLIDES, ariaLabel: "Lay-n-Go Large lifestyle photos" }
     : isLayNGoLifestyle44
-      ? {
-          slides: [...LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES],
-          slideIndex: layNGoLifestyle44SlideIndex,
-          setSlideIndex: setLayNGoLifestyle44SlideIndex,
-          galleryAriaLabel: "Lay-n-Go Lifestyle photos",
-        }
+      ? { slides: LAY_N_GO_LIFESTYLE_44_GALLERY_SLIDES, ariaLabel: "Lay-n-Go Lifestyle photos" }
       : isLayNGoLite18
-        ? {
-            slides: [...LAY_N_GO_LITE_18_GALLERY_SLIDES],
-            slideIndex: layNGoLite18SlideIndex,
-            setSlideIndex: setLayNGoLite18SlideIndex,
-            galleryAriaLabel: "Lay-n-Go Lite lifestyle photos",
-          }
+        ? { slides: LAY_N_GO_LITE_18_GALLERY_SLIDES, ariaLabel: "Lay-n-Go Lite lifestyle photos" }
         : isLayNGoTraveler20
-          ? {
-              slides: [...LAY_N_GO_TRAVELER_20_GALLERY_SLIDES],
-              slideIndex: layNGoTraveler20SlideIndex,
-              setSlideIndex: setLayNGoTraveler20SlideIndex,
-              galleryAriaLabel: "Lay-n-Go Traveler product photos",
-            }
+          ? { slides: LAY_N_GO_TRAVELER_20_GALLERY_SLIDES, ariaLabel: "Lay-n-Go Traveler product photos" }
           : isLayNGoTravelDogBed44
             ? {
-                slides: [...LAY_N_GO_TRAVEL_DOG_BED_44_GALLERY_SLIDES],
-                slideIndex: layNGoTravelDogBed44SlideIndex,
-                setSlideIndex: setLayNGoTravelDogBed44SlideIndex,
-                galleryAriaLabel: "Lay-n-Go Travel Dog Bed lifestyle photos",
+                slides: LAY_N_GO_TRAVEL_DOG_BED_44_GALLERY_SLIDES,
+                ariaLabel: "Lay-n-Go Travel Dog Bed lifestyle photos",
               }
             : isLayNGoDefenderMini16
               ? {
-                  slides: [...LAY_N_GO_DEFENDER_MINI_16_GALLERY_SLIDES],
-                  slideIndex: layNGoDefenderMini16SlideIndex,
-                  setSlideIndex: setLayNGoDefenderMini16SlideIndex,
-                  galleryAriaLabel: "Lay-n-Go Defender Mini lifestyle photos",
+                  slides: LAY_N_GO_DEFENDER_MINI_16_GALLERY_SLIDES,
+                  ariaLabel: "Lay-n-Go Defender Mini lifestyle photos",
                 }
               : isLayNGoDefenderTactical20
                 ? {
-                    slides: [...LAY_N_GO_DEFENDER_TACTICAL_20_GALLERY_SLIDES],
-                    slideIndex: layNGoDefenderTactical20SlideIndex,
-                    setSlideIndex: setLayNGoDefenderTactical20SlideIndex,
-                    galleryAriaLabel: "Lay-n-Go Defender Tactical lifestyle photos",
+                    slides: LAY_N_GO_DEFENDER_TACTICAL_20_GALLERY_SLIDES,
+                    ariaLabel: "Lay-n-Go Defender Tactical lifestyle photos",
                   }
                 : isLayNGoNailspa18
-                  ? {
-                      slides: [...LAY_N_GO_NAILSPA_18_GALLERY_SLIDES],
-                      slideIndex: layNGoNailspa18SlideIndex,
-                      setSlideIndex: setLayNGoNailspa18SlideIndex,
-                      galleryAriaLabel: "Lay-n-Go NAILSPA lifestyle photos",
-                    }
+                  ? { slides: LAY_N_GO_NAILSPA_18_GALLERY_SLIDES, ariaLabel: "Lay-n-Go NAILSPA lifestyle photos" }
                   : null;
-  const layNGoGalleryArrowBtnClassName =
-    "h-10 w-10 shrink-0 self-center rounded-full border-0 bg-black text-white hover:bg-neutral-900 hover:text-white focus-visible:ring-white/40 sm:h-11 sm:w-11";
   const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
   const priceDisplay = parseFloat(
     selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount,
@@ -1320,19 +1250,18 @@ const ProductDetail = () => {
     setSelectedVariantIdx(variantIdx);
     const variant = product.variants.edges[variantIdx]?.node;
     const variantImageUrl = variant?.image?.url;
+    if (isCosmoMini16) return;
     if (variantImageUrl) {
       const imageIdx = orderedImages.findIndex((img) => img.node.url === variantImageUrl);
       if (imageIdx >= 0) setSelectedImage(imageIdx);
-    } else if (variant && isCosmoMini16 && !isCosmoBlackVariant(variant)) {
-      setSelectedImage(1);
     }
   };
 
-  const mainHeroImage: ReactNode = isCosmoMini16 && selectedVariant && !isCosmoBlackVariant(selectedVariant) ? (
+  const mainHeroImage: ReactNode = cosmoMiniHeroUrl ? (
     <img
-      src={COSMO_MINI_CROSSMARKS_HERO}
-      alt={`${product.title} (CrossMarks)`}
-      className="h-full w-full object-contain p-6"
+      src={cosmoMiniHeroUrl}
+      alt={product.title}
+      className="h-full w-full max-h-full object-contain p-6"
     />
   ) : isCosmo22Product(product.handle) && cosmo22HeroUrls.length > 0 ? (
     <img
@@ -1350,7 +1279,7 @@ const ProductDetail = () => {
     <img
       src={nailspa18HeroUrls[Math.min(nailspa18GalleryIndex, nailspa18HeroUrls.length - 1)]}
       alt={product.title}
-      className="h-full w-full max-h-full object-contain"
+      className={cn("h-full w-full", NAILSPA_PRODUCT_IMAGE_CLASS)}
     />
   ) : isLayNGoPlayMatProduct(product.handle) && orderedImages[selectedImage]?.node ? (
     <img
@@ -1416,16 +1345,17 @@ const ProductDetail = () => {
               type="button"
               onClick={() => setNailspa18GalleryIndex(i)}
               className={cn(
-                "flex h-16 w-16 shrink-0 items-center justify-center bg-muted/15 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                i === nailspa18GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
+                "flex h-16 w-16 shrink-0 items-center justify-center bg-background transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                i === nailspa18GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-0",
               )}
             >
-              <img src={url} alt="" className="max-h-full max-w-full object-contain" />
+              <img src={url} alt="" className={NAILSPA_PRODUCT_IMAGE_CLASS} />
             </button>
           ))}
         </div>
       ) : null}
-      {!isCosmo22Product(product.handle) &&
+      {!isCosmoMini16 &&
+      !isCosmo22Product(product.handle) &&
       !isCosmo20Product(product.handle) &&
       !isNailspa18Product(product.handle) &&
       !(
@@ -1899,11 +1829,11 @@ const ProductDetail = () => {
             <section
               className="mt-14 sm:mt-16"
               aria-label={
-                layNGoHeroGallery
+                layNGoLifestyleGallery
                   ? isLayNGoLarge60
                     ? "Lay-n-Go Large product video"
                     : isNailspa18Product(product.handle)
-                      ? "NAILSPA product video"
+                      ? "NAILSPA product video and lifestyle gallery"
                       : "Product image showcase"
                   : isNailspa18Product(product.handle)
                     ? "NAILSPA product video"
@@ -1913,110 +1843,19 @@ const ProductDetail = () => {
               }
             >
               <div className="w-full">
-                {layNGoHeroGallery ? (
+                {layNGoLifestyleGallery ? (
                   <div className="mx-auto w-full max-w-full md:w-[80%]">
-                    <div
-                      className={cn(
-                        "flex flex-col gap-3 rounded-2xl p-2 shadow-sm sm:gap-3 sm:p-3 md:flex-row md:items-stretch",
-                        isLayNGoLifestyle44 || isNailspaPdp ? "bg-background" : "bg-white",
-                      )}
-                      aria-roledescription="carousel"
-                      aria-label={layNGoHeroGallery.galleryAriaLabel}
-                    >
-                      <span className="sr-only" aria-live="polite">
-                        Photo {layNGoHeroGallery.slideIndex + 1} of {layNGoHeroGallery.slides.length}
-                      </span>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className={cn(layNGoGalleryArrowBtnClassName, "hidden md:inline-flex")}
-                        onClick={() =>
-                          layNGoHeroGallery.setSlideIndex(
-                            (prev) =>
-                              (prev - 1 + layNGoHeroGallery.slides.length) % layNGoHeroGallery.slides.length,
-                          )
-                        }
-                        aria-label="Show previous photo"
-                      >
-                        <ChevronLeft className="h-5 w-5 shrink-0 text-white" aria-hidden />
-                      </Button>
-                      <div
-                        className={cn(
-                          "relative min-h-0 w-full min-w-0 flex-1 overflow-hidden rounded-xl pt-[56.34%]",
-                          isLayNGoLifestyle44 || isNailspaPdp ? "bg-background" : "bg-white",
-                        )}
-                      >
-                        <div className="absolute inset-0 overflow-hidden">
-                          <div
-                            className="flex h-full transition-transform duration-700 ease-in-out"
-                            style={{
-                              width: `${layNGoHeroGallery.slides.length * 100}%`,
-                              transform: `translateX(-${(layNGoHeroGallery.slideIndex * 100) / layNGoHeroGallery.slides.length}%)`,
-                            }}
-                          >
-                            {layNGoHeroGallery.slides.map((slide, slideIdx) => (
-                              <img
-                                key={slide.src}
-                                src={slide.src}
-                                alt={slide.alt}
-                                className="h-full shrink-0 object-contain"
-                                style={{ width: `${100 / layNGoHeroGallery.slides.length}%` }}
-                                loading="eager"
-                                decoding="async"
-                                fetchPriority={slideIdx === 0 ? "high" : "low"}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon"
-                        className={cn(layNGoGalleryArrowBtnClassName, "hidden md:inline-flex")}
-                        onClick={() =>
-                          layNGoHeroGallery.setSlideIndex((prev) => (prev + 1) % layNGoHeroGallery.slides.length)
-                        }
-                        aria-label="Show next photo"
-                      >
-                        <ChevronRight className="h-5 w-5 shrink-0 text-white" aria-hidden />
-                      </Button>
-                      <div className="flex justify-center gap-6 md:hidden">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          className={layNGoGalleryArrowBtnClassName}
-                          onClick={() =>
-                            layNGoHeroGallery.setSlideIndex(
-                              (prev) =>
-                                (prev - 1 + layNGoHeroGallery.slides.length) % layNGoHeroGallery.slides.length,
-                            )
-                          }
-                          aria-label="Show previous photo"
-                        >
-                          <ChevronLeft className="h-5 w-5 shrink-0 text-white" aria-hidden />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="icon"
-                          className={layNGoGalleryArrowBtnClassName}
-                          onClick={() =>
-                            layNGoHeroGallery.setSlideIndex((prev) => (prev + 1) % layNGoHeroGallery.slides.length)
-                          }
-                          aria-label="Show next photo"
-                        >
-                          <ChevronRight className="h-5 w-5 shrink-0 text-white" aria-hidden />
-                        </Button>
-                      </div>
-                    </div>
                     {isNailspaPdp ? (
-                      <div className="mt-8 w-full sm:mt-10">
+                      <div className="mb-8 w-full sm:mb-10">
                         <NailspaPdpHeroVideo />
                       </div>
                     ) : null}
+                    <ProductLifestyleGallery
+                      key={product.id}
+                      slides={layNGoLifestyleGallery.slides}
+                      ariaLabel={layNGoLifestyleGallery.ariaLabel}
+                      surfaceClassName={isLayNGoLifestyle44 || isNailspaPdp ? "bg-background" : "bg-neutral-50"}
+                    />
                     {isLayNGoLarge60 ? (
                       <div className="mt-8 w-full sm:mt-10">
                         <LayNGoLargePdpHeroVideo />
