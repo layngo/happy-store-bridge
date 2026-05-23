@@ -62,7 +62,11 @@ import {
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
-import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPlayMat";
+import {
+  isLayNGoPlayMatProduct,
+  LAY_NGO_PDP_PRODUCT_IMAGE_CLASS,
+  layNGoPlayMatSwatchStyle,
+} from "@/lib/layNGoPlayMat";
 import { MILITARY_FIRST_RESPONDER_PATH } from "@/pages/MilitaryFirstResponder";
 
 const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags-v2";
@@ -1057,6 +1061,8 @@ const ProductDetail = () => {
   const showLifestyle44Faq = isLayNGoLifestyle44;
   const isLayNGoLite18 = layNGoHandle === "lay-n-go-lite-18";
   const showLite18Faq = isLayNGoLite18;
+  /** Nailspa, Lifestyle, and Lite PDPs use site `bg-background` (not Cosmo white panels). */
+  const pdpUsesSiteBackground = isNailspaPdp || isLayNGoLifestyle44 || isLayNGoLite18;
   const hasLayNGoLargeStoryLayout =
     layNGoHandle === "lay-n-go-large-60" ||
     layNGoHandle === "lay-n-go-lifestyle-44" ||
@@ -1287,6 +1293,7 @@ const ProductDetail = () => {
       alt={orderedImages[selectedImage].node.altText || product.title}
       className={cn(
         "h-full w-full max-h-full object-contain",
+        isLayNGoLite18 && LAY_NGO_PDP_PRODUCT_IMAGE_CLASS,
         isLayNGoLarge60 &&
           "max-md:h-auto max-md:max-h-[min(62vmin,410px)] max-md:w-full max-md:min-w-0 max-md:max-w-full max-md:object-contain",
       )}
@@ -1606,7 +1613,7 @@ const ProductDetail = () => {
     <div
       className={cn(
         "min-h-dvh flex flex-col",
-        isNailspaPdp || isLayNGoLifestyle44
+        pdpUsesSiteBackground
           ? "bg-background"
           : isCosmoPdp
             ? "bg-white"
@@ -1669,7 +1676,7 @@ const ProductDetail = () => {
             <section
               className={cn(
                 "-mx-4 overflow-x-hidden px-4 py-8 sm:-mx-6 sm:px-6 lg:py-10",
-                isNailspaPdp || isLayNGoLifestyle44 ? "bg-background" : "bg-white",
+                pdpUsesSiteBackground ? "bg-background" : "bg-white",
               )}
             >
               <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:items-start lg:gap-10 xl:gap-12">
@@ -1677,7 +1684,7 @@ const ProductDetail = () => {
                   <div
                     className={cn(
                       "relative flex aspect-square w-full min-w-0 items-center justify-center overflow-hidden lg:mx-auto lg:max-h-[min(92vh,920px)]",
-                      isNailspaPdp || isLayNGoLifestyle44 ? "bg-background" : "bg-white",
+                      pdpUsesSiteBackground ? "bg-background" : "bg-white",
                       isLayNGoLarge60 &&
                         "max-md:aspect-auto max-md:max-h-[min(62vmin,430px)] max-md:min-h-[200px] max-md:py-2",
                     )}
@@ -1854,7 +1861,7 @@ const ProductDetail = () => {
                       key={product.id}
                       slides={layNGoLifestyleGallery.slides}
                       ariaLabel={layNGoLifestyleGallery.ariaLabel}
-                      surfaceClassName={isLayNGoLifestyle44 || isNailspaPdp ? "bg-background" : "bg-neutral-50"}
+                      surfaceClassName={pdpUsesSiteBackground ? "bg-background" : "bg-neutral-50"}
                     />
                     {isLayNGoLarge60 ? (
                       <div className="mt-8 w-full sm:mt-10">
@@ -2019,7 +2026,7 @@ const ProductDetail = () => {
                 <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                   Lite FAQ
                 </h2>
-                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
+                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-background px-4 sm:px-6">
                   {LITE_18_FAQ_ITEMS.map((item, idx) => (
                     <AccordionItem key={item.question} value={`lite-18-faq-${idx}`}>
                       <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">

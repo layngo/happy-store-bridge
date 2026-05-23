@@ -985,7 +985,7 @@ function BottomProductImage({ className }: { className?: string }) {
             />
           </div>
 
-          <div className="relative z-20 -ml-4 w-[min(46vw,380px)] shrink-0 sm:-ml-6 sm:w-[min(44vw,440px)] md:-ml-8 md:w-[min(40vw,500px)] lg:-ml-10 lg:w-[min(38vw,540px)]">
+          <div className="relative z-20 -ml-2 w-[min(55vw,456px)] shrink-0 translate-x-[4vw] sm:-ml-3 sm:w-[min(53vw,528px)] sm:translate-x-[5vw] md:-ml-4 md:w-[min(48vw,600px)] md:translate-x-[7vw] lg:w-[min(46vw,648px)] lg:translate-x-[9vw]">
             <img
               src={IMG_BOTTOM_HOOK}
               alt="Lay-n-Go NAILSPA hanging on a wall hook"

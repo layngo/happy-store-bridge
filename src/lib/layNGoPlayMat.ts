@@ -1,5 +1,9 @@
 import type { CSSProperties } from "react";
 
+/** PDP product shot on `bg-background` — transparent PNG + soft shadow, no white mat. */
+export const LAY_NGO_PDP_PRODUCT_IMAGE_CLASS =
+  "max-h-full max-w-full object-contain object-center drop-shadow-[0_14px_32px_rgba(0,0,0,0.14)]";
+
 /** Lay-n-Go play mat trim / nylon — tuned to read like the real Blue & Green accents. */
 const PLAY_MAT_BLUE = "#0b6ec9";
 const PLAY_MAT_GREEN = "#2a8f3a";

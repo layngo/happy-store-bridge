@@ -17,7 +17,7 @@ const CALLOUT_LIP = "/products/lay-n-go-large-pdp/callout-containment-lip.png";
 const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containment-lip.png";
 const CALLOUT_LIP_LITE = "/products/lay-n-go-lite-18/callout-containment-lip.png";
 const CALLOUT_CORD_LITE = "/products/lay-n-go-lite-18/callout-cord-pocket-handle.png";
-const CALLOUT_HANDLE_LITE = "/products/lay-n-go-lite-18/callout-handle.png";
+const CALLOUT_HANDLE_LITE = "/products/lay-n-go-lite-18/litestrap.png";
 /** Circular callout thumbs (white bg) — Defender Tactical 20″ diagram. */
 const DEFENDER_TACTICAL_CALLOUT_MESH =
   "/products/lay-n-go-tactical-bag-20/callout-mesh.png";
@@ -156,7 +156,7 @@ type CalloutKey = "cord" | "lip" | "mesh" | "handle";
 
 /** Lite 18″ detail assets have extra padding — zoom so handle, cord/pocket, and lip fill the circle. */
 const LITE_18_THUMB_CROP: Partial<Record<CalloutKey, string>> = {
-  handle: "origin-center scale-[1.52] object-cover object-center",
+  handle: "h-full w-full object-cover object-center",
   cord: "origin-center scale-[1.4] object-cover object-[50%_58%]",
   lip: "origin-center scale-[1.42] object-cover object-[34%_center]",
 };
