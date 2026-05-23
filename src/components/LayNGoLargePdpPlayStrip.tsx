@@ -1,4 +1,3 @@
-import { LAY_NGO_LITE_PRODUCT_IMAGE_CLASS } from "@/lib/layNGoPlayMat";
 import { cn } from "@/lib/utils";
 import {
   CALLOUT_THUMB_INNER_CLIP,
@@ -109,43 +108,31 @@ function DefenderFlankStrip({
   );
 
   if (variant === "lite-18") {
+    const liteFlankImg = cn(
+      "block h-auto w-auto max-w-[min(48vw,26rem)] object-contain sm:max-w-[min(44vw,22rem)] md:max-w-[min(40vw,24rem)]",
+      flankMaxH,
+    );
+
     return (
       <div
-        className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 bg-background sm:mt-10"
+        className="relative left-1/2 mt-6 w-screen max-w-[100vw] -translate-x-1/2 bg-background sm:mt-8"
         aria-label={ariaLabel}
-        style={{
-          containerType: "inline-size",
-          ["--defender-disk-band-min" as string]: `min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2)`,
-        }}
       >
-        <div className="grid w-full grid-cols-2 gap-0 bg-background">
-          <div
-            className={cn(
-              "flex min-h-[var(--defender-disk-band-min)] w-full items-end justify-start overflow-visible py-3 sm:py-4",
-              flankMaxH,
-            )}
-          >
-            <img
-              src={leftSrc}
-              alt={leftAlt}
-              className={cn(
-                "block h-auto w-full max-w-none object-contain object-left",
-                LAY_NGO_LITE_PRODUCT_IMAGE_CLASS,
-                flankMaxH,
-              )}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <div className={cn(flankContainCell, "bg-background")}>
-            <img
-              src={rightSrc}
-              alt={rightAlt}
-              className={cn(flankContainImgRight, LAY_NGO_LITE_PRODUCT_IMAGE_CLASS)}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
+        <div className="mx-auto flex max-w-5xl items-end justify-center gap-0 px-3 sm:max-w-6xl sm:px-6">
+          <img
+            src={leftSrc}
+            alt={leftAlt}
+            className={cn(liteFlankImg, "object-left object-bottom -mr-3 sm:-mr-6 md:-mr-10")}
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            src={rightSrc}
+            alt={rightAlt}
+            className={cn(liteFlankImg, "object-right object-bottom -ml-3 sm:-ml-6 md:-ml-10")}
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </div>
     );

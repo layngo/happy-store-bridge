@@ -67,11 +67,19 @@ def sample_background(im: Image.Image) -> tuple[int, int, int]:
     )
 
 
-def remove_background_rgba(im: Image.Image) -> Image.Image:
+def remove_background_rgba(
+    im: Image.Image,
+    *,
+    bg_rgb: tuple[int, int, int] | None = None,
+    tol: int = TOL,
+    soft: int = SOFT,
+    near_white_lum: float = NEAR_WHITE_LUM,
+    near_white_chroma: int = NEAR_WHITE_CHROMA,
+) -> Image.Image:
     im = im.convert("RGBA")
     w, h = im.size
     px = im.load()
-    bg = sample_background(im)
+    bg = bg_rgb if bg_rgb is not None else sample_background(im)
 
     bg_mask = [[False] * w for _ in range(h)]
     seen = [[False] * w for _ in range(h)]
@@ -86,7 +94,7 @@ def remove_background_rgba(im: Image.Image) -> Image.Image:
             seen[y][x] = True
             q.append((x, y))
             return
-        if color_dist((r, g, b), bg) <= TOL:
+        if color_dist((r, g, b), bg) <= tol:
             seen[y][x] = True
             bg_mask[y][x] = True
             q.append((x, y))
@@ -109,7 +117,7 @@ def remove_background_rgba(im: Image.Image) -> Image.Image:
                 bg_mask[ny][nx] = True
                 q.append((nx, ny))
                 continue
-            if color_dist((r, g, b), bg) <= TOL:
+            if color_dist((r, g, b), bg) <= tol:
                 seen[ny][nx] = True
                 bg_mask[ny][nx] = True
                 q.append((nx, ny))
@@ -119,15 +127,58 @@ def remove_background_rgba(im: Image.Image) -> Image.Image:
             r, g, b, a = px[x, y]
             lum = (r + g + b) / 3
             chroma = max(r, g, b) - min(r, g, b)
-            if bg_mask[y][x] or (lum >= NEAR_WHITE_LUM and chroma <= NEAR_WHITE_CHROMA):
+            if bg_mask[y][x] or (lum >= near_white_lum and chroma <= near_white_chroma):
                 px[x, y] = (r, g, b, 0)
                 continue
             d = color_dist((r, g, b), bg)
-            if d <= TOL + SOFT:
-                t = max(0.0, min(1.0, (d - TOL) / max(SOFT, 1)))
+            if d <= tol + soft:
+                t = max(0.0, min(1.0, (d - tol) / max(soft, 1)))
                 px[x, y] = (r, g, b, int(t * 255))
 
     return im
+
+
+# Site `bg-background` ≈ hsl(0 0% 98%) → #fafafa
+SITE_BG_RGB = (250, 250, 250)
+
+FLANK_SOURCES = {
+    "story-flank-left.png": Path(
+        "/Users/tombro/.cursor/projects/Users-tombro-happy-store-bridge-1/assets/"
+        "litelite-22365047-940a-4d28-8120-7fb50d3f38b9.png"
+    ),
+    "story-flank-right.png": Path(
+        "/Users/tombro/.cursor/projects/Users-tombro-happy-store-bridge-1/assets/"
+        "lite33-17af9887-8790-4b65-8816-0c48997da099.png"
+    ),
+}
+
+
+def trim_alpha_bbox(im: Image.Image, pad: int = 8) -> Image.Image:
+    bbox = im.getbbox()
+    if not bbox:
+        return im
+    x0, y0, x1, y1 = bbox
+    x0 = max(0, x0 - pad)
+    y0 = max(0, y0 - pad)
+    x1 = min(im.width, x1 + pad)
+    y1 = min(im.height, y1 + pad)
+    return im.crop((x0, y0, x1, y1))
+
+
+def process_flank_file(src: Path, out: Path) -> None:
+    im = remove_background_rgba(
+        Image.open(src),
+        bg_rgb=SITE_BG_RGB,
+        tol=50,
+        soft=22,
+        near_white_lum=244,
+        near_white_chroma=24,
+    )
+    im = trim_alpha_bbox(im, pad=12)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    im.save(out, optimize=True)
+    tr = sum(1 for p in im.getdata() if p[3] < 20)
+    print(f"  {out.relative_to(ROOT.parent)} (flank) — {100 * tr / len(im.getdata()):.0f}% transparent")
 
 
 def build_litestrap_circle(src: Path, out: Path) -> None:
@@ -174,6 +225,15 @@ def main() -> None:
         build_litestrap_circle(LITESTRAP_SRC, LITESTRAP_OUT)
     else:
         print(f"  warn: litestrap source missing at {LITESTRAP_SRC}")
+
+    print("Rebuilding Lite play-strip flanks for site background…")
+    lite_dir = ROOT / "products/lay-n-go-lite-18"
+    for name, src in FLANK_SOURCES.items():
+        out = lite_dir / name
+        if src.is_file():
+            process_flank_file(src, out)
+        else:
+            print(f"  warn: flank source missing {src}")
 
     print("Done.")
 
