@@ -990,7 +990,7 @@ function BottomProductImage({ className }: { className?: string }) {
             loading="lazy"
           />
 
-          <p className="w-full max-w-md text-center font-heading text-xl font-bold uppercase leading-[1.15] tracking-tight text-foreground sm:text-2xl md:text-left md:text-[1.75rem]">
+          <p className="w-full max-w-lg text-center font-heading text-[clamp(1.75rem,5.5vw,3.5rem)] font-bold uppercase leading-[1.08] tracking-tight text-foreground md:text-left">
             Portable, anywhere.
           </p>
         </div>
