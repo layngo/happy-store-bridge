@@ -966,17 +966,20 @@ function MainImageCallouts({
 function BottomProductImage({ className }: { className?: string }) {
   return (
     <div
-      className={cn("relative w-full bg-background", className)}
+      className={cn(
+        "relative left-1/2 w-screen max-w-none -translate-x-1/2 bg-background",
+        className,
+      )}
       aria-label="Lay-n-Go NAILSPA portable and ready to go"
     >
       {/* isolate: headline blends only with images in this group (not the page background) */}
       <div className="isolate relative overflow-visible">
-        <div className="mx-auto flex w-full max-w-[min(100%,1280px)] flex-row items-end justify-center gap-0 overflow-visible">
-          <div className="relative z-10 w-[min(48vw,400px)] shrink-0 overflow-visible leading-none origin-bottom-left max-md:scale-[0.85] max-md:-translate-x-[3vw] sm:w-[min(46vw,460px)] md:w-[min(44vw,520px)] md:translate-x-0 md:scale-100 lg:w-[min(42vw,560px)]">
+        <div className="flex w-full flex-row items-end justify-start gap-0 overflow-visible">
+          <div className="relative z-10 shrink-0 overflow-visible leading-none md:w-[min(50vw,620px)] lg:w-[min(48vw,640px)]">
             <img
               src={IMG_BOTTOM}
               alt="Lay-n-Go NAILSPA cinched closed with carry handle"
-              className="block h-auto w-full max-w-none object-contain object-left-bottom"
+              className="block h-auto w-[min(52vw,440px)] max-w-none object-contain object-left-bottom max-md:origin-bottom-left max-md:scale-[0.85] sm:w-[min(50vw,500px)] md:w-[min(125%,50vw)] md:scale-100 lg:w-[min(118%,48vw)]"
               draggable={false}
               loading="lazy"
             />
