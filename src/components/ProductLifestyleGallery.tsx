@@ -23,6 +23,8 @@ type ProductLifestyleGalleryProps = {
   className?: string;
   /** Main stage + thumb strip background (e.g. `bg-background` on Nailspa) */
   surfaceClassName?: string;
+  /** Outer frame (default bordered card; Lite uses flat `bg-background`) */
+  frameClassName?: string;
 };
 
 export function ProductLifestyleGallery({
@@ -30,6 +32,7 @@ export function ProductLifestyleGallery({
   ariaLabel,
   className,
   surfaceClassName = "bg-neutral-50",
+  frameClassName,
 }: ProductLifestyleGalleryProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
   const [selected, setSelected] = useState(0);
@@ -97,6 +100,7 @@ export function ProductLifestyleGallery({
         className={cn(
           "relative mx-auto flex aspect-square w-full max-w-[min(100%,42rem)] flex-col overflow-hidden rounded-2xl border border-border shadow-inner",
           surfaceClassName,
+          frameClassName,
         )}
         aria-roledescription="carousel"
       >

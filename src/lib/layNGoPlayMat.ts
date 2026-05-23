@@ -1,16 +1,16 @@
 import type { CSSProperties } from "react";
 
-/** PDP product shot on `bg-background` — transparent PNG + soft shadow, no white mat. */
+/** PDP product shot on `bg-background` — transparent PNG, no drop shadow (avoids halo on #fafafa). */
 export const LAY_NGO_PDP_PRODUCT_IMAGE_CLASS =
-  "max-h-full max-w-full object-contain object-center drop-shadow-[0_14px_32px_rgba(0,0,0,0.14)]";
+  "max-h-full max-w-full object-contain object-center";
 
 /** Lite local PNGs on `bg-background` (diagram, flanks, callouts). */
 export const LAY_NGO_LITE_PRODUCT_IMAGE_CLASS =
-  "max-h-full max-w-full object-contain object-center drop-shadow-[0_14px_32px_rgba(0,0,0,0.12)]";
+  "max-h-full max-w-full object-contain object-center";
 
-/** Lite Shopify variant heroes — white JPEG/PNG mats blend into `bg-background`. */
+/** Lite Shopify variant heroes — white studio mats blend into `bg-background`. */
 export const LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS =
-  "max-h-full max-w-full object-contain object-center drop-shadow-[0_14px_32px_rgba(0,0,0,0.12)] mix-blend-multiply";
+  "max-h-full max-w-full object-contain object-center mix-blend-multiply";
 
 export function isLayNGoLite18Product(handle: string): boolean {
   return handle.toLowerCase() === "lay-n-go-lite-18";

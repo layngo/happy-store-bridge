@@ -1862,6 +1862,9 @@ const ProductDetail = () => {
                       slides={layNGoLifestyleGallery.slides}
                       ariaLabel={layNGoLifestyleGallery.ariaLabel}
                       surfaceClassName={pdpUsesSiteBackground ? "bg-background" : "bg-neutral-50"}
+                      frameClassName={
+                        isLayNGoLite18 ? "rounded-none border-0 shadow-none" : undefined
+                      }
                     />
                     {isLayNGoLarge60 ? (
                       <div className="mt-8 w-full sm:mt-10">

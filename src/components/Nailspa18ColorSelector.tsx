@@ -60,9 +60,9 @@ export const NAILSPA_18_SWATCHES: Nailspa18SwatchDef[] = [
   },
 ];
 
-/** PDP / card product shot — soft shadow only, no white mat. */
+/** PDP / card product shot — transparent PNG on `bg-background`, no shadow halo. */
 export const NAILSPA_PRODUCT_IMAGE_CLASS =
-  "max-h-full max-w-full object-contain object-center drop-shadow-[0_14px_32px_rgba(0,0,0,0.14)]";
+  "max-h-full max-w-full object-contain object-center";
 
 /** Normalize legacy / shorthand option labels to Shopify’s canonical Color value. */
 export const NAILSPA_18_SHOPIFY_ALIASES: Record<string, string> = {
