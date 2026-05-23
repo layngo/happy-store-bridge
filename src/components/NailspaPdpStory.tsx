@@ -971,22 +971,22 @@ function BottomProductImage({ className }: { className?: string }) {
     >
       {/* isolate: headline blends only with images in this group (not the page background) */}
       <div className="isolate relative overflow-visible">
-        <div className="relative flex flex-col overflow-visible md:flex-row md:items-center">
-          <div className="relative z-10 w-full shrink-0 overflow-hidden leading-none max-md:origin-bottom-left max-md:scale-[0.8] max-md:-translate-x-[6vw] md:w-[min(54vw,620px)] md:translate-x-0 md:scale-100 lg:w-[min(50vw,640px)]">
+        <div className="mx-auto flex w-full max-w-[min(100%,1280px)] flex-row items-end justify-center gap-0 overflow-visible">
+          <div className="relative z-10 w-[min(48vw,400px)] shrink-0 overflow-visible leading-none origin-bottom-left max-md:scale-[0.85] max-md:-translate-x-[3vw] sm:w-[min(46vw,460px)] md:w-[min(44vw,520px)] md:translate-x-0 md:scale-100 lg:w-[min(42vw,560px)]">
             <img
               src={IMG_BOTTOM}
               alt="Lay-n-Go NAILSPA cinched closed with carry handle"
-              className="block h-auto w-[min(140vw,780px)] max-w-none object-contain object-left-bottom sm:w-[min(135vw,740px)] md:w-[min(125%,54vw)] lg:w-[min(118%,50vw)]"
+              className="block h-auto w-full max-w-none object-contain object-left-bottom"
               draggable={false}
               loading="lazy"
             />
           </div>
 
-          <div className="relative z-20 flex min-w-0 flex-1 items-center justify-center overflow-visible px-2 py-6 sm:px-4 sm:py-8 md:-ml-[4vw] md:translate-x-[6vw] md:justify-end md:px-0 md:py-4 lg:translate-x-[8vw]">
+          <div className="relative z-20 -ml-4 w-[min(46vw,380px)] shrink-0 sm:-ml-6 sm:w-[min(44vw,440px)] md:-ml-8 md:w-[min(40vw,500px)] lg:-ml-10 lg:w-[min(38vw,540px)]">
             <img
               src={IMG_BOTTOM_HOOK}
               alt="Lay-n-Go NAILSPA hanging on a wall hook"
-              className="block h-auto w-[min(104vw,1440px)] max-w-none object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.1)] sm:w-[min(100vw,1645px)] md:w-[min(70vw,1990px)] lg:w-[min(76vw,2285px)] xl:w-[min(80vw,2450px)]"
+              className="block h-auto w-full max-w-none object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.1)]"
               draggable={false}
               loading="lazy"
             />
