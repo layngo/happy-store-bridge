@@ -1,65 +1,72 @@
 import { Link } from "react-router-dom";
 import type { ShopifyCollectionSummary } from "@/lib/shopify";
+import {
+  getHomeCategoryConfig,
+  HOME_CATEGORY_FONT_CLASS,
+} from "@/lib/homeCategoryCards";
 import { VimeoLoopFadeEmbed } from "@/components/VimeoLoopFadeEmbed";
+import { cn } from "@/lib/utils";
 
 interface CollectionCardProps {
   collection: ShopifyCollectionSummary;
   variant?: "default" | "home";
 }
 
-const NAILSPA_PRODUCT_PATH = "/product/lay-n-go-nailspa-18";
-const TRAVELER_PRODUCT_PATH = "/product/lay-n-go-traveler-20";
-const TRAVEL_DOG_BED_PRODUCT_PATH = "/product/lay-n-go-travel-dog-bed-44";
-
-const HOME_VIDEO_CARDS: Record<string, { videoId: string; hoverSrc: string; label: string; linkTo?: string }> = {
-  "cosmetic-bags": {
-    videoId: "1188306142",
-    hoverSrc: "https://www.layngo.com/cdn/shop/products/B00B04V3PQ.PT01_1200x1200.jpg?v=1670376558",
-    label: "Cosmetic Bags",
-  },
-  "nail-solutions": {
-    videoId: "1188306129",
-    hoverSrc: "https://www.layngo.com/cdn/shop/products/B082LQ788D.PT01_1200x1200.jpg?v=1626120523",
-    label: "Nail Solutions",
-    linkTo: NAILSPA_PRODUCT_PATH,
-  },
-  "military-first-responder": {
-    videoId: "1188297111",
-    hoverSrc: "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/B08SKHPY36.PT06.jpg?v=1626119977",
-    label: "Outdoor / Tactical",
-  },
-  "pet-solutions": {
-    videoId: "1188297775",
-    hoverSrc: "https://www.layngo.com/cdn/shop/products/B08MV2JM98.PT01_1200x1200.jpg?v=1626120624",
-    label: "Pet Solutions",
-    linkTo: TRAVEL_DOG_BED_PRODUCT_PATH,
-  },
-};
-
 export const CollectionCard = ({ collection, variant = "default" }: CollectionCardProps) => {
   const img = collection.image;
-  const homeVideo = variant === "home" ? HOME_VIDEO_CARDS[collection.handle] : undefined;
+  const homeConfig = variant === "home" ? getHomeCategoryConfig(collection.handle) : undefined;
 
-  if (homeVideo) {
+  if (homeConfig) {
+    const href = homeConfig.linkTo ?? `/collections/${collection.handle}`;
+    const labelClass = cn(
+      "home-cat-label",
+      HOME_CATEGORY_FONT_CLASS[homeConfig.font],
+      homeConfig.labelLines && "home-cat-label--stacked",
+    );
+    const hasVideo = Boolean(homeConfig.videoId);
+
     return (
-      <Link to={homeVideo.linkTo ?? `/collections/${collection.handle}`} className="group mx-auto block w-[94%]">
+      <Link to={href} className="group mx-auto block w-[94%]">
         <article className="relative aspect-square overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-          <div className="absolute left-1/2 top-1/2 h-full aspect-video -translate-x-1/2 -translate-y-1/2">
-            <VimeoLoopFadeEmbed
-              videoId={homeVideo.videoId}
-              title={`${homeVideo.label} category video`}
-              className="pointer-events-none absolute inset-0 h-full w-full"
+          {hasVideo ? (
+            <div className="absolute left-1/2 top-1/2 h-full aspect-video -translate-x-1/2 -translate-y-1/2">
+              <VimeoLoopFadeEmbed
+                videoId={homeConfig.videoId!}
+                title={`${homeConfig.label} category video`}
+                className="pointer-events-none absolute inset-0 h-full w-full"
+              />
+            </div>
+          ) : img ? (
+            <img
+              src={img.url}
+              alt={img.altText || homeConfig.label}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
             />
-          </div>
-          <img
-            src={homeVideo.hoverSrc}
-            alt={homeVideo.label}
-            className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-0 transition-[opacity,transform] duration-700 ease-out lg:group-hover:opacity-100 lg:group-hover:scale-105"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-black/25" />
+          ) : (
+            <div className="absolute inset-0 bg-muted" aria-hidden />
+          )}
+          {homeConfig.hoverSrc && hasVideo ? (
+            <img
+              src={homeConfig.hoverSrc}
+              alt=""
+              className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-0 transition-[opacity,transform] duration-700 ease-out lg:group-hover:opacity-100 lg:group-hover:scale-105"
+              loading="lazy"
+              aria-hidden
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-black/25" aria-hidden />
           <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
-            <h2 className="font-heading text-xl font-bold uppercase tracking-[0.08em] text-white">{homeVideo.label}</h2>
+            <h2 className={labelClass}>
+              {homeConfig.labelLines ? (
+                <>
+                  <span className="home-cat-label__line">{homeConfig.labelLines[0]}</span>
+                  <span className="home-cat-label__line">{homeConfig.labelLines[1]}</span>
+                </>
+              ) : (
+                homeConfig.label
+              )}
+            </h2>
           </div>
         </article>
       </Link>
@@ -68,11 +75,11 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
 
   const defaultHref =
     collection.handle === "nail-solutions"
-      ? NAILSPA_PRODUCT_PATH
+      ? "/product/lay-n-go-nailspa-18"
       : collection.handle === "technology"
-        ? TRAVELER_PRODUCT_PATH
+        ? "/product/lay-n-go-traveler-20"
         : collection.handle === "pet-solutions"
-          ? TRAVEL_DOG_BED_PRODUCT_PATH
+          ? "/product/lay-n-go-travel-dog-bed-44"
           : `/collections/${collection.handle}`;
 
   return (

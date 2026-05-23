@@ -442,6 +442,25 @@ function collectionSwatchStyleFromVariant(product: ShopifyProduct["node"], v: Va
   return collectionSwatchStyle(product, c);
 }
 
+function cosmo20CanonicalColor(colorValue: string): string {
+  return resolveCosmo20SwatchDef(colorValue)?.shopifyColor ?? colorValue;
+}
+
+function prioritizeCosmo20Variants(variants: VariantNode[], priority: string[]): VariantNode[] {
+  const rank = new Map(priority.map((c, i) => [c, i]));
+  return variants
+    .map((v, i) => ({ v, i }))
+    .sort((a, b) => {
+      const ca = getVariantColorValue(a.v);
+      const cb = getVariantColorValue(b.v);
+      const ra = ca ? (rank.get(cosmo20CanonicalColor(ca)) ?? 999) : 999;
+      const rb = cb ? (rank.get(cosmo20CanonicalColor(cb)) ?? 999) : 999;
+      if (ra !== rb) return ra - rb;
+      return a.i - b.i;
+    })
+    .map(({ v }) => v);
+}
+
 function orderCosmo20CardVariants(product: ShopifyProduct["node"]): VariantNode[] {
   const out: VariantNode[] = [];
   const used = new Set<string>();
@@ -517,6 +536,8 @@ function getColorValues(product: ShopifyProduct["node"]): string[] {
 export type CollectionGridSwatchPreviewOptions = {
   /** Default 8. Useful on dense layouts (e.g. Cosmo 20″ column). */
   maxInteractiveSwatches?: number;
+  /** Pin these Cosmo 20″ colors first (canonical names, e.g. Sky Blue). */
+  cosmo20PriorityColors?: string[];
 };
 
 /** Swatch row matching default collection `ProductCard`: up to 8 variant swatches (+N) or 4 color dots (+N). */
@@ -541,13 +562,16 @@ export function getCollectionGridSwatchPreview(
   const isNailspa18Interactive = isNailspa18Product(node.handle) && nailspa18CardVariants.length >= 2;
 
   if (isCosmoMiniInteractive || isCosmo20Interactive || isCosmo22Interactive || isNailspa18Interactive) {
-    const variants = isCosmoMiniInteractive
+    let variants = isCosmoMiniInteractive
       ? cosmoMiniVariants
       : isCosmo20Interactive
         ? cosmo20CardVariants
         : isCosmo22Interactive
           ? cosmo22CardVariants
           : nailspa18CardVariants;
+    if (isCosmo20Interactive && options?.cosmo20PriorityColors?.length) {
+      variants = prioritizeCosmo20Variants(variants, options.cosmo20PriorityColors);
+    }
     const interactiveLimit = options?.maxInteractiveSwatches ?? 8;
     const visible = variants.slice(0, interactiveLimit);
     const swatches = visible.map((v) => ({

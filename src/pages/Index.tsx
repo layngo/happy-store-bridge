@@ -91,6 +91,7 @@ const Index = () => {
               videoId={HOME_HERO_VIMEO_ID}
               title="Lay-n-Go brand film"
               iframeClassName="absolute inset-0 h-full w-full border-0 select-none"
+              showPauseControl={false}
             />
           </div>
           <div
@@ -206,13 +207,14 @@ const Index = () => {
 
       <section className="border-t border-border bg-background py-16">
         <div className="container max-w-xl px-4">
-          <h2 className="font-heading text-center text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+          <p className="brand-eyebrow text-center">Reviews</p>
+          <h2 className="brand-display mt-2 text-center text-[clamp(1.5rem,5vw,2.25rem)] text-foreground">
             Don&apos;t just take our word for it.
           </h2>
 
           <div className="relative mx-auto mt-10">
             <div
-              className="testimonial-conveyor-viewport relative overflow-hidden rounded-2xl border border-border bg-muted/40 shadow-sm"
+              className="testimonial-conveyor-viewport relative overflow-hidden border-2 border-foreground bg-background"
               style={{
                 height: "calc(5 * (5rem + 0.75rem) - 0.75rem)",
               }}
@@ -223,22 +225,22 @@ const Index = () => {
                 {[...testimonials, ...testimonials].map((t, idx) => (
                   <article
                     key={`${t.name}-${idx}`}
-                    className="flex h-20 shrink-0 items-center gap-3 rounded-xl border border-border/80 bg-card px-4 py-2.5 shadow-sm"
+                    className="brand-review-card flex h-20 shrink-0 items-center gap-3 px-4 py-2.5"
                   >
                     <div
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center border border-foreground/15 bg-foreground text-sm font-bold text-background"
                       aria-hidden
                     >
                       {t.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="line-clamp-2 text-sm leading-snug text-foreground">
+                      <p className="line-clamp-2 text-sm font-normal leading-snug text-foreground/85">
                         &ldquo;{t.quote}&rdquo;
                       </p>
                       <div className="mt-1 flex flex-wrap items-center gap-2">
-                        <span className="text-xs text-muted-foreground">{t.name}</span>
+                        <span className="brand-eyebrow text-foreground/60">{t.name}</span>
                         <span
-                          className="text-[11px] leading-none tracking-[0.06em] text-amber-700"
+                          className="brand-eyebrow text-foreground/45"
                           aria-label="5 out of 5 stars"
                         >
                           ★★★★★

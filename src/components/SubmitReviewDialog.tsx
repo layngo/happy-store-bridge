@@ -131,14 +131,14 @@ export function SubmitReviewDialog({ productHandle, onReviewSubmitted }: SubmitR
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button type="button" variant="outline" className="shrink-0 rounded-full px-5">
+        <button type="button" className="brand-btn-editorial shrink-0">
           Write a review
-        </Button>
+        </button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-md">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-none sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-heading">Write a review</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="brand-display text-xl text-foreground">Write a review</DialogTitle>
+          <DialogDescription className="brand-review-body text-muted-foreground">
             Verify your Shopify order, then share your experience.
           </DialogDescription>
         </DialogHeader>
@@ -227,7 +227,7 @@ export function SubmitReviewDialog({ productHandle, onReviewSubmitted }: SubmitR
                   <img
                     src={imagePreview}
                     alt="Preview of your review photo"
-                    className="h-24 w-24 rounded-lg border border-border object-cover"
+                    className="h-24 w-24 border border-foreground/15 object-cover"
                   />
                 ) : null}
               </div>

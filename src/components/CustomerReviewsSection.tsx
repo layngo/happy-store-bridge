@@ -8,7 +8,6 @@ import {
 import { fetchSubmittedReviews } from "@/lib/reviewApi";
 import { StarRating } from "@/components/StarRating";
 import { SubmitReviewDialog } from "@/components/SubmitReviewDialog";
-import { Button } from "@/components/ui/button";
 import { PRODUCT_REVIEWS_SECTION_ID } from "@/components/ProductReviewsSummary";
 import { cn } from "@/lib/utils";
 
@@ -35,15 +34,19 @@ function ReviewCard({ review }: { review: CustomerReview }) {
   const hasImages = Boolean(review.images?.length);
 
   return (
-    <article className="w-full rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
-      <StarRating rating={review.rating} size="sm" />
-      <p className="mt-3 font-heading text-base font-semibold tracking-tight text-foreground">{review.name}</p>
+    <article className="brand-review-card px-5 py-6 sm:px-7 sm:py-7">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <StarRating rating={review.rating} size="sm" />
+        <p className="brand-eyebrow text-foreground/70">{review.name}</p>
+      </div>
       {review.title ? (
-        <p className="mt-1 text-sm font-medium leading-snug text-foreground/90">{review.title}</p>
+        <p className="mt-4 font-heading text-base font-bold uppercase tracking-tight text-foreground sm:text-lg">
+          {review.title}
+        </p>
       ) : null}
-      <blockquote className="mt-3 text-sm leading-relaxed text-muted-foreground">{review.text}</blockquote>
+      <blockquote className={cn("brand-review-body", review.title ? "mt-2" : "mt-4")}>{review.text}</blockquote>
       {hasImages ? (
-        <ul className="mt-4 flex flex-wrap gap-2" aria-label="Photos from this review">
+        <ul className="mt-5 flex flex-wrap gap-2 border-t border-foreground/10 pt-5" aria-label="Photos from this review">
           {review.images!.map((src) => (
             <li key={src} className="shrink-0">
               <img
@@ -53,7 +56,7 @@ function ReviewCard({ review }: { review: CustomerReview }) {
                 height={88}
                 loading="lazy"
                 decoding="async"
-                className="h-[4.5rem] w-[4.5rem] rounded-lg border border-border object-cover sm:h-20 sm:w-20"
+                className="h-[4.5rem] w-[4.5rem] border border-foreground/15 object-cover sm:h-20 sm:w-20"
               />
             </li>
           ))}
@@ -66,7 +69,7 @@ function ReviewCard({ review }: { review: CustomerReview }) {
 export function CustomerReviewsSection({
   reviews: staticReviews,
   productHandle,
-  heading = "What Our Customers Are Saying",
+  heading = "What customers are saying",
   className,
 }: CustomerReviewsSectionProps) {
   const [submittedReviews, setSubmittedReviews] = useState<CustomerReview[]>([]);
@@ -103,25 +106,30 @@ export function CustomerReviewsSection({
   return (
     <section
       id={PRODUCT_REVIEWS_SECTION_ID}
-      className={cn("mx-auto mt-14 w-full max-w-4xl scroll-mt-24 border-t border-border pt-10 sm:mt-16", className)}
+      className={cn("brand-reviews-section mt-14 sm:mt-16", className)}
       aria-labelledby="customer-reviews-heading"
     >
-      <div className="flex flex-col gap-4 px-4 sm:flex-row sm:items-start sm:justify-between sm:px-0">
-        <div>
+      <div className="flex flex-col gap-6 px-4 sm:flex-row sm:items-end sm:justify-between sm:px-0">
+        <div className="min-w-0">
+          <p className="brand-eyebrow">Reviews</p>
           <h2
             id="customer-reviews-heading"
-            className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+            className="brand-display mt-2 text-[clamp(1.625rem,5vw,2.5rem)] text-foreground"
           >
             {heading}
           </h2>
           {isLayNGoPlayReviewsPdp(productHandle) ? (
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              {PLAY_CUSTOMER_REVIEWS_DISCLAIMER}
-            </p>
+            <p className="brand-review-body mt-4 max-w-2xl">{PLAY_CUSTOMER_REVIEWS_DISCLAIMER}</p>
           ) : null}
           {reviews.length > 0 ? (
-            <div className="mt-4 flex items-center gap-3">
-              <StarRating rating={averageRating} size="lg" />
+            <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-foreground/10 pt-5">
+              <StarRating rating={averageRating} size="md" />
+              <span className="font-heading text-sm font-semibold tabular-nums tracking-tight text-foreground">
+                {averageRating.toFixed(1)} out of 5
+              </span>
+              <span className="brand-eyebrow text-foreground/50">
+                · {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
+              </span>
             </div>
           ) : null}
         </div>
@@ -130,28 +138,30 @@ export function CustomerReviewsSection({
 
       {reviews.length > 0 ? (
         <>
-          <div className="mt-6 flex flex-col gap-4 px-4 sm:px-0">
-            {visibleReviews.map((review) => (
-              <ReviewCard key={review.id} review={review} />
+          <div className="mt-8 flex flex-col gap-0 border-y-2 border-foreground px-4 sm:px-0">
+            {visibleReviews.map((review, index) => (
+              <div
+                key={review.id}
+                className={cn(index > 0 && "border-t border-foreground/12")}
+              >
+                <ReviewCard review={review} />
+              </div>
             ))}
           </div>
           {hasMore ? (
-            <div className="mt-6 flex justify-center px-4 sm:px-0">
-              <Button
+            <div className="mt-8 flex justify-center px-4 sm:px-0">
+              <button
                 type="button"
-                variant="outline"
-                className="min-w-[10rem] font-medium"
+                className="brand-btn-editorial"
                 onClick={() => setVisibleCount((count) => count + REVIEWS_PAGE_SIZE)}
               >
                 View more
-              </Button>
+              </button>
             </div>
           ) : null}
         </>
       ) : (
-        <p className="mt-6 px-4 text-sm text-muted-foreground sm:px-0">
-          No reviews yet—be the first to share your experience.
-        </p>
+        <p className="brand-review-body mt-8 px-4 sm:px-0">No reviews yet—be the first to share your experience.</p>
       )}
     </section>
   );

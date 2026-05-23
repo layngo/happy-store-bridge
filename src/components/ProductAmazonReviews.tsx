@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { Star } from "lucide-react";
 import type { ProductAmazonReview } from "@/data/productAmazonReviews";
-import { Button } from "@/components/ui/button";
+import { StarRating } from "@/components/StarRating";
 import { PRODUCT_REVIEWS_SECTION_ID } from "@/components/ProductReviewsSummary";
+import { cn } from "@/lib/utils";
 
 const REVIEWS_PAGE_SIZE = 7;
 
@@ -11,19 +11,10 @@ type ProductAmazonReviewsProps = {
   amazonListingUrl?: string;
 };
 
-function Stars({ rating = 5 }: { rating?: number }) {
-  return (
-    <span className="flex gap-0.5 text-[#de7921]" aria-hidden>
-      {Array.from({ length: 5 }, (_, i) => (
-        <Star
-          key={i}
-          className={`h-[15px] w-[15px] ${i < rating ? "fill-current" : "fill-none opacity-30"}`}
-          strokeWidth={1.1}
-        />
-      ))}
-      <span className="sr-only">{rating} out of 5 stars</span>
-    </span>
-  );
+function averageRating(reviews: ProductAmazonReview[]): number {
+  if (reviews.length === 0) return 0;
+  const sum = reviews.reduce((acc, r) => acc + (r.rating ?? 5), 0);
+  return sum / reviews.length;
 }
 
 export function ProductAmazonReviews({ reviews, amazonListingUrl }: ProductAmazonReviewsProps) {
@@ -35,69 +26,85 @@ export function ProductAmazonReviews({ reviews, amazonListingUrl }: ProductAmazo
 
   const visible = useMemo(() => reviews.slice(0, visibleCount), [reviews, visibleCount]);
   const hasMore = visibleCount < reviews.length;
+  const avg = averageRating(reviews);
 
   if (reviews.length === 0) return null;
 
   return (
     <section
       id={PRODUCT_REVIEWS_SECTION_ID}
-      className="mt-14 scroll-mt-24 border-t border-neutral-200 pt-10 sm:mt-16"
+      className="brand-reviews-section mt-14 sm:mt-16"
       aria-labelledby="amazon-reviews-heading"
     >
-      <div className="mx-auto max-w-3xl px-4 pb-8 sm:px-6">
-        <h2 id="amazon-reviews-heading" className="text-lg font-normal text-[#0f1111]">
-          Customer reviews
+      <div className="px-4 sm:px-0">
+        <p className="brand-eyebrow">Reviews</p>
+        <h2
+          id="amazon-reviews-heading"
+          className="brand-display mt-2 text-[clamp(1.625rem,5vw,2.5rem)] text-foreground"
+        >
+          What customers are saying
         </h2>
-
-        <ul className="mt-4 divide-y divide-neutral-200 border-y border-neutral-200">
-          {visible.map((r, i) => (
-            <li key={`${r.author}-${i}`} className="py-4 first:pt-0">
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <Stars rating={r.rating} />
-                {r.headline ? (
-                  <span className="text-[15px] font-bold leading-snug text-[#0f1111]">{r.headline}</span>
-                ) : null}
-              </div>
-              <p className="mt-1 text-xs text-[#565959]">
-                Reviewed in the United States · {r.author}
-                {r.variantNote ? (
-                  <>
-                    <br />
-                    <span>{r.variantNote}</span>
-                  </>
-                ) : null}
-              </p>
-              <blockquote className="mt-2 text-[15px] leading-relaxed text-[#0f1111]">{r.quote}</blockquote>
-            </li>
-          ))}
-        </ul>
-
-        {hasMore ? (
-          <div className="flex justify-center border-b border-neutral-200 py-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="min-w-[10rem] font-medium"
-              onClick={() => setVisibleCount((count) => count + REVIEWS_PAGE_SIZE)}
-            >
-              View more
-            </Button>
-          </div>
-        ) : null}
-
-        {amazonListingUrl ? (
-          <div className="pt-3">
-            <a
-              href={amazonListingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-[#007185] hover:text-[#c7511f] hover:underline"
-            >
-              See all reviews on Amazon
-            </a>
-          </div>
-        ) : null}
+        <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-foreground/10 pt-5">
+          <StarRating rating={avg} size="md" />
+          <span className="font-heading text-sm font-semibold tabular-nums tracking-tight text-foreground">
+            {avg.toFixed(1)} out of 5
+          </span>
+          <span className="brand-eyebrow text-foreground/50">
+            · {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
+          </span>
+        </div>
       </div>
+
+      <ul className="mt-8 flex flex-col gap-0 border-y-2 border-foreground px-4 sm:px-0">
+        {visible.map((r, i) => (
+          <li
+            key={`${r.author}-${i}`}
+            className={cn(
+              "brand-review-card px-5 py-6 sm:px-7 sm:py-7",
+              i > 0 && "border-t border-foreground/12",
+            )}
+          >
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <StarRating rating={r.rating ?? 5} size="sm" />
+              {r.headline ? (
+                <p className="min-w-0 flex-1 font-heading text-base font-bold uppercase tracking-tight text-foreground sm:text-lg">
+                  {r.headline}
+                </p>
+              ) : null}
+            </div>
+            <p className="brand-eyebrow mt-3 text-foreground/60">
+              {r.author}
+              {r.variantNote ? ` · ${r.variantNote}` : null}
+            </p>
+            <blockquote className="brand-review-body mt-3">{r.quote}</blockquote>
+          </li>
+        ))}
+      </ul>
+
+      {hasMore ? (
+        <div className="mt-8 flex justify-center px-4 sm:px-0">
+          <button
+            type="button"
+            className="brand-btn-editorial"
+            onClick={() => setVisibleCount((count) => count + REVIEWS_PAGE_SIZE)}
+          >
+            View more
+          </button>
+        </div>
+      ) : null}
+
+      {amazonListingUrl ? (
+        <p className="mt-6 px-4 sm:px-0">
+          <a
+            href={amazonListingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="brand-eyebrow text-foreground underline-offset-4 transition-colors hover:text-primary hover:underline"
+          >
+            See all reviews on Amazon
+          </a>
+        </p>
+      ) : null}
     </section>
   );
 }

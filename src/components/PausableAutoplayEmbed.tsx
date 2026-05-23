@@ -19,6 +19,8 @@ type PausableAutoplayEmbedProps = {
   iframeClassName?: string;
   /** Vimeo only: soften opacity at loop boundaries (collection cards). */
   vimeoLoopFade?: boolean;
+  /** When false, no pause/play button (e.g. home hero). Defaults to true. */
+  showPauseControl?: boolean;
 };
 
 function usePrefersReducedMotion() {
@@ -46,6 +48,7 @@ export function PausableAutoplayEmbed({
   className,
   iframeClassName = "absolute inset-0 h-full w-full border-0",
   vimeoLoopFade = false,
+  showPauseControl = true,
 }: PausableAutoplayEmbedProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -223,7 +226,9 @@ export function PausableAutoplayEmbed({
       style={vimeoLoopFade ? { opacity: 1 } : undefined}
     >
       <p id={labelId} className="sr-only">
-        {title}. Autoplaying background video. Use the pause button to stop playback.
+        {showPauseControl
+          ? `${title}. Autoplaying background video. Use the pause button to stop playback.`
+          : `${title}. Autoplaying background video.`}
       </p>
       <iframe
         ref={iframeRef}
@@ -234,7 +239,9 @@ export function PausableAutoplayEmbed({
         referrerPolicy="strict-origin-when-cross-origin"
         aria-describedby={labelId}
       />
-      <VideoPauseButton isPaused={isPaused} onToggle={togglePause} label={title} />
+      {showPauseControl ? (
+        <VideoPauseButton isPaused={isPaused} onToggle={togglePause} label={title} />
+      ) : null}
     </div>
   );
 }

@@ -4,19 +4,72 @@ import { fetchCollectionByHandle, type ShopifyCollectionDetail } from "@/lib/sho
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getCollectionGridSwatchPreview } from "@/components/ProductCard";
-import { CALLOUT_THUMB_SHADOW } from "@/components/LayNGoLargeCalloutDiagram";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Loader2, ChevronRight, Home } from "lucide-react";
 
 const COLLECTION_HANDLE = "cosmetic-bags";
 
-const IMG_16 = "/cosmetic-bags-v2/cosmo-16.png";
-const IMG_20 = "/cosmetic-bags-v2/cosmo-20.png";
-const IMG_22 = "/cosmetic-bags-v2/cosmo-22.png";
+const COSMO_V2_ASSET_V = "7";
+const IMG_16 = `/cosmetic-bags-v2/cosmo-16.png?v=${COSMO_V2_ASSET_V}`;
+const IMG_20 = `/cosmetic-bags-v2/cosmo-20.png?v=${COSMO_V2_ASSET_V}`;
+const IMG_22 = `/cosmetic-bags-v2/cosmo-22.png?v=${COSMO_V2_ASSET_V}`;
 
-/** Largest circle (22″) width; 16″ and 20″ derive from 16:20:22. */
-const COSMO_CIRCLE_BASE_REM = 18.25;
+/** Largest disk (22″); 16″ and 20″ derive from 16:20:22. */
+const COSMO_CIRCLE_BASE_REM = 19.75;
+
+/** Open-mat width ÷ image width (alpha bbox on transparent PNGs). */
+const COSMO_MAT_WIDTH_FRACTION: Record<16 | 20 | 22, number> = {
+  16: 606 / 672,
+  20: 721 / 1024,
+  22: 955 / 1024,
+};
+
+/** 22″ mat width — target mat scales as (inches / 22) × this. */
+const COSMO_MAT_REF_FRACTION = COSMO_MAT_WIDTH_FRACTION[22];
+
+/**
+ * Nudge vs literal inches/22 — 20″ photo has extra canvas padding; keep 20″ nearer 22″ than 16″.
+ */
+const COSMO_DISPLAY_SCALE: Record<16 | 20 | 22, number> = {
+  16: 1.1,
+  20: 1.02,
+  22: 1,
+};
+
+/** File width ÷ height (natural aspect; do not force square stages). */
+const COSMO_IMAGE_ASPECT_W_OVER_H: Record<16 | 20 | 22, number> = {
+  16: 672 / 576,
+  20: 1024 / 768,
+  22: 1,
+};
+
+/** Stage width ÷ column cap (before fit). */
+function cosmoStageWidthRatio(inches: 16 | 20 | 22): number {
+  const matFill = COSMO_MAT_WIDTH_FRACTION[inches];
+  return (inches / 22) * (COSMO_MAT_REF_FRACTION / matFill) * COSMO_DISPLAY_SCALE[inches];
+}
+
+/**
+ * 20″ stage was >100% column width, so every image clamped to full column — mats looked the same size.
+ * Scale all stages down uniformly so the largest fits the column; mat ratios stay correct.
+ */
+const COSMO_MAX_STAGE_WIDTH_RATIO = Math.max(
+  cosmoStageWidthRatio(16),
+  cosmoStageWidthRatio(20),
+  cosmoStageWidthRatio(22),
+);
+const COSMO_STAGE_FIT = 1 / COSMO_MAX_STAGE_WIDTH_RATIO;
+
+function cosmoStageHeightRatio(inches: 16 | 20 | 22): number {
+  return (cosmoStageWidthRatio(inches) * COSMO_STAGE_FIT) / COSMO_IMAGE_ASPECT_W_OVER_H[inches];
+}
+
+const COSMO_MAX_BAND_HEIGHT_RATIO = Math.max(
+  cosmoStageHeightRatio(16),
+  cosmoStageHeightRatio(20),
+  cosmoStageHeightRatio(22),
+);
 
 type SizeSpec = {
   inches: 16 | 20 | 22;
@@ -85,6 +138,8 @@ function DiameterScale({ inches, className, dense }: { inches: number; className
 
 const COSMO_20_MAX_SWATCHES_DESKTOP = 5;
 const COSMO_20_MAX_SWATCHES_MOBILE = 3;
+/** First swatches shown for Cosmo 20″ on this page (mobile shows first 3). */
+const COSMO_20_V2_SWATCH_PRIORITY = ["Black", "Leopard", "Sky Blue"] as const;
 
 const CosmeticBagsV2 = () => {
   const [collection, setCollection] = useState<ShopifyCollectionDetail | null>(null);
@@ -108,11 +163,12 @@ const CosmeticBagsV2 = () => {
   }, [collection]);
 
   const sizeColumns = useMemo(() => {
+    const cap = `min(${COSMO_CIRCLE_BASE_REM}rem, (100cqw - 1.5rem) / 3)`;
     const cols = sizedProducts.map(({ spec, product }) => {
-      // Cap the 22″ diameter at one grid column so min() never uses equal cell % widths
-      // (which made 16/20/22 circles identical). Ratios stay 16:20:22 via inches/22.
-      const cap = `min(${COSMO_CIRCLE_BASE_REM}rem, (100cqw - 1.5rem) / 3)`;
-      const circleWidth = `calc((${spec.inches} / 22) * ${cap})`;
+      const matFill = COSMO_MAT_WIDTH_FRACTION[spec.inches];
+      const displayScale = COSMO_DISPLAY_SCALE[spec.inches];
+      const stageWidth = `calc((${spec.inches} / 22) * ${cap} * ${COSMO_MAT_REF_FRACTION} * ${displayScale} / ${matFill} * ${COSMO_STAGE_FIT})`;
+      const diameterWidth = `calc((${spec.inches} / 22) * ${cap} * ${COSMO_MAT_REF_FRACTION} * ${displayScale} * ${COSMO_STAGE_FIT})`;
       return {
         spec,
         product,
@@ -121,10 +177,12 @@ const CosmeticBagsV2 = () => {
           spec.inches === 20
             ? {
                 maxInteractiveSwatches: isMobile ? COSMO_20_MAX_SWATCHES_MOBILE : COSMO_20_MAX_SWATCHES_DESKTOP,
+                cosmo20PriorityColors: [...COSMO_20_V2_SWATCH_PRIORITY],
               }
             : undefined,
         ),
-        circleWidth,
+        stageWidth,
+        diameterWidth,
       };
     });
     return cols.sort((a, b) => a.spec.inches - b.spec.inches);
@@ -195,11 +253,10 @@ const CosmeticBagsV2 = () => {
             className="mx-auto grid w-full max-w-7xl grid-cols-3 divide-x divide-border/80"
             style={{
               containerType: "inline-size",
-              // Match JS `circleWidth` cap so 22″ disk height equals band min; 16″/20″ bottom-align on all breakpoints.
-              ["--cosmo-disk-band-min" as string]: `min(${COSMO_CIRCLE_BASE_REM}rem, (100cqw - 1.5rem) / 3)`,
+              ["--cosmo-disk-band-min" as string]: `calc(min(${COSMO_CIRCLE_BASE_REM}rem, (100cqw - 1.5rem) / 3) * ${COSMO_MAX_BAND_HEIGHT_RATIO})`,
             }}
           >
-            {sizeColumns.map(({ spec, product, preview, circleWidth }) => (
+            {sizeColumns.map(({ spec, product, preview, stageWidth, diameterWidth }) => (
               <Link
                 key={product.id}
                 to={`/product/${product.handle}`}
@@ -209,7 +266,10 @@ const CosmeticBagsV2 = () => {
                   "rounded-xl outline-none transition-colors duration-200",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0",
                 )}
-                style={{ ["--cosmo-circle-w" as string]: circleWidth }}
+                style={{
+                  ["--cosmo-stage-w" as string]: stageWidth,
+                  ["--cosmo-diameter-w" as string]: diameterWidth,
+                }}
                 aria-label={`${spec.shortName}, ${spec.inches} inch — ${product.title}. Opens product page.`}
               >
                 <p
@@ -235,36 +295,30 @@ const CosmeticBagsV2 = () => {
                     "-mt-0.5 md:-mt-1",
                   )}
                 >
-                  {/*
-                    Fixed square disks (aspect 1) so 16″:20″:22″ widths read as real size steps.
-                    Slight img scale crops baked-in light/dark matting at the file edge inside the circle.
-                  */}
                   <div
                     className={cn(
-                      "mx-auto max-w-full transition-[transform,box-shadow] duration-200 ease-out will-change-transform",
-                      CALLOUT_THUMB_SHADOW,
+                      "mx-auto w-[var(--cosmo-stage-w)] shrink-0 transition-[transform,filter] duration-200 ease-out will-change-transform",
                       "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
-                      "group-hover:shadow-[0_4px_12px_rgba(0,0,0,0.38),0_10px_24px_rgba(0,0,0,0.28)]",
                     )}
-                    style={{ width: circleWidth, aspectRatio: "1" }}
                   >
-                    <div className="relative h-full w-full overflow-hidden rounded-full bg-neutral-950">
-                      <img
-                        src={spec.imageSrc}
-                        alt={spec.imageAlt}
-                        className="block h-full w-full min-h-full min-w-full origin-center scale-[1.14] object-cover object-center"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </div>
+                    <img
+                      src={spec.imageSrc}
+                      alt={spec.imageAlt}
+                      className={cn(
+                        "block h-auto w-full object-contain object-bottom",
+                        "drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]",
+                        "transition-[filter] duration-200 group-hover:drop-shadow-[0_5px_14px_rgba(0,0,0,0.34)]",
+                      )}
+                      loading="lazy"
+                      decoding="async"
+                    />
                   </div>
                 </div>
 
                 <div
                   className={cn(
                     "mt-1.5 mx-auto shrink-0 sm:mt-2",
-                    // Same width as the disk above: mini < cosmo < deluxe on every breakpoint.
-                    "w-[var(--cosmo-circle-w)] max-w-[var(--cosmo-circle-w)]",
+                    "w-[var(--cosmo-diameter-w)] max-w-full",
                   )}
                 >
                   <DiameterScale inches={spec.inches} className="!mt-0 !px-0" dense />

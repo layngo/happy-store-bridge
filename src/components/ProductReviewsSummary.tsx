@@ -61,13 +61,13 @@ export function ProductReviewsSummary({
   return (
     <div className={cn("flex flex-wrap items-center gap-x-2 gap-y-1", className)}>
       <StarRating rating={averageRating} size="sm" label={`${averageRating.toFixed(1)} out of 5 stars`} />
-      <span className="text-sm tabular-nums text-neutral-600">
+      <span className="font-heading text-sm font-semibold tabular-nums tracking-tight text-foreground/80">
         {averageRating.toFixed(1)} out of 5
       </span>
       <button
         type="button"
         onClick={scrollToReviewsSection}
-        className="text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className="brand-eyebrow text-foreground underline-offset-4 transition-colors hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         See reviews
       </button>
