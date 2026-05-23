@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { LAY_NGO_LITE_PRODUCT_IMAGE_CLASS } from "@/lib/layNGoPlayMat";
 import { cn } from "@/lib/utils";
 
 const HERO_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/hero-callout-main.png";
@@ -163,6 +164,10 @@ const LITE_18_THUMB_CROP: Partial<Record<CalloutKey, string>> = {
 
 function lite18ThumbCropClass(calloutKey: CalloutKey) {
   return LITE_18_THUMB_CROP[calloutKey] ?? "object-cover object-center";
+}
+
+function lite18ProductImgClass(...extra: (string | false | undefined)[]) {
+  return cn(LAY_NGO_LITE_PRODUCT_IMAGE_CLASS, ...extra);
 }
 
 type Pt = { x: number; y: number };
@@ -833,7 +838,11 @@ function FloatingCallout({
         <img
           src={thumbSrc}
           alt={thumbAlt}
-          className={cn("h-full w-full object-cover object-center", thumbCropClass)}
+          className={cn(
+            "h-full w-full object-cover object-center",
+            lite18Thumb && lite18ProductImgClass(),
+            thumbCropClass,
+          )}
           loading="lazy"
           decoding="async"
         />
@@ -952,6 +961,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
   const editorMode = searchParams.get("editLargeCallouts") === "1" || searchParams.get("editLargeCallouts") === "true";
 
   const config = useMemo(() => diagramConfig(variant), [variant]);
+  const lite18 = variant === "lite-18";
 
   const fallbackLayout = useMemo(
     () =>
@@ -1117,7 +1127,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           className={cn(
             "w-full object-contain",
             config.mobileHeroMaxClass,
-            diagramUsesLifestyleChrome(variant) && cn("rounded-xl", diagramMatSurfaceBg(variant)),
+            lite18 && lite18ProductImgClass(),
+            diagramUsesLifestyleChrome(variant) && !lite18 && cn("rounded-xl", diagramMatSurfaceBg(variant)),
           )}
           loading="lazy"
           decoding="async"
@@ -1345,7 +1356,10 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               alt={config.heroAlt}
               className={cn(
                 "relative z-10 w-full object-contain",
-                diagramUsesLifestyleChrome(variant) && cn("rounded-lg", diagramMatSurfaceBg(variant)),
+                lite18 && lite18ProductImgClass(),
+                diagramUsesLifestyleChrome(variant) &&
+                  !lite18 &&
+                  cn("rounded-lg", diagramMatSurfaceBg(variant)),
               )}
               loading="lazy"
               decoding="async"

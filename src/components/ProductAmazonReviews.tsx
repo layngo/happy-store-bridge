@@ -49,9 +49,6 @@ export function ProductAmazonReviews({ reviews, amazonListingUrl }: ProductAmazo
           <span className="font-heading text-sm font-semibold tabular-nums tracking-tight text-foreground">
             {avg.toFixed(1)} out of 5
           </span>
-          <span className="brand-eyebrow text-foreground/50">
-            · {reviews.length} {reviews.length === 1 ? "review" : "reviews"}
-          </span>
         </div>
       </div>
 

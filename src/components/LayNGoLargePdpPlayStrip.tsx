@@ -1,3 +1,4 @@
+import { LAY_NGO_LITE_PRODUCT_IMAGE_CLASS } from "@/lib/layNGoPlayMat";
 import { cn } from "@/lib/utils";
 import {
   CALLOUT_THUMB_INNER_CLIP,
@@ -7,7 +8,7 @@ import {
   type LayNGoCalloutDiagramVariant,
 } from "@/components/LayNGoLargeCalloutDiagram";
 
-const HEADLINE = "Your whole routine. One pull to pack it up.";
+const HEADLINE = "Play for hours, clean up in seconds";
 const HEADLINE_IMAGE = "/products/lay-n-go-large-pdp/play-blue.png";
 const TRAVELER_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/traveler-callout-main.png";
 const TRAVELER_CALLOUT_ZIPPER = "/products/lay-n-go-large-pdp/traveler-callout-zipper.png";
@@ -129,6 +130,7 @@ function DefenderFlankStrip({
               alt={leftAlt}
               className={cn(
                 "block h-auto w-full max-w-none object-contain object-left",
+                LAY_NGO_LITE_PRODUCT_IMAGE_CLASS,
                 flankMaxH,
               )}
               loading="lazy"
@@ -136,7 +138,13 @@ function DefenderFlankStrip({
             />
           </div>
           <div className={cn(flankContainCell, "bg-background")}>
-            <img src={rightSrc} alt={rightAlt} className={flankContainImgRight} loading="lazy" decoding="async" />
+            <img
+              src={rightSrc}
+              alt={rightAlt}
+              className={cn(flankContainImgRight, LAY_NGO_LITE_PRODUCT_IMAGE_CLASS)}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
       </div>

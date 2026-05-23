@@ -21,7 +21,12 @@ import {
   NAILSPA_PRODUCT_IMAGE_CLASS,
 } from "@/components/Nailspa18ColorSelector";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
-import { isLayNGoPlayMatProduct, layNGoPlayMatSwatchStyle } from "@/lib/layNGoPlayMat";
+import {
+  isLayNGoLite18Product,
+  isLayNGoPlayMatProduct,
+  LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS,
+  layNGoPlayMatSwatchStyle,
+} from "@/lib/layNGoPlayMat";
 
 interface ProductCardProps {
   product: ShopifyProduct;
@@ -47,6 +52,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
   const isCosmo20Interactive = isCosmo20Product(node.handle) && cosmo20CardVariants.length >= 2;
   const isCosmo22Interactive = isCosmo22Product(node.handle) && cosmo22CardVariants.length >= 2;
   const isNailspa18Interactive = isNailspa18Product(node.handle) && nailspa18CardVariants.length >= 2;
+  const isLite18Interactive = isLayNGoLite18Product(node.handle) && node.variants.edges.length >= 2;
 
   const [selectedCosmoIdx, setSelectedCosmoIdx] = useState(0);
 
@@ -231,7 +237,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
         to={`/product/${node.handle}`}
           className={cn(
             "group relative block aspect-square w-full shrink-0 overflow-hidden",
-            isNailspa18Interactive
+            isNailspa18Interactive || isLite18Interactive
               ? "bg-background"
               : isCosmo20Interactive || isCosmo22Interactive
                 ? "bg-white"
@@ -246,9 +252,11 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
               "h-full w-full transition-transform duration-500 group-hover:scale-[1.02]",
               isNailspa18Interactive
                 ? cn(NAILSPA_PRODUCT_IMAGE_CLASS, "h-full w-full p-3 sm:p-4")
-                : isCosmo20Interactive || isCosmo22Interactive
-                  ? "object-contain object-center p-3 sm:p-4"
-                  : "object-cover object-center",
+                : isLite18Interactive
+                  ? cn(LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS, "h-full w-full p-3 sm:p-4")
+                  : isCosmo20Interactive || isCosmo22Interactive
+                    ? "object-contain object-center p-3 sm:p-4"
+                    : "object-cover object-center",
             )}
             loading="lazy"
           />

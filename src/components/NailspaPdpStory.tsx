@@ -989,7 +989,7 @@ function BottomProductImage({ className }: { className?: string }) {
             <img
               src={IMG_BOTTOM_HOOK}
               alt="Lay-n-Go NAILSPA hanging on a wall hook"
-              className="block h-auto w-full max-w-none object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.1)]"
+              className="block h-auto w-full max-w-none object-contain"
               draggable={false}
               loading="lazy"
             />

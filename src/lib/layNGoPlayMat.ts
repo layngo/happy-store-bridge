@@ -4,6 +4,18 @@ import type { CSSProperties } from "react";
 export const LAY_NGO_PDP_PRODUCT_IMAGE_CLASS =
   "max-h-full max-w-full object-contain object-center drop-shadow-[0_14px_32px_rgba(0,0,0,0.14)]";
 
+/** Lite local PNGs on `bg-background` (diagram, flanks, callouts). */
+export const LAY_NGO_LITE_PRODUCT_IMAGE_CLASS =
+  "max-h-full max-w-full object-contain object-center drop-shadow-[0_14px_32px_rgba(0,0,0,0.12)]";
+
+/** Lite Shopify variant heroes — white JPEG/PNG mats blend into `bg-background`. */
+export const LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS =
+  "max-h-full max-w-full object-contain object-center drop-shadow-[0_14px_32px_rgba(0,0,0,0.12)] mix-blend-multiply";
+
+export function isLayNGoLite18Product(handle: string): boolean {
+  return handle.toLowerCase() === "lay-n-go-lite-18";
+}
+
 /** Lay-n-Go play mat trim / nylon — tuned to read like the real Blue & Green accents. */
 const PLAY_MAT_BLUE = "#0b6ec9";
 const PLAY_MAT_GREEN = "#2a8f3a";
