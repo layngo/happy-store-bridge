@@ -108,31 +108,37 @@ function DefenderFlankStrip({
   );
 
   if (variant === "lite-18") {
-    const liteFlankImg = cn(
-      "block h-auto w-auto max-w-[min(48vw,26rem)] object-contain sm:max-w-[min(44vw,22rem)] md:max-w-[min(40vw,24rem)]",
-      flankMaxH,
+    /** +15% vs prior flank caps; flush to viewport left/right. */
+    const liteFlankSize = cn(
+      "block h-auto w-[min(55.2vw,29.9rem)] max-w-none object-contain",
+      "sm:w-[min(50.6vw,25.3rem)] md:w-[min(46vw,27.6rem)]",
+      "max-h-[min(59.8vh,621px)] sm:max-h-[min(66.7vh,713px)] md:max-h-[min(71.3vh,782px)]",
     );
 
     return (
       <div
-        className="relative left-1/2 mt-6 w-screen max-w-[100vw] -translate-x-1/2 bg-background sm:mt-8"
+        className="relative left-1/2 mt-6 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible bg-background sm:mt-8"
         aria-label={ariaLabel}
       >
-        <div className="mx-auto flex max-w-5xl items-end justify-center gap-0 px-3 sm:max-w-6xl sm:px-6">
-          <img
-            src={leftSrc}
-            alt={leftAlt}
-            className={cn(liteFlankImg, "object-left object-bottom -mr-3 sm:-mr-6 md:-mr-10")}
-            loading="lazy"
-            decoding="async"
-          />
-          <img
-            src={rightSrc}
-            alt={rightAlt}
-            className={cn(liteFlankImg, "object-right object-bottom -ml-3 sm:-ml-6 md:-ml-10")}
-            loading="lazy"
-            decoding="async"
-          />
+        <div className="grid w-full grid-cols-2 items-end gap-0">
+          <div className="flex items-end justify-start overflow-visible">
+            <img
+              src={leftSrc}
+              alt={leftAlt}
+              className={cn(liteFlankSize, "object-left object-bottom")}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div className="flex items-end justify-end overflow-visible">
+            <img
+              src={rightSrc}
+              alt={rightAlt}
+              className={cn(liteFlankSize, "object-right object-bottom")}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
         </div>
       </div>
     );
