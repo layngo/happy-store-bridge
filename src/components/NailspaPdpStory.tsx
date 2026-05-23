@@ -969,31 +969,33 @@ function BottomProductImage({ className }: { className?: string }) {
       className={cn("relative w-full bg-background", className)}
       aria-label="Lay-n-Go NAILSPA portable and ready to go"
     >
-      <div className="flex flex-col md:flex-row md:items-end">
-        {/* Hand + bag — flush to viewport left and section bottom */}
-        <div className="relative w-full shrink-0 overflow-hidden leading-none md:w-[min(54vw,620px)] lg:w-[min(50vw,640px)]">
-          <img
-            src={IMG_BOTTOM}
-            alt="Lay-n-Go NAILSPA cinched closed with carry handle"
-            className="block h-auto w-[min(140vw,780px)] max-w-none object-contain object-left-bottom sm:w-[min(135vw,740px)] md:w-[min(125%,54vw)] lg:w-[min(118%,50vw)]"
-            draggable={false}
-            loading="lazy"
-          />
+      {/* isolate: headline blends only with images in this group (not the page background) */}
+      <div className="isolate relative overflow-visible">
+        <div className="relative flex flex-col overflow-visible md:flex-row md:items-center">
+          <div className="relative z-10 w-full shrink-0 overflow-hidden leading-none max-md:origin-bottom-left max-md:scale-[0.8] max-md:-translate-x-[6vw] md:w-[min(54vw,620px)] md:translate-x-0 md:scale-100 lg:w-[min(50vw,640px)]">
+            <img
+              src={IMG_BOTTOM}
+              alt="Lay-n-Go NAILSPA cinched closed with carry handle"
+              className="block h-auto w-[min(140vw,780px)] max-w-none object-contain object-left-bottom sm:w-[min(135vw,740px)] md:w-[min(125%,54vw)] lg:w-[min(118%,50vw)]"
+              draggable={false}
+              loading="lazy"
+            />
+          </div>
+
+          <div className="relative z-20 flex min-w-0 flex-1 items-center justify-center overflow-visible px-2 py-6 sm:px-4 sm:py-8 md:-ml-[4vw] md:translate-x-[6vw] md:justify-end md:px-0 md:py-4 lg:translate-x-[8vw]">
+            <img
+              src={IMG_BOTTOM_HOOK}
+              alt="Lay-n-Go NAILSPA hanging on a wall hook"
+              className="block h-auto w-[min(104vw,1440px)] max-w-none object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.1)] sm:w-[min(100vw,1645px)] md:w-[min(70vw,1990px)] lg:w-[min(76vw,2285px)] xl:w-[min(80vw,2450px)]"
+              draggable={false}
+              loading="lazy"
+            />
+          </div>
         </div>
 
-        <div className="relative flex min-w-0 flex-1 flex-col items-center justify-center gap-6 px-4 py-8 sm:px-6 sm:py-10 md:items-start md:gap-8 md:px-10 md:pb-12 md:pt-6 lg:px-14 lg:pb-14">
-          <img
-            src={IMG_BOTTOM_HOOK}
-            alt="Lay-n-Go NAILSPA hanging on a wall hook"
-            className="block h-auto w-full max-w-[min(100%,340px)] object-contain drop-shadow-[0_10px_28px_rgba(0,0,0,0.1)] md:max-w-[380px]"
-            draggable={false}
-            loading="lazy"
-          />
-
-          <p className="w-full max-w-lg text-center font-heading text-[clamp(1.75rem,5.5vw,3.5rem)] font-bold uppercase leading-[1.08] tracking-tight text-foreground md:text-left">
-            Portable, anywhere.
-          </p>
-        </div>
+        <p className="pointer-events-none absolute inset-x-0 bottom-[18%] z-30 mx-auto w-full max-w-5xl -translate-y-1/2 px-4 text-center font-heading text-[clamp(1.75rem,6vw,4rem)] font-bold italic uppercase leading-[1.05] tracking-tight text-white mix-blend-exclude [text-shadow:0_2px_14px_rgba(0,0,0,0.85),0_4px_28px_rgba(0,0,0,0.55),0_0_2px_rgba(0,0,0,0.9)] md:bottom-[22%] md:px-10">
+          Portable, anywhere.
+        </p>
       </div>
     </div>
   );
