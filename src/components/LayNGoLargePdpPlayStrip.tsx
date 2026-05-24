@@ -109,11 +109,16 @@ function DefenderFlankStrip({
   );
 
   if (variant === "lite-18") {
-    /** +15% vs prior flank caps; flush to viewport left/right. */
-    const liteFlankSize = cn(
-      "block h-auto w-[min(55.2vw,29.9rem)] max-w-none object-contain",
+    const liteFlankLeftSize = cn(
+      "block h-auto w-[min(55.2vw,29.9rem)] max-w-none shrink-0 object-contain object-left object-bottom",
       "sm:w-[min(50.6vw,25.3rem)] md:w-[min(46vw,27.6rem)]",
       "max-h-[min(59.8vh,621px)] sm:max-h-[min(66.7vh,713px)] md:max-h-[min(71.3vh,782px)]",
+    );
+    /** Right flank — 15% smaller than left; pinned to viewport right edge. */
+    const liteFlankRightSize = cn(
+      "block h-auto w-[min(46.92vw,25.4rem)] max-w-none shrink-0 object-contain object-right object-bottom",
+      "sm:w-[min(43.01vw,21.5rem)] md:w-[min(39.1vw,23.5rem)]",
+      "max-h-[min(50.8vh,528px)] sm:max-h-[min(56.7vh,606px)] md:max-h-[min(60.6vh,665px)]",
     );
 
     return (
@@ -121,25 +126,21 @@ function DefenderFlankStrip({
         className="relative left-1/2 mt-6 w-screen max-w-[100vw] -translate-x-1/2 overflow-visible bg-background sm:mt-8"
         aria-label={ariaLabel}
       >
-        <div className="grid w-full grid-cols-2 items-end gap-0">
-          <div className="flex items-end justify-start overflow-visible">
-            <img
-              src={leftSrc}
-              alt={leftAlt}
-              className={cn(liteFlankSize, "object-left object-bottom")}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <div className="flex items-end justify-end overflow-visible">
-            <img
-              src={rightSrc}
-              alt={rightAlt}
-              className={cn(liteFlankSize, "object-right object-bottom")}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
+        <div className="relative w-full min-h-0 overflow-visible">
+          <img
+            src={leftSrc}
+            alt={leftAlt}
+            className={liteFlankLeftSize}
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            src={rightSrc}
+            alt={rightAlt}
+            className={cn(liteFlankRightSize, "absolute bottom-0 right-0")}
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </div>
     );
