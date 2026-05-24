@@ -34,6 +34,12 @@ const DEFENDER_DISPLAY_SCALE: Record<16 | 20, number> = {
   20: 1.08,
 };
 
+/** Hero PNGs are square (1024×1024). */
+const DEFENDER_IMAGE_ASPECT_W_OVER_H: Record<16 | 20, number> = {
+  16: 1,
+  20: 1,
+};
+
 /** Stage width ÷ column cap (before fit). */
 function defenderStageWidthRatio(inches: 16 | 20): number {
   const matFill = DEFENDER_MAT_WIDTH_FRACTION[inches];
@@ -43,6 +49,16 @@ function defenderStageWidthRatio(inches: 16 | 20): number {
 /** If any stage >100% column width, every image clamps to full width — mats look the same size. */
 const DEFENDER_MAX_STAGE_WIDTH_RATIO = Math.max(defenderStageWidthRatio(16), defenderStageWidthRatio(20));
 const DEFENDER_STAGE_FIT = (1 / DEFENDER_MAX_STAGE_WIDTH_RATIO) * DEFENDER_TILE_SCALE_BOOST;
+
+function defenderStageHeightRatio(inches: 16 | 20): number {
+  return (defenderStageWidthRatio(inches) * DEFENDER_STAGE_FIT) / DEFENDER_IMAGE_ASPECT_W_OVER_H[inches];
+}
+
+/** Shared band height (20″ frame) — all mats bottom-align like Cosmo V2. */
+const DEFENDER_MAX_BAND_HEIGHT_RATIO = Math.max(
+  defenderStageHeightRatio(16),
+  defenderStageHeightRatio(20),
+);
 
 
 type SizeSpec = {
@@ -205,8 +221,11 @@ const MilitaryFirstResponder = () => {
           aria-label="DEFENDER size selector"
         >
           <div
-            className="mx-auto grid w-full max-w-6xl grid-cols-2 items-stretch divide-x divide-border/80"
-            style={{ containerType: "inline-size" }}
+            className="mx-auto grid w-full max-w-6xl grid-cols-2 items-start divide-x divide-border/80"
+            style={{
+              containerType: "inline-size",
+              ["--defender-disk-band-min" as string]: `calc(min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2) * ${DEFENDER_MAX_BAND_HEIGHT_RATIO})`,
+            }}
           >
             {sizeColumns.map(({ spec, product, preview, stageWidth, diameterWidth }) => (
               <Link
@@ -226,8 +245,9 @@ const MilitaryFirstResponder = () => {
               >
                 <p
                   className={cn(
-                    "pointer-events-none mb-0 flex w-full max-w-[min(100%,16rem)] shrink-0 origin-center items-center justify-center px-0.5 text-pretty text-center",
-                    "font-heading font-black uppercase leading-[0.88] tracking-tight text-foreground",
+                    "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] origin-center items-center justify-center px-0.5 text-pretty text-center max-md:leading-tight",
+                    "min-h-[3.25rem] shrink-0 md:mb-1.5 lg:min-h-[3.5rem]",
+                    "font-heading font-black uppercase leading-[0.92] tracking-tight text-foreground",
                     "text-[clamp(0.8125rem,3.2cqw+0.5rem,1.1875rem)] sm:text-[clamp(0.9375rem,2.85cqw+0.55rem,1.4375rem)]",
                     "transition-transform duration-200 ease-out will-change-transform",
                     "group-hover:scale-[1.035] motion-reduce:group-hover:scale-100",
@@ -235,31 +255,43 @@ const MilitaryFirstResponder = () => {
                 >
                   {spec.shortName}
                 </p>
+                {/*
+                  Shared band height = 20″ frame (cqw-capped); disks bottom-align like Cosmo V2.
+                */}
                 <div
                   className={cn(
-                    "mx-auto w-[var(--defender-stage-w)] max-w-full shrink-0 bg-transparent transition-[transform,filter] duration-200 ease-out will-change-transform",
-                    "-mt-1 group-hover:scale-[1.02] motion-reduce:group-hover:scale-100 sm:-mt-1.5",
+                    "flex w-full min-w-0 flex-col items-center justify-end",
+                    "min-h-[var(--defender-disk-band-min)]",
+                    "-mt-0.5 md:-mt-1",
                   )}
                 >
-                  <img
-                    src={spec.imageSrc}
-                    alt={spec.imageAlt}
+                  <div
                     className={cn(
-                      "block h-auto w-full object-contain object-bottom",
-                      "drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]",
-                      "transition-[filter] duration-200 group-hover:drop-shadow-[0_5px_14px_rgba(0,0,0,0.34)]",
+                      "mx-auto w-[var(--defender-stage-w)] max-w-full shrink-0 transition-[transform,filter] duration-200 ease-out will-change-transform",
+                      "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
                     )}
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  >
+                    <img
+                      src={spec.imageSrc}
+                      alt={spec.imageAlt}
+                      className={cn(
+                        "block h-auto w-full object-contain object-bottom",
+                        "drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]",
+                        "transition-[filter] duration-200 group-hover:drop-shadow-[0_5px_14px_rgba(0,0,0,0.34)]",
+                      )}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
                 </div>
 
-                <div className="mx-auto mt-0 w-[var(--defender-diameter-w)] max-w-full shrink-0 -translate-y-0.5 sm:-translate-y-1">
-                  <DiameterScale
-                    inches={spec.inches}
-                    className="!mt-0 !px-0 [&_p]:mt-0.5"
-                    dense
-                  />
+                <div
+                  className={cn(
+                    "mx-auto mt-1.5 shrink-0 sm:mt-2",
+                    "w-[var(--defender-diameter-w)] max-w-full",
+                  )}
+                >
+                  <DiameterScale inches={spec.inches} className="!mt-0 !px-0" dense />
                 </div>
 
                 <div className="mt-1.5 flex min-h-7 w-full max-w-[min(100%,18rem)] flex-wrap items-center justify-center gap-1 sm:mt-2 sm:gap-2">
