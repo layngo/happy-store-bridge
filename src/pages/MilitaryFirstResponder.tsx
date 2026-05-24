@@ -15,16 +15,36 @@ const IMG_16 = "/military-first-responder-v2/defender-mini-16.png";
 const IMG_20 = "/military-first-responder-v2/defender-tactical-20.png";
 
 /** Largest disk (20″); 16″ derives from 16:20 — mirrors Cosmo V2 cap pattern (2 columns). */
-const DEFENDER_CIRCLE_BASE_REM = 20.5;
-
-/** Slight bump so Defender Tactical reads a touch larger than strict 20:16. */
-const DEFENDER_TACTICAL_DISPLAY_SCALE = 1.03;
+const DEFENDER_CIRCLE_BASE_REM = 28;
 
 /** Open-mat width ÷ image width — diameter lines match mat edge to edge. */
 const DEFENDER_MAT_WIDTH_FRACTION: Record<16 | 20, number> = {
   16: 558 / 1024,
   20: 459 / 1024,
 };
+
+/** 20″ mat width — target mat scales as (inches / 20) × this. */
+const DEFENDER_MAT_REF_FRACTION = DEFENDER_MAT_WIDTH_FRACTION[20];
+
+const DEFENDER_DISPLAY_SCALE: Record<16 | 20, number> = {
+  16: 1,
+  20: 1.03,
+};
+
+/** Stage width ÷ column cap (before fit). */
+function defenderStageWidthRatio(inches: 16 | 20): number {
+  const matFill = DEFENDER_MAT_WIDTH_FRACTION[inches];
+  return (inches / 20) * (DEFENDER_MAT_REF_FRACTION / matFill) * DEFENDER_DISPLAY_SCALE[inches];
+}
+
+/** If any stage >100% column width, every image clamps to full width — mats look the same size. */
+const DEFENDER_MAX_STAGE_WIDTH_RATIO = Math.max(defenderStageWidthRatio(16), defenderStageWidthRatio(20));
+const DEFENDER_STAGE_FIT = 1 / DEFENDER_MAX_STAGE_WIDTH_RATIO;
+
+const DEFENDER_MAX_BAND_HEIGHT_RATIO = Math.max(
+  defenderStageWidthRatio(16) * DEFENDER_STAGE_FIT,
+  defenderStageWidthRatio(20) * DEFENDER_STAGE_FIT,
+);
 
 
 type SizeSpec = {
@@ -78,7 +98,7 @@ function DiameterScale({ inches, className, dense }: { inches: number; className
       <p
         className={cn(
           "font-heading font-semibold tabular-nums text-neutral-900",
-          dense ? "mt-1 text-sm sm:text-base" : "mt-2 text-base sm:text-lg",
+          dense ? "mt-1 text-sm sm:text-base" : "mt-2 text-base sm:text-xl",
         )}
       >
         {inches}&quot;
@@ -110,10 +130,10 @@ const MilitaryFirstResponder = () => {
   const sizeColumns = useMemo(() => {
     const cap = `min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2)`;
     const cols = sizedProducts.map(({ spec, product }) => {
-      const displayScale = spec.inches === 20 ? DEFENDER_TACTICAL_DISPLAY_SCALE : 1;
       const matFill = DEFENDER_MAT_WIDTH_FRACTION[spec.inches];
-      const stageWidth = `min(calc((${spec.inches} / 20) * ${cap} * ${displayScale}), 100%)`;
-      const diameterWidth = `min(calc((${spec.inches} / 20) * ${cap} * ${displayScale} * ${matFill}), calc(${matFill} * 100%))`;
+      const displayScale = DEFENDER_DISPLAY_SCALE[spec.inches];
+      const stageWidth = `calc((${spec.inches} / 20) * ${cap} * ${DEFENDER_MAT_REF_FRACTION} * ${displayScale} / ${matFill} * ${DEFENDER_STAGE_FIT})`;
+      const diameterWidth = `calc((${spec.inches} / 20) * ${cap} * ${DEFENDER_MAT_REF_FRACTION} * ${displayScale} * ${DEFENDER_STAGE_FIT})`;
       return {
         spec,
         product,
@@ -187,10 +207,10 @@ const MilitaryFirstResponder = () => {
           aria-label="DEFENDER size selector"
         >
           <div
-            className="mx-auto grid w-full max-w-5xl grid-cols-2 items-start divide-x divide-border/80"
+            className="mx-auto grid w-full max-w-6xl grid-cols-2 items-start divide-x divide-border/80"
             style={{
               containerType: "inline-size",
-              ["--defender-disk-band-min" as string]: `min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2)`,
+              ["--defender-disk-band-min" as string]: `calc(min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2) * ${DEFENDER_MAX_BAND_HEIGHT_RATIO})`,
             }}
           >
             {sizeColumns.map(({ spec, product, preview, stageWidth, diameterWidth }) => (
@@ -212,7 +232,7 @@ const MilitaryFirstResponder = () => {
                 <p
                   className={cn(
                     "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] origin-center items-center justify-center px-0.5 text-pretty text-center max-md:leading-tight",
-                    "min-h-[3.25rem] shrink-0 md:mb-1.5 lg:min-h-[3.5rem]",
+                    "min-h-[2.5rem] shrink-0 md:mb-1 lg:min-h-[2.75rem]",
                     "font-heading font-black uppercase leading-[0.92] tracking-tight text-foreground",
                     "text-[clamp(0.8125rem,3.2cqw+0.5rem,1.1875rem)] sm:text-[clamp(0.9375rem,2.85cqw+0.55rem,1.4375rem)]",
                     "transition-transform duration-200 ease-out will-change-transform",
@@ -233,19 +253,15 @@ const MilitaryFirstResponder = () => {
                 >
                   <div
                     className={cn(
-                      "mx-auto flex max-h-[var(--defender-disk-band-min)] max-w-full items-end justify-center bg-transparent transition-[transform,filter] duration-200 ease-out will-change-transform",
+                      "mx-auto w-[var(--defender-stage-w)] shrink-0 bg-transparent transition-[transform,filter] duration-200 ease-out will-change-transform",
                       "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
                     )}
-                    style={{
-                      width: "var(--defender-stage-w)",
-                      aspectRatio: "1",
-                    }}
                   >
                     <img
                       src={spec.imageSrc}
                       alt={spec.imageAlt}
                       className={cn(
-                        "block h-full w-full object-contain object-bottom",
+                        "block h-auto w-full object-contain object-bottom",
                         "drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]",
                         "transition-[filter] duration-200 group-hover:drop-shadow-[0_5px_14px_rgba(0,0,0,0.34)]",
                       )}

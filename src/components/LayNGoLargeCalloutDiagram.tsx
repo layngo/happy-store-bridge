@@ -124,7 +124,7 @@ const DEFENDER_MINI_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
 ];
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
-const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v11";
+const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v12";
 
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
@@ -214,7 +214,7 @@ const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
   anchors: {
     cord: { x: 50, y: -26 + LIFESTYLE_CORD_CALLOUT_DOWN_75PX_DY },
     /** Lip / mesh thumbnails — farther toward viewport edges; mat dots unchanged. */
-    lip: { x: 2, y: 48 },
+    lip: { x: 8, y: 48 },
     mesh: { x: 95, y: 46 },
     handle: DEFAULT_LAYOUT.anchors.handle,
   },
@@ -365,9 +365,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 44,
       containerMinHClass: "min-h-[min(62vh,624px)]",
       heroWidthClass: "w-[min(64vw,624px)]",
-      /** Light pull-up only — heavy negative margin was drawing the bracket through the mat rim. */
+      /** Below hero in document flow on desktop (see lifestyle stage layout). */
       dimensionWrapClass:
-        "relative z-30 mx-auto -mt-4 w-[min(64vw,624px)] pb-6 sm:-mt-6 md:-mt-8 lg:-mt-10 sm:pb-7 md:pb-8 lg:pb-10",
+        "relative z-30 mx-auto mt-3 w-[min(64vw,624px)] pb-8 sm:mt-4 md:pb-10",
       mobileHeroMaxClass: "max-w-[min(82vw,23rem)]",
       meshCalloutSrc: CALLOUT_MESH_LIFESTYLE,
       lipCalloutSrc: CALLOUT_LIP_LIFESTYLE,
@@ -986,6 +986,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
 
   const config = useMemo(() => diagramConfig(variant), [variant]);
   const lite18 = variant === "lite-18";
+  const lifestyle44 = variant === "lifestyle-44";
 
   const fallbackLayout = useMemo(
     () =>
@@ -1273,15 +1274,17 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         ) : variant === "defender-mini-16" ? (
           <DefenderMini16CalloutStage heroSrc={config.heroSrc} heroAlt={config.heroAlt} />
         ) : (
-        <div>
+        <div className={cn(lifestyle44 && "overflow-visible")}>
         <div
           ref={containerRef}
           className={cn(
-            "relative mx-auto w-full",
-            config.containerMinHClass,
+            "relative mx-auto",
+            lifestyle44
+              ? "w-[min(64vw,624px)] min-h-0 overflow-visible"
+              : cn("w-full", config.containerMinHClass),
             diagramUsesLifestyleChrome(variant) &&
               variant !== "lite-18" &&
-              variant !== "lifestyle-44" &&
+              !lifestyle44 &&
               cn("rounded-xl", diagramMatSurfaceBg(variant)),
           )}
           onPointerMove={editorMode ? onPointerMove : undefined}
@@ -1289,7 +1292,10 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           onPointerCancel={editorMode ? (e) => endDrag(e) : undefined}
         >
           <svg
-            className="pointer-events-none absolute inset-0 z-[12] h-full w-full text-neutral-900/85"
+            className={cn(
+              "pointer-events-none absolute inset-0 z-[12] h-full w-full text-neutral-900/85",
+              lifestyle44 && "h-full min-h-full w-full",
+            )}
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             aria-hidden
@@ -1385,11 +1391,15 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
 
           <div
             className={cn(
-              "pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2",
-              config.heroWidthClass,
+              lifestyle44
+                ? "relative z-10 w-full"
+                : cn(
+                    "pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2",
+                    config.heroWidthClass,
+                  ),
               diagramUsesLifestyleChrome(variant) &&
                 variant !== "lite-18" &&
-                variant !== "lifestyle-44" &&
+                !lifestyle44 &&
                 cn("rounded-lg", diagramMatSurfaceBg(variant)),
             )}
           >
@@ -1401,7 +1411,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                 matProductImgClass(variant),
                 diagramUsesLifestyleChrome(variant) &&
                   variant !== "lite-18" &&
-                  variant !== "lifestyle-44" &&
+                  !lifestyle44 &&
                   cn("rounded-lg", diagramMatSurfaceBg(variant)),
               )}
               loading="lazy"
