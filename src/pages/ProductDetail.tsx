@@ -65,6 +65,7 @@ import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
 import {
   isLayNGoPlayMatProduct,
   LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS,
+  LAY_NGO_LIFESTYLE_SHOPIFY_HERO_IMAGE_CLASS,
   layNGoPlayMatSwatchStyle,
 } from "@/lib/layNGoPlayMat";
 import { MILITARY_FIRST_RESPONDER_PATH } from "@/pages/MilitaryFirstResponder";
@@ -1294,6 +1295,7 @@ const ProductDetail = () => {
       className={cn(
         "h-full w-full max-h-full object-contain",
         isLayNGoLite18 && LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS,
+        isLayNGoLifestyle44 && LAY_NGO_LIFESTYLE_SHOPIFY_HERO_IMAGE_CLASS,
         isLayNGoLarge60 &&
           "max-md:h-auto max-md:max-h-[min(62vmin,410px)] max-md:w-full max-md:min-w-0 max-md:max-w-full max-md:object-contain",
       )}
@@ -1863,7 +1865,9 @@ const ProductDetail = () => {
                       ariaLabel={layNGoLifestyleGallery.ariaLabel}
                       surfaceClassName={pdpUsesSiteBackground ? "bg-background" : "bg-neutral-50"}
                       frameClassName={
-                        isLayNGoLite18 ? "rounded-none border-0 shadow-none" : undefined
+                        isLayNGoLite18 || isLayNGoLifestyle44
+                          ? "rounded-none border-0 shadow-none"
+                          : undefined
                       }
                     />
                     {isLayNGoLarge60 ? (

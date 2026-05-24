@@ -2,7 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { LAY_NGO_LITE_PRODUCT_IMAGE_CLASS } from "@/lib/layNGoPlayMat";
+import {
+  LAY_NGO_LITE_PRODUCT_IMAGE_CLASS,
+  LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS,
+} from "@/lib/layNGoPlayMat";
 import { cn } from "@/lib/utils";
 
 const HERO_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/hero-callout-main.png";
@@ -166,8 +169,10 @@ function lite18ThumbCropClass(calloutKey: CalloutKey) {
   return LITE_18_THUMB_CROP[calloutKey] ?? "object-cover object-center";
 }
 
-function lite18ProductImgClass(...extra: (string | false | undefined)[]) {
-  return cn(LAY_NGO_LITE_PRODUCT_IMAGE_CLASS, ...extra);
+function matProductImgClass(variant: LayNGoCalloutDiagramVariant, ...extra: (string | false | undefined)[]) {
+  if (variant === "lite-18") return cn(LAY_NGO_LITE_PRODUCT_IMAGE_CLASS, ...extra);
+  if (variant === "lifestyle-44") return cn(LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS, ...extra);
+  return cn(...extra);
 }
 
 type Pt = { x: number; y: number };
@@ -840,7 +845,7 @@ function FloatingCallout({
           alt={thumbAlt}
           className={cn(
             "h-full w-full object-cover object-center",
-            lite18Thumb && lite18ProductImgClass(),
+            matProductImgClass(variant),
             thumbCropClass,
           )}
           loading="lazy"
@@ -1127,8 +1132,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           className={cn(
             "w-full object-contain",
             config.mobileHeroMaxClass,
-            lite18 && lite18ProductImgClass(),
-            diagramUsesLifestyleChrome(variant) && !lite18 && cn("rounded-xl", diagramMatSurfaceBg(variant)),
+            matProductImgClass(variant),
+            diagramUsesLifestyleChrome(variant) &&
+              variant !== "lite-18" &&
+              variant !== "lifestyle-44" &&
+              cn("rounded-xl", diagramMatSurfaceBg(variant)),
           )}
           loading="lazy"
           decoding="async"
@@ -1185,7 +1193,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                           : config.meshCalloutSrc
                   }
                   alt={m.imageAlt}
-                  className={cn("h-full w-full object-cover object-center", mobileThumbCrop)}
+                  className={cn(
+                    "h-full w-full object-cover object-center",
+                    matProductImgClass(variant),
+                    mobileThumbCrop,
+                  )}
                   loading="lazy"
                   decoding="async"
                 />
@@ -1243,7 +1255,10 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           className={cn(
             "relative mx-auto w-full",
             config.containerMinHClass,
-            diagramUsesLifestyleChrome(variant) && cn("rounded-xl", diagramMatSurfaceBg(variant)),
+            diagramUsesLifestyleChrome(variant) &&
+              variant !== "lite-18" &&
+              variant !== "lifestyle-44" &&
+              cn("rounded-xl", diagramMatSurfaceBg(variant)),
           )}
           onPointerMove={editorMode ? onPointerMove : undefined}
           onPointerUp={editorMode ? (e) => endDrag(e) : undefined}
@@ -1348,7 +1363,10 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             className={cn(
               "pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2",
               config.heroWidthClass,
-              diagramUsesLifestyleChrome(variant) && cn("rounded-lg", diagramMatSurfaceBg(variant)),
+              diagramUsesLifestyleChrome(variant) &&
+                variant !== "lite-18" &&
+                variant !== "lifestyle-44" &&
+                cn("rounded-lg", diagramMatSurfaceBg(variant)),
             )}
           >
             <img
@@ -1356,9 +1374,10 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               alt={config.heroAlt}
               className={cn(
                 "relative z-10 w-full object-contain",
-                lite18 && lite18ProductImgClass(),
+                matProductImgClass(variant),
                 diagramUsesLifestyleChrome(variant) &&
-                  !lite18 &&
+                  variant !== "lite-18" &&
+                  variant !== "lifestyle-44" &&
                   cn("rounded-lg", diagramMatSurfaceBg(variant)),
               )}
               loading="lazy"

@@ -12,6 +12,14 @@ export const LAY_NGO_LITE_PRODUCT_IMAGE_CLASS =
 export const LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS =
   "max-h-full max-w-full object-contain object-center mix-blend-multiply";
 
+/** Lifestyle 44″ Shopify heroes — same mat treatment as Lite. */
+export const LAY_NGO_LIFESTYLE_SHOPIFY_HERO_IMAGE_CLASS =
+  "max-h-full max-w-full object-contain object-center mix-blend-multiply";
+
+/** Lifestyle 44″ local PNGs (diagram, play strip, callouts). */
+export const LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS =
+  "max-h-full max-w-full object-contain object-center";
+
 export function isLayNGoLite18Product(handle: string): boolean {
   return handle.toLowerCase() === "lay-n-go-lite-18";
 }

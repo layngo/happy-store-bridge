@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS } from "@/lib/layNGoPlayMat";
 import {
   CALLOUT_THUMB_INNER_CLIP,
   CALLOUT_THUMB_SHADOW,
@@ -449,7 +450,13 @@ function LifestyleMobileStoryImage({
 }) {
   return (
     <figure className="relative mx-auto w-full max-w-[min(100%,42rem)]">
-      <img src={src} alt={alt} className={cn("block w-full object-contain", imgClassName)} loading="lazy" decoding="async" />
+      <img
+        src={src}
+        alt={alt}
+        className={cn("block w-full object-contain", LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS, imgClassName)}
+        loading="lazy"
+        decoding="async"
+      />
       <figcaption className="mt-2 px-2 sm:px-3">
         <p className="text-center font-heading text-[0.62rem] font-bold uppercase leading-tight tracking-wide text-neutral-900 sm:text-xs">
           {label}
@@ -541,6 +548,7 @@ export function LayNGoLargePdpPlayStrip({
 }: LayNGoLargePdpPlayStripProps) {
   const threeStepImageClassName = cn(
     "h-auto w-full max-w-full object-contain",
+    calloutVariant === "lifestyle-44" && LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS,
     calloutVariant === "lifestyle-44"
       ? "max-h-[min(36vh,240px)] sm:max-h-[min(44vh,300px)] md:max-h-[min(50vh,400px)] lg:max-h-[480px]"
       : "max-h-[min(34vh,220px)] sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]",
@@ -549,10 +557,12 @@ export function LayNGoLargePdpPlayStrip({
   /** Lifestyle “triangle”: apex + base row — each photo gets more width than a 3-across strip. */
   const lifestyleTriangleApexImg = cn(
     "h-auto w-full max-w-full object-contain",
+    LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS,
     "max-h-[min(50vh,340px)] sm:max-h-[min(56vh,420px)] md:max-h-[min(58vh,520px)] lg:max-h-[580px]",
   );
   const lifestyleTriangleBaseImg = cn(
     "h-auto w-full max-w-full object-contain",
+    LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS,
     "max-h-[min(42vh,280px)] sm:max-h-[min(50vh,380px)] md:max-h-[min(54vh,460px)] lg:max-h-[520px]",
   );
 
@@ -596,7 +606,10 @@ export function LayNGoLargePdpPlayStrip({
           <img
             src={headlineImageSrc}
             alt="Lay-n-Go product hero image"
-            className="block h-auto w-full max-w-full object-contain"
+            className={cn(
+              "block h-auto w-full max-w-full object-contain",
+              calloutVariant === "lifestyle-44" && LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS,
+            )}
             loading="lazy"
             decoding="async"
           />

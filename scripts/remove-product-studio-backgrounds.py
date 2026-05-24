@@ -15,11 +15,13 @@ TARGETS = [
     ROOT / "nailspa-pdp/story/bottom-hero.png",
     ROOT / "nailspa-pdp/story/bottom-hook.png",
     *sorted((ROOT / "products/lay-n-go-lite-18").glob("*.png")),
+    *sorted((ROOT / "products/lay-n-go-lifestyle-44").glob("*.png")),
 ]
 
 SKIP = {
     "image1.png",
     *{p.name for p in (ROOT / "products/lay-n-go-lite-18").glob("lite-gallery-*.png")},
+    *{p.name for p in (ROOT / "products/lay-n-go-lifestyle-44").glob("lifestyle-gallery-*.png")},
 }
 
 TOL = 36
@@ -200,11 +202,30 @@ def build_litestrap_circle(src: Path, out: Path) -> None:
     print(f"  {out.relative_to(ROOT.parent)} (circle crop) — {100 * tr / len(out_im.getdata()):.0f}% transparent")
 
 
-def process_file(path: Path) -> None:
-    im = remove_background_rgba(Image.open(path))
+def process_file(path: Path, *, use_site_bg: bool = False) -> None:
+    src = Image.open(path)
+    if use_site_bg:
+        im = remove_background_rgba(
+            src,
+            bg_rgb=SITE_BG_RGB,
+            tol=50,
+            soft=22,
+            near_white_lum=244,
+            near_white_chroma=24,
+        )
+        im = trim_alpha_bbox(im, pad=8)
+    else:
+        im = remove_background_rgba(src)
     im.save(path, optimize=True)
     tr = sum(1 for p in im.getdata() if p[3] < 20)
     print(f"  {path.relative_to(ROOT.parent)} — {100 * tr / len(im.getdata()):.0f}% transparent")
+
+
+LIFESTYLE_STUDIO = {
+    p.name
+    for p in (ROOT / "products/lay-n-go-lifestyle-44").glob("*.png")
+    if p.name not in SKIP and p.name.startswith(("callout-", "feature-", "hero-", "play-"))
+}
 
 
 def main() -> None:
@@ -218,7 +239,8 @@ def main() -> None:
         if not path.is_file():
             print(f"  missing {path}")
             continue
-        process_file(path)
+        use_site = path.name in LIFESTYLE_STUDIO or "lay-n-go-lite-18" in str(path)
+        process_file(path, use_site_bg=use_site)
 
     if LITESTRAP_SRC.is_file():
         print("Building litestrap callout from user asset…")
