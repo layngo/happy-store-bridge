@@ -233,7 +233,7 @@ const MilitaryFirstResponder = () => {
                 to={`/product/${product.handle}`}
                 state={{ fromMilitaryFirstResponder: true }}
                 className={cn(
-                  "group relative flex min-h-0 min-w-0 cursor-pointer flex-col items-center gap-0 px-0.5 pb-1 pt-0 sm:px-1 sm:pb-2 md:px-2 md:pt-0",
+                  "group relative flex min-h-0 min-w-0 cursor-pointer flex-col items-center gap-0 px-0 pb-1 pt-0 sm:px-0.5 sm:pb-2 md:px-1.5 md:pt-0 lg:px-2",
                   "rounded-xl outline-none transition-colors duration-200",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0",
                 )}
@@ -245,8 +245,8 @@ const MilitaryFirstResponder = () => {
               >
                 <p
                   className={cn(
-                    "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] origin-center items-center justify-center px-0.5 text-pretty text-center max-md:leading-tight",
-                    "min-h-[3.25rem] shrink-0 md:mb-1.5 lg:min-h-[3.5rem]",
+                    "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] origin-center items-end justify-center px-0.5 text-pretty text-center max-md:leading-tight",
+                    "min-h-[3.25rem] shrink-0 pb-0 md:mb-1.5 lg:min-h-[3.5rem]",
                     "font-heading font-black uppercase leading-[0.92] tracking-tight text-foreground",
                     "text-[clamp(0.8125rem,3.2cqw+0.5rem,1.1875rem)] sm:text-[clamp(0.9375rem,2.85cqw+0.55rem,1.4375rem)]",
                     "transition-transform duration-200 ease-out will-change-transform",
