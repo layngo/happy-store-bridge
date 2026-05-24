@@ -15,15 +15,18 @@ const IMG_16 = "/military-first-responder-v2/defender-mini-16.png";
 const IMG_20 = "/military-first-responder-v2/defender-tactical-20.png";
 
 /** Largest disk (20″); 16″ derives from 16:20 — mirrors Cosmo V2 cap pattern (2 columns). */
-const DEFENDER_CIRCLE_BASE_REM = 34;
-
-/** Uniform bump so mats read larger inside each tile without breaking 16:20 ratio. */
-const DEFENDER_TILE_SCALE_BOOST = 1.18;
+const DEFENDER_CIRCLE_BASE_REM = 22;
 
 /** Open-mat width ÷ image width — diameter lines match mat edge to edge. */
 const DEFENDER_MAT_WIDTH_FRACTION: Record<16 | 20, number> = {
   16: 558 / 1024,
   20: 459 / 1024,
+};
+
+/** Visible mat region from image bottom (alpha bbox top → image bottom). */
+const DEFENDER_VISIBLE_HEIGHT_FRACTION: Record<16 | 20, number> = {
+  16: (1024 - 438) / 1024,
+  20: (1024 - 474) / 1024,
 };
 
 /** 20″ mat width — target mat scales as (inches / 20) × this. */
@@ -34,12 +37,6 @@ const DEFENDER_DISPLAY_SCALE: Record<16 | 20, number> = {
   20: 1.08,
 };
 
-/** Hero PNGs are square (1024×1024). */
-const DEFENDER_IMAGE_ASPECT_W_OVER_H: Record<16 | 20, number> = {
-  16: 1,
-  20: 1,
-};
-
 /** Stage width ÷ column cap (before fit). */
 function defenderStageWidthRatio(inches: 16 | 20): number {
   const matFill = DEFENDER_MAT_WIDTH_FRACTION[inches];
@@ -48,17 +45,17 @@ function defenderStageWidthRatio(inches: 16 | 20): number {
 
 /** If any stage >100% column width, every image clamps to full width — mats look the same size. */
 const DEFENDER_MAX_STAGE_WIDTH_RATIO = Math.max(defenderStageWidthRatio(16), defenderStageWidthRatio(20));
-const DEFENDER_STAGE_FIT = (1 / DEFENDER_MAX_STAGE_WIDTH_RATIO) * DEFENDER_TILE_SCALE_BOOST;
+const DEFENDER_STAGE_FIT = 1 / DEFENDER_MAX_STAGE_WIDTH_RATIO;
 
-function defenderStageHeightRatio(inches: 16 | 20): number {
-  return (defenderStageWidthRatio(inches) * DEFENDER_STAGE_FIT) / DEFENDER_IMAGE_ASPECT_W_OVER_H[inches];
+function defenderStageWidthCalc(
+  inches: 16 | 20,
+  cap: string,
+  stageFit: number = DEFENDER_STAGE_FIT,
+): string {
+  const matFill = DEFENDER_MAT_WIDTH_FRACTION[inches];
+  const displayScale = DEFENDER_DISPLAY_SCALE[inches];
+  return `calc((${inches} / 20) * ${cap} * ${DEFENDER_MAT_REF_FRACTION} * ${displayScale} / ${matFill} * ${stageFit})`;
 }
-
-/** Shared band height (20″ frame) — all mats bottom-align like Cosmo V2. */
-const DEFENDER_MAX_BAND_HEIGHT_RATIO = Math.max(
-  defenderStageHeightRatio(16),
-  defenderStageHeightRatio(20),
-);
 
 
 type SizeSpec = {
@@ -146,14 +143,17 @@ const MilitaryFirstResponder = () => {
     const cols = sizedProducts.map(({ spec, product }) => {
       const matFill = DEFENDER_MAT_WIDTH_FRACTION[spec.inches];
       const displayScale = DEFENDER_DISPLAY_SCALE[spec.inches];
-      const stageWidth = `calc((${spec.inches} / 20) * ${cap} * ${DEFENDER_MAT_REF_FRACTION} * ${displayScale} / ${matFill} * ${DEFENDER_STAGE_FIT})`;
+      const stageWidth = defenderStageWidthCalc(spec.inches, cap);
       const diameterWidth = `calc((${spec.inches} / 20) * ${cap} * ${DEFENDER_MAT_REF_FRACTION} * ${displayScale} * ${DEFENDER_STAGE_FIT})`;
+      /** Crop square PNG top padding (object-cover in a fixed-height clip). */
+      const imgMaxHeight = `calc(${stageWidth} * ${DEFENDER_VISIBLE_HEIGHT_FRACTION[spec.inches]})`;
       return {
         spec,
         product,
         preview: getCollectionGridSwatchPreview(product),
         stageWidth,
         diameterWidth,
+        imgMaxHeight,
       };
     });
     return cols.sort((a, b) => a.spec.inches - b.spec.inches);
@@ -224,10 +224,10 @@ const MilitaryFirstResponder = () => {
             className="mx-auto grid w-full max-w-6xl grid-cols-2 items-start divide-x divide-border/80"
             style={{
               containerType: "inline-size",
-              ["--defender-disk-band-min" as string]: `calc(min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2) * ${DEFENDER_MAX_BAND_HEIGHT_RATIO})`,
+              ["--defender-band-min" as string]: `max(calc(${defenderStageWidthCalc(16, `min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2)`)} * ${DEFENDER_VISIBLE_HEIGHT_FRACTION[16]}), calc(${defenderStageWidthCalc(20, `min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2)`)} * ${DEFENDER_VISIBLE_HEIGHT_FRACTION[20]}))`,
             }}
           >
-            {sizeColumns.map(({ spec, product, preview, stageWidth, diameterWidth }) => (
+            {sizeColumns.map(({ spec, product, preview, stageWidth, diameterWidth, imgMaxHeight }) => (
               <Link
                 key={product.id}
                 to={`/product/${product.handle}`}
@@ -240,13 +240,14 @@ const MilitaryFirstResponder = () => {
                 style={{
                   ["--defender-stage-w" as string]: stageWidth,
                   ["--defender-diameter-w" as string]: diameterWidth,
+                  ["--defender-img-max-h" as string]: imgMaxHeight,
                 }}
                 aria-label={`${spec.shortName}, ${spec.inches} inch — ${product.title}. Opens product page.`}
               >
                 <p
                   className={cn(
-                    "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] origin-center items-end justify-center px-0.5 text-pretty text-center max-md:leading-tight",
-                    "min-h-[3.25rem] shrink-0 pb-0 md:mb-1.5 lg:min-h-[3.5rem]",
+                    "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] origin-center items-center justify-center px-0.5 text-pretty text-center max-md:leading-tight",
+                    "min-h-[3.25rem] shrink-0 md:mb-1.5 lg:min-h-[3.5rem]",
                     "font-heading font-black uppercase leading-[0.92] tracking-tight text-foreground",
                     "text-[clamp(0.8125rem,3.2cqw+0.5rem,1.1875rem)] sm:text-[clamp(0.9375rem,2.85cqw+0.55rem,1.4375rem)]",
                     "transition-transform duration-200 ease-out will-change-transform",
@@ -255,19 +256,16 @@ const MilitaryFirstResponder = () => {
                 >
                   {spec.shortName}
                 </p>
-                {/*
-                  Shared band height = 20″ frame (cqw-capped); disks bottom-align like Cosmo V2.
-                */}
                 <div
                   className={cn(
                     "flex w-full min-w-0 flex-col items-center justify-end",
-                    "min-h-[var(--defender-disk-band-min)]",
+                    "min-h-[var(--defender-band-min)]",
                     "-mt-0.5 md:-mt-1",
                   )}
                 >
                   <div
                     className={cn(
-                      "mx-auto w-[var(--defender-stage-w)] max-w-full shrink-0 transition-[transform,filter] duration-200 ease-out will-change-transform",
+                      "mx-auto h-[var(--defender-img-max-h)] w-[var(--defender-stage-w)] max-w-full shrink-0 overflow-hidden transition-[transform,filter] duration-200 ease-out will-change-transform",
                       "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
                     )}
                   >
@@ -275,7 +273,7 @@ const MilitaryFirstResponder = () => {
                       src={spec.imageSrc}
                       alt={spec.imageAlt}
                       className={cn(
-                        "block h-auto w-full object-contain object-bottom",
+                        "block h-full w-full object-cover object-bottom",
                         "drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]",
                         "transition-[filter] duration-200 group-hover:drop-shadow-[0_5px_14px_rgba(0,0,0,0.34)]",
                       )}
