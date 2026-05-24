@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Normalize Lite stop-motion: paired frames share size + bottom-center position on 1024² canvas."""
+"""Normalize Lite stop-motion: paired frames share stage box, bottom Y, and horizontal centroid."""
 
 from __future__ import annotations
 
@@ -15,8 +15,8 @@ ASSETS = Path("/Users/tombro/.cursor/projects/Users-tombro-happy-store-bridge-1/
 
 CANVAS = 1024
 BOTTOM_PAD = 24
+MAX_W = CANVAS - 48
 
-# frame index -> optional source in assets (rebuild from originals when present)
 SOURCES = {
     "frame-01.png": ASSETS
     / "ChatGPT_Image_May_23__2026__09_11_12_PM__3_-3135a85f-e888-4d8c-a6c8-6935d228aa96.png",
@@ -54,31 +54,39 @@ def scale_to_height(im: Image.Image, target_h: int) -> Image.Image:
     w, h = im.size
     if h == 0:
         return im
-    new_w = max(1, round(w * target_h / h))
-    return im.resize((new_w, target_h), Image.Resampling.LANCZOS)
+    return im.resize((max(1, round(w * target_h / h)), target_h), Image.Resampling.LANCZOS)
 
 
-def fill_box(im: Image.Image, box_w: int, box_h: int) -> Image.Image:
-    """Uniform scale so product fills the shared stage box (same visual weight per pair)."""
+def fit_in_box(im: Image.Image, box_w: int, box_h: int) -> Image.Image:
     w, h = im.size
     if w == 0 or h == 0:
         return im
-    scale = max(box_w / w, box_h / h)
+    scale = min(box_w / w, box_h / h)
     nw = max(1, round(w * scale))
     nh = max(1, round(h * scale))
     scaled = im.resize((nw, nh), Image.Resampling.LANCZOS)
-    x0 = max(0, (nw - box_w) // 2)
-    y0 = max(0, (nh - box_h) // 2)
-    return scaled.crop((x0, y0, x0 + box_w, y0 + box_h))
+    box = Image.new("RGBA", (box_w, box_h), (0, 0, 0, 0))
+    box.alpha_composite(scaled, ((box_w - nw) // 2, (box_h - nh) // 2))
+    return box
+
+
+def alpha_centroid_x(im: Image.Image) -> float:
+    px = im.load()
+    w, h = im.size
+    sum_x = 0.0
+    count = 0
+    for y in range(h):
+        for x in range(w):
+            if px[x, y][3] > 20:
+                sum_x += x
+                count += 1
+    return sum_x / count if count else w / 2
 
 
 def load_frame(name: str, rmbg) -> Image.Image:
     path = FRAMES_DIR / name
     src = SOURCES.get(name)
-    if src and src.is_file():
-        im = Image.open(src)
-    else:
-        im = Image.open(path)
+    im = Image.open(src if src and src.is_file() else path)
     im = rmbg.remove_background_rgba(
         im,
         bg_rgb=rmbg.SITE_BG_RGB,
@@ -90,6 +98,12 @@ def load_frame(name: str, rmbg) -> Image.Image:
     return rmbg.trim_alpha_bbox(im, pad=8)
 
 
+def paste_on_canvas(piece: Image.Image, paste_x: int, paste_y: int) -> Image.Image:
+    canvas = Image.new("RGBA", (CANVAS, CANVAS), (0, 0, 0, 0))
+    canvas.alpha_composite(piece, (paste_x, paste_y))
+    return canvas
+
+
 def align_pair(name_a: str, name_b: str, rmbg) -> None:
     a = crop_content(load_frame(name_a, rmbg))
     b = crop_content(load_frame(name_b, rmbg))
@@ -99,33 +113,38 @@ def align_pair(name_a: str, name_b: str, rmbg) -> None:
     b = scale_to_height(b, target_h)
     target_w = max(a.size[0], b.size[0])
 
-    max_w = CANVAS - 48
-    if target_w > max_w:
-        shrink = max_w / target_w
-        target_w = max_w
+    if target_w > MAX_W:
+        shrink = MAX_W / target_w
+        target_w = MAX_W
         target_h = max(1, round(target_h * shrink))
         a = scale_to_height(crop_content(load_frame(name_a, rmbg)), target_h)
         b = scale_to_height(crop_content(load_frame(name_b, rmbg)), target_h)
         target_w = max(a.size[0], b.size[0])
 
-    a = fill_box(a, target_w, target_h)
-    b = fill_box(b, target_w, target_h)
+    a_box = fit_in_box(a, target_w, target_h)
+    b_box = fit_in_box(b, target_w, target_h)
 
     paste_y = CANVAS - BOTTOM_PAD - target_h
-    paste_x = (CANVAS - target_w) // 2
+    base_x = (CANVAS - target_w) // 2
 
-    for name, piece in ((name_a, a), (name_b, b)):
-        canvas = Image.new("RGBA", (CANVAS, CANVAS), (0, 0, 0, 0))
-        canvas.alpha_composite(piece, (paste_x, paste_y))
-        out = FRAMES_DIR / name
-        canvas.save(out, optimize=True)
-        print(f"  {name} box {target_w}x{target_h} at ({paste_x},{paste_y})")
+    # Match horizontal visual center of green (A) on blue (B)
+    dx = round(alpha_centroid_x(a_box) - alpha_centroid_x(b_box))
+    paste_a = base_x
+    paste_b = max(0, min(CANVAS - target_w, base_x + dx))
+
+    paste_on_canvas(a_box, paste_a, paste_y).save(FRAMES_DIR / name_a, optimize=True)
+    paste_on_canvas(b_box, paste_b, paste_y).save(FRAMES_DIR / name_b, optimize=True)
+
+    print(
+        f"  {name_a}@{paste_a} {name_b}@{paste_b} "
+        f"box {target_w}x{target_h} centroid_dx={dx}"
+    )
 
 
 def main() -> None:
     rmbg = load_rmbg()
     FRAMES_DIR.mkdir(parents=True, exist_ok=True)
-    print("Aligning stop-motion pairs (green / blue same stage per step)…")
+    print("Aligning stop-motion pairs…")
     for a, b in PAIRS:
         align_pair(a, b, rmbg)
     print("Done.")
