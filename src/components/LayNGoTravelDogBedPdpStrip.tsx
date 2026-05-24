@@ -8,6 +8,7 @@ const STORY_MAT_LIFESTYLE = `${PET_STORY_BASE}/story-mat-lifestyle.png`;
 const STORY_CARRY = `${PET_STORY_BASE}/story-carry.png`;
 const STORY_FOLD = `${PET_STORY_BASE}/story-fold.png`;
 const STORY_STRAP = `${PET_STORY_BASE}/story-strap.png`;
+const PAW_TRAIL = `${PET_STORY_BASE}/paw-trail.png`;
 
 /** Editorial strip below the Travel Dog Bed buy box: headline, full-bleed pair, then three-step row with Large-style arrows. */
 export function LayNGoTravelDogBedPdpStrip() {
@@ -50,6 +51,19 @@ export function LayNGoTravelDogBedPdpStrip() {
             decoding="async"
           />
         </div>
+      </div>
+
+      <div
+        className="relative mx-auto -mt-2 flex w-full max-w-[min(100%,72rem)] justify-center bg-white px-4 py-5 sm:-mt-4 sm:px-8 sm:py-7 md:py-8"
+        aria-hidden
+      >
+        <img
+          src={PAW_TRAIL}
+          alt=""
+          className="h-auto w-full max-w-[min(100%,48rem)] object-contain opacity-[0.92]"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
 
       <div

@@ -124,13 +124,10 @@ const DEFENDER_MINI_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
 ];
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
-const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
+const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v11";
 
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
-
-/** Lifestyle 44″ diagram + callout pins + diameter line (single transform keeps alignment). */
-const LIFESTYLE_44_DIAGRAM_SCALE_CLASS = "mx-auto w-full origin-top scale-[0.95] overflow-visible";
 
 const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v12";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
@@ -216,8 +213,9 @@ const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
   },
   anchors: {
     cord: { x: 50, y: -26 + LIFESTYLE_CORD_CALLOUT_DOWN_75PX_DY },
-    lip: { x: 9, y: 48 },
-    mesh: DEFAULT_LAYOUT.anchors.mesh,
+    /** Lip / mesh thumbnails — farther toward viewport edges; mat dots unchanged. */
+    lip: { x: 2, y: 48 },
+    mesh: { x: 95, y: 46 },
     handle: DEFAULT_LAYOUT.anchors.handle,
   },
 };
@@ -365,12 +363,12 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       heroAlt:
         "Lay-n-Go Lifestyle 44 inch backpack activity play mat from above with building blocks, mesh pockets, and straps",
       diameterInches: 44,
-      containerMinHClass: "min-h-[min(76.8vh,768px)]",
-      heroWidthClass: "w-[min(75.2vw,736px)]",
-      /** Pull up less than before + top padding so ticks clear the mat; 44″ bracket width is `lifestyle-44` in `DiameterLine`. */
+      containerMinHClass: "min-h-[min(62vh,624px)]",
+      heroWidthClass: "w-[min(64vw,624px)]",
+      /** Light pull-up only — heavy negative margin was drawing the bracket through the mat rim. */
       dimensionWrapClass:
-        "relative z-30 mx-auto -mt-[3rem] w-[min(75.2vw,736px)] pt-5 pb-6 sm:-mt-[3.5rem] sm:pt-6 sm:pb-7 md:-mt-[4.5rem] md:pt-7 md:pb-8 lg:-mt-[5.25rem] lg:pt-8 lg:pb-10",
-      mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
+        "relative z-30 mx-auto -mt-4 w-[min(64vw,624px)] pb-6 sm:-mt-6 md:-mt-8 lg:-mt-10 sm:pb-7 md:pb-8 lg:pb-10",
+      mobileHeroMaxClass: "max-w-[min(82vw,23rem)]",
       meshCalloutSrc: CALLOUT_MESH_LIFESTYLE,
       lipCalloutSrc: CALLOUT_LIP_LIFESTYLE,
       cordCalloutSrc: CALLOUT_CORD_LIFESTYLE,
@@ -479,8 +477,8 @@ function DiameterLine({
     variant === "traveler-20";
 
   const bracketWidthClass = lifestyle44
-    ? /** Mobile vs md+ tuned separately — hero mat is nearly full width; old 74→48% read far inside the rim */
-      "mx-auto w-[min(100%,94%)] sm:w-[min(100%,92%)] md:w-[min(100%,88%)] lg:w-[min(100%,85%)]"
+    ? /** Lifestyle hero: mat fills most of the frame — bracket tracks the blue disc, not PNG width */
+      "mx-auto w-[min(100%,90%)] sm:w-[min(100%,88%)] md:w-[min(100%,86%)] lg:w-[min(100%,84%)]"
     : lite18
       ? /** Lite hero: mat is inset in the asset — narrow bracket so ticks track the green disc (mobile + desktop). */
         "mx-auto w-[min(100%,72%)] sm:w-[min(100%,70%)] md:w-[min(100%,68%)] lg:w-[min(100%,66%)]"
@@ -501,9 +499,21 @@ function DiameterLine({
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
       <div className={cn("flex items-end justify-center", bracketWidthClass)}>
-        <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
+        <div
+          className={cn(
+            "w-px shrink-0 bg-neutral-900",
+            lifestyle44 ? "h-7 sm:h-8 md:h-9" : "h-10 sm:h-12 md:h-14",
+          )}
+          aria-hidden
+        />
         <div className="mb-0 h-px min-w-0 flex-1 bg-neutral-900" aria-hidden />
-        <div className="h-10 w-px shrink-0 bg-neutral-900 sm:h-12 md:h-14" aria-hidden />
+        <div
+          className={cn(
+            "w-px shrink-0 bg-neutral-900",
+            lifestyle44 ? "h-7 sm:h-8 md:h-9" : "h-10 sm:h-12 md:h-14",
+          )}
+          aria-hidden
+        />
       </div>
       <p
         className={cn(
@@ -1131,7 +1141,6 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       <div
         className={cn(
           "flex flex-col items-center gap-2 md:hidden",
-          variant === "lifestyle-44" && LIFESTYLE_44_DIAGRAM_SCALE_CLASS,
           diagramUsesLifestyleChrome(variant) &&
             (variant === "lifestyle-44" || variant === "lite-18" ? "gap-2 pb-8" : "gap-3 pb-6"),
         )}
@@ -1143,11 +1152,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             "w-full object-contain",
             config.mobileHeroMaxClass,
             matProductImgClass(variant),
-            diagramUsesLifestyleChrome(variant) &&
-              variant !== "lite-18" &&
-              variant !== "lifestyle-44" &&
-              cn("rounded-xl", diagramMatSurfaceBg(variant)),
-          )}
+              diagramUsesLifestyleChrome(variant) &&
+                variant !== "lite-18" &&
+                variant !== "lifestyle-44" &&
+                cn("rounded-xl", diagramMatSurfaceBg(variant)),
+            )}
           loading="lazy"
           decoding="async"
         />
@@ -1158,7 +1167,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             "w-full",
             config.mobileHeroMaxClass,
             variant === "large-60" && "-mt-2 shrink-0 pb-0",
-            variant === "lifestyle-44" && "mt-0 shrink-0 pb-2 sm:pb-3",
+            variant === "lifestyle-44" && "mt-4 shrink-0 pb-2 sm:mt-5 sm:pb-3",
             variant === "lite-18" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
             variant === "defender-mini-16" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
             variant === "defender-tactical-20" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
@@ -1251,7 +1260,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       <div
         className={cn(
           "mx-auto hidden w-full md:block md:px-2",
-          variant === "defender-mini-16" ? "max-w-[min(100%,1200px)]" : "max-w-[1100px]",
+          variant === "defender-mini-16"
+            ? "max-w-[min(100%,1200px)]"
+            : variant === "lifestyle-44"
+              ? "max-w-[min(100%,1280px)]"
+              : "max-w-[1100px]",
           variant === "lifestyle-44" ? "pb-14 md:pb-16" : diagramUsesLifestyleChrome(variant) && "pb-10 md:pb-12",
         )}
       >
@@ -1260,9 +1273,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         ) : variant === "defender-mini-16" ? (
           <DefenderMini16CalloutStage heroSrc={config.heroSrc} heroAlt={config.heroAlt} />
         ) : (
-        <div
-          className={cn(variant === "lifestyle-44" && LIFESTYLE_44_DIAGRAM_SCALE_CLASS)}
-        >
+        <div>
         <div
           ref={containerRef}
           className={cn(
