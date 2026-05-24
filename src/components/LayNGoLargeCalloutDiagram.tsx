@@ -124,7 +124,7 @@ const DEFENDER_MINI_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
 ];
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
-const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v13";
+const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v14";
 
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
@@ -214,9 +214,9 @@ function lifestyleStageXFromMatPercent(matX: number) {
   return LIFESTYLE_STAGE_MAT_MARGIN_PCT + (matX / 100) * LIFESTYLE_STAGE_MAT_WIDTH_PCT;
 }
 
-/** Lip / mesh callout centers — in left/right whitespace beside the centered mat. */
-const LIFESTYLE_LIP_ANCHOR_X = 14;
-const LIFESTYLE_MESH_ANCHOR_X = 86;
+/** Lip / mesh callout centers — deep in left/right whitespace (≈28% into each gutter at max stage). */
+const LIFESTYLE_LIP_ANCHOR_X = LIFESTYLE_STAGE_MAT_MARGIN_PCT * 0.28;
+const LIFESTYLE_MESH_ANCHOR_X = 100 - LIFESTYLE_STAGE_MAT_MARGIN_PCT * 0.28;
 
 /** Lifestyle defaults: cord/lip/mesh tuned for 44″ hero + callout edit mode. */
 const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
