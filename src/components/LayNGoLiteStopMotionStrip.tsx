@@ -85,7 +85,7 @@ export function LayNGoLiteStopMotionStrip({ className }: { className?: string })
           <StopMotionPlayer
             frames={COLOR_B_FRAMES}
             frameIndex={frameIndex}
-            className="mx-auto w-full md:mx-0 md:w-[min(100%,20rem)]"
+            className="mx-auto w-full origin-bottom scale-95 md:mx-0 md:w-[min(100%,20rem)]"
           />
         </div>
 
