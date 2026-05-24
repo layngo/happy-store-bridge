@@ -124,7 +124,7 @@ const DEFENDER_MINI_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
 ];
 
 const STORAGE_KEY_LARGE = "lay-n-go-large-callout-layout-v5";
-const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v12";
+const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v13";
 
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
@@ -203,19 +203,36 @@ const LIFESTYLE_CORD_CALLOUT_DOWN_75PX_DY = (75 / 768) * 100;
 /** ~50px left on a typical md stage, as 0–100 viewBox x delta. */
 const LIFESTYLE_LIP_DOT_DX_50PX = 5.55;
 
+/**
+ * Lifestyle desktop stage is wider than the hero mat (mat centered in stage).
+ * Defaults use stage-space 0–100; mat-local x converts via `lifestyleStageXFromMatPercent`.
+ */
+const LIFESTYLE_STAGE_MAT_WIDTH_PCT = (624 / 1280) * 100;
+const LIFESTYLE_STAGE_MAT_MARGIN_PCT = (100 - LIFESTYLE_STAGE_MAT_WIDTH_PCT) / 2;
+
+function lifestyleStageXFromMatPercent(matX: number) {
+  return LIFESTYLE_STAGE_MAT_MARGIN_PCT + (matX / 100) * LIFESTYLE_STAGE_MAT_WIDTH_PCT;
+}
+
+/** Lip / mesh callout centers — in left/right whitespace beside the centered mat. */
+const LIFESTYLE_LIP_ANCHOR_X = 14;
+const LIFESTYLE_MESH_ANCHOR_X = 86;
+
 /** Lifestyle defaults: cord/lip/mesh tuned for 44″ hero + callout edit mode. */
 const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
   dots: {
     cord: { x: 50, y: -4 + LIFESTYLE_CORD_CALLOUT_DOWN_75PX_DY },
-    lip: { x: 24 - LIFESTYLE_LIP_DOT_DX_50PX + LIFESTYLE_MESH_POCKET_DX_20PX, y: 49 },
-    mesh: { x: 52, y: 50 },
+    lip: {
+      x: lifestyleStageXFromMatPercent(24 - LIFESTYLE_LIP_DOT_DX_50PX + LIFESTYLE_MESH_POCKET_DX_20PX),
+      y: 49,
+    },
+    mesh: { x: lifestyleStageXFromMatPercent(52), y: 50 },
     handle: DEFAULT_LAYOUT.dots.handle,
   },
   anchors: {
     cord: { x: 50, y: -26 + LIFESTYLE_CORD_CALLOUT_DOWN_75PX_DY },
-    /** Lip / mesh thumbnails — farther toward viewport edges; mat dots unchanged. */
-    lip: { x: 8, y: 48 },
-    mesh: { x: 95, y: 46 },
+    lip: { x: LIFESTYLE_LIP_ANCHOR_X, y: 48 },
+    mesh: { x: LIFESTYLE_MESH_ANCHOR_X, y: 46 },
     handle: DEFAULT_LAYOUT.anchors.handle,
   },
 };
@@ -1280,7 +1297,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           className={cn(
             "relative mx-auto",
             lifestyle44
-              ? "w-[min(64vw,624px)] min-h-0 overflow-visible"
+              ? "w-full max-w-[min(100%,80rem)] min-h-0 overflow-visible"
               : cn("w-full", config.containerMinHClass),
             diagramUsesLifestyleChrome(variant) &&
               variant !== "lite-18" &&
@@ -1392,7 +1409,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           <div
             className={cn(
               lifestyle44
-                ? "relative z-10 w-full"
+                ? "relative z-10 mx-auto w-[min(64vw,624px)]"
                 : cn(
                     "pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2",
                     config.heroWidthClass,
