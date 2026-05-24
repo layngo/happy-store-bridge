@@ -15,7 +15,10 @@ const IMG_16 = "/military-first-responder-v2/defender-mini-16.png";
 const IMG_20 = "/military-first-responder-v2/defender-tactical-20.png";
 
 /** Largest disk (20″); 16″ derives from 16:20 — mirrors Cosmo V2 cap pattern (2 columns). */
-const DEFENDER_CIRCLE_BASE_REM = 28;
+const DEFENDER_CIRCLE_BASE_REM = 34;
+
+/** Uniform bump so mats read larger inside each tile without breaking 16:20 ratio. */
+const DEFENDER_TILE_SCALE_BOOST = 1.18;
 
 /** Open-mat width ÷ image width — diameter lines match mat edge to edge. */
 const DEFENDER_MAT_WIDTH_FRACTION: Record<16 | 20, number> = {
@@ -27,8 +30,14 @@ const DEFENDER_MAT_WIDTH_FRACTION: Record<16 | 20, number> = {
 const DEFENDER_MAT_REF_FRACTION = DEFENDER_MAT_WIDTH_FRACTION[20];
 
 const DEFENDER_DISPLAY_SCALE: Record<16 | 20, number> = {
+  16: 1.06,
+  20: 1.08,
+};
+
+/** Hero PNGs are square; band height tracks stage width per column. */
+const DEFENDER_IMAGE_ASPECT_W_OVER_H: Record<16 | 20, number> = {
   16: 1,
-  20: 1.03,
+  20: 1,
 };
 
 /** Stage width ÷ column cap (before fit). */
@@ -39,12 +48,7 @@ function defenderStageWidthRatio(inches: 16 | 20): number {
 
 /** If any stage >100% column width, every image clamps to full width — mats look the same size. */
 const DEFENDER_MAX_STAGE_WIDTH_RATIO = Math.max(defenderStageWidthRatio(16), defenderStageWidthRatio(20));
-const DEFENDER_STAGE_FIT = 1 / DEFENDER_MAX_STAGE_WIDTH_RATIO;
-
-const DEFENDER_MAX_BAND_HEIGHT_RATIO = Math.max(
-  defenderStageWidthRatio(16) * DEFENDER_STAGE_FIT,
-  defenderStageWidthRatio(20) * DEFENDER_STAGE_FIT,
-);
+const DEFENDER_STAGE_FIT = (1 / DEFENDER_MAX_STAGE_WIDTH_RATIO) * DEFENDER_TILE_SCALE_BOOST;
 
 
 type SizeSpec = {
@@ -134,12 +138,14 @@ const MilitaryFirstResponder = () => {
       const displayScale = DEFENDER_DISPLAY_SCALE[spec.inches];
       const stageWidth = `calc((${spec.inches} / 20) * ${cap} * ${DEFENDER_MAT_REF_FRACTION} * ${displayScale} / ${matFill} * ${DEFENDER_STAGE_FIT})`;
       const diameterWidth = `calc((${spec.inches} / 20) * ${cap} * ${DEFENDER_MAT_REF_FRACTION} * ${displayScale} * ${DEFENDER_STAGE_FIT})`;
+      const bandMinHeight = `calc((${spec.inches} / 20) * ${cap} * ${DEFENDER_MAT_REF_FRACTION} * ${displayScale} / ${matFill} * ${DEFENDER_STAGE_FIT} / ${DEFENDER_IMAGE_ASPECT_W_OVER_H[spec.inches]})`;
       return {
         spec,
         product,
         preview: getCollectionGridSwatchPreview(product),
         stageWidth,
         diameterWidth,
+        bandMinHeight,
       };
     });
     return cols.sort((a, b) => a.spec.inches - b.spec.inches);
@@ -203,29 +209,27 @@ const MilitaryFirstResponder = () => {
         </div>
 
         <section
-          className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-2 pb-5 pt-3 sm:px-6 sm:pb-7 sm:pt-4"
+          className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-1 pb-4 pt-2 sm:px-4 sm:pb-6 sm:pt-3"
           aria-label="DEFENDER size selector"
         >
           <div
-            className="mx-auto grid w-full max-w-6xl grid-cols-2 items-start divide-x divide-border/80"
-            style={{
-              containerType: "inline-size",
-              ["--defender-disk-band-min" as string]: `calc(min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2) * ${DEFENDER_MAX_BAND_HEIGHT_RATIO})`,
-            }}
+            className="mx-auto grid w-full max-w-6xl grid-cols-2 items-stretch divide-x divide-border/80"
+            style={{ containerType: "inline-size" }}
           >
-            {sizeColumns.map(({ spec, product, preview, stageWidth, diameterWidth }) => (
+            {sizeColumns.map(({ spec, product, preview, stageWidth, diameterWidth, bandMinHeight }) => (
               <Link
                 key={product.id}
                 to={`/product/${product.handle}`}
                 state={{ fromMilitaryFirstResponder: true }}
                 className={cn(
-                  "group relative flex min-h-0 min-w-0 cursor-pointer flex-col items-center gap-0 px-0 pb-1 pt-0 sm:px-0.5 sm:pb-2 md:px-1.5 md:pt-0 lg:px-2",
+                  "group relative flex min-h-0 min-w-0 cursor-pointer flex-col items-center gap-0 px-0.5 pb-1 pt-0 sm:px-1 sm:pb-2 md:px-2 md:pt-0",
                   "rounded-xl outline-none transition-colors duration-200",
                   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0",
                 )}
                 style={{
                   ["--defender-stage-w" as string]: stageWidth,
                   ["--defender-diameter-w" as string]: diameterWidth,
+                  ["--defender-disk-band-min" as string]: bandMinHeight,
                 }}
                 aria-label={`${spec.shortName}, ${spec.inches} inch — ${product.title}. Opens product page.`}
               >
@@ -241,19 +245,15 @@ const MilitaryFirstResponder = () => {
                 >
                   {spec.shortName}
                 </p>
-                {/*
-                  Shared band = 20″ frame; disks bottom-align so mats sit on one baseline for size compare.
-                */}
                 <div
                   className={cn(
-                    "flex w-full min-w-0 flex-col items-center justify-end",
+                    "flex w-full min-w-0 flex-1 flex-col items-center justify-end",
                     "min-h-[var(--defender-disk-band-min)]",
-                    "-mt-0.5 md:-mt-1",
                   )}
                 >
                   <div
                     className={cn(
-                      "mx-auto w-[var(--defender-stage-w)] shrink-0 bg-transparent transition-[transform,filter] duration-200 ease-out will-change-transform",
+                      "mx-auto w-[var(--defender-stage-w)] max-w-full shrink-0 bg-transparent transition-[transform,filter] duration-200 ease-out will-change-transform",
                       "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
                     )}
                   >
@@ -261,7 +261,7 @@ const MilitaryFirstResponder = () => {
                       src={spec.imageSrc}
                       alt={spec.imageAlt}
                       className={cn(
-                        "block h-auto w-full object-contain object-bottom",
+                        "block h-auto w-full max-h-[var(--defender-disk-band-min)] object-contain object-bottom",
                         "drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]",
                         "transition-[filter] duration-200 group-hover:drop-shadow-[0_5px_14px_rgba(0,0,0,0.34)]",
                       )}
