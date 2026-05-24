@@ -33,10 +33,10 @@ export function LayNGoTravelDogBedPdpStrip() {
         ever need to carry
       </h2>
 
-      {/* Top product pair + paw trail in middle whitespace (bag z-30 above paws) */}
-      <div className="relative mt-8 w-full pb-28 sm:mt-10 sm:pb-36 md:pb-40">
+      {/* Story block above three-step overlap; paws over white, PNGs above paws */}
+      <div className="relative z-10 mt-8 w-full pb-28 sm:mt-10 sm:pb-36 md:pb-40">
         <div
-          className="pointer-events-none absolute inset-x-0 z-10 flex justify-center px-4 sm:px-8"
+          className="pointer-events-none absolute inset-x-0 z-[15] flex justify-center px-4 sm:px-8"
           style={{ top: "clamp(7rem, 28vw, 13rem)" }}
           aria-hidden
         >
@@ -45,18 +45,18 @@ export function LayNGoTravelDogBedPdpStrip() {
             alt=""
             width={1180}
             height={500}
-            className="h-auto w-full max-w-[min(100%,52rem)] object-contain opacity-[0.92]"
+            className="relative z-[15] h-auto w-full max-w-[min(100%,52rem)] object-contain opacity-[0.92]"
             loading="lazy"
             decoding="async"
           />
         </div>
 
-        <div className="relative z-20 grid w-full grid-cols-2 gap-0">
+        <div className="relative grid w-full grid-cols-2 gap-0">
           <div className="flex min-h-0 w-full flex-col items-start pt-[100px]">
             <img
               src={STORY_MAT_FLAT}
               alt="Lay-n-Go pet mat with brown quilted surface and red lip, organized with collar, leash, rope toy, and accessories"
-              className="relative z-20 block h-auto w-[80%] max-w-none object-cover object-left"
+              className="relative z-[25] block h-auto w-[80%] max-w-none object-cover object-left"
               loading="lazy"
               decoding="async"
             />
@@ -65,7 +65,7 @@ export function LayNGoTravelDogBedPdpStrip() {
             <img
               src={STORY_MAT_LIFESTYLE}
               alt="Red Lay-n-Go pet bag with wide strap, front pocket showing logo, phone, and retractable leash"
-              className="relative z-30 ml-auto block h-auto w-[80%] max-w-none object-cover object-right"
+              className="relative z-[25] ml-auto block h-auto w-[80%] max-w-none object-cover object-right"
               loading="lazy"
               decoding="async"
             />
@@ -74,7 +74,7 @@ export function LayNGoTravelDogBedPdpStrip() {
       </div>
 
       <div
-        className="relative z-20 mx-auto -mt-20 flex w-full max-w-[min(100%,90rem)] flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 pt-2 sm:-mt-24 sm:gap-1 sm:px-1 sm:pt-4 md:-mt-28 md:gap-2 lg:gap-3"
+        className="relative z-0 mx-auto -mt-20 flex w-full max-w-[min(100%,90rem)] flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden bg-transparent px-0.5 pt-2 sm:-mt-24 sm:gap-1 sm:px-1 sm:pt-4 md:-mt-28 md:gap-2 lg:gap-3"
         aria-label="How the Lay-n-Go Travel Dog Bed packs up in three steps"
       >
         <div className={threeStepImageColClassName}>
