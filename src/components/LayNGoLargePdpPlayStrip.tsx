@@ -131,7 +131,10 @@ function DefenderFlankStrip({
           <img
             src={rightSrc}
             alt={rightAlt}
-            className={cn(liteFlankSize, "absolute bottom-0 right-0 object-right")}
+            className={cn(
+              liteFlankSize,
+              "absolute bottom-0 right-0 origin-bottom-right object-right scale-110",
+            )}
             loading="lazy"
             decoding="async"
           />
