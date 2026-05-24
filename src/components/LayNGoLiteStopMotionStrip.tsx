@@ -27,16 +27,13 @@ type StopMotionPlayerProps = {
   frames: readonly { src: string; alt: string }[];
   frameIndex: number;
   className?: string;
-  /** When true, renders ~10% smaller (blue / reversible side). */
-  compact?: boolean;
 };
 
-function StopMotionPlayer({ frames, frameIndex, className, compact = false }: StopMotionPlayerProps) {
+function StopMotionPlayer({ frames, frameIndex, className }: StopMotionPlayerProps) {
   return (
     <div
       className={cn(
         "relative aspect-square w-full max-w-[min(100%,20rem)] origin-bottom sm:max-w-xs md:max-w-sm",
-        compact && "scale-90",
         className,
       )}
     >
@@ -80,12 +77,15 @@ export function LayNGoLiteStopMotionStrip({ className }: { className?: string })
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:max-w-7xl">
         <div className="flex flex-col items-stretch gap-8 sm:gap-10 md:flex-row md:items-end md:justify-center md:gap-6 lg:gap-12">
-          <StopMotionPlayer frames={COLOR_A_FRAMES} frameIndex={frameIndex} className="mx-auto md:mx-0" />
+          <StopMotionPlayer
+            frames={COLOR_A_FRAMES}
+            frameIndex={frameIndex}
+            className="mx-auto w-full md:mx-0 md:w-[min(100%,20rem)]"
+          />
           <StopMotionPlayer
             frames={COLOR_B_FRAMES}
             frameIndex={frameIndex}
-            compact
-            className="mx-auto md:mx-0"
+            className="mx-auto w-full md:mx-0 md:w-[min(100%,20rem)]"
           />
         </div>
 
