@@ -6,6 +6,7 @@ import {
   LayNGoMatDiameterLine,
   type LayNGoCalloutDiagramVariant,
 } from "@/components/LayNGoLargeCalloutDiagram";
+import { LayNGoLiteStopMotionStrip } from "@/components/LayNGoLiteStopMotionStrip";
 
 const HEADLINE = "Play for hours, clean up in seconds";
 const HEADLINE_IMAGE = "/products/lay-n-go-large-pdp/play-blue.png";
@@ -580,7 +581,15 @@ export function LayNGoLargePdpPlayStrip({
         {headline}
       </h2>
 
-      {calloutVariant && FLANK_STRIPS_BY_VARIANT[calloutVariant] ? (
+      {calloutVariant === "lite-18" ? (
+        <>
+          <LayNGoLargeCalloutDiagram variant="lite-18" />
+          <LayNGoLiteStopMotionStrip />
+          {FLANK_STRIPS_BY_VARIANT["lite-18"] ? (
+            <DefenderFlankStrip {...FLANK_STRIPS_BY_VARIANT["lite-18"]!} variant="lite-18" />
+          ) : null}
+        </>
+      ) : calloutVariant && FLANK_STRIPS_BY_VARIANT[calloutVariant] ? (
         <DefenderFlankStrip {...FLANK_STRIPS_BY_VARIANT[calloutVariant]!} variant={calloutVariant} />
       ) : null}
 
@@ -720,7 +729,9 @@ export function LayNGoLargePdpPlayStrip({
             </div>
           ) : null}
 
-          <LayNGoLargeCalloutDiagram variant={calloutVariant} />
+          {calloutVariant !== "lite-18" ? (
+            <LayNGoLargeCalloutDiagram variant={calloutVariant} />
+          ) : null}
         </>
       ) : null}
     </section>
