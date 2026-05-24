@@ -8,7 +8,6 @@ const STORY_MAT_LIFESTYLE = `${PET_STORY_BASE}/story-mat-lifestyle.png`;
 const STORY_CARRY = `${PET_STORY_BASE}/story-carry.png`;
 const STORY_FOLD = `${PET_STORY_BASE}/story-fold.png`;
 const STORY_STRAP = `${PET_STORY_BASE}/story-strap.png`;
-const PAW_TRAIL = `${PET_STORY_BASE}/paw-trail.png`;
 
 /** Editorial strip below the Travel Dog Bed buy box: headline, full-bleed pair, then three-step row with Large-style arrows. */
 export function LayNGoTravelDogBedPdpStrip() {
@@ -32,42 +31,25 @@ export function LayNGoTravelDogBedPdpStrip() {
         ever need to carry
       </h2>
 
-      {/*
-        Single compositing stage (no grid columns — they split the paw trail at 50%).
-        Stack: paw trail → product PNGs on top where they overlap.
-      */}
-      <div className="relative mx-auto mt-8 w-full max-w-[min(100%,72rem)] px-4 sm:mt-10 sm:px-8">
-        <div className="relative w-full min-h-[min(72vw,22rem)] sm:min-h-[24rem] md:min-h-[28rem]">
-          <img
-            src={PAW_TRAIL}
-            alt=""
-            width={1024}
-            height={681}
-            className="pointer-events-none absolute left-1/2 top-[38%] z-[1] h-auto w-[min(100%,52rem)] max-w-none -translate-x-1/2 object-contain opacity-[0.92] sm:top-[40%]"
-            loading="lazy"
-            decoding="async"
-          />
-
-          <img
-            src={STORY_MAT_FLAT}
-            alt="Lay-n-Go pet mat with brown quilted surface and red lip, organized with collar, leash, rope toy, and accessories"
-            className="pointer-events-none absolute left-0 top-0 z-[2] block h-auto w-[min(44%,20rem)] max-w-none object-contain object-left"
-            loading="lazy"
-            decoding="async"
-          />
-
-          <img
-            src={STORY_MAT_LIFESTYLE}
-            alt="Red Lay-n-Go pet bag with wide strap, front pocket showing logo, phone, and retractable leash"
-            className="pointer-events-none absolute right-0 top-0 z-[2] block h-auto w-[min(44%,20rem)] max-w-none object-contain object-right"
-            loading="lazy"
-            decoding="async"
-          />
-        </div>
+      <div className="mt-8 grid w-full grid-cols-2 gap-0 sm:mt-10">
+        <img
+          src={STORY_MAT_FLAT}
+          alt="Lay-n-Go pet mat with brown quilted surface and red lip, organized with collar, leash, rope toy, and accessories"
+          className="block h-auto w-full max-w-none object-cover object-left"
+          loading="lazy"
+          decoding="async"
+        />
+        <img
+          src={STORY_MAT_LIFESTYLE}
+          alt="Red Lay-n-Go pet bag with wide strap, front pocket showing logo, phone, and retractable leash"
+          className="block h-auto w-full max-w-none object-cover object-right"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
 
       <div
-        className="relative mx-auto mt-6 flex w-full max-w-[min(100%,90rem)] flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 sm:mt-8 sm:gap-1 sm:px-1 md:gap-2 lg:gap-3"
+        className="relative mx-auto mt-14 flex w-full max-w-[min(100%,90rem)] flex-row flex-nowrap items-center justify-center gap-0.5 overflow-x-hidden px-0.5 pt-12 sm:mt-16 sm:gap-1 sm:px-1 sm:pt-14 md:gap-2 lg:gap-3"
         aria-label="How the Lay-n-Go Travel Dog Bed packs up in three steps"
       >
         <div className={threeStepImageColClassName}>
