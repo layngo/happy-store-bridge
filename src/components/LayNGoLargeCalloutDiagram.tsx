@@ -129,6 +129,9 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v10";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
+/** Lifestyle 44″ diagram + callout pins + diameter line (single transform keeps alignment). */
+const LIFESTYLE_44_DIAGRAM_SCALE_CLASS = "mx-auto w-full origin-top scale-[0.95] overflow-visible";
+
 const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v12";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
@@ -366,7 +369,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       heroWidthClass: "w-[min(75.2vw,736px)]",
       /** Pull up less than before + top padding so ticks clear the mat; 44″ bracket width is `lifestyle-44` in `DiameterLine`. */
       dimensionWrapClass:
-        "relative z-20 mx-auto -mt-[3.25rem] w-[min(75.2vw,736px)] pt-5 pb-2 sm:-mt-[3.75rem] sm:pt-6 sm:pb-3 md:-mt-[5rem] md:pt-7 md:pb-4 lg:-mt-[6rem] lg:pt-8 lg:pb-5",
+        "relative z-30 mx-auto -mt-[3rem] w-[min(75.2vw,736px)] pt-5 pb-6 sm:-mt-[3.5rem] sm:pt-6 sm:pb-7 md:-mt-[4.5rem] md:pt-7 md:pb-8 lg:-mt-[5.25rem] lg:pt-8 lg:pb-10",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
       meshCalloutSrc: CALLOUT_MESH_LIFESTYLE,
       lipCalloutSrc: CALLOUT_LIP_LIFESTYLE,
@@ -491,8 +494,8 @@ function DiameterLine({
       ? /** Traveler callout hero — mat nearly full width; mobile vs md+ tuned separately */
         "mx-auto w-[min(100%,93%)] sm:w-[min(100%,91%)] md:w-[min(100%,88%)] lg:w-[min(100%,85%)]"
     : large60
-      ? /** Large hero: mat is inset in the asset on mobile — bracket tracks visible disc, not full image width */
-        "mx-auto w-[min(100%,66%)] sm:w-[min(100%,70%)] md:w-[min(100%,86%)] lg:w-[min(100%,84%)]"
+      ? /** Large hero: mat is inset in the PNG — bracket must match the blue disc, not the full image width */
+        "mx-auto w-[min(100%,58%)] sm:w-[min(100%,60%)] md:w-[min(100%,62%)] lg:w-[min(100%,61%)]"
       : "w-full max-w-md sm:max-w-lg";
 
   return (
@@ -504,13 +507,19 @@ function DiameterLine({
       </div>
       <p
         className={cn(
-          "font-heading font-semibold tabular-nums text-neutral-900",
-          lifestyleChrome && !lite18 && !defenderMini16 && !defenderTactical20 && "mt-2 text-xl sm:text-2xl",
+          "relative z-30 shrink-0 font-heading font-semibold tabular-nums text-neutral-900",
+          lifestyle44 && "mt-3 text-xl sm:mt-3.5 sm:text-2xl",
+          lifestyleChrome &&
+            !lifestyle44 &&
+            !lite18 &&
+            !defenderMini16 &&
+            !defenderTactical20 &&
+            "mt-2 text-xl sm:text-2xl",
           (lite18 || defenderMini16 || defenderTactical20) && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
           !lifestyleChrome && "mt-1 text-lg sm:text-xl",
         )}
       >
-        {inches}&quot;
+        {lifestyle44 ? `${inches} inches` : `${inches}\u2033`}
       </p>
     </div>
   );
@@ -1122,8 +1131,9 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       <div
         className={cn(
           "flex flex-col items-center gap-2 md:hidden",
+          variant === "lifestyle-44" && LIFESTYLE_44_DIAGRAM_SCALE_CLASS,
           diagramUsesLifestyleChrome(variant) &&
-            (variant === "lifestyle-44" || variant === "lite-18" ? "gap-2 pb-6" : "gap-3 pb-6"),
+            (variant === "lifestyle-44" || variant === "lite-18" ? "gap-2 pb-8" : "gap-3 pb-6"),
         )}
       >
         <img
@@ -1148,7 +1158,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             "w-full",
             config.mobileHeroMaxClass,
             variant === "large-60" && "-mt-2 shrink-0 pb-0",
-            variant === "lifestyle-44" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
+            variant === "lifestyle-44" && "mt-0 shrink-0 pb-2 sm:pb-3",
             variant === "lite-18" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
             variant === "defender-mini-16" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
             variant === "defender-tactical-20" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
@@ -1242,7 +1252,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         className={cn(
           "mx-auto hidden w-full md:block md:px-2",
           variant === "defender-mini-16" ? "max-w-[min(100%,1200px)]" : "max-w-[1100px]",
-          diagramUsesLifestyleChrome(variant) && "pb-10 md:pb-12",
+          variant === "lifestyle-44" ? "pb-14 md:pb-16" : diagramUsesLifestyleChrome(variant) && "pb-10 md:pb-12",
         )}
       >
         {variant === "defender-tactical-20" ? (
@@ -1250,6 +1260,9 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         ) : variant === "defender-mini-16" ? (
           <DefenderMini16CalloutStage heroSrc={config.heroSrc} heroAlt={config.heroAlt} />
         ) : (
+        <div
+          className={cn(variant === "lifestyle-44" && LIFESTYLE_44_DIAGRAM_SCALE_CLASS)}
+        >
         <div
           ref={containerRef}
           className={cn(
@@ -1433,11 +1446,17 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             />
           ))}
         </div>
-        )}
-
         <div className={config.dimensionWrapClass}>
           <DiameterLine inches={config.diameterInches} variant={variant} />
         </div>
+        </div>
+        )}
+
+        {(variant === "defender-tactical-20" || variant === "defender-mini-16") && (
+          <div className={config.dimensionWrapClass}>
+            <DiameterLine inches={config.diameterInches} variant={variant} />
+          </div>
+        )}
       </div>
 
       {editorMode && !usesFixedDefenderCalloutStage(variant) ? (

@@ -1840,7 +1840,7 @@ const ProductDetail = () => {
               aria-label={
                 layNGoLifestyleGallery
                   ? isLayNGoLarge60
-                    ? "Lay-n-Go Large product video"
+                    ? "Lay-n-Go Large product video and lifestyle gallery"
                     : isNailspa18Product(product.handle)
                       ? "NAILSPA product video and lifestyle gallery"
                       : "Product image showcase"
@@ -1859,6 +1859,11 @@ const ProductDetail = () => {
                         <NailspaPdpHeroVideo />
                       </div>
                     ) : null}
+                    {isLayNGoLarge60 ? (
+                      <div className="mb-8 w-full sm:mb-10">
+                        <LayNGoLargePdpHeroVideo />
+                      </div>
+                    ) : null}
                     <ProductLifestyleGallery
                       key={product.id}
                       slides={layNGoLifestyleGallery.slides}
@@ -1870,11 +1875,6 @@ const ProductDetail = () => {
                           : undefined
                       }
                     />
-                    {isLayNGoLarge60 ? (
-                      <div className="mt-8 w-full sm:mt-10">
-                        <LayNGoLargePdpHeroVideo />
-                      </div>
-                    ) : null}
                   </div>
                 ) : (
                   <div

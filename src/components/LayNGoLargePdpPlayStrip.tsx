@@ -572,7 +572,7 @@ export function LayNGoLargePdpPlayStrip({
   return (
     <section
       className={cn(
-        "relative left-1/2 -ml-[50vw] w-screen overflow-x-clip px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8",
+        "relative left-1/2 -ml-[50vw] w-screen overflow-x-clip overflow-y-visible px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8",
         calloutVariant === "lite-18" || calloutVariant === "lifestyle-44"
           ? "bg-background"
           : "bg-white",
