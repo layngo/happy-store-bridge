@@ -18,7 +18,8 @@ BOTTOM_PAD = 24
 
 # frame index -> optional source in assets (rebuild from originals when present)
 SOURCES = {
-    "frame-01.png": ASSETS / "composer-annotation-437eb74a-dc17-4ea3-aaa8-a6fe315c4231.png",
+    "frame-01.png": ASSETS
+    / "ChatGPT_Image_May_23__2026__09_11_12_PM__3_-3135a85f-e888-4d8c-a6c8-6935d228aa96.png",
     "frame-02.png": ASSETS / "composer-annotation-23a6cebb-ea23-4e39-ba4d-0ea62f1fac2c.png",
     "frame-03.png": ASSETS / "composer-annotation-0a72f1a9-b211-4ffe-8493-47defe738ef9.png",
     "frame-04.png": ASSETS / "ChatGPT_Image_May_23__2026__09_08_43_PM__1_-f301522f-778d-4094-97b6-df86677a807f.png",
@@ -57,12 +58,18 @@ def scale_to_height(im: Image.Image, target_h: int) -> Image.Image:
     return im.resize((new_w, target_h), Image.Resampling.LANCZOS)
 
 
-def center_in_box(im: Image.Image, box_w: int, box_h: int) -> Image.Image:
-    box = Image.new("RGBA", (box_w, box_h), (0, 0, 0, 0))
-    x = (box_w - im.width) // 2
-    y = (box_h - im.height) // 2
-    box.alpha_composite(im, (x, y))
-    return box
+def fill_box(im: Image.Image, box_w: int, box_h: int) -> Image.Image:
+    """Uniform scale so product fills the shared stage box (same visual weight per pair)."""
+    w, h = im.size
+    if w == 0 or h == 0:
+        return im
+    scale = max(box_w / w, box_h / h)
+    nw = max(1, round(w * scale))
+    nh = max(1, round(h * scale))
+    scaled = im.resize((nw, nh), Image.Resampling.LANCZOS)
+    x0 = max(0, (nw - box_w) // 2)
+    y0 = max(0, (nh - box_h) // 2)
+    return scaled.crop((x0, y0, x0 + box_w, y0 + box_h))
 
 
 def load_frame(name: str, rmbg) -> Image.Image:
@@ -92,19 +99,17 @@ def align_pair(name_a: str, name_b: str, rmbg) -> None:
     b = scale_to_height(b, target_h)
     target_w = max(a.size[0], b.size[0])
 
-    # Cap width so wide open mats still fit canvas
     max_w = CANVAS - 48
     if target_w > max_w:
         shrink = max_w / target_w
         target_w = max_w
         target_h = max(1, round(target_h * shrink))
-        a = scale_to_height(crop_content(a), target_h)
-        b = scale_to_height(crop_content(b), target_h)
-        a = center_in_box(a, target_w, target_h)
-        b = center_in_box(b, target_w, target_h)
-    else:
-        a = center_in_box(a, target_w, target_h)
-        b = center_in_box(b, target_w, target_h)
+        a = scale_to_height(crop_content(load_frame(name_a, rmbg)), target_h)
+        b = scale_to_height(crop_content(load_frame(name_b, rmbg)), target_h)
+        target_w = max(a.size[0], b.size[0])
+
+    a = fill_box(a, target_w, target_h)
+    b = fill_box(b, target_w, target_h)
 
     paste_y = CANVAS - BOTTOM_PAD - target_h
     paste_x = (CANVAS - target_w) // 2
