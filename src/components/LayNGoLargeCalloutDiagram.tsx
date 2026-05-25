@@ -451,7 +451,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       heroWidthClass: "w-[min(75.2vw,736px)]",
       /** Bracket sits just under the mat (no overlap on drawstring); width tracks hero. */
       dimensionWrapClass:
-        "relative z-20 mx-auto flex w-[min(75.2vw,736px)] flex-col items-center -mt-[2.25rem] pt-1 pb-2 sm:-mt-[2.75rem] sm:pt-2 sm:pb-3 md:-mt-[3.5rem] md:pt-3 md:pb-4 lg:-mt-[4rem] lg:pt-4 lg:pb-5",
+        "relative z-20 mx-auto flex w-[min(75.2vw,736px)] flex-col items-center -mt-[1.5rem] pt-2 pb-2 sm:-mt-[1.75rem] sm:pt-3 sm:pb-3 md:-mt-[2.5rem] md:pt-4 md:pb-4 lg:-mt-[3rem] lg:pt-5 lg:pb-5",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP_LITE,
@@ -556,7 +556,7 @@ function DiameterLine({
           !lifestyleChrome && "mt-1 text-lg sm:text-xl",
         )}
       >
-        {lifestyle44 ? `${inches} inches` : `${inches}\u2033`}
+        {`${inches}\u2033`}
       </p>
     </div>
   );
@@ -1197,7 +1197,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               : cn("w-full", config.mobileHeroMaxClass),
             variant === "large-60" && "-mt-2 shrink-0 pb-0",
             variant === "lifestyle-44" && "mt-4 shrink-0 pb-2 sm:mt-5 sm:pb-3",
-            variant === "lite-18" && "mt-3 shrink-0 pb-1 sm:mt-4 sm:pb-2",
+            variant === "lite-18" && "mt-5 shrink-0 pb-1 sm:mt-6 sm:pb-2",
             variant === "defender-mini-16" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
             variant === "defender-tactical-20" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
           )}

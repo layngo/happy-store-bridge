@@ -170,7 +170,7 @@ function DefenderFlankStrip({
               className={cn(
                 "block h-auto max-w-none object-contain object-left",
                 variant === "defender-mini-16"
-                  ? "w-[200%] max-w-none -translate-x-1/2"
+                  ? "w-full max-w-none origin-bottom-left -translate-x-1/2"
                   : "w-full",
               )}
               loading="lazy"
