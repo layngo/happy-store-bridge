@@ -27,12 +27,21 @@ const DEFENDER_TACTICAL_CALLOUT_MESH =
   "/products/lay-n-go-tactical-bag-20/callout-mesh.png";
 const DEFENDER_TACTICAL_CALLOUT_ZIPPER =
   "/products/lay-n-go-tactical-bag-20/callout-zipper.png";
-const DEFENDER_TACTICAL_CALLOUT_STRAP =
-  "/products/lay-n-go-tactical-bag-20/callout-strap.png";
-/** Circular callout thumbs (white bg) — Defender Mini 16″ diagram. */
-const DEFENDER_CALLOUT_STRAP = "/products/lay-n-go-defender-callouts/callout-strap.png";
-const DEFENDER_CALLOUT_LIP = "/products/lay-n-go-defender-callouts/callout-lip.png";
-const DEFENDER_CALLOUT_DRAWSTRING = "/products/lay-n-go-defender-callouts/callout-drawstring.png";
+/** Circular callout thumbs — Defender Mini + Tactical lip/cord/strap (trimmed PNGs). */
+const DEFENDER_CALLOUT_ASSET_V = "3";
+const DEFENDER_CALLOUT_STRAP = `/products/lay-n-go-defender-callouts/callout-strap.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
+const DEFENDER_CALLOUT_LIP = `/products/lay-n-go-defender-callouts/callout-lip.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
+const DEFENDER_CALLOUT_DRAWSTRING = `/products/lay-n-go-defender-callouts/callout-drawstring.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
+
+/** Show full thumb art in circles (not `object-cover`, which crops padded PNGs). */
+const DEFENDER_THUMB_IMG_CLASS = "object-contain object-center";
+
+function defenderThumbClassName(key: string): string {
+  if (key === "strap" || key === "lip") {
+    return cn(DEFENDER_THUMB_IMG_CLASS, "scale-[1.08]");
+  }
+  return DEFENDER_THUMB_IMG_CLASS;
+}
 
 /** Defender Tactical hero callout stage — matches `hero-callout-main.png` (1024×1024). */
 const DEFENDER_TACTICAL_CALLOUT_VB = { w: 1024, h: 1024 } as const;
@@ -56,7 +65,7 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
     label: "Dual mesh pockets",
     thumbSrc: DEFENDER_TACTICAL_CALLOUT_MESH,
     thumbAlt: "Mesh pockets on the Defender Tactical interior",
-    thumbClassName: "object-cover object-center",
+    thumbClassName: defenderThumbClassName("mesh"),
     labelAbove: true,
   },
   {
@@ -64,15 +73,15 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
     label: "Zipper pocket",
     thumbSrc: DEFENDER_TACTICAL_CALLOUT_ZIPPER,
     thumbAlt: "Zipper pocket closeup on Defender Tactical",
-    thumbClassName: "object-cover object-center",
+    thumbClassName: defenderThumbClassName("zipper"),
     labelAbove: true,
   },
   {
     key: "strap",
     label: "Reinforced carry strap",
-    thumbSrc: DEFENDER_TACTICAL_CALLOUT_STRAP,
+    thumbSrc: DEFENDER_CALLOUT_STRAP,
     thumbAlt: "Reinforced carry strap on Defender Tactical",
-    thumbClassName: "object-cover object-center",
+    thumbClassName: defenderThumbClassName("strap"),
     labelAbove: true,
   },
   {
@@ -80,7 +89,7 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
     label: "Raised containment lip",
     thumbSrc: DEFENDER_CALLOUT_LIP,
     thumbAlt: "Raised containment lip on Defender Tactical",
-    thumbClassName: "object-cover object-center",
+    thumbClassName: defenderThumbClassName("lip"),
     labelAbove: false,
   },
   {
@@ -88,7 +97,7 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
     label: "Drawstring & cord lock",
     thumbSrc: DEFENDER_CALLOUT_DRAWSTRING,
     thumbAlt: "Drawstring and cord lock on Defender Tactical",
-    thumbClassName: "object-cover object-center",
+    thumbClassName: defenderThumbClassName("cord"),
     labelAbove: false,
   },
 ];
@@ -102,7 +111,7 @@ const DEFENDER_MINI_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
     label: "Raised containment lip",
     thumbSrc: DEFENDER_CALLOUT_LIP,
     thumbAlt: "Raised containment lip on Defender Mini",
-    thumbClassName: "object-cover object-center",
+    thumbClassName: defenderThumbClassName("lip"),
     labelAbove: true,
   },
   {
@@ -110,7 +119,7 @@ const DEFENDER_MINI_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
     label: "Reinforced carry strap",
     thumbSrc: DEFENDER_CALLOUT_STRAP,
     thumbAlt: "Reinforced carry strap on Defender Mini",
-    thumbClassName: "object-cover object-center",
+    thumbClassName: defenderThumbClassName("strap"),
     labelAbove: true,
   },
   {
@@ -118,7 +127,7 @@ const DEFENDER_MINI_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
     label: "Drawstring & cord lock",
     thumbSrc: DEFENDER_CALLOUT_DRAWSTRING,
     thumbAlt: "Drawstring and cord lock on Defender Mini",
-    thumbClassName: "object-cover object-center",
+    thumbClassName: defenderThumbClassName("cord"),
     labelAbove: false,
   },
 ];
@@ -440,9 +449,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 18,
       containerMinHClass: "min-h-[min(76.8vh,768px)]",
       heroWidthClass: "w-[min(75.2vw,736px)]",
-      /** Tighter vertical offset to hero than Lifestyle; 18″ bracket width matches mat in `DiameterLine`. */
+      /** Bracket sits just under the mat (no overlap on drawstring); width tracks hero. */
       dimensionWrapClass:
-        "relative z-20 mx-auto -mt-[4.25rem] w-[min(75.2vw,736px)] pt-3 pb-2 sm:-mt-[4.75rem] sm:pt-4 sm:pb-3 md:-mt-[6.25rem] md:pt-5 md:pb-4 lg:-mt-[7.25rem] lg:pt-6 lg:pb-5",
+        "relative z-20 mx-auto flex w-[min(75.2vw,736px)] flex-col items-center -mt-[2.25rem] pt-1 pb-2 sm:-mt-[2.75rem] sm:pt-2 sm:pb-3 md:-mt-[3.5rem] md:pt-3 md:pb-4 lg:-mt-[4rem] lg:pt-4 lg:pb-5",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP_LITE,
@@ -497,8 +506,8 @@ function DiameterLine({
     ? /** Lifestyle hero: mat fills most of the frame — bracket tracks the blue disc, not PNG width */
       "mx-auto w-[min(100%,90%)] sm:w-[min(100%,88%)] md:w-[min(100%,86%)] lg:w-[min(100%,84%)]"
     : lite18
-      ? /** Lite hero: mat is inset in the asset — narrow bracket so ticks track the green disc (mobile + desktop). */
-        "mx-auto w-[min(100%,72%)] sm:w-[min(100%,70%)] md:w-[min(100%,68%)] lg:w-[min(100%,66%)]"
+      ? /** Lite hero: mat fills the frame — bracket spans the green disc (centered under product). */
+        "mx-auto w-[min(100%,94%)] sm:w-[min(100%,93%)] md:w-[min(100%,92%)]"
       : defenderMini16
         ? /** Defender 16″ hero: mat nearly fills the frame — bracket tracks the olive disc. */
           "mx-auto w-[min(100%,88%)] sm:w-[min(100%,86%)] md:w-[min(100%,84%)] lg:w-[min(100%,82%)]"
@@ -542,7 +551,8 @@ function DiameterLine({
             !defenderMini16 &&
             !defenderTactical20 &&
             "mt-2 text-xl sm:text-2xl",
-          (lite18 || defenderMini16 || defenderTactical20) && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
+          lite18 && "mt-2 text-xl sm:mt-2.5 sm:text-2xl",
+          (defenderMini16 || defenderTactical20) && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
           !lifestyleChrome && "mt-1 text-lg sm:text-xl",
         )}
       >
@@ -1182,11 +1192,12 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           inches={config.diameterInches}
           variant={variant}
           className={cn(
-            "w-full",
-            config.mobileHeroMaxClass,
+            variant === "lite-18"
+              ? "mx-auto w-full max-w-[min(90vw,25.5rem)]"
+              : cn("w-full", config.mobileHeroMaxClass),
             variant === "large-60" && "-mt-2 shrink-0 pb-0",
             variant === "lifestyle-44" && "mt-4 shrink-0 pb-2 sm:mt-5 sm:pb-3",
-            variant === "lite-18" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
+            variant === "lite-18" && "mt-3 shrink-0 pb-1 sm:mt-4 sm:pb-2",
             variant === "defender-mini-16" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
             variant === "defender-tactical-20" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
           )}

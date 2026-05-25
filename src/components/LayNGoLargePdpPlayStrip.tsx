@@ -116,6 +116,12 @@ function DefenderFlankStrip({
       "w-[min(55.2vw,32rem)] sm:w-[min(50.6vw,28rem)] md:w-[min(48vw,30rem)]",
       "max-h-[min(59.8vh,621px)] sm:max-h-[min(66.7vh,713px)] md:max-h-[min(71.3vh,782px)]",
     );
+    /** Mobile right flank: 40% smaller than `liteFlankSize`, still pinned to the right edge. */
+    const liteFlankSizeRight = cn(
+      "block h-auto max-w-none shrink-0 object-contain object-bottom",
+      "w-[min(33.12vw,19.2rem)] max-h-[min(35.88vh,373px)]",
+      "sm:w-[min(50.6vw,28rem)] sm:max-h-[min(66.7vh,713px)] md:w-[min(48vw,30rem)] md:max-h-[min(71.3vh,782px)]",
+    );
 
     return (
       <div
@@ -134,8 +140,8 @@ function DefenderFlankStrip({
             src={rightSrc}
             alt={rightAlt}
             className={cn(
-              liteFlankSize,
-              "absolute bottom-0 right-0 origin-bottom-right object-right scale-110",
+              liteFlankSizeRight,
+              "absolute bottom-0 right-0 origin-bottom-right object-right sm:scale-110",
             )}
             loading="lazy"
             decoding="async"
@@ -148,24 +154,48 @@ function DefenderFlankStrip({
   if (isDefenderFlank) {
     return (
       <div
-        className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 sm:mt-10"
+        className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 overflow-x-clip sm:mt-10"
         aria-label={ariaLabel}
       >
         <div className="grid w-full grid-cols-2 gap-0">
-          <img
-            src={leftSrc}
-            alt={leftAlt}
-            className="block h-auto w-full max-w-none object-contain object-left"
-            loading="lazy"
-            decoding="async"
-          />
-          <img
-            src={rightSrc}
-            alt={rightAlt}
-            className="block h-auto w-full max-w-none object-contain object-right"
-            loading="lazy"
-            decoding="async"
-          />
+          <div
+            className={cn(
+              "min-h-0 w-full",
+              variant === "defender-mini-16" ? "overflow-hidden" : undefined,
+            )}
+          >
+            <img
+              src={leftSrc}
+              alt={leftAlt}
+              className={cn(
+                "block h-auto max-w-none object-contain object-left",
+                variant === "defender-mini-16"
+                  ? "w-[200%] max-w-none -translate-x-1/2"
+                  : "w-full",
+              )}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div
+            className={cn(
+              "flex w-full items-end justify-end",
+              variant === "defender-mini-16" && "min-h-0",
+            )}
+          >
+            <img
+              src={rightSrc}
+              alt={rightAlt}
+              className={cn(
+                "block h-auto max-w-none object-contain object-right",
+                variant === "defender-mini-16"
+                  ? "w-[80%]"
+                  : "w-full",
+              )}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
         </div>
       </div>
     );
