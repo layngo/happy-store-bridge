@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,16 @@ import {
   LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS,
 } from "@/lib/layNGoPlayMat";
 import { cn } from "@/lib/utils";
+import {
+  clientToViewBoxPoint,
+  defenderCalloutTransform,
+  defenderLayoutForVariant,
+  defenderLeaderKeysForVariant,
+  loadDefenderLayout,
+  viewBoxPointToStagePos,
+  type DefenderLayoutState,
+  type DefenderLeaderEnd,
+} from "@/lib/defenderCalloutLayout";
 
 const HERO_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/hero-callout-main.png";
 const HERO_CALLOUT_LIFESTYLE = "/products/lay-n-go-lifestyle-44/hero-callout-main.png";
@@ -141,10 +151,10 @@ const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v12";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
-const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v1";
+const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v2";
 const LAYOUT_SYNC_EVENT_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout";
 
-const STORAGE_KEY_DEFENDER_TACTICAL = "lay-n-go-tactical-bag-20-callout-layout-v1";
+const STORAGE_KEY_DEFENDER_TACTICAL = "lay-n-go-tactical-bag-20-callout-layout-v2";
 const LAYOUT_SYNC_EVENT_DEFENDER_TACTICAL = "lay-n-go-tactical-bag-20-callout-layout";
 
 /** Circular diagram callouts: thin white rim + black drop shadow. Use on outer wrapper; inner needs `overflow-hidden rounded-full` for the image. */
@@ -663,7 +673,15 @@ function DefenderHeroCalloutCluster({
   thumbAlt,
   thumbClassName,
   className,
-}: DefenderHeroCalloutItem & { className?: string }) {
+  style,
+  editorMode,
+  onPointerDown,
+}: DefenderHeroCalloutItem & {
+  className?: string;
+  style?: React.CSSProperties;
+  editorMode?: boolean;
+  onPointerDown?: (e: React.PointerEvent<HTMLDivElement>) => void;
+}) {
   const labelEl = (
     <p className="font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
       {label}
@@ -671,7 +689,15 @@ function DefenderHeroCalloutCluster({
   );
 
   return (
-    <div className={cn("z-20 flex flex-col items-center text-center", className)}>
+    <div
+      className={cn(
+        "absolute z-20 flex flex-col items-center text-center",
+        className,
+        editorMode && "cursor-grab touch-none",
+      )}
+      style={style}
+      onPointerDown={onPointerDown}
+    >
       {labelAbove ? (
         <>
           <div className="mb-2">{labelEl}</div>
@@ -687,73 +713,221 @@ function DefenderHeroCalloutCluster({
   );
 }
 
-function DefenderTactical20CalloutStage({
-  heroSrc,
-  heroAlt,
+function DefenderLeaderDragHandle({
+  label,
+  point,
+  stageRef,
+  viewBox,
+  dotClass,
+  onMove,
 }: {
-  heroSrc: string;
-  heroAlt: string;
+  label: string;
+  point: { x: number; y: number };
+  stageRef: React.RefObject<HTMLDivElement | null>;
+  viewBox: string;
+  dotClass: string;
+  onMove: (next: { x: number; y: number }) => void;
 }) {
-  const { w: vbW, h: vbH } = DEFENDER_TACTICAL_CALLOUT_VB;
-  const mesh = DEFENDER_TACTICAL_CALLOUTS[0];
-  const zipper = DEFENDER_TACTICAL_CALLOUTS[1];
-  const strap = DEFENDER_TACTICAL_CALLOUTS[2];
-  const lip = DEFENDER_TACTICAL_CALLOUTS[3];
-  const cord = DEFENDER_TACTICAL_CALLOUTS[4];
+  const [dragging, setDragging] = useState(false);
+  const [stageTick, setStageTick] = useState(0);
+
+  useLayoutEffect(() => {
+    const sync = () => setStageTick((n) => n + 1);
+    sync();
+    window.addEventListener("resize", sync);
+    window.addEventListener("scroll", sync, true);
+    return () => {
+      window.removeEventListener("resize", sync);
+      window.removeEventListener("scroll", sync, true);
+    };
+  }, [stageRef, point.x, point.y, viewBox]);
+
+  void stageTick;
+  const stageRect = stageRef.current?.getBoundingClientRect();
+  if (!stageRect) return null;
+
+  const pos = viewBoxPointToStagePos(point, stageRect, viewBox);
+
+  const moveFromEvent = (e: React.PointerEvent) => {
+    if (!stageRef.current) return;
+    const r = stageRef.current.getBoundingClientRect();
+    onMove(clientToViewBoxPoint(e.clientX, e.clientY, r, viewBox));
+  };
 
   return (
-    <div className="relative mx-auto w-full max-w-4xl overflow-visible">
+    <div
+      role="button"
+      tabIndex={0}
+      title={label}
+      aria-label={label}
+      className={cn(
+        "pointer-events-auto absolute z-[60] flex touch-none cursor-grab flex-col items-center p-2 active:cursor-grabbing",
+        dragging && "scale-110",
+      )}
+      style={{
+        left: `${pos.x}%`,
+        top: `${pos.y}%`,
+        transform: "translate(-50%, -50%)",
+      }}
+      onPointerDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (stageRef.current) stageRef.current.setPointerCapture(e.pointerId);
+        setDragging(true);
+        moveFromEvent(e);
+      }}
+      onPointerMove={(e) => {
+        if (!dragging) return;
+        moveFromEvent(e);
+      }}
+      onPointerUp={() => setDragging(false)}
+      onPointerCancel={() => setDragging(false)}
+    >
+      <span className="mb-0.5 whitespace-nowrap rounded bg-white/95 px-1 py-0.5 text-[9px] font-semibold text-neutral-800 shadow-sm ring-1 ring-neutral-200">
+        {label}
+      </span>
+      <span
+        className={cn(
+          "block h-7 w-7 shrink-0 rounded-full border-2 border-white shadow-lg ring-2 ring-amber-400/80",
+          dotClass,
+        )}
+      />
+    </div>
+  );
+}
+
+function EditableDefenderCalloutStage({
+  variant,
+  heroSrc,
+  heroAlt,
+  layout,
+  onLayoutChange,
+  editorMode,
+  activeLeaderKey,
+}: {
+  variant: "defender-mini-16" | "defender-tactical-20";
+  heroSrc: string;
+  heroAlt: string;
+  layout: DefenderLayoutState;
+  onLayoutChange: (next: DefenderLayoutState) => void;
+  editorMode: boolean;
+  activeLeaderKey: string;
+}) {
+  const stageRef = useRef<HTMLDivElement>(null);
+  const vb =
+    variant === "defender-mini-16" ? DEFENDER_MINI_CALLOUT_VB : DEFENDER_TACTICAL_CALLOUT_VB;
+  const viewBox = `0 0 ${vb.w} ${vb.h}`;
+  const calloutSpecs =
+    variant === "defender-mini-16" ? DEFENDER_MINI_CALLOUTS : DEFENDER_TACTICAL_CALLOUTS;
+  const maxW = variant === "defender-mini-16" ? "max-w-5xl" : "max-w-4xl";
+
+  const patchLeader = (key: string, patch: Partial<DefenderLeaderEnd>) => {
+    onLayoutChange({
+      ...layout,
+      leaders: { ...layout.leaders, [key]: { ...layout.leaders[key], ...patch } },
+    });
+  };
+
+  const patchCallout = (key: string, x: number, y: number) => {
+    onLayoutChange({
+      ...layout,
+      callouts: {
+        ...layout.callouts,
+        [key]: { ...layout.callouts[key], x, y },
+      },
+    });
+  };
+
+  const activeLeader = layout.leaders[activeLeaderKey];
+
+  return (
+    <div ref={stageRef} className={cn("relative mx-auto w-full overflow-visible", maxW)}>
       <img
         src={heroSrc}
         alt={heroAlt}
         className="block h-auto w-full object-contain"
-        width={vbW}
-        height={vbH}
+        width={vb.w}
+        height={vb.h}
         loading="lazy"
         decoding="async"
       />
 
       <svg
-        className="pointer-events-none absolute inset-0 z-10 h-full w-full"
-        viewBox={`0 0 ${vbW} ${vbH}`}
+        className={cn(
+          "absolute inset-0 z-10 h-full w-full",
+          editorMode ? "pointer-events-none" : "pointer-events-none",
+        )}
+        viewBox={viewBox}
         preserveAspectRatio="xMidYMid meet"
         aria-hidden
       >
-        <DefenderTacticalLeaderPair x1={148} y1={918} x2={372} y2={768} />
-        <DefenderTacticalMatDot cx={372} cy={768} />
-        <DefenderTacticalLeaderPair x1={148} y1={948} x2={612} y2={768} />
-        <DefenderTacticalMatDot cx={612} cy={768} />
-        <DefenderTacticalLeaderPair x1={892} y1={168} x2={748} y2={278} />
-        <DefenderTacticalMatDot cx={748} cy={278} />
-        <DefenderTacticalLeaderPair x1={132} y1={152} x2={868} y2={158} />
-        <DefenderTacticalMatDot cx={868} cy={158} />
-        <DefenderTacticalLeaderPair x1={908} y1={912} x2={248} y2={218} />
-        <DefenderTacticalMatDot cx={248} cy={218} />
-        {/* Drawstring: mid-left callout → cord lock (~7 o'clock on mat) */}
-        <DefenderTacticalLeaderPair x1={112} y1={560} x2={178} y2={892} />
-        <DefenderTacticalMatDot cx={178} cy={892} />
+        {Object.entries(layout.leaders).map(([key, leader]) => (
+          <g key={key} opacity={editorMode && key !== activeLeaderKey ? 0.28 : 1}>
+            <DefenderTacticalLeaderPair x1={leader.x1} y1={leader.y1} x2={leader.x2} y2={leader.y2} />
+            <DefenderTacticalMatDot cx={leader.x2} cy={leader.y2} />
+          </g>
+        ))}
       </svg>
 
-      <DefenderHeroCalloutCluster
-        {...mesh}
-        className="absolute bottom-[3%] left-0 sm:left-[0.5%]"
-      />
-      <DefenderHeroCalloutCluster
-        {...zipper}
-        className="absolute right-0 top-[2.5%] sm:right-[0.5%] sm:top-[3%]"
-      />
-      <DefenderHeroCalloutCluster
-        {...strap}
-        className="absolute left-0 top-[2.5%] sm:left-[0.5%] sm:top-[3%]"
-      />
-      <DefenderHeroCalloutCluster
-        {...lip}
-        className="absolute bottom-[3%] right-0 sm:right-[0.5%]"
-      />
-      <DefenderHeroCalloutCluster
-        {...cord}
-        className="absolute left-[-1rem] top-[56%] sm:left-[-1.25rem] sm:top-[58%]"
-      />
+      {calloutSpecs.map((spec) => {
+        const pos = layout.callouts[spec.key];
+        if (!pos) return null;
+        return (
+          <DefenderHeroCalloutCluster
+            key={spec.key}
+            {...spec}
+            editorMode={editorMode}
+            style={{
+              left: `${pos.x}%`,
+              top: `${pos.y}%`,
+              transform: defenderCalloutTransform(pos.anchor),
+            }}
+            onPointerDown={
+              editorMode
+                ? (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const stage = stageRef.current;
+                    if (!stage) return;
+                    const move = (ev: PointerEvent) => {
+                      const r = stage.getBoundingClientRect();
+                      const x = Math.max(0, Math.min(100, ((ev.clientX - r.left) / r.width) * 100));
+                      const y = Math.max(0, Math.min(100, ((ev.clientY - r.top) / r.height) * 100));
+                      patchCallout(spec.key, x, y);
+                    };
+                    const up = () => {
+                      window.removeEventListener("pointermove", move);
+                      window.removeEventListener("pointerup", up);
+                    };
+                    window.addEventListener("pointermove", move);
+                    window.addEventListener("pointerup", up);
+                  }
+                : undefined
+            }
+          />
+        );
+      })}
+
+      {editorMode && activeLeader ? (
+        <div className="pointer-events-none absolute inset-0 z-[50] overflow-visible">
+          <DefenderLeaderDragHandle
+            label="Callout end"
+            point={{ x: activeLeader.x1, y: activeLeader.y1 }}
+            stageRef={stageRef}
+            viewBox={viewBox}
+            dotClass="bg-blue-500"
+            onMove={(p) => patchLeader(activeLeaderKey, { x1: p.x, y1: p.y })}
+          />
+          <DefenderLeaderDragHandle
+            label="Mat dot"
+            point={{ x: activeLeader.x2, y: activeLeader.y2 }}
+            stageRef={stageRef}
+            viewBox={viewBox}
+            dotClass="bg-rose-500"
+            onMove={(p) => patchLeader(activeLeaderKey, { x2: p.x, y2: p.y })}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -764,60 +938,6 @@ function DefenderTactical20MobileCallouts() {
       {DEFENDER_TACTICAL_CALLOUTS.map((c) => (
         <DefenderHeroCalloutCluster key={c.key} {...c} />
       ))}
-    </div>
-  );
-}
-
-function DefenderMini16CalloutStage({
-  heroSrc,
-  heroAlt,
-}: {
-  heroSrc: string;
-  heroAlt: string;
-}) {
-  const { w: vbW, h: vbH } = DEFENDER_MINI_CALLOUT_VB;
-  const lip = DEFENDER_MINI_CALLOUTS[0];
-  const strap = DEFENDER_MINI_CALLOUTS[1];
-  const cord = DEFENDER_MINI_CALLOUTS[2];
-
-  return (
-    <div className="relative mx-auto w-full max-w-5xl overflow-visible">
-      <img
-        src={heroSrc}
-        alt={heroAlt}
-        className="block h-auto w-full object-contain"
-        width={vbW}
-        height={vbH}
-        loading="lazy"
-        decoding="async"
-      />
-
-      <svg
-        className="pointer-events-none absolute inset-0 z-10 h-full w-full"
-        viewBox={`0 0 ${vbW} ${vbH}`}
-        preserveAspectRatio="xMidYMid meet"
-        aria-hidden
-      >
-        <DefenderTacticalLeaderPair x1={168} y1={158} x2={228} y2={82} />
-        <DefenderTacticalMatDot cx={228} cy={82} />
-        <DefenderTacticalLeaderPair x1={862} y1={158} x2={918} y2={58} />
-        <DefenderTacticalMatDot cx={918} cy={58} />
-        <DefenderTacticalLeaderPair x1={152} y1={518} x2={172} y2={462} />
-        <DefenderTacticalMatDot cx={172} cy={462} />
-      </svg>
-
-      <DefenderHeroCalloutCluster
-        {...lip}
-        className="absolute left-0 top-[2.5%] sm:left-[0.5%] sm:top-[3%]"
-      />
-      <DefenderHeroCalloutCluster
-        {...strap}
-        className="absolute right-0 top-[2.5%] sm:right-[0.5%] sm:top-[3%]"
-      />
-      <DefenderHeroCalloutCluster
-        {...cord}
-        className="absolute bottom-[3%] left-0 sm:left-[0.5%]"
-      />
     </div>
   );
 }
@@ -945,6 +1065,84 @@ function FloatingCallout({
   );
 }
 
+function DefenderCalloutEditorToolbar({
+  getLayout,
+  storageKey,
+  layoutSyncEvent,
+  leaderKeys,
+  activeLeaderKey,
+  onActiveLeaderKeyChange,
+}: {
+  getLayout: () => DefenderLayoutState;
+  storageKey: string;
+  layoutSyncEvent: string;
+  leaderKeys: readonly string[];
+  activeLeaderKey: string;
+  onActiveLeaderKeyChange: (key: string) => void;
+}) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const save = () => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(getLayout()));
+      window.dispatchEvent(new Event(layoutSyncEvent));
+      toast.success("Saved Defender diagram in this browser");
+    } catch {
+      toast.error("Could not save");
+    }
+  };
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(getLayout(), null, 2));
+      toast.success("Copied layout JSON");
+    } catch {
+      toast.error("Clipboard unavailable");
+    }
+  };
+
+  const done = () => {
+    const params = new URLSearchParams(location.search);
+    params.delete("editLargeCallouts");
+    const s = params.toString();
+    navigate({ pathname: location.pathname, search: s ? `?${s}` : "" }, { replace: true });
+  };
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-[300] border-t border-amber-200/90 bg-amber-50/95 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-sm md:left-1/2 md:right-auto md:mx-auto md:w-[min(100%,42rem)] md:-translate-x-1/2 md:rounded-t-xl md:border-x md:border-t">
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <label className="flex items-center gap-2 text-xs font-medium text-neutral-800">
+          Arrow
+          <select
+            value={activeLeaderKey}
+            onChange={(e) => onActiveLeaderKeyChange(e.target.value)}
+            className="rounded border border-neutral-300 bg-white px-2 py-1 text-xs"
+          >
+            {leaderKeys.map((key) => (
+              <option key={key} value={key}>
+                {key}
+              </option>
+            ))}
+          </select>
+        </label>
+        <Button type="button" size="sm" onClick={save}>
+          Save layout
+        </Button>
+        <Button type="button" size="sm" variant="outline" onClick={copy}>
+          Copy JSON
+        </Button>
+        <Button type="button" size="sm" variant="secondary" onClick={done}>
+          Done editing
+        </Button>
+      </div>
+      <p className="mt-2 text-center text-[11px] text-muted-foreground">
+        Drag blue (callout end) and rose (mat dot) handles; drag callout circles to reposition. Save or copy JSON.
+      </p>
+    </div>
+  );
+}
+
 function LargeCalloutEditorToolbar({
   getLayout,
   storageKey,
@@ -1008,12 +1206,31 @@ type LayNGoLargeCalloutDiagramProps = {
 };
 
 export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeCalloutDiagramProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const editorMode = searchParams.get("editLargeCallouts") === "1" || searchParams.get("editLargeCallouts") === "true";
 
   const config = useMemo(() => diagramConfig(variant), [variant]);
   const lite18 = variant === "lite-18";
   const lifestyle44 = variant === "lifestyle-44";
+  const isDefenderVariant = isDefenderDiagramVariant(variant);
+  const defenderVariant = variant as "defender-mini-16" | "defender-tactical-20";
+  const defenderLeaderKeys = useMemo(
+    () => (isDefenderVariant ? defenderLeaderKeysForVariant(defenderVariant) : []),
+    [isDefenderVariant, defenderVariant],
+  );
+  const defenderFallback = useMemo(
+    () => (isDefenderVariant ? defenderLayoutForVariant(defenderVariant) : null),
+    [isDefenderVariant, defenderVariant],
+  );
+
+  const [defenderLayout, setDefenderLayout] = useState<DefenderLayoutState>(
+    () => defenderFallback ?? defenderLayoutForVariant("defender-mini-16"),
+  );
+  const [defenderEditKey, setDefenderEditKey] = useState(defenderLeaderKeys[0] ?? "lip");
+  const defenderLayoutRef = useRef(defenderLayout);
+  defenderLayoutRef.current = defenderLayout;
 
   const fallbackLayout = useMemo(
     () =>
@@ -1043,6 +1260,24 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       window.removeEventListener("storage", sync);
     };
   }, [config.storageKey, config.layoutEvent, fallbackLayout]);
+
+  useEffect(() => {
+    if (!isDefenderVariant || !defenderFallback) return;
+    const sync = () => setDefenderLayout(loadDefenderLayout(config.storageKey, defenderFallback));
+    sync();
+    window.addEventListener(config.layoutEvent, sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(config.layoutEvent, sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, [config.storageKey, config.layoutEvent, defenderFallback, isDefenderVariant]);
+
+  useEffect(() => {
+    if (defenderLeaderKeys.length && !defenderLeaderKeys.includes(defenderEditKey)) {
+      setDefenderEditKey(defenderLeaderKeys[0]);
+    }
+  }, [defenderLeaderKeys, defenderEditKey]);
 
   const lineEnds = useMemo(() => {
     const R = 5.5;
@@ -1134,6 +1369,18 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
     containerRef.current?.setPointerCapture(e.pointerId);
   };
 
+  const toggleDefenderEditor = () => {
+    const params = new URLSearchParams(location.search);
+    const next = !editorMode;
+    if (next) params.set("editLargeCallouts", "1");
+    else params.delete("editLargeCallouts");
+    const s = params.toString();
+    navigate({ pathname: location.pathname, search: s ? `?${s}` : "" }, { replace: true });
+    if (next && defenderFallback) {
+      setDefenderLayout(loadDefenderLayout(config.storageKey, defenderFallback));
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -1159,6 +1406,25 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                 : "Lay-n-Go Large product details"
       }
     >
+      {isDefenderVariant ? (
+        <div className="fixed right-3 top-3 z-[320]">
+          <button
+            type="button"
+            onClick={toggleDefenderEditor}
+            className="rounded-md border border-neutral-300 bg-white/95 px-3 py-1.5 text-xs font-semibold text-neutral-900 shadow-sm backdrop-blur-sm"
+          >
+            {editorMode ? "Stop editing" : "Edit diagram"}
+          </button>
+        </div>
+      ) : null}
+
+      {editorMode && isDefenderVariant ? (
+        <div className="sticky top-0 z-[250] mb-4 border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
+          <strong>Defender diagram edit mode</strong> — pick an arrow below, drag blue/rose handles and drag callout
+          circles. Save when finished.
+        </div>
+      ) : null}
+
       {editorMode && !usesFixedDefenderCalloutStage(variant) ? (
         <div className="sticky top-0 z-[250] mb-4 border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
           <strong>Callout edit mode</strong> — drag dots on the mat and drag detail photos. Then Save layout.
@@ -1297,10 +1563,16 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           variant === "lifestyle-44" ? "pb-14 md:pb-16" : diagramUsesLifestyleChrome(variant) && "pb-10 md:pb-12",
         )}
       >
-        {variant === "defender-tactical-20" ? (
-          <DefenderTactical20CalloutStage heroSrc={config.heroSrc} heroAlt={config.heroAlt} />
-        ) : variant === "defender-mini-16" ? (
-          <DefenderMini16CalloutStage heroSrc={config.heroSrc} heroAlt={config.heroAlt} />
+        {isDefenderVariant ? (
+          <EditableDefenderCalloutStage
+            variant={defenderVariant}
+            heroSrc={config.heroSrc}
+            heroAlt={config.heroAlt}
+            layout={defenderLayout}
+            onLayoutChange={setDefenderLayout}
+            editorMode={editorMode}
+            activeLeaderKey={defenderEditKey}
+          />
         ) : (
         <div className={cn(lifestyle44 && "overflow-visible")}>
         <div
@@ -1507,6 +1779,17 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           </div>
         )}
       </div>
+
+      {editorMode && isDefenderVariant ? (
+        <DefenderCalloutEditorToolbar
+          getLayout={() => defenderLayoutRef.current}
+          storageKey={config.storageKey}
+          layoutSyncEvent={config.layoutEvent}
+          leaderKeys={defenderLeaderKeys}
+          activeLeaderKey={defenderEditKey}
+          onActiveLeaderKeyChange={setDefenderEditKey}
+        />
+      ) : null}
 
       {editorMode && !usesFixedDefenderCalloutStage(variant) ? (
         <LargeCalloutEditorToolbar
