@@ -11,30 +11,34 @@ export const MILITARY_FIRST_RESPONDER_PATH = "/collections/military-first-respon
 
 const COLLECTION_HANDLE = "military-first-responder";
 
-const IMG_16 = "/military-first-responder-v2/defender-mini-16.png";
-const IMG_20 = "/military-first-responder-v2/defender-tactical-20.png";
+const DEFENDER_V2_ASSET_V = "8";
+const IMG_16 = `/military-first-responder-v2/defender-mini-16.png?v=${DEFENDER_V2_ASSET_V}`;
+const IMG_20 = `/military-first-responder-v2/defender-tactical-20.png?v=${DEFENDER_V2_ASSET_V}`;
 
-/** Largest disk (20″); 16″ derives from 16:20 — mirrors Cosmo V2 cap pattern (2 columns). */
-const DEFENDER_CIRCLE_BASE_REM = 22;
+/** Largest disk (20″); 16″ derives from 16:20 — same cap pattern as Cosmo V2 (2 columns). */
+const DEFENDER_CIRCLE_BASE_REM = 19.75;
 
-/** Open-mat width ÷ image width — diameter lines match mat edge to edge. */
+/** Open-mat width ÷ image width (alpha bbox on trimmed transparent PNGs). */
 const DEFENDER_MAT_WIDTH_FRACTION: Record<16 | 20, number> = {
-  16: 558 / 1024,
-  20: 459 / 1024,
+  16: 562 / 578,
+  20: 461 / 477,
 };
 
 /** 20″ mat width — target mat scales as (inches / 20) × this. */
 const DEFENDER_MAT_REF_FRACTION = DEFENDER_MAT_WIDTH_FRACTION[20];
 
+/**
+ * Nudge vs literal inches/20 — same idea as Cosmo V2 (20″ photo has extra canvas padding).
+ */
 const DEFENDER_DISPLAY_SCALE: Record<16 | 20, number> = {
-  16: 1.06,
-  20: 1.08,
+  16: 1.1,
+  20: 1.02,
 };
 
-/** Hero PNGs are square (1024×1024). */
+/** File width ÷ height (natural aspect; do not force square stages). */
 const DEFENDER_IMAGE_ASPECT_W_OVER_H: Record<16 | 20, number> = {
-  16: 1,
-  20: 1,
+  16: 578 / 553,
+  20: 477 / 511,
 };
 
 /** Stage width ÷ column cap (before fit). */
@@ -56,17 +60,6 @@ const DEFENDER_MAX_BAND_HEIGHT_RATIO = Math.max(
   defenderStageHeightRatio(16),
   defenderStageHeightRatio(20),
 );
-
-function defenderStageWidthCalc(
-  inches: 16 | 20,
-  cap: string,
-  stageFit: number = DEFENDER_STAGE_FIT,
-): string {
-  const matFill = DEFENDER_MAT_WIDTH_FRACTION[inches];
-  const displayScale = DEFENDER_DISPLAY_SCALE[inches];
-  return `calc((${inches} / 20) * ${cap} * ${DEFENDER_MAT_REF_FRACTION} * ${displayScale} / ${matFill} * ${stageFit})`;
-}
-
 
 type SizeSpec = {
   inches: 16 | 20;
@@ -119,7 +112,7 @@ function DiameterScale({ inches, className, dense }: { inches: number; className
       <p
         className={cn(
           "font-heading font-semibold tabular-nums text-neutral-900",
-          dense ? "mt-1 text-sm sm:text-base" : "mt-2 text-base sm:text-xl",
+          dense ? "mt-1 text-sm sm:text-base" : "mt-2 text-base sm:text-lg",
         )}
       >
         {inches}&quot;
@@ -153,7 +146,7 @@ const MilitaryFirstResponder = () => {
     const cols = sizedProducts.map(({ spec, product }) => {
       const matFill = DEFENDER_MAT_WIDTH_FRACTION[spec.inches];
       const displayScale = DEFENDER_DISPLAY_SCALE[spec.inches];
-      const stageWidth = defenderStageWidthCalc(spec.inches, cap);
+      const stageWidth = `calc((${spec.inches} / 20) * ${cap} * ${DEFENDER_MAT_REF_FRACTION} * ${displayScale} / ${matFill} * ${DEFENDER_STAGE_FIT})`;
       const diameterWidth = `calc((${spec.inches} / 20) * ${cap} * ${DEFENDER_MAT_REF_FRACTION} * ${displayScale} * ${DEFENDER_STAGE_FIT})`;
       return {
         spec,
@@ -224,11 +217,11 @@ const MilitaryFirstResponder = () => {
         </div>
 
         <section
-          className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-1 pb-4 pt-2 sm:px-4 sm:pb-6 sm:pt-3"
+          className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-2 pb-5 pt-3 sm:px-6 sm:pb-7 sm:pt-4"
           aria-label="DEFENDER size selector"
         >
           <div
-            className="mx-auto grid w-full max-w-6xl grid-cols-2 items-start divide-x divide-border/80"
+            className="mx-auto grid w-full max-w-7xl grid-cols-2 divide-x divide-border/80"
             style={{
               containerType: "inline-size",
               ["--defender-disk-band-min" as string]: `calc(min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2) * ${DEFENDER_MAX_BAND_HEIGHT_RATIO})`,
@@ -253,7 +246,7 @@ const MilitaryFirstResponder = () => {
                 <p
                   className={cn(
                     "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] origin-center items-center justify-center px-0.5 text-pretty text-center max-md:leading-tight",
-                    "min-h-[3.25rem] shrink-0 md:mb-1.5 lg:min-h-[3.5rem]",
+                    "min-h-[3.25rem] md:mb-1.5 lg:min-h-[3.5rem]",
                     "font-heading font-black uppercase leading-[0.92] tracking-tight text-foreground",
                     "text-[clamp(0.8125rem,3.2cqw+0.5rem,1.1875rem)] sm:text-[clamp(0.9375rem,2.85cqw+0.55rem,1.4375rem)]",
                     "transition-transform duration-200 ease-out will-change-transform",
@@ -262,6 +255,9 @@ const MilitaryFirstResponder = () => {
                 >
                   {spec.shortName}
                 </p>
+                {/*
+                  Shared band height = 20″ frame (cqw-capped); disks bottom-align like Cosmo V2.
+                */}
                 <div
                   className={cn(
                     "flex w-full min-w-0 flex-col items-center justify-end",
@@ -271,7 +267,7 @@ const MilitaryFirstResponder = () => {
                 >
                   <div
                     className={cn(
-                      "mx-auto w-[var(--defender-stage-w)] max-w-full shrink-0 transition-[transform,filter] duration-200 ease-out will-change-transform",
+                      "mx-auto w-[var(--defender-stage-w)] shrink-0 transition-[transform,filter] duration-200 ease-out will-change-transform",
                       "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
                     )}
                   >
@@ -291,7 +287,7 @@ const MilitaryFirstResponder = () => {
 
                 <div
                   className={cn(
-                    "mx-auto mt-1.5 shrink-0 sm:mt-2",
+                    "mt-1.5 mx-auto shrink-0 sm:mt-2",
                     "w-[var(--defender-diameter-w)] max-w-full",
                   )}
                 >
