@@ -23,11 +23,11 @@ const FEATURE_CINCH_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-4-cinch
 const FEATURE_CARRY = "/products/lay-n-go-large-pdp/feature-5-carry.png";
 const FEATURE_CARRY_LIFESTYLE = "/products/lay-n-go-lifestyle-44/feature-5-carry.png";
 
-const DEFENDER_MINI_16_FLANK_LEFT = "/products/lay-n-go-defender-mini-16/story-flank-left.png";
-const DEFENDER_MINI_16_FLANK_RIGHT = "/products/lay-n-go-defender-mini-16/story-flank-right.png";
-const DEFENDER_TACTICAL_20_FLANK_LEFT = "/products/lay-n-go-tactical-bag-20/story-flank-left.png";
-const DEFENDER_TACTICAL_20_FLANK_RIGHT = "/products/lay-n-go-tactical-bag-20/story-flank-right.png";
-const DEFENDER_CIRCLE_BASE_REM = 20.5;
+const DEFENDER_FLANK_ASSET_V = "1";
+const DEFENDER_MINI_16_FLANK_LEFT = `/products/lay-n-go-defender-mini-16/story-flank-left.png?v=${DEFENDER_FLANK_ASSET_V}`;
+const DEFENDER_MINI_16_FLANK_RIGHT = `/products/lay-n-go-defender-mini-16/story-flank-right.png?v=${DEFENDER_FLANK_ASSET_V}`;
+const DEFENDER_TACTICAL_20_FLANK_LEFT = `/products/lay-n-go-tactical-bag-20/story-flank-left.png?v=${DEFENDER_FLANK_ASSET_V}`;
+const DEFENDER_TACTICAL_20_FLANK_RIGHT = `/products/lay-n-go-tactical-bag-20/story-flank-right.png?v=${DEFENDER_FLANK_ASSET_V}`;
 const LITE_18_FLANK_LEFT = "/products/lay-n-go-lite-18/story-flank-left.png";
 const LITE_18_FLANK_RIGHT = "/products/lay-n-go-lite-18/story-flank-right.png";
 
@@ -92,8 +92,9 @@ function DefenderFlankStrip({
     "block h-auto w-full max-w-none object-cover",
     flankMaxH,
   );
-  const flankUncrop =
-    variant === "defender-mini-16" || variant === "defender-tactical-20" || variant === "lite-18";
+  const flankUncrop = variant === "lite-18";
+  const isDefenderFlank =
+    variant === "defender-mini-16" || variant === "defender-tactical-20";
 
   const flankContainCell = cn(
     "flex min-h-0 w-full items-center justify-center bg-background px-2 py-3 sm:px-3 sm:py-4",
@@ -144,75 +145,27 @@ function DefenderFlankStrip({
     );
   }
 
-  const defenderDiskFrame = cn(
-    "mx-auto max-w-full bg-transparent transition-transform duration-200 ease-out will-change-transform",
-    "group-hover:scale-[1.02] motion-reduce:group-hover:scale-100",
-  );
-
-  if (variant === "defender-mini-16" || variant === "defender-tactical-20") {
+  if (isDefenderFlank) {
     return (
       <div
-        className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 bg-background sm:mt-10"
+        className="relative left-1/2 mt-8 w-screen max-w-[100vw] -translate-x-1/2 sm:mt-10"
         aria-label={ariaLabel}
-        style={{
-          containerType: "inline-size",
-          ["--defender-disk-band-min" as string]: `min(${DEFENDER_CIRCLE_BASE_REM}rem, (100cqw - 1rem) / 2)`,
-        }}
       >
-        <div className="grid w-full grid-cols-2 gap-0 bg-background">
-          <div
-            className={cn(
-              "flex min-h-[var(--defender-disk-band-min)] w-full items-end justify-center overflow-visible py-3 sm:py-4",
-              flankMaxH,
-            )}
-          >
-            <div
-              className={defenderDiskFrame}
-              style={{
-                width:
-                  variant === "defender-mini-16"
-                    ? "calc((18 / 20) * min(20.5rem, (100cqw - 1rem) / 2))"
-                    : "min(20.5rem, (100cqw - 1rem) / 2)",
-                aspectRatio: "1",
-              }}
-            >
-              <img
-                src={leftSrc}
-                alt={leftAlt}
-                className={cn(
-                  "block h-full w-full object-contain object-center drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]",
-                  "transition-[filter] duration-200 group-hover:drop-shadow-[0_5px_14px_rgba(0,0,0,0.34)]",
-                )}
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </div>
-          <div
-            className={cn(
-              "flex min-h-[var(--defender-disk-band-min)] w-full items-end justify-center overflow-visible py-3 sm:py-4",
-              flankMaxH,
-            )}
-          >
-            <div
-              className={defenderDiskFrame}
-              style={{
-                width: "min(20.5rem, (100cqw - 1rem) / 2)",
-                aspectRatio: "1",
-              }}
-            >
-              <img
-                src={rightSrc}
-                alt={rightAlt}
-                className={cn(
-                  "block h-full w-full object-contain object-center drop-shadow-[0_3px_10px_rgba(0,0,0,0.28)]",
-                  "transition-[filter] duration-200 group-hover:drop-shadow-[0_5px_14px_rgba(0,0,0,0.34)]",
-                )}
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-          </div>
+        <div className="grid w-full grid-cols-2 gap-0">
+          <img
+            src={leftSrc}
+            alt={leftAlt}
+            className="block h-auto w-full max-w-none object-contain object-left"
+            loading="lazy"
+            decoding="async"
+          />
+          <img
+            src={rightSrc}
+            alt={rightAlt}
+            className="block h-auto w-full max-w-none object-contain object-right"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </div>
     );
@@ -573,7 +526,10 @@ export function LayNGoLargePdpPlayStrip({
     <section
       className={cn(
         "relative left-1/2 -ml-[50vw] w-screen overflow-x-clip overflow-y-visible px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8",
-        calloutVariant === "lite-18" || calloutVariant === "lifestyle-44"
+        calloutVariant === "lite-18" ||
+        calloutVariant === "lifestyle-44" ||
+        calloutVariant === "defender-mini-16" ||
+        calloutVariant === "defender-tactical-20"
           ? "bg-background"
           : "bg-white",
       )}

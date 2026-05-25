@@ -1062,8 +1062,12 @@ const ProductDetail = () => {
   const showLifestyle44Faq = isLayNGoLifestyle44;
   const isLayNGoLite18 = layNGoHandle === "lay-n-go-lite-18";
   const showLite18Faq = isLayNGoLite18;
-  /** Nailspa, Lifestyle, and Lite PDPs use site `bg-background` (not Cosmo white panels). */
-  const pdpUsesSiteBackground = isNailspaPdp || isLayNGoLifestyle44 || isLayNGoLite18;
+  const isLayNGoDefenderMini16 = layNGoHandle === "lay-n-go-defender-mini-16";
+  const isLayNGoDefenderTactical20 = layNGoHandle === "lay-n-go-tactical-bag-20";
+  const isLayNGoDefender = isLayNGoDefenderMini16 || isLayNGoDefenderTactical20;
+  /** Nailspa, Lifestyle, Lite, and Defender PDPs use site `bg-background` (not Cosmo white panels). */
+  const pdpUsesSiteBackground =
+    isNailspaPdp || isLayNGoLifestyle44 || isLayNGoLite18 || isLayNGoDefender;
   const hasLayNGoLargeStoryLayout =
     layNGoHandle === "lay-n-go-large-60" ||
     layNGoHandle === "lay-n-go-lifestyle-44" ||
@@ -1077,12 +1081,9 @@ const ProductDetail = () => {
   const showTraveler20Faq = isLayNGoTraveler20;
   const isLayNGoTravelDogBed44 = layNGoHandle === "lay-n-go-travel-dog-bed-44";
   const showDogBed44Faq = isLayNGoTravelDogBed44;
-  const isLayNGoDefenderMini16 = layNGoHandle === "lay-n-go-defender-mini-16";
   const showDefenderMiniFaq = isLayNGoDefenderMini16;
-  const isLayNGoDefenderTactical20 = layNGoHandle === "lay-n-go-tactical-bag-20";
   const showDefenderTacticalFaq = isLayNGoDefenderTactical20;
   const isLayNGoNailspa18 = layNGoHandle === "lay-n-go-nailspa-18";
-  const isLayNGoDefender = isLayNGoDefenderMini16 || isLayNGoDefenderTactical20;
   const colorOptionName = useMemo(() => {
     if (!product) return null;
     return product.options.find((opt) => isColorOptionName(opt.name))?.name ?? null;
