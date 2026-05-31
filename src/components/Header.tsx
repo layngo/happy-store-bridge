@@ -113,6 +113,9 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
               <DropdownMenuItem className="rounded-lg px-4 py-3 text-slate-800 hover:text-slate-900" asChild>
                 <Link to="/pages/about-usV2">About Us V2</Link>
               </DropdownMenuItem>
+              <DropdownMenuItem className="rounded-lg px-4 py-3 text-slate-800 hover:text-slate-900" asChild>
+                <Link to="/pages/about-usV3">About Us V3</Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <Link to="/pages/contact" className={linkClass}>
