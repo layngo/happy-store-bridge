@@ -56,7 +56,7 @@ function NavItem({
   return (
     <Link
       className={cn(
-        "nav-item text-xs sm:text-sm font-medium uppercase tracking-wide whitespace-nowrap transition-colors",
+        "nav-item text-xs sm:text-sm font-medium uppercase tracking-wide whitespace-nowrap leading-none transition-colors",
         active && "nav-item--active",
         active
           ? "text-foreground"
@@ -67,7 +67,7 @@ function NavItem({
       )}
       {...props}
     >
-      {children}
+      <span className="nav-item__label">{children}</span>
       <NavSquiggle />
     </Link>
   );
@@ -80,7 +80,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
   const navTriggerClass = (active: boolean) =>
     cn(
       "nav-item text-xs sm:text-sm font-medium uppercase tracking-wide whitespace-nowrap transition-colors",
-      "inline-flex h-auto min-h-0 items-center gap-1 px-0 py-0 rounded-none",
+      "!h-auto !min-h-0 !px-0 !py-0 !shadow-none rounded-none font-medium",
       "hover:bg-transparent focus-visible:bg-transparent data-[state=open]:bg-transparent",
       active && "nav-item--active",
       active
@@ -120,7 +120,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
 
         <nav
           className={cn(
-            "flex overflow-x-auto pb-1 md:flex-wrap md:justify-center items-center gap-x-5 gap-y-2 pt-3 mt-2 border-t",
+            "flex overflow-x-auto pb-1 md:flex-wrap md:justify-center items-end gap-x-5 gap-y-2 pt-3 mt-2 border-t",
             light ? "border-border/70" : "border-border/60",
           )}
         >
@@ -131,7 +131,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className={cn(navTriggerClass(isShopPath(pathname)), "[&_svg]:size-3")}>
-                <span className="inline-flex items-center gap-1">
+                <span className="nav-item__label">
                   Shop <ChevronDown className="hidden sm:block opacity-70" />
                 </span>
                 <NavSquiggle />
@@ -163,7 +163,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className={cn(navTriggerClass(isAboutPath(pathname)), "[&_svg]:size-3")}>
-                <span className="inline-flex items-center gap-1">
+                <span className="nav-item__label">
                   About Us <ChevronDown className="hidden sm:block opacity-70" />
                 </span>
                 <NavSquiggle />

@@ -117,7 +117,13 @@
   }
 
   .nav-item {
-    @apply relative inline-flex items-center pb-1;
+    @apply relative inline-flex shrink-0 items-center justify-center self-end leading-none;
+    min-height: 1.125rem;
+    padding-bottom: 0.375rem;
+  }
+
+  .nav-item__label {
+    @apply inline-flex items-center gap-1 leading-none;
   }
 
   .nav-item__squiggle {
@@ -126,18 +132,27 @@
     background-repeat: no-repeat;
     background-size: 100% 100%;
     background-position: center bottom;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 4' preserveAspectRatio='none'%3E%3Cpath d='M0 2 Q5 0.4 10 2 Q15 3.6 20 2 Q25 0.4 30 2 Q35 3.6 40 2 Q45 0.4 50 2 Q55 3.6 60 2 Q65 0.4 70 2 Q75 3.6 80 2 Q85 0.4 90 2 Q95 3.6 100 2' fill='none' stroke='%23101828' stroke-width='1.75' stroke-linecap='round'/%3E%3C/svg%3E");
   }
 
-  .nav-item:hover .nav-item__squiggle,
-  .nav-item--active .nav-item__squiggle,
-  .nav-item[data-state="open"] .nav-item__squiggle {
+  .nav-item--active:not(:hover) .nav-item__squiggle {
     opacity: 1;
+    animation: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 4' preserveAspectRatio='none'%3E%3Cpath d='M0 2 H100' fill='none' stroke='%23101828' stroke-width='1.75' stroke-linecap='round'/%3E%3C/svg%3E");
   }
 
-  .nav-item:hover .nav-item__squiggle,
-  .nav-item[data-state="open"] .nav-item__squiggle {
+  .nav-item:hover .nav-item__squiggle {
+    opacity: 1;
     animation: nav-squiggle-stop 0.52s steps(1, end) infinite;
+  }
+
+  .nav-item[data-state="open"]:not(.nav-item--active) .nav-item__squiggle {
+    opacity: 1;
+    animation: nav-squiggle-stop 0.52s steps(1, end) infinite;
+  }
+
+  .nav-item--active[data-state="open"]:not(:hover) .nav-item__squiggle {
+    animation: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 4' preserveAspectRatio='none'%3E%3Cpath d='M0 2 H100' fill='none' stroke='%23101828' stroke-width='1.75' stroke-linecap='round'/%3E%3C/svg%3E");
   }
 
   @keyframes nav-squiggle-stop {
@@ -499,8 +514,8 @@
         rgb(0 0 0 / 0.01) 14px,
         rgb(0 0 0 / 0.01) 15px
       );
-    box-shadow: 0 2px 6px rgb(0 0 0 / 0.14);
-    opacity: 0.94;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.14)) drop-shadow(0 3px 8px rgb(0 0 0 / 0.22));
+    opacity: 0.96;
   }
 
   .panel-corner-tape::before {
@@ -516,27 +531,31 @@
   }
 
   .panel-corner-tape--tl {
-    top: 0.55rem;
-    left: -0.55rem;
-    transform: rotate(-42deg);
+    top: 0.125rem;
+    left: 0.125rem;
+    transform: rotate(-46deg);
+    transform-origin: center;
   }
 
   .panel-corner-tape--tr {
-    top: 0.55rem;
-    right: -0.55rem;
-    transform: rotate(42deg);
+    top: 0.125rem;
+    right: 0.125rem;
+    transform: rotate(46deg);
+    transform-origin: center;
   }
 
   .panel-corner-tape--bl {
-    bottom: 0.55rem;
-    left: -0.55rem;
-    transform: rotate(42deg);
+    bottom: 0.125rem;
+    left: 0.125rem;
+    transform: rotate(46deg);
+    transform-origin: center;
   }
 
   .panel-corner-tape--br {
-    bottom: 0.55rem;
-    right: -0.55rem;
-    transform: rotate(-42deg);
+    bottom: 0.125rem;
+    right: 0.125rem;
+    transform: rotate(-46deg);
+    transform-origin: center;
   }
 
   .brand-reviews-section {
