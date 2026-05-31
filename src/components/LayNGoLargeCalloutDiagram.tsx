@@ -21,7 +21,7 @@ import {
 const HERO_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/hero-callout-main.png";
 const HERO_CALLOUT_LIFESTYLE = "/products/lay-n-go-lifestyle-44/hero-callout-main.png";
 const HERO_CALLOUT_LITE = "/products/lay-n-go-lite-18/hero-callout-main.png";
-const HERO_CALLOUT_DEFENDER_MINI = "/products/lay-n-go-defender-mini-16/hero-callout-main.png?v=2";
+const HERO_CALLOUT_DEFENDER_MINI = "/products/lay-n-go-defender-mini-16/hero-callout-main.png?v=3";
 const HERO_CALLOUT_DEFENDER_TACTICAL = "/products/lay-n-go-tactical-bag-20/hero-callout-main.png";
 const CALLOUT_CORD = "/products/lay-n-go-large-pdp/callout-cord-pocket.png";
 const CALLOUT_CORD_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-cord-pocket.png";
@@ -871,11 +871,14 @@ function EditableDefenderCalloutStage({
   const activeLeader = layout.leaders[activeLeaderKey];
 
   return (
-    <div ref={stageRef} className={cn("relative mx-auto w-full overflow-visible", maxW)}>
+    <div ref={stageRef} className={cn("relative mx-auto w-full overflow-visible bg-background", maxW)}>
       <img
         src={heroSrc}
         alt={heroAlt}
-        className="block h-auto w-full object-contain"
+        className={cn(
+          "block h-auto w-full object-contain",
+          variant === "defender-mini-16" && "mix-blend-multiply",
+        )}
         width={vb.w}
         height={vb.h}
         loading="lazy"
