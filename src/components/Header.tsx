@@ -115,9 +115,6 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link to="/pages/wholesale" className={linkClass}>
-            Wholesale
-          </Link>
           <Link to="/pages/contact" className={linkClass}>
             Contact Us
           </Link>

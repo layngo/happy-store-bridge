@@ -17,7 +17,7 @@ const SmallBusinesses = () => (
     <h2>Partner with us</h2>
     <p>
       Interested in carrying Lay-n-Go? Visit{" "}
-      <Link to="/pages/wholesale" className="text-primary hover:underline">
+      <Link to="/pages/contact#wholesale" className="text-primary hover:underline">
         Wholesale
       </Link>{" "}
       to tell us about your store and audience.

@@ -19,7 +19,7 @@ export const footerInfoLinks = [
   { to: "/policies/privacy-policy", label: "Privacy policy" },
   { to: "/pages/return-policy", label: "Returns & refund policy" },
   { to: "/pages/lay-n-go-patents", label: "Lay-n-Go Patents" },
-  { to: "/pages/wholesale", label: "Wholesale" },
+  { to: "/pages/contact", label: "Contact Us" },
   { to: "/pages/about-us", label: "About Us" },
 ] as const;
 

@@ -14,7 +14,7 @@ const BusinessLicense = () => (
         info@layngo.com
       </a>{" "}
       or visit our{" "}
-      <Link to="/pages/wholesale" className="text-primary hover:underline">
+      <Link to="/pages/contact#wholesale" className="text-primary hover:underline">
         Wholesale
       </Link>{" "}
       page.
