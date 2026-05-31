@@ -42,7 +42,7 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("they-meet-world-travelers-maggie-molson.png"),
         title: "World Travelers",
         alt: "Maggie and Molson greeting the founders after a trip",
-        imagePosition: "38% 18%",
+        imagePosition: "22% 16%",
         layoutOverride: { text: "right" },
         storyText:
           "Before starting a family, the Lay-n-Go founders were avid travelers, with their dogs faithfully waiting to welcome them back. Those adventures became invaluable field research, inspiring new products designed to make life easier at home and on the go!",
