@@ -52,7 +52,7 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("they-meet-wedding-toast-wide.png"),
         title: "It's official",
         alt: "Amy and Adam's wedding toast",
-        imagePosition: "50% 42%",
+        imagePosition: "68% 42%",
         downloadUrl: "/about-us-v2/they-meet-wedding-toast-wide.png",
         downloadFileName: "its-official-wedding-toast.png",
         storyText:
