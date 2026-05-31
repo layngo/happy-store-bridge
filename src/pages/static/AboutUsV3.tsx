@@ -11,7 +11,6 @@ type StoryPanel = {
   storyText: string;
   imagePosition?: string;
   layoutOverride?: {
-    fade: "left" | "right";
     text: "left" | "right";
   };
   downloadUrl?: string;
@@ -44,7 +43,7 @@ const CHAPTERS: StoryChapter[] = [
         title: "World Travelers",
         alt: "Maggie and Molson greeting the founders after a trip",
         imagePosition: "38% 18%",
-        layoutOverride: { fade: "right", text: "right" },
+        layoutOverride: { text: "right" },
         storyText:
           "Before starting a family, the Lay-n-Go founders were avid travelers, with their dogs faithfully waiting to welcome them back. Those adventures became invaluable field research, inspiring new products designed to make life easier at home and on the go!",
       },
@@ -52,7 +51,7 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("they-meet-wedding-toast-wide.png"),
         title: "It's official",
         alt: "Amy and Adam's wedding toast",
-        imagePosition: "68% 42%",
+        imagePosition: "82% 42%",
         downloadUrl: "/about-us-v2/they-meet-wedding-toast-wide.png",
         downloadFileName: "its-official-wedding-toast.png",
         storyText:
@@ -271,8 +270,8 @@ const PANEL_TEXT_SHADOW =
 
 function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) {
   const [open, setOpen] = useState(false);
-  const fadeRight = panel.layoutOverride?.fade ? panel.layoutOverride.fade === "right" : index % 2 === 0;
-  const textRight = panel.layoutOverride?.text ? panel.layoutOverride.text === "right" : !fadeRight;
+  const textRight = panel.layoutOverride?.text ? panel.layoutOverride.text === "right" : index % 2 === 1;
+  const fadeRight = !textRight;
   const imageAnchorRight = fadeRight ? false : true;
 
   return (
