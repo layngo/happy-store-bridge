@@ -53,7 +53,6 @@ const CHAPTERS: StoryChapter[] = [
         title: "It's official",
         alt: "Amy and Adam's wedding toast",
         imagePosition: "50% 42%",
-        layoutOverride: { fade: "right", text: "right" },
         downloadUrl: "/about-us-v2/they-meet-wedding-toast-wide.png",
         downloadFileName: "its-official-wedding-toast.png",
         storyText:
@@ -233,34 +232,35 @@ function StoryTeaser({
   );
 }
 
-function AboutTextWindow({ text, onClose }: { text: string; onClose: () => void }) {
+function TapeStoryModal({ text, onClose }: { text: string; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 p-4 sm:p-8"
+      onClick={onClose}
+    >
       <div
-        className={cn(
-          "relative max-w-lg w-full rounded-2xl px-8 py-7 shadow-2xl",
-          "bg-background/80 backdrop-blur-md border border-border/60",
-        )}
+        className="tape-sheet mx-auto w-full"
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Full story"
       >
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className={cn(
-            "absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full",
-            "text-foreground/50 hover:text-foreground transition-colors",
-            "bg-muted/60 hover:bg-muted",
-          )}
-        >
-          ✕
-        </button>
-        <div className="space-y-3 pr-4">
-          {text.split("\n\n").map((para, i) => (
-            <p key={i} className="text-sm leading-relaxed text-foreground/90 font-medium">
-              {para}
-            </p>
-          ))}
+        <div className="tape-sheet__body">
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute top-4 right-4 z-[3] flex h-8 w-8 items-center justify-center rounded-full font-story text-lg font-bold text-foreground/55 transition-colors hover:bg-black/5 hover:text-foreground"
+          >
+            ✕
+          </button>
+          <div className="relative z-[1] space-y-4 pr-6 font-story text-base font-bold leading-relaxed text-foreground/90 sm:text-lg">
+            {text.split("\n\n").map((para, i) => (
+              <p key={i}>{para}</p>
+            ))}
+          </div>
         </div>
+        <span aria-hidden className="tape-sheet__curl" />
+        <span aria-hidden className="tape-sheet__curl tape-sheet__curl--left" />
       </div>
     </div>
   );
@@ -277,7 +277,7 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
 
   return (
     <>
-      {open && <AboutTextWindow text={panel.storyText} onClose={() => setOpen(false)} />}
+      {open && <TapeStoryModal text={panel.storyText} onClose={() => setOpen(false)} />}
       <article className="relative w-full">
         <div className="relative h-[min(58vw,22rem)] w-full overflow-hidden sm:h-[min(48vw,26rem)] md:h-[min(42vw,28rem)]">
           <img
