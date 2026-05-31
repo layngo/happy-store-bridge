@@ -215,8 +215,12 @@ function AboutTextWindow({ text, onClose }: { text: string; onClose: () => void 
   );
 }
 
-function StoryFadePanel({ panel }: { panel: StoryPanel }) {
+const PANEL_TEXT_SHADOW =
+  "[text-shadow:0_1px_3px_rgb(0_0_0/0.95),0_2px_14px_rgb(0_0_0/0.75),0_4px_28px_rgb(0_0_0/0.45)]";
+
+function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) {
   const [open, setOpen] = useState(false);
+  const fadeRight = index % 2 === 0;
 
   return (
     <>
@@ -226,29 +230,56 @@ function StoryFadePanel({ panel }: { panel: StoryPanel }) {
           <img
             src={panel.src}
             alt={panel.alt}
-            className="absolute inset-y-0 left-0 h-full w-[min(100%,52rem)] object-cover object-left"
+            className={cn(
+              "absolute inset-y-0 h-full w-[min(100%,52rem)] object-cover",
+              fadeRight ? "left-0 object-left" : "right-0 object-right",
+            )}
             style={{
-              WebkitMaskImage: "linear-gradient(to right, black 58%, transparent 92%)",
-              maskImage: "linear-gradient(to right, black 58%, transparent 92%)",
+              WebkitMaskImage: fadeRight
+                ? "linear-gradient(to right, black 50%, transparent 82%)"
+                : "linear-gradient(to left, black 50%, transparent 82%)",
+              maskImage: fadeRight
+                ? "linear-gradient(to right, black 50%, transparent 82%)"
+                : "linear-gradient(to left, black 50%, transparent 82%)",
             }}
             loading="lazy"
             decoding="async"
           />
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent from-[48%] via-background/35 via-[72%] to-background"
+            className={cn(
+              "pointer-events-none absolute inset-0",
+              fadeRight
+                ? "bg-gradient-to-r from-transparent from-[42%] via-background/50 via-[68%] to-background"
+                : "bg-gradient-to-l from-transparent from-[42%] via-background/50 via-[68%] to-background",
+            )}
           />
 
-          <div className="absolute inset-y-0 left-0 z-10 flex max-w-md flex-col justify-end px-6 pb-8 pt-16 sm:px-10 sm:pb-10 md:max-w-lg md:px-12">
-            <h3 className="font-heading text-[clamp(1.35rem,4.5vw,2.15rem)] font-black uppercase leading-[0.95] tracking-tight text-foreground">
+          <div
+            className={cn(
+              "absolute inset-y-0 z-10 flex w-full max-w-md flex-col justify-end px-6 pb-8 pt-16 sm:px-10 sm:pb-10 md:max-w-lg md:px-12",
+              fadeRight ? "left-0 items-start text-left" : "right-0 items-end text-right",
+            )}
+          >
+            <h3
+              className={cn(
+                "font-heading text-[clamp(1.35rem,4.5vw,2.15rem)] font-black uppercase leading-[0.95] tracking-tight text-white",
+                PANEL_TEXT_SHADOW,
+              )}
+            >
               {panel.title}
             </h3>
-            <p className="mt-3 text-sm leading-relaxed text-foreground/78 sm:text-base">{storyTeaser(panel.storyText)}</p>
+            <p className={cn("mt-3 text-sm leading-relaxed text-white sm:text-base", PANEL_TEXT_SHADOW)}>
+              {storyTeaser(panel.storyText)}
+            </p>
             <Button
               type="button"
               variant="outline"
               size="sm"
-              className="mt-5 w-fit rounded-full border-foreground/25 bg-background/70 px-5 backdrop-blur-sm hover:bg-background"
+              className={cn(
+                "mt-5 w-fit rounded-full border-white/90 bg-transparent text-white hover:bg-white/15 hover:text-white",
+                PANEL_TEXT_SHADOW,
+              )}
               onClick={() => setOpen(true)}
             >
               View more
@@ -276,31 +307,39 @@ function ChapterHero({ heading }: { heading: string }) {
   );
 }
 
-function StoryChapterSection({ chapter }: { chapter: StoryChapter }) {
+function StoryChapterSection({ chapter, startIndex }: { chapter: StoryChapter; startIndex: number }) {
   return (
     <section className="border-b border-border/40 last:border-b-0">
       <ChapterHero heading={chapter.heading} />
       <div className="space-y-12 pb-14 sm:space-y-14 sm:pb-16 md:space-y-16 md:pb-20">
-        {chapter.panels.map((panel) => (
-          <StoryFadePanel key={`${chapter.heading}-${panel.title}`} panel={panel} />
+        {chapter.panels.map((panel, i) => (
+          <StoryFadePanel key={`${chapter.heading}-${panel.title}`} panel={panel} index={startIndex + i} />
         ))}
       </div>
     </section>
   );
 }
 
-const AboutUsV3 = () => (
-  <div className="flex min-h-dvh flex-col bg-background">
-    <Header />
-    <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 lg:px-8">
-      <div className="not-prose">
-        {CHAPTERS.map((chapter) => (
-          <StoryChapterSection key={chapter.heading} chapter={chapter} />
-        ))}
-      </div>
-    </main>
-    <SiteFooter />
-  </div>
-);
+const AboutUsV3 = () => {
+  let panelIndex = 0;
+
+  return (
+    <div className="flex min-h-dvh flex-col bg-background">
+      <Header />
+      <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 lg:px-8">
+        <div className="not-prose">
+          {CHAPTERS.map((chapter) => {
+            const section = (
+              <StoryChapterSection key={chapter.heading} chapter={chapter} startIndex={panelIndex} />
+            );
+            panelIndex += chapter.panels.length;
+            return section;
+          })}
+        </div>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+};
 
 export default AboutUsV3;
