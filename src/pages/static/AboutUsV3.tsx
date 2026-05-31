@@ -231,16 +231,16 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
             src={panel.src}
             alt={panel.alt}
             className={cn(
-              "absolute inset-y-0 h-full w-[min(100%,52rem)] object-cover",
+              "absolute inset-y-0 h-full w-full object-cover",
               fadeRight ? "left-0 object-left" : "right-0 object-right",
             )}
             style={{
               WebkitMaskImage: fadeRight
-                ? "linear-gradient(to right, black 50%, transparent 82%)"
-                : "linear-gradient(to left, black 50%, transparent 82%)",
+                ? "linear-gradient(to right, black 80%, transparent 98%)"
+                : "linear-gradient(to left, black 80%, transparent 98%)",
               maskImage: fadeRight
-                ? "linear-gradient(to right, black 50%, transparent 82%)"
-                : "linear-gradient(to left, black 50%, transparent 82%)",
+                ? "linear-gradient(to right, black 80%, transparent 98%)"
+                : "linear-gradient(to left, black 80%, transparent 98%)",
             }}
             loading="lazy"
             decoding="async"
@@ -250,20 +250,20 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
             className={cn(
               "pointer-events-none absolute inset-0",
               fadeRight
-                ? "bg-gradient-to-r from-transparent from-[42%] via-background/50 via-[68%] to-background"
-                : "bg-gradient-to-l from-transparent from-[42%] via-background/50 via-[68%] to-background",
+                ? "bg-gradient-to-r from-transparent from-[72%] via-background/35 via-[88%] to-background"
+                : "bg-gradient-to-l from-transparent from-[72%] via-background/35 via-[88%] to-background",
             )}
           />
 
           <div
             className={cn(
-              "absolute inset-y-0 z-10 flex w-full max-w-md flex-col justify-end px-6 pb-8 pt-16 sm:px-10 sm:pb-10 md:max-w-lg md:px-12",
+              "absolute inset-y-0 z-10 flex w-full max-w-xl flex-col justify-end px-6 pb-8 pt-16 sm:px-10 sm:pb-10 md:max-w-2xl md:px-12",
               fadeRight ? "left-0 items-start text-left" : "right-0 items-end text-right",
             )}
           >
             <h3
               className={cn(
-                "font-heading text-[clamp(1.35rem,4.5vw,2.15rem)] font-black uppercase leading-[0.95] tracking-tight text-white",
+                "font-heading text-[clamp(2.25rem,8.5vw,4.75rem)] font-black uppercase leading-[0.9] tracking-tight text-white",
                 PANEL_TEXT_SHADOW,
               )}
             >
