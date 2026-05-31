@@ -69,26 +69,3 @@ export const testimonials = [
     name: "Rachel",
   },
 ] as const;
-
-export const pressFeatures = [
-  {
-    title: "Women Who Own It",
-    description:
-      "Trailblazers, innovators, entrepreneurs — get inspired by female founders leading women-owned businesses.",
-    href: "https://www.wwbc.com/",
-    source: "Women's Business Center",
-  },
-  {
-    title: "Business Lessons from the Founder of Lay-n-Go",
-    description:
-      "Adam Fazackerley, founder and COO, on launching the business and lessons learned along the way.",
-    href: "https://www.inc.com/",
-    source: "Inc.",
-  },
-  {
-    title: "GMA Deals and Steals — Women-owned businesses",
-    description: "Whether at home or away, Lay-n-Go makes it easy to view and access all of your cosmetics.",
-    href: "https://www.goodmorningamerica.com/",
-    source: "Good Morning America",
-  },
-] as const;
