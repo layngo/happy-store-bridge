@@ -160,19 +160,13 @@ function DefenderFlankStrip({
         <div className="grid w-full grid-cols-2 gap-0">
           <div
             className={cn(
-              "min-h-0 w-full",
-              variant === "defender-mini-16" ? "overflow-hidden" : undefined,
+              "min-h-0 w-full overflow-hidden",
             )}
           >
             <img
               src={leftSrc}
               alt={leftAlt}
-              className={cn(
-                "block h-auto max-w-none object-contain object-left",
-                variant === "defender-mini-16"
-                  ? "w-full max-w-none origin-bottom-left -translate-x-1/2"
-                  : "w-full",
-              )}
+              className="block h-auto w-full max-w-none origin-bottom-left -translate-x-1/2 object-contain object-left"
               loading="lazy"
               decoding="async"
             />
@@ -190,7 +184,9 @@ function DefenderFlankStrip({
                 "block h-auto max-w-none object-contain object-right",
                 variant === "defender-mini-16"
                   ? "w-[64%]"
-                  : "w-full",
+                  : variant === "defender-tactical-20"
+                    ? "w-[70%]"
+                    : "w-full",
               )}
               loading="lazy"
               decoding="async"

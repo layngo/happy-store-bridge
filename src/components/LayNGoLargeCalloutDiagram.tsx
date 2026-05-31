@@ -22,7 +22,7 @@ const HERO_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/hero-callout-main.png";
 const HERO_CALLOUT_LIFESTYLE = "/products/lay-n-go-lifestyle-44/hero-callout-main.png";
 const HERO_CALLOUT_LITE = "/products/lay-n-go-lite-18/hero-callout-main.png";
 const HERO_CALLOUT_DEFENDER_MINI = "/products/lay-n-go-defender-mini-16/hero-callout-main.png?v=3";
-const HERO_CALLOUT_DEFENDER_TACTICAL = "/products/lay-n-go-tactical-bag-20/hero-callout-main.png";
+const HERO_CALLOUT_DEFENDER_TACTICAL = "/products/lay-n-go-tactical-bag-20/hero-callout-main.png?v=1";
 const CALLOUT_CORD = "/products/lay-n-go-large-pdp/callout-cord-pocket.png";
 const CALLOUT_CORD_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-cord-pocket.png";
 const CALLOUT_MESH = "/products/lay-n-go-large-pdp/callout-mesh-pockets.png";
@@ -114,6 +114,11 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
 
 /** Defender Mini hero callout stage — matches `hero-callout-main.png` (1024×600). */
 const DEFENDER_MINI_CALLOUT_VB = { w: 1024, h: 600 } as const;
+
+/** Shared callout stage width; Tactical inner stage scales to match Mini height. */
+const DEFENDER_CALLOUT_STAGE_MAX_W = "max-w-5xl";
+/** Mini is 600/1024 tall at full stage width; Tactical PNG is square — same footprint when width = this fraction. */
+const DEFENDER_TACTICAL_STAGE_WIDTH_FRAC = DEFENDER_MINI_CALLOUT_VB.h / DEFENDER_MINI_CALLOUT_VB.w;
 
 const DEFENDER_MINI_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
   {
@@ -444,11 +449,12 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       heroAlt:
         "Lay-n-Go Defender Tactical 20 inch bag from above, open flat with mesh pockets and everyday carry gear on olive drab fabric",
       diameterInches: 20,
-      containerMinHClass: "min-h-[min(76.8vh,768px)]",
-      heroWidthClass: "w-[min(75.2vw,736px)]",
+      containerMinHClass: "min-h-[min(92vh,920px)]",
+      heroWidthClass: "w-[min(94vw,920px)]",
+      /** Below hero — same spacing as Defender Mini. */
       dimensionWrapClass:
-        "relative z-20 mx-auto -mt-[4.25rem] w-[min(75.2vw,736px)] pt-3 pb-2 sm:-mt-[4.75rem] sm:pt-4 sm:pb-3 md:-mt-[6.25rem] md:pt-5 md:pb-4 lg:-mt-[7.25rem] lg:pt-6 lg:pb-5",
-      mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
+        "relative z-20 mx-auto mt-5 w-full max-w-5xl pt-1 pb-4 sm:mt-6 sm:pb-5 md:mt-8 md:pb-6",
+      mobileHeroMaxClass: "max-w-[min(96vw,36rem)]",
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP,
       cordCalloutSrc: CALLOUT_CORD,
@@ -849,7 +855,6 @@ function EditableDefenderCalloutStage({
   const viewBox = `0 0 ${vb.w} ${vb.h}`;
   const calloutSpecs =
     variant === "defender-mini-16" ? DEFENDER_MINI_CALLOUTS : DEFENDER_TACTICAL_CALLOUTS;
-  const maxW = variant === "defender-mini-16" ? "max-w-5xl" : "max-w-4xl";
 
   const patchLeader = (key: string, patch: Partial<DefenderLeaderEnd>) => {
     onLayoutChange({
@@ -871,14 +876,18 @@ function EditableDefenderCalloutStage({
   const activeLeader = layout.leaders[activeLeaderKey];
 
   return (
-    <div ref={stageRef} className={cn("relative mx-auto w-full overflow-visible bg-background", maxW)}>
+    <div className={cn("mx-auto w-full bg-background", DEFENDER_CALLOUT_STAGE_MAX_W)}>
+      <div
+        ref={stageRef}
+        className={cn(
+          "relative mx-auto overflow-visible",
+          variant === "defender-tactical-20" ? "w-[58.59375%]" : "w-full",
+        )}
+      >
       <img
         src={heroSrc}
         alt={heroAlt}
-        className={cn(
-          "block h-auto w-full object-contain",
-          variant === "defender-mini-16" && "mix-blend-multiply",
-        )}
+        className={cn("block h-auto w-full object-contain mix-blend-multiply")}
         width={vb.w}
         height={vb.h}
         loading="lazy"
@@ -951,6 +960,7 @@ function EditableDefenderCalloutStage({
           onPatchLeader={(patch) => patchLeader(activeLeaderKey, patch)}
         />
       ) : null}
+      </div>
     </div>
   );
 }
@@ -1387,7 +1397,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
     <div
       className={cn(
         "mx-auto max-w-6xl pt-12 sm:pt-14",
-        variant === "defender-mini-16"
+        variant === "defender-mini-16" || variant === "defender-tactical-20"
           ? cn("mt-8 rounded-2xl bg-background px-0 sm:mt-10 sm:px-2")
           : diagramUsesLifestyleChrome(variant)
             ? cn(
