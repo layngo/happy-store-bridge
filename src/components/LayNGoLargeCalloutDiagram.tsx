@@ -32,22 +32,25 @@ const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containme
 const CALLOUT_LIP_LITE = "/products/lay-n-go-lite-18/callout-containment-lip.png";
 const CALLOUT_CORD_LITE = "/products/lay-n-go-lite-18/callout-cord-pocket-handle.png";
 const CALLOUT_HANDLE_LITE = "/products/lay-n-go-lite-18/litestrap.png";
-/** Circular callout thumbs — Defender Tactical 20″ diagram. */
-const DEFENDER_TACTICAL_CALLOUT_ASSET_V = "1";
+/** Circular callout thumbs — Defender Tactical 20″ diagram (cropped from hero). */
+const DEFENDER_TACTICAL_CALLOUT_ASSET_V = "2";
 const DEFENDER_TACTICAL_CALLOUT_MESH = `/products/lay-n-go-tactical-bag-20/callout-mesh.png?v=${DEFENDER_TACTICAL_CALLOUT_ASSET_V}`;
-/** Circular callout thumbs — Defender Mini + Tactical lip/cord/strap/zipper (trimmed PNGs). */
-const DEFENDER_CALLOUT_ASSET_V = "4";
+const DEFENDER_TACTICAL_CALLOUT_ZIPPER = `/products/lay-n-go-tactical-bag-20/callout-zipper.png?v=${DEFENDER_TACTICAL_CALLOUT_ASSET_V}`;
+/** Circular callout thumbs — Defender Mini + Tactical lip/cord/strap (trimmed PNGs). */
+const DEFENDER_CALLOUT_ASSET_V = "5";
 const DEFENDER_CALLOUT_STRAP = `/products/lay-n-go-defender-callouts/callout-strap.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
 const DEFENDER_CALLOUT_LIP = `/products/lay-n-go-defender-callouts/callout-lip.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
 const DEFENDER_CALLOUT_DRAWSTRING = `/products/lay-n-go-defender-callouts/callout-drawstring.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
-const DEFENDER_CALLOUT_ZIPPER = `/products/lay-n-go-defender-callouts/callout-zipper.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
 
 /** Show full thumb art in circles (not `object-cover`, which crops padded PNGs). */
 const DEFENDER_THUMB_IMG_CLASS = "object-contain object-center";
 
 function defenderThumbClassName(key: string): string {
-  if (key === "strap" || key === "lip" || key === "zipper") {
+  if (key === "strap" || key === "lip") {
     return cn(DEFENDER_THUMB_IMG_CLASS, "scale-[1.08]");
+  }
+  if (key === "zipper") {
+    return cn(DEFENDER_THUMB_IMG_CLASS, "scale-[1.12] object-[center_42%]");
   }
   return DEFENDER_THUMB_IMG_CLASS;
 }
@@ -80,7 +83,7 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
   {
     key: "zipper",
     label: "Zipper pocket",
-    thumbSrc: DEFENDER_CALLOUT_ZIPPER,
+    thumbSrc: DEFENDER_TACTICAL_CALLOUT_ZIPPER,
     thumbAlt: "Zipper pocket closeup on Defender Tactical",
     thumbClassName: defenderThumbClassName("zipper"),
     labelAbove: true,

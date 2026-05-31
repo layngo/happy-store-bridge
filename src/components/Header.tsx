@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { CartDrawer } from "./CartDrawer";
 import { cn } from "@/lib/utils";
-import { SHOP_ACCOUNT_URL, shopCollectionLinks } from "@/lib/siteNav";
-import { User, ChevronDown } from "lucide-react";
+import { shopCollectionLinks } from "@/lib/siteNav";
+import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -41,18 +41,6 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           </div>
 
           <div className="flex justify-end items-center gap-2">
-            <a
-              href={SHOP_ACCOUNT_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                "inline-flex items-center justify-center rounded-md p-2 transition-colors",
-                light ? "text-foreground hover:bg-muted/80" : "text-muted-foreground hover:bg-muted hover:text-foreground",
-              )}
-              aria-label="My account"
-            >
-              <User className="w-5 h-5" />
-            </a>
             <CartDrawer
               triggerClassName={light ? "text-foreground hover:bg-muted/80 hover:text-foreground" : undefined}
             />
