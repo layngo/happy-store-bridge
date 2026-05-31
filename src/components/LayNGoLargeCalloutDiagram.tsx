@@ -151,7 +151,7 @@ const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v12";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
-const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v2";
+const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v3";
 const LAYOUT_SYNC_EVENT_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout";
 
 const STORAGE_KEY_DEFENDER_TACTICAL = "lay-n-go-tactical-bag-20-callout-layout-v2";
@@ -421,8 +421,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 16,
       containerMinHClass: "min-h-[min(92vh,920px)]",
       heroWidthClass: "w-[min(94vw,920px)]",
+      /** Below hero — positive margin so 16″ bracket clears the mat/drawstring. */
       dimensionWrapClass:
-        "relative z-20 mx-auto -mt-[6rem] w-[min(94vw,920px)] pt-2 pb-2 sm:-mt-32 sm:pt-3 sm:pb-3 md:-mt-40 md:pt-4 md:pb-4 lg:-mt-44 lg:pt-5 lg:pb-5",
+        "relative z-20 mx-auto mt-5 w-full max-w-5xl pt-1 pb-4 sm:mt-6 sm:pb-5 md:mt-8 md:pb-6",
       mobileHeroMaxClass: "max-w-[min(96vw,36rem)]",
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP,

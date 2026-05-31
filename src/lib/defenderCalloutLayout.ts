@@ -30,9 +30,24 @@ export type DefenderTacticalLeaderKey = (typeof DEFENDER_TACTICAL_LEADER_KEYS)[n
 
 export const DEFAULT_DEFENDER_MINI_LAYOUT: DefenderLayoutState = {
   leaders: {
-    lip: { x1: 168, y1: 158, x2: 228, y2: 82 },
-    strap: { x1: 862, y1: 158, x2: 918, y2: 58 },
-    cord: { x1: 152, y1: 518, x2: 172, y2: 462 },
+    lip: {
+      x1: 89.60239609174045,
+      y1: 104.96246894028621,
+      x2: 245.6723690263267,
+      y2: 165.51021855174096,
+    },
+    strap: {
+      x1: 788.7661515089432,
+      y1: 130.31873120725825,
+      x2: 927.5616134388334,
+      y2: 123.36117220931538,
+    },
+    cord: {
+      x1: 122.2851496878312,
+      y1: 503.45345462957334,
+      x2: 205.51117488472838,
+      y2: 427.4063356221169,
+    },
   },
   callouts: {
     lip: { x: 1, y: 2.5, anchor: "top-left" },
