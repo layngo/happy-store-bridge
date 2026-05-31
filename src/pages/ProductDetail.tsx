@@ -64,6 +64,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { getAmazonReviewsForProduct } from "@/data/productAmazonReviews";
 import {
   isLayNGoPlayMatProduct,
+  LAY_NGO_DEFENDER_SHOPIFY_HERO_IMAGE_CLASS,
   LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS,
   LAY_NGO_LIFESTYLE_SHOPIFY_HERO_IMAGE_CLASS,
   layNGoPlayMatSwatchStyle,
@@ -1297,6 +1298,7 @@ const ProductDetail = () => {
         "h-full w-full max-h-full object-contain",
         isLayNGoLite18 && LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS,
         isLayNGoLifestyle44 && LAY_NGO_LIFESTYLE_SHOPIFY_HERO_IMAGE_CLASS,
+        isLayNGoDefender && LAY_NGO_DEFENDER_SHOPIFY_HERO_IMAGE_CLASS,
         isLayNGoLarge60 &&
           "max-md:h-auto max-md:max-h-[min(62vmin,410px)] max-md:w-full max-md:min-w-0 max-md:max-w-full max-md:object-contain",
       )}

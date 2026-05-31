@@ -159,7 +159,7 @@ const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v3";
 const LAYOUT_SYNC_EVENT_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout";
 
-const STORAGE_KEY_DEFENDER_TACTICAL = "lay-n-go-tactical-bag-20-callout-layout-v2";
+const STORAGE_KEY_DEFENDER_TACTICAL = "lay-n-go-tactical-bag-20-callout-layout-v3";
 const LAYOUT_SYNC_EVENT_DEFENDER_TACTICAL = "lay-n-go-tactical-bag-20-callout-layout";
 
 /** Circular diagram callouts: thin white rim + black drop shadow. Use on outer wrapper; inner needs `overflow-hidden rounded-full` for the image. */
@@ -654,6 +654,14 @@ function DefenderTacticalMatDot({ cx, cy }: { cx: number; cy: number }) {
 
 const DEFENDER_CALLOUT_THUMB_FRAME = "relative h-20 w-20 shrink-0 sm:h-24 sm:w-24 md:h-28 md:w-28";
 
+/** Allow callouts to sit slightly outside the stage while editing. */
+const DEFENDER_CALLOUT_DRAG_MIN = -8;
+const DEFENDER_CALLOUT_DRAG_MAX = 108;
+
+function clampDefenderCalloutDragPct(n: number) {
+  return Math.max(DEFENDER_CALLOUT_DRAG_MIN, Math.min(DEFENDER_CALLOUT_DRAG_MAX, n));
+}
+
 function DefenderHeroCalloutThumb({
   src,
   alt,
@@ -705,7 +713,7 @@ function DefenderHeroCalloutCluster({
       className={cn(
         "absolute z-20 flex flex-col items-center text-center",
         className,
-        editorMode && "cursor-grab touch-none",
+        editorMode && "z-[100] cursor-grab touch-none rounded-lg ring-2 ring-amber-400/90 ring-offset-2 ring-offset-background",
       )}
       style={style}
       onPointerDown={onPointerDown}
@@ -777,18 +785,7 @@ function DefenderArrowEditorOverlay({
     ];
 
   return (
-    <div
-      className="absolute inset-0 z-[80] overflow-visible"
-      onPointerMove={(e) => {
-        if (dragJointRef.current) applyClientPointer(e.clientX, e.clientY);
-      }}
-      onPointerUp={() => {
-        dragJointRef.current = null;
-      }}
-      onPointerCancel={() => {
-        dragJointRef.current = null;
-      }}
-    >
+    <div className="pointer-events-none absolute inset-0 z-[80] overflow-visible">
       <span className="pointer-events-none absolute left-2 top-2 z-[90] rounded bg-amber-100 px-2 py-1 text-[10px] font-bold text-amber-950 shadow-sm ring-1 ring-amber-300">
         Editing: {activeLeaderKey} — drag blue and rose handles
       </span>
@@ -811,8 +808,14 @@ function DefenderArrowEditorOverlay({
               e.preventDefault();
               e.stopPropagation();
               dragJointRef.current = joint;
-              if (stageRef.current) stageRef.current.setPointerCapture(e.pointerId);
-              e.currentTarget.setPointerCapture(e.pointerId);
+              const move = (ev: PointerEvent) => applyClientPointer(ev.clientX, ev.clientY);
+              const up = () => {
+                dragJointRef.current = null;
+                window.removeEventListener("pointermove", move);
+                window.removeEventListener("pointerup", up);
+              };
+              window.addEventListener("pointermove", move);
+              window.addEventListener("pointerup", up);
               applyClientPointer(e.clientX, e.clientY);
             }}
           >
@@ -911,6 +914,16 @@ function EditableDefenderCalloutStage({
         ))}
       </svg>
 
+      {editorMode && activeLeader ? (
+        <DefenderArrowEditorOverlay
+          activeLeaderKey={activeLeaderKey}
+          leader={activeLeader}
+          stageRef={stageRef}
+          viewBox={viewBox}
+          onPatchLeader={(patch) => patchLeader(activeLeaderKey, patch)}
+        />
+      ) : null}
+
       {calloutSpecs.map((spec) => {
         const pos = layout.callouts[spec.key];
         if (!pos) return null;
@@ -919,7 +932,6 @@ function EditableDefenderCalloutStage({
             key={spec.key}
             {...spec}
             editorMode={editorMode}
-            className={editorMode ? "z-10" : undefined}
             style={{
               left: `${pos.x}%`,
               top: `${pos.y}%`,
@@ -934,8 +946,8 @@ function EditableDefenderCalloutStage({
                     if (!stage) return;
                     const move = (ev: PointerEvent) => {
                       const r = stage.getBoundingClientRect();
-                      const x = Math.max(0, Math.min(100, ((ev.clientX - r.left) / r.width) * 100));
-                      const y = Math.max(0, Math.min(100, ((ev.clientY - r.top) / r.height) * 100));
+                      const x = clampDefenderCalloutDragPct(((ev.clientX - r.left) / r.width) * 100);
+                      const y = clampDefenderCalloutDragPct(((ev.clientY - r.top) / r.height) * 100);
                       patchCallout(spec.key, x, y);
                     };
                     const up = () => {
@@ -950,16 +962,6 @@ function EditableDefenderCalloutStage({
           />
         );
       })}
-
-      {editorMode && activeLeader ? (
-        <DefenderArrowEditorOverlay
-          activeLeaderKey={activeLeaderKey}
-          leader={activeLeader}
-          stageRef={stageRef}
-          viewBox={viewBox}
-          onPatchLeader={(patch) => patchLeader(activeLeaderKey, patch)}
-        />
-      ) : null}
       </div>
     </div>
   );
@@ -1149,7 +1151,8 @@ function DefenderCalloutEditorToolbar({
         </Button>
       </div>
       <p className="mt-2 text-center text-[11px] text-muted-foreground">
-        Drag blue (callout end) and rose (mat dot) handles; drag callout circles to reposition. Save or copy JSON.
+        Drag callout circles (amber ring) to reposition. Pick an arrow to adjust leader lines with blue/rose handles.
+        Save layout or copy JSON to bake into defaults.
       </p>
     </div>
   );
@@ -1420,8 +1423,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
     >
       {editorMode && isDefenderVariant ? (
         <div className="sticky top-0 z-[250] mb-4 border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
-          <strong>Defender diagram edit mode</strong> — pick an arrow below, drag blue/rose handles and drag callout
-          circles. Save when finished.
+          <strong>Defender diagram edit mode</strong> — drag any amber-ringed callout circle to reposition it; use
+          Arrow below to pick a leader, then drag blue/rose handles. Save when finished.
         </div>
       ) : null}
 

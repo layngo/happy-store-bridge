@@ -16,6 +16,10 @@ export const LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS =
 export const LAY_NGO_LIFESTYLE_SHOPIFY_HERO_IMAGE_CLASS =
   "max-h-full max-w-full object-contain object-center mix-blend-multiply";
 
+/** Defender Shopify heroes — white studio mats blend into `bg-background`. */
+export const LAY_NGO_DEFENDER_SHOPIFY_HERO_IMAGE_CLASS =
+  "max-h-full max-w-full object-contain object-center mix-blend-multiply";
+
 /** Lifestyle 44″ local PNGs (diagram, play strip, callouts). */
 export const LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS =
   "max-h-full max-w-full object-contain object-center";

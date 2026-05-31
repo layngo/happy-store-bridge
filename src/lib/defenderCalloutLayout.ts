@@ -62,14 +62,14 @@ export const DEFAULT_DEFENDER_TACTICAL_LAYOUT: DefenderLayoutState = {
     zipper: { x1: 148, y1: 948, x2: 612, y2: 768 },
     strap: { x1: 132, y1: 152, x2: 868, y2: 158 },
     lip: { x1: 908, y1: 912, x2: 248, y2: 218 },
-    cord: { x1: 112, y1: 560, x2: 178, y2: 892 },
+    cord: { x1: 98, y1: 530, x2: 178, y2: 892 },
   },
   callouts: {
     mesh: { x: 1, y: 97, anchor: "bottom-left" },
     zipper: { x: 99, y: 3, anchor: "top-right" },
     strap: { x: 1, y: 3, anchor: "top-left" },
     lip: { x: 99, y: 97, anchor: "bottom-right" },
-    cord: { x: 0, y: 57, anchor: "top-left" },
+    cord: { x: -1.5, y: 54, anchor: "top-left" },
   },
 };
 
