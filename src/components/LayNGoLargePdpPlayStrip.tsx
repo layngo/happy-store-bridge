@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useSearchParams } from "react-router-dom";
 import { LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS } from "@/lib/layNGoPlayMat";
 import {
   CALLOUT_THUMB_INNER_CLIP,
@@ -525,6 +526,12 @@ export function LayNGoLargePdpPlayStrip({
   showTravelerCalloutSection = false,
   calloutVariant = "large-60",
 }: LayNGoLargePdpPlayStripProps) {
+  const [searchParams] = useSearchParams();
+  const calloutEditMode =
+    searchParams.get("editLargeCallouts") === "1" || searchParams.get("editLargeCallouts") === "true";
+  const isDefenderCalloutVariant =
+    calloutVariant === "defender-mini-16" || calloutVariant === "defender-tactical-20";
+
   const threeStepImageClassName = cn(
     "h-auto w-full max-w-full object-contain",
     calloutVariant === "lifestyle-44" && LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS,
@@ -551,7 +558,8 @@ export function LayNGoLargePdpPlayStrip({
   return (
     <section
       className={cn(
-        "relative left-1/2 -ml-[50vw] w-screen overflow-x-clip overflow-y-visible px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8",
+        "relative left-1/2 -ml-[50vw] w-screen overflow-y-visible px-4 pb-10 pt-6 text-foreground sm:px-6 sm:pb-12 sm:pt-8",
+        calloutEditMode && isDefenderCalloutVariant ? "overflow-x-visible" : "overflow-x-clip",
         calloutVariant === "lite-18" ||
         calloutVariant === "lifestyle-44" ||
         calloutVariant === "defender-mini-16" ||

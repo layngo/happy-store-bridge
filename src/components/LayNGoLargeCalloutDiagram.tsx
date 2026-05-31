@@ -654,14 +654,6 @@ function DefenderTacticalMatDot({ cx, cy }: { cx: number; cy: number }) {
 
 const DEFENDER_CALLOUT_THUMB_FRAME = "relative h-20 w-20 shrink-0 sm:h-24 sm:w-24 md:h-28 md:w-28";
 
-/** Allow callouts to sit slightly outside the stage while editing. */
-const DEFENDER_CALLOUT_DRAG_MIN = -8;
-const DEFENDER_CALLOUT_DRAG_MAX = 108;
-
-function clampDefenderCalloutDragPct(n: number) {
-  return Math.max(DEFENDER_CALLOUT_DRAG_MIN, Math.min(DEFENDER_CALLOUT_DRAG_MAX, n));
-}
-
 function DefenderHeroCalloutThumb({
   src,
   alt,
@@ -879,7 +871,13 @@ function EditableDefenderCalloutStage({
   const activeLeader = layout.leaders[activeLeaderKey];
 
   return (
-    <div className={cn("mx-auto w-full bg-background", DEFENDER_CALLOUT_STAGE_MAX_W)}>
+    <div
+      className={cn(
+        "mx-auto w-full bg-background",
+        DEFENDER_CALLOUT_STAGE_MAX_W,
+        editorMode && "overflow-visible",
+      )}
+    >
       <div
         ref={stageRef}
         className={cn(
@@ -946,8 +944,8 @@ function EditableDefenderCalloutStage({
                     if (!stage) return;
                     const move = (ev: PointerEvent) => {
                       const r = stage.getBoundingClientRect();
-                      const x = clampDefenderCalloutDragPct(((ev.clientX - r.left) / r.width) * 100);
-                      const y = clampDefenderCalloutDragPct(((ev.clientY - r.top) / r.height) * 100);
+                      const x = ((ev.clientX - r.left) / r.width) * 100;
+                      const y = ((ev.clientY - r.top) / r.height) * 100;
                       patchCallout(spec.key, x, y);
                     };
                     const up = () => {
@@ -1401,7 +1399,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       className={cn(
         "mx-auto max-w-6xl pt-12 sm:pt-14",
         variant === "defender-mini-16" || variant === "defender-tactical-20"
-          ? cn("mt-8 rounded-2xl bg-background px-0 sm:mt-10 sm:px-2")
+          ? cn("mt-8 rounded-2xl bg-background px-0 sm:mt-10 sm:px-2", editorMode && "overflow-visible")
           : diagramUsesLifestyleChrome(variant)
             ? cn(
                 "mt-[calc(3.5rem+100px)] rounded-2xl px-2 sm:mt-[calc(4rem+100px)] sm:px-4",
@@ -1435,7 +1433,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       ) : null}
 
       {isDefenderVariant ? (
-        <div className="relative px-1 pb-8 sm:px-2 md:pb-10">
+        <div className={cn("relative px-1 pb-8 sm:px-2 md:pb-10", editorMode && "overflow-visible")}>
           <div className="absolute right-2 top-2 z-[330] sm:right-3 sm:top-3">
             <button
               type="button"
