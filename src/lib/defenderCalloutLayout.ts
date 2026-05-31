@@ -58,18 +58,43 @@ export const DEFAULT_DEFENDER_MINI_LAYOUT: DefenderLayoutState = {
 
 export const DEFAULT_DEFENDER_TACTICAL_LAYOUT: DefenderLayoutState = {
   leaders: {
-    mesh: { x1: 148, y1: 918, x2: 372, y2: 768 },
-    zipper: { x1: 148, y1: 948, x2: 612, y2: 768 },
-    strap: { x1: 132, y1: 152, x2: 868, y2: 158 },
-    lip: { x1: 908, y1: 912, x2: 248, y2: 218 },
-    cord: { x1: 98, y1: 530, x2: 178, y2: 892 },
+    mesh: {
+      x1: 0,
+      y1: 868.2940268709121,
+      x2: 167.40986615000335,
+      y2: 912.8280034969581,
+    },
+    zipper: {
+      x1: 462.98455238916415,
+      y1: 718.6474381445531,
+      x2: 915.5687982960366,
+      y2: 945.3618588647419,
+    },
+    strap: {
+      x1: 0,
+      y1: 145.76507432460065,
+      x2: 549.2079853855311,
+      y2: 202.28440637061613,
+    },
+    lip: {
+      x1: 1024,
+      y1: 619.7571424880201,
+      x2: 944.1618154884643,
+      y2: 612.4829228286785,
+    },
+    cord: {
+      x1: 1024,
+      y1: 131.00931430283924,
+      x2: 801.8338220624523,
+      y2: 84.66788969323083,
+    },
   },
   callouts: {
-    mesh: { x: 1, y: 97, anchor: "bottom-left" },
-    zipper: { x: 99, y: 3, anchor: "top-right" },
-    strap: { x: 1, y: 3, anchor: "top-left" },
-    lip: { x: 99, y: 97, anchor: "bottom-right" },
-    cord: { x: -1.5, y: 54, anchor: "top-left" },
+    mesh: { x: 84.72779147810769, y: 102.18318913908465, anchor: "bottom-left" },
+    zipper: { x: 12.75192370332498, y: 2.618672368517693, anchor: "top-right" },
+    strap: { x: 89.46744327564953, y: -3.820947527521658, anchor: "top-left" },
+    lip: { x: 117.47422600708954, y: 75.97332262286504, anchor: "bottom-right" },
+    cord: { x: -16.626397292929646, y: 74.82168067206374, anchor: "top-left" },
   },
 };
 
