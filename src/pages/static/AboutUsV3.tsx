@@ -9,6 +9,11 @@ type StoryPanel = {
   title: string;
   alt: string;
   storyText: string;
+  imagePosition?: string;
+  layoutOverride?: {
+    fade: "left" | "right";
+    text: "left" | "right";
+  };
 };
 
 type StoryChapter = {
@@ -18,7 +23,7 @@ type StoryChapter = {
 
 const PLACEHOLDER = (seed: string) => `https://picsum.photos/seed/${seed}/1200/640`;
 
-const ABOUT_US_V2_ASSET_VER = "3";
+const ABOUT_US_V2_ASSET_VER = "4";
 const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_US_V2_ASSET_VER}`;
 
 const CHAPTERS: StoryChapter[] = [
@@ -36,13 +41,17 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("they-meet-world-travelers-maggie-molson.png"),
         title: "World Travelers",
         alt: "Maggie and Molson greeting the founders after a trip",
+        imagePosition: "38% 18%",
+        layoutOverride: { fade: "right", text: "right" },
         storyText:
           "Before starting a family, the Lay-n-Go founders were avid travelers, with their dogs faithfully waiting to welcome them back. Those adventures became invaluable field research, inspiring new products designed to make life easier at home and on the go!",
       },
       {
-        src: aboutUsV2Png("they-meet-wedding-toast.png"),
+        src: aboutUsV2Png("they-meet-wedding-toast-wide.png"),
         title: "It's official",
         alt: "Amy and Adam's wedding toast",
+        imagePosition: "44% 36%",
+        layoutOverride: { fade: "right", text: "right" },
         storyText:
           "On April 21, 2001, Amy and Adam tied the knot in Baltimore, Maryland. Surrounded by family and their closest friends, they danced the night away until it was time to leave for the airport. The adventure was underway...they had no idea how crazy it was about to get!",
       },
@@ -173,13 +182,39 @@ const CHAPTERS: StoryChapter[] = [
   },
 ];
 
-function storyTeaser(text: string, maxLength = 130): string {
+function storyTeaser(text: string, maxLength: number): string {
   const firstParagraph = text.split("\n\n")[0]?.trim() ?? text;
   if (firstParagraph.length <= maxLength) {
     return firstParagraph.endsWith("...") ? firstParagraph : `${firstParagraph}...`;
   }
   const trimmed = firstParagraph.slice(0, maxLength).replace(/\s+\S*$/, "");
   return `${trimmed}...`;
+}
+
+const STORY_TEASER_MOBILE_MAX = 58;
+const STORY_TEASER_DESKTOP_MAX = 130;
+
+const STORY_TEASER_LINE =
+  "inline font-story font-bold text-black box-decoration-clone bg-white/84 px-2 py-0.5 shadow-sm backdrop-blur-[2px] [box-decoration-break:clone] [-webkit-box-decoration-break:clone]";
+
+function StoryTeaser({
+  text,
+  maxLength,
+  fadeRight,
+  className,
+}: {
+  text: string;
+  maxLength: number;
+  fadeRight: boolean;
+  className?: string;
+}) {
+  return (
+    <p className={cn("mt-3 max-w-prose", fadeRight ? "text-left" : "ml-auto text-right", className)}>
+      <span className={cn(STORY_TEASER_LINE, "leading-[1.7] sm:leading-[1.65]")}>
+        {storyTeaser(text, maxLength)}
+      </span>
+    </p>
+  );
 }
 
 function AboutTextWindow({ text, onClose }: { text: string; onClose: () => void }) {
@@ -220,7 +255,9 @@ const PANEL_TEXT_SHADOW =
 
 function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) {
   const [open, setOpen] = useState(false);
-  const fadeRight = index % 2 === 0;
+  const fadeRight = panel.layoutOverride?.fade ? panel.layoutOverride.fade === "right" : index % 2 === 0;
+  const textRight = panel.layoutOverride?.text ? panel.layoutOverride.text === "right" : !fadeRight;
+  const imageAnchorRight = fadeRight ? false : true;
 
   return (
     <>
@@ -232,9 +269,10 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
             alt={panel.alt}
             className={cn(
               "absolute inset-y-0 h-full w-full object-cover",
-              fadeRight ? "left-0 object-left" : "right-0 object-right",
+              imageAnchorRight ? "right-0 object-right" : "left-0 object-left",
             )}
             style={{
+              objectPosition: panel.imagePosition,
               WebkitMaskImage: fadeRight
                 ? "linear-gradient(to right, black 80%, transparent 98%)"
                 : "linear-gradient(to left, black 80%, transparent 98%)",
@@ -258,7 +296,7 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
           <div
             className={cn(
               "absolute inset-y-0 z-10 flex w-full max-w-xl flex-col justify-end px-6 pb-8 pt-16 sm:px-10 sm:pb-10 md:max-w-2xl md:px-12",
-              fadeRight ? "left-0 items-start text-left" : "right-0 items-end text-right",
+              textRight ? "right-0 items-end text-right" : "left-0 items-start text-left",
             )}
           >
             <h3
@@ -269,14 +307,18 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
             >
               {panel.title}
             </h3>
-            <p
-              className={cn(
-                "mt-4 inline-block max-w-prose rounded-sm bg-white px-4 py-3 font-story text-[1.1rem] font-bold leading-snug text-black shadow-sm sm:px-5 sm:py-3.5 sm:text-[1.35rem]",
-                fadeRight ? "mr-0" : "ml-auto",
-              )}
-            >
-              {storyTeaser(panel.storyText)}
-            </p>
+            <StoryTeaser
+              text={panel.storyText}
+              maxLength={STORY_TEASER_MOBILE_MAX}
+              fadeRight={!textRight}
+              className="max-w-[12.5rem] text-[0.95rem] leading-tight sm:hidden"
+            />
+            <StoryTeaser
+              text={panel.storyText}
+              maxLength={STORY_TEASER_DESKTOP_MAX}
+              fadeRight={!textRight}
+              className="mt-4 hidden text-[1.1rem] sm:block sm:text-[1.35rem]"
+            />
             <Button
               type="button"
               variant="outline"
@@ -293,6 +335,19 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
         </div>
       </article>
     </>
+  );
+}
+
+function AboutUsV3Intro() {
+  return (
+    <header className="py-12 text-center sm:py-14 md:py-16 lg:py-20">
+      <p className="mx-auto max-w-2xl font-story text-[clamp(1.45rem,4.2vw,2.35rem)] font-bold leading-snug text-foreground">
+        Let&apos;s face it, about us pages are boring.
+        <span className="mt-2 block text-[clamp(1.25rem,3.6vw,2rem)] text-foreground/90">
+          See the visuals for yourself.
+        </span>
+      </p>
+    </header>
   );
 }
 
@@ -333,6 +388,7 @@ const AboutUsV3 = () => {
       <Header />
       <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 lg:px-8">
         <div className="not-prose">
+          <AboutUsV3Intro />
           {CHAPTERS.map((chapter) => {
             const section = (
               <StoryChapterSection key={chapter.heading} chapter={chapter} startIndex={panelIndex} />
