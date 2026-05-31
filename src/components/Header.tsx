@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { CartDrawer } from "./CartDrawer";
 import { cn } from "@/lib/utils";
 import { shopCollectionLinks } from "@/lib/siteNav";
@@ -11,13 +11,53 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+function isHomePath(pathname: string) {
+  return pathname === "/";
+}
+
+function isShopPath(pathname: string) {
+  return (
+    pathname.startsWith("/collections") ||
+    pathname.startsWith("/product/") ||
+    pathname.startsWith("/products/") ||
+    pathname.startsWith("/shop/")
+  );
+}
+
+function isPressPath(pathname: string) {
+  return pathname.startsWith("/pages/press");
+}
+
+function isAboutPath(pathname: string) {
+  return pathname.startsWith("/pages/about-us");
+}
+
+function isContactPath(pathname: string) {
+  return pathname.startsWith("/pages/contact") || pathname.startsWith("/pages/wholesale");
+}
+
 export const Header = ({ variant = "default" }: { variant?: "default" | "light" }) => {
+  const { pathname } = useLocation();
   const light = variant === "light";
 
-  const linkClass = cn(
-    "text-xs sm:text-sm font-medium uppercase tracking-wide transition-colors whitespace-nowrap",
-    light ? "text-slate-600 hover:text-slate-900" : "text-muted-foreground hover:text-foreground",
-  );
+  const navLinkClass = (active: boolean) =>
+    cn(
+      "text-xs sm:text-sm font-medium uppercase tracking-wide transition-colors whitespace-nowrap pb-1 border-b-2",
+      active
+        ? "border-foreground text-foreground"
+        : cn("border-transparent", light ? "text-slate-600 hover:text-slate-900" : "text-muted-foreground hover:text-foreground"),
+    );
+
+  const navTriggerClass = (active: boolean) =>
+    cn(
+      "h-auto px-0 py-0 pb-1 uppercase tracking-wide font-medium gap-1 border-b-2 rounded-none",
+      active
+        ? "border-foreground text-foreground hover:text-foreground"
+        : cn(
+            "border-transparent",
+            light ? "text-slate-600 hover:text-slate-900 hover:bg-transparent" : "text-muted-foreground hover:text-foreground",
+          ),
+    );
 
   return (
     <header
@@ -53,19 +93,13 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
             light ? "border-border/70" : "border-border/60",
           )}
         >
-          <Link to="/" className={linkClass}>
+          <Link to="/" className={navLinkClass(isHomePath(pathname))}>
             Home
           </Link>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className={cn(
-                  "h-auto px-0 py-0 uppercase tracking-wide font-medium gap-1",
-                  light ? "text-slate-600 hover:text-slate-900 hover:bg-transparent" : "text-muted-foreground hover:text-foreground",
-                )}
-              >
+              <Button variant="ghost" className={navTriggerClass(isShopPath(pathname))}>
                 Shop <ChevronDown className="w-3 h-3 opacity-70" />
               </Button>
             </DropdownMenuTrigger>
@@ -88,18 +122,12 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link to="/pages/press" className={linkClass}>
+          <Link to="/pages/press" className={navLinkClass(isPressPath(pathname))}>
             Press
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className={cn(
-                  "h-auto px-0 py-0 uppercase tracking-wide font-medium gap-1",
-                  light ? "text-slate-600 hover:text-slate-900 hover:bg-transparent" : "text-muted-foreground hover:text-foreground",
-                )}
-              >
+              <Button variant="ghost" className={navTriggerClass(isAboutPath(pathname))}>
                 About Us <ChevronDown className="w-3 h-3 opacity-70" />
               </Button>
             </DropdownMenuTrigger>
@@ -118,7 +146,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link to="/pages/contact" className={linkClass}>
+          <Link to="/pages/contact" className={navLinkClass(isContactPath(pathname))}>
             Contact Us
           </Link>
         </nav>

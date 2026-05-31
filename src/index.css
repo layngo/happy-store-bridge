@@ -116,6 +116,167 @@
     @apply min-h-[5.5rem] w-full resize-y rounded-none border-0 border-b-2 border-foreground/20 bg-transparent px-0 py-2 text-base shadow-none ring-0 ring-offset-0 placeholder:text-muted-foreground/55 focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm;
   }
 
+  .tape-textbox {
+    @apply relative inline-block max-w-full;
+    filter: drop-shadow(0 3px 7px rgb(0 0 0 / 0.14)) drop-shadow(0 1px 2px rgb(0 0 0 / 0.1));
+  }
+
+  .tape-textbox--tilt-left {
+    transform: rotate(-1.15deg);
+  }
+
+  .tape-textbox--tilt-right {
+    transform: rotate(1deg);
+  }
+
+  .tape-textbox__body {
+    @apply relative z-[1] block px-4 py-2.5 font-story font-bold leading-snug text-foreground/90 sm:px-5 sm:py-3;
+    background:
+      linear-gradient(
+        168deg,
+        rgb(255 255 255 / 0.98) 0%,
+        rgb(255 255 255) 42%,
+        rgb(247 247 247) 100%
+      ),
+      repeating-linear-gradient(
+        94deg,
+        transparent 0,
+        transparent 22px,
+        rgb(0 0 0 / 0.012) 22px,
+        rgb(0 0 0 / 0.012) 23px
+      );
+    clip-path: polygon(
+      0% 18%,
+      1.2% 6%,
+      2.8% 16%,
+      4.5% 4%,
+      6.2% 14%,
+      8% 5%,
+      10% 17%,
+      12% 7%,
+      14% 15%,
+      16% 3%,
+      18% 12%,
+      20% 6%,
+      22% 16%,
+      24% 4%,
+      26% 13%,
+      28% 7%,
+      30% 18%,
+      32% 5%,
+      34% 14%,
+      36% 3%,
+      38% 11%,
+      40% 6%,
+      42% 16%,
+      44% 4%,
+      46% 13%,
+      48% 7%,
+      50% 17%,
+      52% 5%,
+      54% 15%,
+      56% 3%,
+      58% 12%,
+      60% 6%,
+      62% 16%,
+      64% 4%,
+      66% 14%,
+      68% 7%,
+      70% 18%,
+      72% 5%,
+      74% 13%,
+      76% 3%,
+      78% 11%,
+      80% 6%,
+      82% 15%,
+      84% 4%,
+      86% 14%,
+      88% 7%,
+      90% 17%,
+      92% 5%,
+      94% 13%,
+      96% 3%,
+      98% 10%,
+      100% 16%,
+      100% 84%,
+      98.5% 94%,
+      96.8% 86%,
+      95% 96%,
+      93% 88%,
+      91% 95%,
+      89% 85%,
+      87% 94%,
+      85% 87%,
+      83% 97%,
+      81% 89%,
+      79% 95%,
+      77% 86%,
+      75% 94%,
+      73% 88%,
+      71% 96%,
+      69% 87%,
+      67% 95%,
+      65% 86%,
+      63% 94%,
+      61% 88%,
+      59% 97%,
+      57% 89%,
+      55% 95%,
+      53% 86%,
+      51% 94%,
+      49% 88%,
+      47% 96%,
+      45% 87%,
+      43% 95%,
+      41% 86%,
+      39% 94%,
+      37% 88%,
+      35% 97%,
+      33% 89%,
+      31% 95%,
+      29% 86%,
+      27% 94%,
+      25% 88%,
+      23% 96%,
+      21% 87%,
+      19% 95%,
+      17% 86%,
+      15% 94%,
+      13% 88%,
+      11% 97%,
+      9% 89%,
+      7% 95%,
+      5% 86%,
+      3% 94%,
+      1.5% 88%,
+      0% 82%
+    );
+  }
+
+  .tape-textbox__body::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0;
+    background: linear-gradient(
+      118deg,
+      transparent 38%,
+      rgb(0 0 0 / 0.035) 49%,
+      transparent 58%
+    );
+    opacity: 0.55;
+  }
+
+  .tape-textbox__curl {
+    @apply pointer-events-none absolute z-[2];
+    top: -3px;
+    right: 10px;
+    width: 1.15rem;
+    height: 0.9rem;
+    transform: rotate(14deg);
+    border-radius: 0 0 0 42%;
+    background: linear-gradient(145deg, rgb(255 255 255) 35%, rgb(232 232 232) 100%);
+    box-shadow: -1px 2px 3px rgb(0 0 0 / 0.14);
+  }
+
   .brand-reviews-section {
     @apply mx-auto w-full max-w-4xl scroll-mt-24 border-t-2 border-foreground pt-10 sm:mt-16 sm:pt-12;
   }

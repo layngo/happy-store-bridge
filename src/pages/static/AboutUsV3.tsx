@@ -14,6 +14,8 @@ type StoryPanel = {
     fade: "left" | "right";
     text: "left" | "right";
   };
+  downloadUrl?: string;
+  downloadFileName?: string;
 };
 
 type StoryChapter = {
@@ -23,7 +25,7 @@ type StoryChapter = {
 
 const PLACEHOLDER = (seed: string) => `https://picsum.photos/seed/${seed}/1200/640`;
 
-const ABOUT_US_V2_ASSET_VER = "4";
+const ABOUT_US_V2_ASSET_VER = "5";
 const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_US_V2_ASSET_VER}`;
 
 const CHAPTERS: StoryChapter[] = [
@@ -50,8 +52,10 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("they-meet-wedding-toast-wide.png"),
         title: "It's official",
         alt: "Amy and Adam's wedding toast",
-        imagePosition: "44% 36%",
+        imagePosition: "50% 42%",
         layoutOverride: { fade: "right", text: "right" },
+        downloadUrl: "/about-us-v2/they-meet-wedding-toast-wide.png",
+        downloadFileName: "its-official-wedding-toast.png",
         storyText:
           "On April 21, 2001, Amy and Adam tied the knot in Baltimore, Maryland. Surrounded by family and their closest friends, they danced the night away until it was time to leave for the airport. The adventure was underway...they had no idea how crazy it was about to get!",
       },
@@ -194,8 +198,22 @@ function storyTeaser(text: string, maxLength: number): string {
 const STORY_TEASER_MOBILE_MAX = 58;
 const STORY_TEASER_DESKTOP_MAX = 130;
 
-const STORY_TEASER_LINE =
-  "inline font-story font-bold text-black box-decoration-clone bg-white/84 px-2 py-0.5 shadow-sm backdrop-blur-[2px] [box-decoration-break:clone] [-webkit-box-decoration-break:clone]";
+function TapeTextbox({
+  children,
+  tilt = "left",
+  className,
+}: {
+  children: string;
+  tilt?: "left" | "right";
+  className?: string;
+}) {
+  return (
+    <span className={cn("tape-textbox", tilt === "right" ? "tape-textbox--tilt-right" : "tape-textbox--tilt-left", className)}>
+      <span className="tape-textbox__body">{children}</span>
+      <span aria-hidden className="tape-textbox__curl" />
+    </span>
+  );
+}
 
 function StoryTeaser({
   text,
@@ -210,9 +228,7 @@ function StoryTeaser({
 }) {
   return (
     <p className={cn("mt-3 max-w-prose", fadeRight ? "text-left" : "ml-auto text-right", className)}>
-      <span className={cn(STORY_TEASER_LINE, "leading-[1.7] sm:leading-[1.65]")}>
-        {storyTeaser(text, maxLength)}
-      </span>
+      <TapeTextbox tilt={fadeRight ? "left" : "right"}>{storyTeaser(text, maxLength)}</TapeTextbox>
     </p>
   );
 }
@@ -341,11 +357,8 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
 function AboutUsV3Intro() {
   return (
     <header className="py-12 text-center sm:py-14 md:py-16 lg:py-20">
-      <p className="mx-auto max-w-2xl font-story text-[clamp(1.45rem,4.2vw,2.35rem)] font-bold leading-snug text-foreground">
-        Let&apos;s face it, about us pages are boring.
-        <span className="mt-2 block text-[clamp(1.25rem,3.6vw,2rem)] text-foreground/90">
-          See the visuals for yourself.
-        </span>
+      <p className="mx-auto max-w-4xl font-story text-[clamp(1.25rem,3.5vw,2.15rem)] font-bold leading-snug text-foreground">
+        Let&apos;s face it, about us pages are boring. See the visuals for yourself.
       </p>
     </header>
   );
