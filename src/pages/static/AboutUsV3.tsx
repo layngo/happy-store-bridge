@@ -269,7 +269,12 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
             >
               {panel.title}
             </h3>
-            <p className={cn("mt-3 text-sm leading-relaxed text-white sm:text-base", PANEL_TEXT_SHADOW)}>
+            <p
+              className={cn(
+                "mt-4 inline-block max-w-prose rounded-sm bg-white px-4 py-3 font-story text-[1.1rem] font-bold leading-snug text-black shadow-sm sm:px-5 sm:py-3.5 sm:text-[1.35rem]",
+                fadeRight ? "mr-0" : "ml-auto",
+              )}
+            >
               {storyTeaser(panel.storyText)}
             </p>
             <Button
