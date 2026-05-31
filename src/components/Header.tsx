@@ -40,9 +40,12 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
   const { pathname } = useLocation();
   const light = variant === "light";
 
+  const navItemBase =
+    "text-xs sm:text-sm font-medium uppercase tracking-wide whitespace-nowrap pb-1 border-b-2 transition-colors";
+
   const navLinkClass = (active: boolean) =>
     cn(
-      "text-xs sm:text-sm font-medium uppercase tracking-wide transition-colors whitespace-nowrap pb-1 border-b-2",
+      navItemBase,
       active
         ? "border-foreground text-foreground"
         : cn("border-transparent", light ? "text-slate-600 hover:text-slate-900" : "text-muted-foreground hover:text-foreground"),
@@ -50,12 +53,13 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
 
   const navTriggerClass = (active: boolean) =>
     cn(
-      "h-auto px-0 py-0 pb-1 uppercase tracking-wide font-medium gap-1 border-b-2 rounded-none",
+      navItemBase,
+      "inline-flex h-auto items-center gap-1 px-0 py-0 rounded-none hover:bg-transparent",
       active
         ? "border-foreground text-foreground hover:text-foreground"
         : cn(
             "border-transparent",
-            light ? "text-slate-600 hover:text-slate-900 hover:bg-transparent" : "text-muted-foreground hover:text-foreground",
+            light ? "text-slate-600 hover:text-slate-900" : "text-muted-foreground hover:text-foreground",
           ),
     );
 
@@ -99,8 +103,8 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className={navTriggerClass(isShopPath(pathname))}>
-                Shop <ChevronDown className="w-3 h-3 opacity-70" />
+              <Button variant="ghost" className={cn(navTriggerClass(isShopPath(pathname)), "text-xs sm:text-sm [&_svg]:size-3")}>
+                Shop <ChevronDown className="hidden sm:block opacity-70" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -127,8 +131,8 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className={navTriggerClass(isAboutPath(pathname))}>
-                About Us <ChevronDown className="w-3 h-3 opacity-70" />
+              <Button variant="ghost" className={cn(navTriggerClass(isAboutPath(pathname)), "text-xs sm:text-sm [&_svg]:size-3")}>
+                About Us <ChevronDown className="hidden sm:block opacity-70" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -147,7 +151,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
             </DropdownMenuContent>
           </DropdownMenu>
           <Link to="/pages/contact" className={navLinkClass(isContactPath(pathname))}>
-            Contact Us
+            Contact
           </Link>
         </nav>
       </div>

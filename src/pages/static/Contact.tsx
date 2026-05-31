@@ -65,7 +65,7 @@ const Contact = () => {
   };
 
   return (
-    <StaticPageLayout title="Contact Us">
+    <StaticPageLayout title="Contact">
       <p>
         All form submissions are addressed to{" "}
         <a href="mailto:info@layngo.com" className="text-primary hover:underline">

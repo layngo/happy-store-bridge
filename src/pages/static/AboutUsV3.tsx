@@ -271,8 +271,9 @@ const PANEL_TEXT_SHADOW =
 function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) {
   const [open, setOpen] = useState(false);
   const textRight = panel.layoutOverride?.text ? panel.layoutOverride.text === "right" : index % 2 === 1;
-  const fadeRight = !textRight;
-  const imageAnchorRight = fadeRight ? false : true;
+
+  const verticalEdgeMask =
+    "linear-gradient(to bottom, transparent 0%, black 2.5%, black 97.5%, transparent 100%)";
 
   return (
     <>
@@ -282,30 +283,18 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
           <img
             src={panel.src}
             alt={panel.alt}
-            className={cn(
-              "absolute inset-y-0 h-full w-full object-cover",
-              imageAnchorRight ? "right-0 object-right" : "left-0 object-left",
-            )}
+            className="absolute inset-0 h-full w-full object-cover"
             style={{
-              objectPosition: panel.imagePosition,
-              WebkitMaskImage: fadeRight
-                ? "linear-gradient(to right, black 80%, transparent 98%)"
-                : "linear-gradient(to left, black 80%, transparent 98%)",
-              maskImage: fadeRight
-                ? "linear-gradient(to right, black 80%, transparent 98%)"
-                : "linear-gradient(to left, black 80%, transparent 98%)",
+              objectPosition: panel.imagePosition ?? "center",
+              WebkitMaskImage: verticalEdgeMask,
+              maskImage: verticalEdgeMask,
             }}
             loading="lazy"
             decoding="async"
           />
           <div
             aria-hidden
-            className={cn(
-              "pointer-events-none absolute inset-0",
-              fadeRight
-                ? "bg-gradient-to-r from-transparent from-[72%] via-background/35 via-[88%] to-background"
-                : "bg-gradient-to-l from-transparent from-[72%] via-background/35 via-[88%] to-background",
-            )}
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,hsl(var(--background)/0.28)_0%,transparent_3.5%,transparent_96.5%,hsl(var(--background)/0.28)_100%)]"
           />
 
           <div
