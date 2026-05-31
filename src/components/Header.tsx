@@ -4,7 +4,6 @@ import { CartDrawer } from "./CartDrawer";
 import { cn } from "@/lib/utils";
 import { shopCollectionLinks } from "@/lib/siteNav";
 import { ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +40,18 @@ function NavSquiggle() {
   return <span aria-hidden className="nav-item__squiggle" />;
 }
 
+function navItemClass(active: boolean, light: boolean) {
+  return cn(
+    "nav-item text-xs sm:text-sm font-medium uppercase tracking-wide whitespace-nowrap transition-colors",
+    active && "nav-item--active",
+    active
+      ? "text-foreground"
+      : light
+        ? "text-slate-600 hover:text-slate-900"
+        : "text-muted-foreground hover:text-foreground",
+  );
+}
+
 function NavItem({
   active,
   light,
@@ -54,41 +65,35 @@ function NavItem({
   children: ReactNode;
 } & ComponentPropsWithoutRef<typeof Link>) {
   return (
-    <Link
-      className={cn(
-        "nav-item text-xs sm:text-sm font-medium uppercase tracking-wide whitespace-nowrap leading-none transition-colors",
-        active && "nav-item--active",
-        active
-          ? "text-foreground"
-          : light
-            ? "text-slate-600 hover:text-slate-900"
-            : "text-muted-foreground hover:text-foreground",
-        className,
-      )}
-      {...props}
-    >
-      <span className="nav-item__label">{children}</span>
+    <Link className={cn(navItemClass(active, light), className)} {...props}>
+      {children}
       <NavSquiggle />
     </Link>
+  );
+}
+
+function NavMenuTrigger({
+  active,
+  light,
+  children,
+}: {
+  active: boolean;
+  light: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <DropdownMenuTrigger asChild>
+      <button type="button" className={navItemClass(active, light)}>
+        {children}
+        <NavSquiggle />
+      </button>
+    </DropdownMenuTrigger>
   );
 }
 
 export const Header = ({ variant = "default" }: { variant?: "default" | "light" }) => {
   const { pathname } = useLocation();
   const light = variant === "light";
-
-  const navTriggerClass = (active: boolean) =>
-    cn(
-      "nav-item text-xs sm:text-sm font-medium uppercase tracking-wide whitespace-nowrap transition-colors",
-      "!h-auto !min-h-0 !px-0 !py-0 !shadow-none rounded-none font-medium",
-      "hover:bg-transparent focus-visible:bg-transparent data-[state=open]:bg-transparent",
-      active && "nav-item--active",
-      active
-        ? "text-foreground hover:text-foreground"
-        : light
-          ? "text-slate-600 hover:text-slate-900"
-          : "text-muted-foreground hover:text-foreground",
-    );
 
   return (
     <header
@@ -120,7 +125,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
 
         <nav
           className={cn(
-            "flex overflow-x-auto pb-1 md:flex-wrap md:justify-center items-end gap-x-5 gap-y-2 pt-3 mt-2 border-t",
+            "flex min-h-[2rem] items-center gap-x-5 overflow-x-auto pt-3 mt-2 border-t md:flex-wrap md:justify-center",
             light ? "border-border/70" : "border-border/60",
           )}
         >
@@ -129,14 +134,10 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           </NavItem>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className={cn(navTriggerClass(isShopPath(pathname)), "[&_svg]:size-3")}>
-                <span className="nav-item__label">
-                  Shop <ChevronDown className="hidden sm:block opacity-70" />
-                </span>
-                <NavSquiggle />
-              </Button>
-            </DropdownMenuTrigger>
+            <NavMenuTrigger active={isShopPath(pathname)} light={light}>
+              Shop
+              <ChevronDown className="hidden sm:block h-3 w-3 shrink-0 opacity-70" />
+            </NavMenuTrigger>
             <DropdownMenuContent
               align="center"
               className="min-w-[14rem] rounded-xl border-slate-200 bg-white p-2 font-sans text-base font-medium tracking-normal shadow-lg"
@@ -161,14 +162,10 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           </NavItem>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className={cn(navTriggerClass(isAboutPath(pathname)), "[&_svg]:size-3")}>
-                <span className="nav-item__label">
-                  About Us <ChevronDown className="hidden sm:block opacity-70" />
-                </span>
-                <NavSquiggle />
-              </Button>
-            </DropdownMenuTrigger>
+            <NavMenuTrigger active={isAboutPath(pathname)} light={light}>
+              About Us
+              <ChevronDown className="hidden sm:block h-3 w-3 shrink-0 opacity-70" />
+            </NavMenuTrigger>
             <DropdownMenuContent
               align="center"
               className="min-w-[14rem] rounded-xl border-slate-200 bg-white p-2 font-sans text-base font-medium tracking-normal shadow-lg"

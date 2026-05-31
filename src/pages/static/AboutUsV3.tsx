@@ -1,8 +1,20 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  ABOUT_US_V3_TAPE_LAYOUT_SYNC_EVENT,
+  type AboutUsV3TapeLayoutState,
+  type PanelTapeLayout,
+  type TapePlacement,
+  defaultPanelTapeLayout,
+  loadAboutUsV3TapeLayout,
+  panelTapeKey,
+  saveAboutUsV3TapeLayout,
+} from "@/lib/aboutUsV3TapeLayout";
+import { toast } from "sonner";
 
 type StoryPanel = {
   src: string;
@@ -268,23 +280,172 @@ function TapeStoryModal({ text, onClose }: { text: string; onClose: () => void }
 const PANEL_TEXT_SHADOW =
   "[text-shadow:0_1px_3px_rgb(0_0_0/0.95),0_2px_14px_rgb(0_0_0/0.75),0_4px_28px_rgb(0_0_0/0.45)]";
 
-function PanelCornerTapes({ textRight }: { textRight: boolean }) {
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function buildPanelTapeMeta() {
+  const keys: string[] = [];
+  const textRightByKey: Record<string, boolean> = {};
+  let index = 0;
+
+  for (const chapter of CHAPTERS) {
+    for (const panel of chapter.panels) {
+      const key = panelTapeKey(chapter.heading, panel.title);
+      keys.push(key);
+      textRightByKey[key] = panel.layoutOverride?.text ? panel.layoutOverride.text === "right" : index % 2 === 1;
+      index += 1;
+    }
+  }
+
+  return { keys, textRightByKey };
+}
+
+function DraggableCornerTape({
+  label,
+  placement,
+  editorMode,
+  stageRef,
+  onChange,
+}: {
+  label: string;
+  placement: TapePlacement;
+  editorMode: boolean;
+  stageRef: RefObject<HTMLDivElement | null>;
+  onChange: (next: TapePlacement) => void;
+}) {
+  const [dragging, setDragging] = useState(false);
+
+  return (
+    <span
+      aria-hidden
+      className={cn("panel-corner-tape", editorMode && "panel-corner-tape--editable")}
+      style={{
+        left: `${placement.x}%`,
+        top: `${placement.y}%`,
+        transform: `rotate(${placement.rotate}deg)`,
+      }}
+      onPointerDown={(e) => {
+        if (!editorMode) return;
+        e.preventDefault();
+        e.stopPropagation();
+        e.currentTarget.setPointerCapture(e.pointerId);
+        setDragging(true);
+      }}
+      onPointerMove={(e) => {
+        if (!editorMode || !dragging || !stageRef.current) return;
+        const rect = stageRef.current.getBoundingClientRect();
+        onChange({
+          ...placement,
+          x: clamp(((e.clientX - rect.left) / rect.width) * 100, 0, 100),
+          y: clamp(((e.clientY - rect.top) / rect.height) * 100, 0, 100),
+        });
+      }}
+      onPointerUp={() => setDragging(false)}
+      onPointerCancel={() => setDragging(false)}
+    >
+      {editorMode ? (
+        <span className="absolute -top-5 left-1/2 z-40 -translate-x-1/2 whitespace-nowrap rounded bg-amber-50 px-1.5 py-0.5 text-[9px] font-semibold text-amber-950 shadow-sm">
+          {label}
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+function PanelCornerTapes({
+  near,
+  far,
+  editorMode,
+  stageRef,
+  onTapeChange,
+}: {
+  near: TapePlacement;
+  far: TapePlacement;
+  editorMode: boolean;
+  stageRef: RefObject<HTMLDivElement | null>;
+  onTapeChange: (which: "near" | "far", next: TapePlacement) => void;
+}) {
   return (
     <>
-      <span
-        aria-hidden
-        className={cn("panel-corner-tape", textRight ? "panel-corner-tape--tr" : "panel-corner-tape--tl")}
+      <DraggableCornerTape
+        label="Near tape"
+        placement={near}
+        editorMode={editorMode}
+        stageRef={stageRef}
+        onChange={(next) => onTapeChange("near", next)}
       />
-      <span
-        aria-hidden
-        className={cn("panel-corner-tape", textRight ? "panel-corner-tape--bl" : "panel-corner-tape--br")}
+      <DraggableCornerTape
+        label="Far tape"
+        placement={far}
+        editorMode={editorMode}
+        stageRef={stageRef}
+        onChange={(next) => onTapeChange("far", next)}
       />
     </>
   );
 }
 
-function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) {
+function TapeEditorToolbar({
+  getLayout,
+  onDone,
+}: {
+  getLayout: () => AboutUsV3TapeLayoutState;
+  onDone: () => void;
+}) {
+  const save = () => {
+    try {
+      saveAboutUsV3TapeLayout(getLayout());
+      toast.success("Saved corner tape layout in this browser");
+    } catch {
+      toast.error("Could not save");
+    }
+  };
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(getLayout(), null, 2));
+      toast.success("Copied tape layout JSON");
+    } catch {
+      toast.error("Clipboard unavailable");
+    }
+  };
+
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-[300] border-t border-amber-200/90 bg-amber-50/95 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-sm md:left-1/2 md:right-auto md:mx-auto md:w-[min(100%,42rem)] md:-translate-x-1/2 md:rounded-t-xl md:border-x md:border-t">
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <Button type="button" size="sm" onClick={save}>
+          Save layout
+        </Button>
+        <Button type="button" size="sm" variant="outline" onClick={copy}>
+          Copy JSON
+        </Button>
+        <Button type="button" size="sm" variant="secondary" onClick={onDone}>
+          Done editing
+        </Button>
+      </div>
+      <p className="mt-2 text-center text-[11px] text-muted-foreground">
+        Drag each tape strip on a panel. Near tape sits on the text side; far tape is the opposite diagonal.
+      </p>
+    </div>
+  );
+}
+
+function StoryFadePanel({
+  panel,
+  index,
+  tapeLayout,
+  editorMode,
+  onTapeLayoutChange,
+}: {
+  panel: StoryPanel;
+  index: number;
+  tapeLayout: PanelTapeLayout;
+  editorMode: boolean;
+  onTapeLayoutChange: (next: PanelTapeLayout) => void;
+}) {
   const [open, setOpen] = useState(false);
+  const stageRef = useRef<HTMLDivElement>(null);
   const textRight = panel.layoutOverride?.text ? panel.layoutOverride.text === "right" : index % 2 === 1;
 
   const verticalEdgeMask =
@@ -294,7 +455,13 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
     <>
       {open && <TapeStoryModal text={panel.storyText} onClose={() => setOpen(false)} />}
       <article className="relative w-full">
-        <div className="relative h-[min(58vw,22rem)] w-full sm:h-[min(48vw,26rem)] md:h-[min(42vw,28rem)]">
+        <div
+          ref={stageRef}
+          className={cn(
+            "relative h-[min(58vw,22rem)] w-full sm:h-[min(48vw,26rem)] md:h-[min(42vw,28rem)]",
+            editorMode && "overflow-visible ring-2 ring-amber-300/70 ring-offset-2 ring-offset-background",
+          )}
+        >
           <div className="absolute inset-0 overflow-hidden">
             <img
               src={panel.src}
@@ -313,7 +480,18 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
               className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,hsl(var(--background)/0.28)_0%,transparent_3.5%,transparent_96.5%,hsl(var(--background)/0.28)_100%)]"
             />
           </div>
-          <PanelCornerTapes textRight={textRight} />
+          <PanelCornerTapes
+            near={tapeLayout.near}
+            far={tapeLayout.far}
+            editorMode={editorMode}
+            stageRef={stageRef}
+            onTapeChange={(which, next) =>
+              onTapeLayoutChange({
+                ...tapeLayout,
+                [which]: next,
+              })
+            }
+          />
 
           <div
             className={cn(
@@ -386,31 +564,107 @@ function ChapterHero({ heading }: { heading: string }) {
   );
 }
 
-function StoryChapterSection({ chapter, startIndex }: { chapter: StoryChapter; startIndex: number }) {
+function StoryChapterSection({
+  chapter,
+  startIndex,
+  editorMode,
+  tapeLayout,
+  onTapeLayoutChange,
+}: {
+  chapter: StoryChapter;
+  startIndex: number;
+  editorMode: boolean;
+  tapeLayout: AboutUsV3TapeLayoutState;
+  onTapeLayoutChange: (panelKey: string, next: PanelTapeLayout) => void;
+}) {
   return (
     <section className="border-b border-border/40 last:border-b-0">
       <ChapterHero heading={chapter.heading} />
       <div className="space-y-12 pb-14 sm:space-y-14 sm:pb-16 md:space-y-16 md:pb-20">
-        {chapter.panels.map((panel, i) => (
-          <StoryFadePanel key={`${chapter.heading}-${panel.title}`} panel={panel} index={startIndex + i} />
-        ))}
+        {chapter.panels.map((panel, i) => {
+          const panelKey = panelTapeKey(chapter.heading, panel.title);
+          return (
+            <StoryFadePanel
+              key={panelKey}
+              panel={panel}
+              index={startIndex + i}
+              tapeLayout={tapeLayout[panelKey] ?? defaultPanelTapeLayout((startIndex + i) % 2 === 1)}
+              editorMode={editorMode}
+              onTapeLayoutChange={(next) => onTapeLayoutChange(panelKey, next)}
+            />
+          );
+        })}
       </div>
     </section>
   );
 }
 
 const AboutUsV3 = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const editorMode = searchParams.get("editTapes") === "1" || searchParams.get("editTapes") === "true";
+
+  const panelTapeMeta = useMemo(() => buildPanelTapeMeta(), []);
+  const [tapeLayout, setTapeLayout] = useState<AboutUsV3TapeLayoutState>(() =>
+    loadAboutUsV3TapeLayout(panelTapeMeta.keys, panelTapeMeta.textRightByKey),
+  );
+  const tapeLayoutRef = useRef(tapeLayout);
+  tapeLayoutRef.current = tapeLayout;
+
+  useEffect(() => {
+    const sync = () => setTapeLayout(loadAboutUsV3TapeLayout(panelTapeMeta.keys, panelTapeMeta.textRightByKey));
+    sync();
+    window.addEventListener(ABOUT_US_V3_TAPE_LAYOUT_SYNC_EVENT, sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(ABOUT_US_V3_TAPE_LAYOUT_SYNC_EVENT, sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, [panelTapeMeta]);
+
+  const toggleEditor = () => {
+    const params = new URLSearchParams(location.search);
+    if (editorMode) params.delete("editTapes");
+    else params.set("editTapes", "1");
+    const search = params.toString();
+    navigate({ pathname: location.pathname, search: search ? `?${search}` : "" }, { replace: true });
+  };
+
   let panelIndex = 0;
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
       <Header />
-      <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 lg:px-8">
+      <main
+        id="main-content"
+        className={cn(
+          "mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 lg:px-8",
+          editorMode && "pb-28",
+        )}
+      >
         <div className="not-prose">
           <AboutUsV3Intro />
+          <div className="mb-6 flex justify-end">
+            <Button type="button" size="sm" variant="outline" onClick={toggleEditor}>
+              {editorMode ? "Stop editing tapes" : "Edit corner tapes"}
+            </Button>
+          </div>
           {CHAPTERS.map((chapter) => {
             const section = (
-              <StoryChapterSection key={chapter.heading} chapter={chapter} startIndex={panelIndex} />
+              <StoryChapterSection
+                key={chapter.heading}
+                chapter={chapter}
+                startIndex={panelIndex}
+                editorMode={editorMode}
+                tapeLayout={tapeLayout}
+                onTapeLayoutChange={(panelKey, next) =>
+                  setTapeLayout((prev) => ({
+                    ...prev,
+                    [panelKey]: next,
+                  }))
+                }
+              />
             );
             panelIndex += chapter.panels.length;
             return section;
@@ -418,6 +672,9 @@ const AboutUsV3 = () => {
         </div>
       </main>
       <SiteFooter />
+      {editorMode ? (
+        <TapeEditorToolbar getLayout={() => tapeLayoutRef.current} onDone={toggleEditor} />
+      ) : null}
     </div>
   );
 };
