@@ -21,7 +21,7 @@ import {
 const HERO_CALLOUT_MAIN = "/products/lay-n-go-large-pdp/hero-callout-main.png";
 const HERO_CALLOUT_LIFESTYLE = "/products/lay-n-go-lifestyle-44/hero-callout-main.png";
 const HERO_CALLOUT_LITE = "/products/lay-n-go-lite-18/hero-callout-main.png";
-const HERO_CALLOUT_DEFENDER_MINI = "/products/lay-n-go-defender-mini-16/hero-callout-main.png";
+const HERO_CALLOUT_DEFENDER_MINI = "/products/lay-n-go-defender-mini-16/hero-callout-main.png?v=2";
 const HERO_CALLOUT_DEFENDER_TACTICAL = "/products/lay-n-go-tactical-bag-20/hero-callout-main.png";
 const CALLOUT_CORD = "/products/lay-n-go-large-pdp/callout-cord-pocket.png";
 const CALLOUT_CORD_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-cord-pocket.png";
@@ -301,9 +301,14 @@ function diagramUsesLifestyleChrome(variant: LayNGoCalloutDiagramVariant) {
   return variant === "lifestyle-44" || variant === "lite-18" || usesFixedDefenderCalloutStage(variant);
 }
 
-/** Mat/diagram stage — Lifestyle & Lite match site `bg-background`; Cosmo bags & Defender stay white. */
+/** Mat/diagram stage — Lifestyle, Lite, and Defender match site `bg-background`. */
 function diagramMatSurfaceBg(variant: LayNGoCalloutDiagramVariant) {
-  return variant === "lifestyle-44" || variant === "lite-18" ? "bg-background" : "bg-white";
+  return variant === "lifestyle-44" ||
+    variant === "lite-18" ||
+    variant === "defender-mini-16" ||
+    variant === "defender-tactical-20"
+    ? "bg-background"
+    : "bg-white";
 }
 
 const CALLOUT_META: Record<
@@ -1380,7 +1385,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       className={cn(
         "mx-auto max-w-6xl pt-12 sm:pt-14",
         variant === "defender-mini-16"
-          ? "mt-8 rounded-2xl bg-white px-0 sm:mt-10 sm:px-2"
+          ? cn("mt-8 rounded-2xl bg-background px-0 sm:mt-10 sm:px-2")
           : diagramUsesLifestyleChrome(variant)
             ? cn(
                 "mt-[calc(3.5rem+100px)] rounded-2xl px-2 sm:mt-[calc(4rem+100px)] sm:px-4",
