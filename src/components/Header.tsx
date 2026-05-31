@@ -1,3 +1,4 @@
+import { type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CartDrawer } from "./CartDrawer";
 import { cn } from "@/lib/utils";
@@ -36,31 +37,57 @@ function isContactPath(pathname: string) {
   return pathname.startsWith("/pages/contact") || pathname.startsWith("/pages/wholesale");
 }
 
+function NavSquiggle() {
+  return <span aria-hidden className="nav-item__squiggle" />;
+}
+
+function NavItem({
+  active,
+  light,
+  className,
+  children,
+  ...props
+}: {
+  active: boolean;
+  light: boolean;
+  className?: string;
+  children: ReactNode;
+} & ComponentPropsWithoutRef<typeof Link>) {
+  return (
+    <Link
+      className={cn(
+        "nav-item text-xs sm:text-sm font-medium uppercase tracking-wide whitespace-nowrap transition-colors",
+        active && "nav-item--active",
+        active
+          ? "text-foreground"
+          : light
+            ? "text-slate-600 hover:text-slate-900"
+            : "text-muted-foreground hover:text-foreground",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      <NavSquiggle />
+    </Link>
+  );
+}
+
 export const Header = ({ variant = "default" }: { variant?: "default" | "light" }) => {
   const { pathname } = useLocation();
   const light = variant === "light";
 
-  const navItemBase =
-    "text-xs sm:text-sm font-medium uppercase tracking-wide whitespace-nowrap pb-1 border-b-2 transition-colors";
-
-  const navLinkClass = (active: boolean) =>
-    cn(
-      navItemBase,
-      active
-        ? "border-foreground text-foreground"
-        : cn("border-transparent", light ? "text-slate-600 hover:text-slate-900" : "text-muted-foreground hover:text-foreground"),
-    );
-
   const navTriggerClass = (active: boolean) =>
     cn(
-      navItemBase,
-      "inline-flex h-auto items-center gap-1 px-0 py-0 rounded-none hover:bg-transparent",
+      "nav-item text-xs sm:text-sm font-medium uppercase tracking-wide whitespace-nowrap transition-colors",
+      "inline-flex h-auto min-h-0 items-center gap-1 px-0 py-0 rounded-none",
+      "hover:bg-transparent focus-visible:bg-transparent data-[state=open]:bg-transparent",
+      active && "nav-item--active",
       active
-        ? "border-foreground text-foreground hover:text-foreground"
-        : cn(
-            "border-transparent",
-            light ? "text-slate-600 hover:text-slate-900" : "text-muted-foreground hover:text-foreground",
-          ),
+        ? "text-foreground hover:text-foreground"
+        : light
+          ? "text-slate-600 hover:text-slate-900"
+          : "text-muted-foreground hover:text-foreground",
     );
 
   return (
@@ -97,14 +124,17 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
             light ? "border-border/70" : "border-border/60",
           )}
         >
-          <Link to="/" className={navLinkClass(isHomePath(pathname))}>
+          <NavItem to="/" active={isHomePath(pathname)} light={light}>
             Home
-          </Link>
+          </NavItem>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className={cn(navTriggerClass(isShopPath(pathname)), "text-xs sm:text-sm [&_svg]:size-3")}>
-                Shop <ChevronDown className="hidden sm:block opacity-70" />
+              <Button variant="ghost" className={cn(navTriggerClass(isShopPath(pathname)), "[&_svg]:size-3")}>
+                <span className="inline-flex items-center gap-1">
+                  Shop <ChevronDown className="hidden sm:block opacity-70" />
+                </span>
+                <NavSquiggle />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -126,13 +156,17 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link to="/pages/press" className={navLinkClass(isPressPath(pathname))}>
+          <NavItem to="/pages/press" active={isPressPath(pathname)} light={light}>
             Press
-          </Link>
+          </NavItem>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className={cn(navTriggerClass(isAboutPath(pathname)), "text-xs sm:text-sm [&_svg]:size-3")}>
-                About Us <ChevronDown className="hidden sm:block opacity-70" />
+              <Button variant="ghost" className={cn(navTriggerClass(isAboutPath(pathname)), "[&_svg]:size-3")}>
+                <span className="inline-flex items-center gap-1">
+                  About Us <ChevronDown className="hidden sm:block opacity-70" />
+                </span>
+                <NavSquiggle />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -150,9 +184,10 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link to="/pages/contact" className={navLinkClass(isContactPath(pathname))}>
+
+          <NavItem to="/pages/contact" active={isContactPath(pathname)} light={light}>
             Contact
-          </Link>
+          </NavItem>
         </nav>
       </div>
     </header>

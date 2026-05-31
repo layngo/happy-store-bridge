@@ -268,6 +268,21 @@ function TapeStoryModal({ text, onClose }: { text: string; onClose: () => void }
 const PANEL_TEXT_SHADOW =
   "[text-shadow:0_1px_3px_rgb(0_0_0/0.95),0_2px_14px_rgb(0_0_0/0.75),0_4px_28px_rgb(0_0_0/0.45)]";
 
+function PanelCornerTapes({ textRight }: { textRight: boolean }) {
+  return (
+    <>
+      <span
+        aria-hidden
+        className={cn("panel-corner-tape", textRight ? "panel-corner-tape--tr" : "panel-corner-tape--tl")}
+      />
+      <span
+        aria-hidden
+        className={cn("panel-corner-tape", textRight ? "panel-corner-tape--bl" : "panel-corner-tape--br")}
+      />
+    </>
+  );
+}
+
 function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) {
   const [open, setOpen] = useState(false);
   const textRight = panel.layoutOverride?.text ? panel.layoutOverride.text === "right" : index % 2 === 1;
@@ -279,23 +294,26 @@ function StoryFadePanel({ panel, index }: { panel: StoryPanel; index: number }) 
     <>
       {open && <TapeStoryModal text={panel.storyText} onClose={() => setOpen(false)} />}
       <article className="relative w-full">
-        <div className="relative h-[min(58vw,22rem)] w-full overflow-hidden sm:h-[min(48vw,26rem)] md:h-[min(42vw,28rem)]">
-          <img
-            src={panel.src}
-            alt={panel.alt}
-            className="absolute inset-0 h-full w-full object-cover"
-            style={{
-              objectPosition: panel.imagePosition ?? "center",
-              WebkitMaskImage: verticalEdgeMask,
-              maskImage: verticalEdgeMask,
-            }}
-            loading="lazy"
-            decoding="async"
-          />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,hsl(var(--background)/0.28)_0%,transparent_3.5%,transparent_96.5%,hsl(var(--background)/0.28)_100%)]"
-          />
+        <div className="relative h-[min(58vw,22rem)] w-full sm:h-[min(48vw,26rem)] md:h-[min(42vw,28rem)]">
+          <div className="absolute inset-0 overflow-hidden">
+            <img
+              src={panel.src}
+              alt={panel.alt}
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{
+                objectPosition: panel.imagePosition ?? "center",
+                WebkitMaskImage: verticalEdgeMask,
+                maskImage: verticalEdgeMask,
+              }}
+              loading="lazy"
+              decoding="async"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,hsl(var(--background)/0.28)_0%,transparent_3.5%,transparent_96.5%,hsl(var(--background)/0.28)_100%)]"
+            />
+          </div>
+          <PanelCornerTapes textRight={textRight} />
 
           <div
             className={cn(
