@@ -713,22 +713,22 @@ function DefenderHeroCalloutCluster({
   );
 }
 
-function DefenderLeaderDragHandle({
-  label,
-  point,
+type DefenderLeaderDragJoint = "callout" | "mat" | null;
+
+function DefenderArrowEditorOverlay({
+  activeLeaderKey,
+  leader,
   stageRef,
   viewBox,
-  dotClass,
-  onMove,
+  onPatchLeader,
 }: {
-  label: string;
-  point: { x: number; y: number };
+  activeLeaderKey: string;
+  leader: DefenderLeaderEnd;
   stageRef: React.RefObject<HTMLDivElement | null>;
   viewBox: string;
-  dotClass: string;
-  onMove: (next: { x: number; y: number }) => void;
+  onPatchLeader: (patch: Partial<DefenderLeaderEnd>) => void;
 }) {
-  const [dragging, setDragging] = useState(false);
+  const dragJointRef = useRef<DefenderLeaderDragJoint>(null);
   const [stageTick, setStageTick] = useState(0);
 
   useLayoutEffect(() => {
@@ -740,58 +740,82 @@ function DefenderLeaderDragHandle({
       window.removeEventListener("resize", sync);
       window.removeEventListener("scroll", sync, true);
     };
-  }, [stageRef, point.x, point.y, viewBox]);
+  }, [stageRef, leader, viewBox]);
+
+  const applyClientPointer = useCallback(
+    (clientX: number, clientY: number) => {
+      const joint = dragJointRef.current;
+      if (!joint || !stageRef.current) return;
+      const r = stageRef.current.getBoundingClientRect();
+      const p = clientToViewBoxPoint(clientX, clientY, r, viewBox);
+      if (joint === "callout") onPatchLeader({ x1: p.x, y1: p.y });
+      else onPatchLeader({ x2: p.x, y2: p.y });
+    },
+    [onPatchLeader, stageRef, viewBox],
+  );
 
   void stageTick;
   const stageRect = stageRef.current?.getBoundingClientRect();
   if (!stageRect) return null;
 
-  const pos = viewBoxPointToStagePos(point, stageRect, viewBox);
-
-  const moveFromEvent = (e: React.PointerEvent) => {
-    if (!stageRef.current) return;
-    const r = stageRef.current.getBoundingClientRect();
-    onMove(clientToViewBoxPoint(e.clientX, e.clientY, r, viewBox));
-  };
+  const joints: { joint: DefenderLeaderDragJoint; label: string; point: { x: number; y: number }; dotClass: string }[] =
+    [
+      { joint: "callout", label: "Callout end (1)", point: { x: leader.x1, y: leader.y1 }, dotClass: "bg-blue-500" },
+      { joint: "mat", label: "Mat dot (2)", point: { x: leader.x2, y: leader.y2 }, dotClass: "bg-rose-500" },
+    ];
 
   return (
     <div
-      role="button"
-      tabIndex={0}
-      title={label}
-      aria-label={label}
-      className={cn(
-        "pointer-events-auto absolute z-[60] flex touch-none cursor-grab flex-col items-center p-2 active:cursor-grabbing",
-        dragging && "scale-110",
-      )}
-      style={{
-        left: `${pos.x}%`,
-        top: `${pos.y}%`,
-        transform: "translate(-50%, -50%)",
-      }}
-      onPointerDown={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (stageRef.current) stageRef.current.setPointerCapture(e.pointerId);
-        setDragging(true);
-        moveFromEvent(e);
-      }}
+      className="absolute inset-0 z-[80] overflow-visible"
       onPointerMove={(e) => {
-        if (!dragging) return;
-        moveFromEvent(e);
+        if (dragJointRef.current) applyClientPointer(e.clientX, e.clientY);
       }}
-      onPointerUp={() => setDragging(false)}
-      onPointerCancel={() => setDragging(false)}
+      onPointerUp={() => {
+        dragJointRef.current = null;
+      }}
+      onPointerCancel={() => {
+        dragJointRef.current = null;
+      }}
     >
-      <span className="mb-0.5 whitespace-nowrap rounded bg-white/95 px-1 py-0.5 text-[9px] font-semibold text-neutral-800 shadow-sm ring-1 ring-neutral-200">
-        {label}
+      <span className="pointer-events-none absolute left-2 top-2 z-[90] rounded bg-amber-100 px-2 py-1 text-[10px] font-bold text-amber-950 shadow-sm ring-1 ring-amber-300">
+        Editing: {activeLeaderKey} — drag blue and rose handles
       </span>
-      <span
-        className={cn(
-          "block h-7 w-7 shrink-0 rounded-full border-2 border-white shadow-lg ring-2 ring-amber-400/80",
-          dotClass,
-        )}
-      />
+      {joints.map(({ joint, label, point, dotClass }) => {
+        const pos = viewBoxPointToStagePos(point, stageRect, viewBox);
+        return (
+          <div
+            key={joint}
+            role="button"
+            tabIndex={0}
+            title={label}
+            aria-label={label}
+            className="pointer-events-auto absolute z-[90] flex touch-none cursor-grab flex-col items-center p-3 active:cursor-grabbing"
+            style={{
+              left: `${pos.x}%`,
+              top: `${pos.y}%`,
+              transform: "translate(-50%, -50%)",
+            }}
+            onPointerDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              dragJointRef.current = joint;
+              if (stageRef.current) stageRef.current.setPointerCapture(e.pointerId);
+              e.currentTarget.setPointerCapture(e.pointerId);
+              applyClientPointer(e.clientX, e.clientY);
+            }}
+          >
+            <span className="mb-0.5 whitespace-nowrap rounded bg-white/95 px-1.5 py-0.5 text-[9px] font-semibold text-neutral-800 shadow-sm ring-1 ring-neutral-200">
+              {label}
+            </span>
+            <span
+              className={cn(
+                "block h-9 w-9 shrink-0 rounded-full border-2 border-white shadow-lg ring-2 ring-amber-400/80",
+                dotClass,
+              )}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -877,6 +901,7 @@ function EditableDefenderCalloutStage({
             key={spec.key}
             {...spec}
             editorMode={editorMode}
+            className={editorMode ? "z-10" : undefined}
             style={{
               left: `${pos.x}%`,
               top: `${pos.y}%`,
@@ -909,49 +934,17 @@ function EditableDefenderCalloutStage({
       })}
 
       {editorMode && activeLeader ? (
-        <div className="pointer-events-none absolute inset-0 z-[50] overflow-visible">
-          <DefenderLeaderDragHandle
-            label="Callout end"
-            point={{ x: activeLeader.x1, y: activeLeader.y1 }}
-            stageRef={stageRef}
-            viewBox={viewBox}
-            dotClass="bg-blue-500"
-            onMove={(p) => patchLeader(activeLeaderKey, { x1: p.x, y1: p.y })}
-          />
-          <DefenderLeaderDragHandle
-            label="Mat dot"
-            point={{ x: activeLeader.x2, y: activeLeader.y2 }}
-            stageRef={stageRef}
-            viewBox={viewBox}
-            dotClass="bg-rose-500"
-            onMove={(p) => patchLeader(activeLeaderKey, { x2: p.x, y2: p.y })}
-          />
-        </div>
+        <DefenderArrowEditorOverlay
+          activeLeaderKey={activeLeaderKey}
+          leader={activeLeader}
+          stageRef={stageRef}
+          viewBox={viewBox}
+          onPatchLeader={(patch) => patchLeader(activeLeaderKey, patch)}
+        />
       ) : null}
     </div>
   );
 }
-
-function DefenderTactical20MobileCallouts() {
-  return (
-    <div className="mt-8 flex w-full flex-col gap-10 px-2 sm:px-4">
-      {DEFENDER_TACTICAL_CALLOUTS.map((c) => (
-        <DefenderHeroCalloutCluster key={c.key} {...c} />
-      ))}
-    </div>
-  );
-}
-
-function DefenderMini16MobileCallouts() {
-  return (
-    <div className="mt-8 flex w-full flex-col gap-10 px-2 sm:px-4">
-      {DEFENDER_MINI_CALLOUTS.map((c) => (
-        <DefenderHeroCalloutCluster key={c.key} {...c} />
-      ))}
-    </div>
-  );
-}
-
 
 function FloatingCallout({
   calloutKey,
@@ -1406,18 +1399,6 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                 : "Lay-n-Go Large product details"
       }
     >
-      {isDefenderVariant ? (
-        <div className="fixed right-3 top-3 z-[320]">
-          <button
-            type="button"
-            onClick={toggleDefenderEditor}
-            className="rounded-md border border-neutral-300 bg-white/95 px-3 py-1.5 text-xs font-semibold text-neutral-900 shadow-sm backdrop-blur-sm"
-          >
-            {editorMode ? "Stop editing" : "Edit diagram"}
-          </button>
-        </div>
-      ) : null}
-
       {editorMode && isDefenderVariant ? (
         <div className="sticky top-0 z-[250] mb-4 border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
           <strong>Defender diagram edit mode</strong> — pick an arrow below, drag blue/rose handles and drag callout
@@ -1431,7 +1412,34 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         </div>
       ) : null}
 
+      {isDefenderVariant ? (
+        <div className="relative px-1 pb-8 sm:px-2 md:pb-10">
+          <div className="absolute right-2 top-2 z-[330] sm:right-3 sm:top-3">
+            <button
+              type="button"
+              onClick={toggleDefenderEditor}
+              className="rounded-md border border-neutral-300 bg-white/95 px-3 py-1.5 text-xs font-semibold text-neutral-900 shadow-sm backdrop-blur-sm"
+            >
+              {editorMode ? "Stop editing" : "Edit diagram"}
+            </button>
+          </div>
+          <EditableDefenderCalloutStage
+            variant={defenderVariant}
+            heroSrc={config.heroSrc}
+            heroAlt={config.heroAlt}
+            layout={defenderLayout}
+            onLayoutChange={setDefenderLayout}
+            editorMode={editorMode}
+            activeLeaderKey={defenderEditKey}
+          />
+          <div className={config.dimensionWrapClass}>
+            <DiameterLine inches={config.diameterInches} variant={variant} />
+          </div>
+        </div>
+      ) : null}
+
       {/* Mobile */}
+      {!isDefenderVariant ? (
       <div
         className={cn(
           "flex flex-col items-center gap-2 md:hidden",
@@ -1464,16 +1472,9 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             variant === "large-60" && "-mt-2 shrink-0 pb-0",
             variant === "lifestyle-44" && "mt-4 shrink-0 pb-2 sm:mt-5 sm:pb-3",
             variant === "lite-18" && "mt-5 shrink-0 pb-1 sm:mt-6 sm:pb-2",
-            variant === "defender-mini-16" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
-            variant === "defender-tactical-20" && "-mt-1 shrink-0 pb-0 sm:-mt-2",
           )}
         />
-        {variant === "defender-tactical-20" ? (
-          <DefenderTactical20MobileCallouts />
-        ) : variant === "defender-mini-16" ? (
-          <DefenderMini16MobileCallouts />
-        ) : (
-          mobileCalloutKeysForVariant(variant).map((k) => {
+        {mobileCalloutKeysForVariant(variant).map((k) => {
           const m = CALLOUT_META[k];
           const mobileThumbCrop = cn(
             variant === "lite-18" && lite18ThumbCropClass(k),
@@ -1547,33 +1548,21 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               {label}
             </div>
           );
-        })
-        )}
+        })}
       </div>
+      ) : null}
 
       {/* Desktop */}
+      {!isDefenderVariant ? (
       <div
         className={cn(
           "mx-auto hidden w-full md:block md:px-2",
-          variant === "defender-mini-16"
-            ? "max-w-[min(100%,1200px)]"
-            : variant === "lifestyle-44"
-              ? "max-w-[min(100%,1280px)]"
-              : "max-w-[1100px]",
+          variant === "lifestyle-44"
+            ? "max-w-[min(100%,1280px)]"
+            : "max-w-[1100px]",
           variant === "lifestyle-44" ? "pb-14 md:pb-16" : diagramUsesLifestyleChrome(variant) && "pb-10 md:pb-12",
         )}
       >
-        {isDefenderVariant ? (
-          <EditableDefenderCalloutStage
-            variant={defenderVariant}
-            heroSrc={config.heroSrc}
-            heroAlt={config.heroAlt}
-            layout={defenderLayout}
-            onLayoutChange={setDefenderLayout}
-            editorMode={editorMode}
-            activeLeaderKey={defenderEditKey}
-          />
-        ) : (
         <div className={cn(lifestyle44 && "overflow-visible")}>
         <div
           ref={containerRef}
@@ -1771,14 +1760,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           <DiameterLine inches={config.diameterInches} variant={variant} />
         </div>
         </div>
-        )}
-
-        {(variant === "defender-tactical-20" || variant === "defender-mini-16") && (
-          <div className={config.dimensionWrapClass}>
-            <DiameterLine inches={config.diameterInches} variant={variant} />
-          </div>
-        )}
       </div>
+      ) : null}
 
       {editorMode && isDefenderVariant ? (
         <DefenderCalloutEditorToolbar
