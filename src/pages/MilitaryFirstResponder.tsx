@@ -217,9 +217,7 @@ const MilitaryFirstResponder = () => {
           </div>
         </div>
 
-        <div className="mb-10 w-full sm:mb-12">
-          <DefenderHeroVideo />
-        </div>
+        <DefenderHeroVideo className="mb-10 sm:mb-12" />
 
         <section
           className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-2 pb-5 pt-3 sm:px-6 sm:pb-7 sm:pt-4"

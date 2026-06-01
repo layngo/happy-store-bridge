@@ -1671,11 +1671,7 @@ const ProductDetail = () => {
           <span className="text-sm">{backLabel}</span>
         </Link>
 
-        {isLayNGoDefender ? (
-          <div className="mb-8 w-full sm:mb-10">
-            <DefenderHeroVideo />
-          </div>
-        ) : null}
+        {isLayNGoDefender ? <DefenderHeroVideo className="mb-8 sm:mb-10" /> : null}
 
         {isCosmoPdp ? (
           <>

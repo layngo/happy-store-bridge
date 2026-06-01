@@ -7,12 +7,12 @@ type DefenderHeroVideoProps = {
   className?: string;
 };
 
-/** Autoplaying muted loop — no controls, no pause button. */
+/** Full-bleed autoplaying muted loop — no chrome, no controls. */
 export function DefenderHeroVideo({ className }: DefenderHeroVideoProps) {
   return (
     <div
       className={cn(
-        "relative w-full max-w-full overflow-hidden bg-black aspect-[4/3] sm:rounded-2xl",
+        "relative left-1/2 aspect-[4/3] w-screen max-w-none -translate-x-1/2 overflow-hidden",
         className,
       )}
     >
