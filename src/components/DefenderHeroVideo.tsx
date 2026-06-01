@@ -7,7 +7,7 @@ type DefenderHeroVideoProps = {
   className?: string;
 };
 
-/** Full-bleed autoplaying muted loop — no chrome, no controls. */
+/** Full-bleed autoplaying muted loop with tactical title overlay. */
 export function DefenderHeroVideo({ className }: DefenderHeroVideoProps) {
   return (
     <div
@@ -24,6 +24,10 @@ export function DefenderHeroVideo({ className }: DefenderHeroVideoProps) {
         iframeClassName="absolute inset-0 h-full w-full border-0"
         showPauseControl={false}
       />
+      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center px-4 text-center">
+        <h2 className="home-cat-label home-cat-label--tactical defender-hero-overlay__title">DEFENDER</h2>
+        <p className="defender-hero-overlay__subtext mt-3 max-w-md sm:mt-4">Your next adventure awaits</p>
+      </div>
     </div>
   );
 }
