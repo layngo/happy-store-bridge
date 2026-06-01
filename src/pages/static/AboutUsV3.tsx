@@ -9,7 +9,7 @@ import {
   type AboutUsV3TapeLayoutState,
   type PanelTapeLayout,
   type TapePlacement,
-  defaultPanelTapeLayout,
+  getPanelTapeLayout,
   loadAboutUsV3TapeLayout,
   panelTapeKey,
   saveAboutUsV3TapeLayout,
@@ -588,7 +588,7 @@ function StoryChapterSection({
               key={panelKey}
               panel={panel}
               index={startIndex + i}
-              tapeLayout={tapeLayout[panelKey] ?? defaultPanelTapeLayout((startIndex + i) % 2 === 1)}
+              tapeLayout={tapeLayout[panelKey] ?? getPanelTapeLayout(panelKey, (startIndex + i) % 2 === 1)}
               editorMode={editorMode}
               onTapeLayoutChange={(next) => onTapeLayoutChange(panelKey, next)}
             />
