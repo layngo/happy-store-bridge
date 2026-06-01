@@ -7,21 +7,12 @@ type DefenderHeroVideoProps = {
   className?: string;
 };
 
-/**
- * Full-bleed autoplaying muted loop with tactical title overlay.
- * 16:9 Vimeo is cover-cropped into the 4:3 frame so no letterbox bars show.
- */
+/** Full-bleed autoplaying muted loop with tactical title overlay. */
 export function DefenderHeroVideo({ className }: DefenderHeroVideoProps) {
   return (
-    <div
-      className={cn(
-        "relative aspect-[4/3] w-[100vw] max-w-none overflow-hidden",
-        "left-1/2 -translate-x-1/2",
-        className,
-      )}
-    >
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/2 aspect-video h-full min-w-full -translate-x-1/2 -translate-y-1/2 scale-[1.02]">
+    <section className={cn("defender-hero-video", className)}>
+      <div className="defender-hero-video__embed">
+        <div className="defender-hero-video__embed-inner">
           <PausableAutoplayEmbed
             provider="vimeo"
             videoId={DEFENDER_VIMEO_ID}
@@ -29,6 +20,7 @@ export function DefenderHeroVideo({ className }: DefenderHeroVideoProps) {
             className="absolute inset-0 h-full w-full"
             iframeClassName="absolute inset-0 h-full w-full border-0"
             showPauseControl={false}
+            vimeoBackground="000000"
           />
         </div>
       </div>
@@ -40,6 +32,6 @@ export function DefenderHeroVideo({ className }: DefenderHeroVideoProps) {
         <h2 className="home-cat-label home-cat-label--tactical defender-hero-overlay__title">DEFENDER</h2>
         <p className="defender-hero-overlay__subtext mt-3 max-w-md sm:mt-4">Your next adventure awaits</p>
       </div>
-    </div>
+    </section>
   );
 }

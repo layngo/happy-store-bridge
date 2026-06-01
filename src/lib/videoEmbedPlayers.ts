@@ -50,7 +50,10 @@ export function postYouTubeCommand(iframe: HTMLIFrameElement, func: "playVideo" 
   );
 }
 
-export function buildVimeoEmbedSrc(videoId: string, { autoplay }: { autoplay: boolean }) {
+export function buildVimeoEmbedSrc(
+  videoId: string,
+  { autoplay, background }: { autoplay: boolean; /** Hex without # — player chrome / letterbox fill */ background?: string },
+) {
   const params = new URLSearchParams({
     badge: "0",
     autopause: "0",
@@ -65,6 +68,7 @@ export function buildVimeoEmbedSrc(videoId: string, { autoplay }: { autoplay: bo
     portrait: "0",
     dnt: "1",
   });
+  if (background) params.set("background", background);
   return `https://player.vimeo.com/video/${videoId}?${params.toString()}`;
 }
 

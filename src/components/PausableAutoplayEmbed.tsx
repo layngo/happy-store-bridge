@@ -21,6 +21,8 @@ type PausableAutoplayEmbedProps = {
   vimeoLoopFade?: boolean;
   /** When false, no pause/play button (e.g. home hero). Defaults to true. */
   showPauseControl?: boolean;
+  /** Vimeo only: player background hex without # (e.g. `000000`). */
+  vimeoBackground?: string;
 };
 
 function usePrefersReducedMotion() {
@@ -49,6 +51,7 @@ export function PausableAutoplayEmbed({
   iframeClassName = "absolute inset-0 h-full w-full border-0",
   vimeoLoopFade = false,
   showPauseControl = true,
+  vimeoBackground,
 }: PausableAutoplayEmbedProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -60,9 +63,12 @@ export function PausableAutoplayEmbed({
   const src = useMemo(
     () =>
       provider === "vimeo"
-        ? buildVimeoEmbedSrc(videoId, { autoplay: !prefersReducedMotion })
+        ? buildVimeoEmbedSrc(videoId, {
+            autoplay: !prefersReducedMotion,
+            background: vimeoBackground,
+          })
         : buildYouTubeEmbedSrc(videoId, { autoplay: !prefersReducedMotion }),
-    [provider, videoId, prefersReducedMotion],
+    [provider, videoId, prefersReducedMotion, vimeoBackground],
   );
 
   const syncPaused = useCallback(

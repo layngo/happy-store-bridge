@@ -1,230 +1,263 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { StaticPageLayout } from "@/components/StaticPageLayout";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { cn } from "@/lib/utils";
 
 const wholesaleStats = [
-  { label: "IN BUSINESS", value: "16+" },
+  { label: "Years in business", value: "16+" },
   { label: "Wholesale partners", value: "200+" },
-  { label: "Happy customers", value: "100k+" },
+  { label: "Customers served", value: "100k+" },
   { label: "Missed deliveries", value: "~0" },
 ] as const;
 
+type InquiryTopic = "general" | "wholesale";
+
 const Contact = () => {
   const location = useLocation();
-
+  const [topic, setTopic] = useState<InquiryTopic>("general");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [orderNumber, setOrderNumber] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [orderNumber, setOrderNumber] = useState("");
+  const [company, setCompany] = useState("");
   const [message, setMessage] = useState("");
-
-  const [wholesaleFirstName, setWholesaleFirstName] = useState("");
-  const [wholesaleLastName, setWholesaleLastName] = useState("");
-  const [wholesaleEmail, setWholesaleEmail] = useState("");
-  const [wholesaleMessage, setWholesaleMessage] = useState("");
 
   useEffect(() => {
     if (location.hash !== "#wholesale") return;
-    const el = document.getElementById("wholesale");
+    setTopic("wholesale");
+    const el = document.getElementById("contact-form");
     if (!el) return;
     window.requestAnimationFrame(() => {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }, [location.hash]);
 
-  const submitContact = (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    const isWholesale = topic === "wholesale";
+    const subject = isWholesale ? "Wholesale inquiry" : "Lay-n-Go contact";
     const body = [
+      `Topic: ${isWholesale ? "Wholesale / retail" : "Order or product help"}`,
       `Name: ${firstName} ${lastName}`,
-      orderNumber && `Order: ${orderNumber}`,
       `Email: ${email}`,
-      `Phone: ${phone}`,
+      phone && `Phone: ${phone}`,
+      !isWholesale && orderNumber && `Order: ${orderNumber}`,
+      isWholesale && company && `Store / company: ${company}`,
       "",
       message,
     ]
       .filter(Boolean)
       .join("\n");
-    window.location.href = `mailto:info@layngo.com?subject=${encodeURIComponent("Lay-n-Go contact form")}&body=${encodeURIComponent(body)}`;
-  };
-
-  const submitWholesale = (e: React.FormEvent) => {
-    e.preventDefault();
-    const body = [
-      `Name: ${wholesaleFirstName} ${wholesaleLastName}`,
-      `Email: ${wholesaleEmail}`,
-      "",
-      wholesaleMessage,
-    ].join("\n");
-    window.location.href = `mailto:info@layngo.com?subject=${encodeURIComponent("Wholesale inquiry")}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:info@layngo.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
   return (
     <StaticPageLayout title="Contact">
-      <p>
-        All form submissions are addressed to{" "}
+      <p className="!mt-0 text-base leading-relaxed">
+        Questions about an order, a product, or carrying Lay-n-Go? Reach us at{" "}
         <a href="mailto:info@layngo.com" className="text-primary hover:underline">
           info@layngo.com
-        </a>
-        . You can also fax <strong>+1.703.995.4916</strong>.
+        </a>{" "}
+        or fax <strong className="font-semibold text-foreground">703.995.4916</strong>.
       </p>
 
-      <div className="not-prose rounded-lg border border-border bg-card/40 p-6 my-8">
-        <h2 className="font-heading text-xl font-semibold text-foreground mb-4">Support &amp; contact</h2>
-        <form onSubmit={submitContact} className="space-y-4">
-          <div className="grid sm:grid-cols-2 gap-4">
+      <section id="wholesale" className="not-prose scroll-mt-24 border-y border-border py-8 my-8">
+        <p className="brand-eyebrow text-foreground/70">Wholesale</p>
+        <ul className="mt-5 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4">
+          {wholesaleStats.map((s) => (
+            <li key={s.label}>
+              <p className="font-heading text-2xl font-bold tabular-nums text-foreground sm:text-[1.75rem]">
+                {s.value}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div id="contact-form" className="not-prose scroll-mt-24">
+        <form onSubmit={submit} className="space-y-6">
+          <fieldset className="space-y-3 border-0 p-0">
+            <legend className="brand-eyebrow text-foreground/70">What do you need?</legend>
+            <div className="flex flex-col gap-2 sm:flex-row sm:gap-6">
+              <label
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 text-sm font-medium text-foreground",
+                  topic === "general" && "text-foreground",
+                )}
+              >
+                <input
+                  type="radio"
+                  name="topic"
+                  value="general"
+                  checked={topic === "general"}
+                  onChange={() => setTopic("general")}
+                  className="h-4 w-4 border-foreground/30 text-foreground focus-visible:ring-foreground"
+                />
+                Order or product help
+              </label>
+              <label className="flex cursor-pointer items-center gap-2.5 text-sm font-medium text-foreground">
+                <input
+                  type="radio"
+                  name="topic"
+                  value="wholesale"
+                  checked={topic === "wholesale"}
+                  onChange={() => setTopic("wholesale")}
+                  className="h-4 w-4 border-foreground/30 text-foreground focus-visible:ring-foreground"
+                />
+                Wholesale / retail
+              </label>
+            </div>
+          </fieldset>
+
+          <div className="grid gap-5 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="fn">First name</Label>
-              <Input id="fn" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+              <Label htmlFor="fn" className="brand-eyebrow text-foreground/70">
+                First name
+              </Label>
+              <Input
+                id="fn"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+                className="brand-field-underline"
+                autoComplete="given-name"
+              />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="ln">Last name</Label>
-              <Input id="ln" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+              <Label htmlFor="ln" className="brand-eyebrow text-foreground/70">
+                Last name
+              </Label>
+              <Input
+                id="ln"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                className="brand-field-underline"
+                autoComplete="family-name"
+              />
             </div>
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="ord">Order number (if applicable)</Label>
-            <Input id="ord" value={orderNumber} onChange={(e) => setOrderNumber(e.target.value)} />
+            <Label htmlFor="em" className="brand-eyebrow text-foreground/70">
+              Email
+            </Label>
+            <Input
+              id="em"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="brand-field-underline"
+              autoComplete="email"
+            />
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="em">Email</Label>
-            <Input id="em" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <Label htmlFor="ph" className="brand-eyebrow text-foreground/70">
+              Phone <span className="normal-case tracking-normal font-normal text-muted-foreground">(optional)</span>
+            </Label>
+            <Input
+              id="ph"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="brand-field-underline"
+              autoComplete="tel"
+            />
           </div>
+
+          {topic === "general" ? (
+            <div className="space-y-2">
+              <Label htmlFor="ord" className="brand-eyebrow text-foreground/70">
+                Order number <span className="normal-case tracking-normal font-normal text-muted-foreground">(if you have one)</span>
+              </Label>
+              <Input
+                id="ord"
+                value={orderNumber}
+                onChange={(e) => setOrderNumber(e.target.value)}
+                className="brand-field-underline"
+              />
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Label htmlFor="co" className="brand-eyebrow text-foreground/70">
+                Store or company
+              </Label>
+              <Input
+                id="co"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                className="brand-field-underline"
+                placeholder="Gift shop, exchange, boutique…"
+              />
+            </div>
+          )}
+
           <div className="space-y-2">
-            <Label htmlFor="ph">Phone</Label>
-            <Input id="ph" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <Label htmlFor="msg" className="brand-eyebrow text-foreground/70">
+              Message
+            </Label>
+            <Textarea
+              id="msg"
+              rows={5}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+              className="brand-textarea-underline"
+              placeholder={
+                topic === "wholesale"
+                  ? "What you sell, where you're located, and which lines you're interested in."
+                  : "What's going on — we'll get back to you."
+              }
+            />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="msg">Message</Label>
-            <Textarea id="msg" rows={5} value={message} onChange={(e) => setMessage(e.target.value)} required />
-          </div>
-          <Button type="submit" className="w-full sm:w-auto">
-            Send to info@layngo.com
-          </Button>
+
+          <button type="submit" className="brand-btn-editorial w-full sm:w-auto">
+            Send message
+          </button>
         </form>
       </div>
 
-      <h2>FAQ</h2>
+      <h2 className="!mt-14">Common questions</h2>
       <Accordion type="single" collapsible className="not-prose w-full">
         <AccordionItem value="returns">
           <AccordionTrigger>What is your return policy?</AccordionTrigger>
           <AccordionContent className="text-muted-foreground">
             See our{" "}
             <Link to="/pages/return-policy" className="text-primary hover:underline">
-              Return Policy
-            </Link>{" "}
-            and official refund policy on Shopify. Contact us with your order number to start a return.
+              return policy
+            </Link>
+            . Email us with your order number to start a return.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="origin">
-          <AccordionTrigger>Where are products designed, made, and shipped from?</AccordionTrigger>
+          <AccordionTrigger>Where are products made and shipped from?</AccordionTrigger>
           <AccordionContent className="text-muted-foreground">
-            Lay-n-Go is headquartered in Alexandria, Virginia. Sourcing and fulfillment details vary by SKU; check
-            product pages or ask our team for the latest.
+            We&apos;re based in Alexandria, Virginia. Sourcing and fulfillment vary by product — check the product page
+            or ask us if you need specifics.
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="water">
           <AccordionTrigger>Are your products waterproof?</AccordionTrigger>
           <AccordionContent className="text-muted-foreground">
-            Many surfaces are wipeable and machine washable per care instructions. &ldquo;Waterproof&rdquo; depends on
-            the product — refer to the specific product description or contact us for technical questions.
+            Most mats are wipeable and machine washable per the care tag on that SKU. Waterproof isn&apos;t one-size-fits-all
+            here — tell us which product you mean and we&apos;ll answer straight.
           </AccordionContent>
         </AccordionItem>
       </Accordion>
 
-      <section id="wholesale" className="not-prose mt-14 scroll-mt-24 border-t border-border pt-10">
-        <h2 className="font-heading text-2xl font-bold text-foreground">Wholesale</h2>
-        <p className="mt-3 text-muted-foreground">
-          Retailers worldwide carry Lay-n-Go. Tell us about your store, customer base, and which lines interest you —
-          we&apos;ll follow up with pricing, MOQs, and merchandising assets.
-        </p>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 my-8">
-          {wholesaleStats.map((s) => (
-            <div key={s.label} className="rounded-lg border border-border bg-card/50 p-4 text-center">
-              <p className="font-heading text-2xl font-bold text-primary">{s.value}</p>
-              <p className="text-xs text-muted-foreground mt-1 uppercase tracking-wide">{s.label}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="rounded-lg border border-border bg-card/40 p-6 mb-10">
-          <h3 className="font-heading text-xl font-semibold text-foreground mb-4">Wholesale inquiry</h3>
-          <form onSubmit={submitWholesale} className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="wfn">First name</Label>
-                <Input
-                  id="wfn"
-                  value={wholesaleFirstName}
-                  onChange={(e) => setWholesaleFirstName(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="wln">Last name</Label>
-                <Input
-                  id="wln"
-                  value={wholesaleLastName}
-                  onChange={(e) => setWholesaleLastName(e.target.value)}
-                  required
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="wem">Email</Label>
-              <Input
-                id="wem"
-                type="email"
-                value={wholesaleEmail}
-                onChange={(e) => setWholesaleEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="wmsg">Message</Label>
-              <Textarea
-                id="wmsg"
-                rows={4}
-                value={wholesaleMessage}
-                onChange={(e) => setWholesaleMessage(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit">Request wholesale info</Button>
-          </form>
-        </div>
-
-        <h3 className="font-heading text-lg font-semibold text-foreground">What partners say</h3>
-        <blockquote className="mt-3 border-l-4 border-primary pl-4 italic text-muted-foreground">
-          &ldquo;Lay-n-Go demos easily on the counter — customers get it in seconds. Reorders are consistent every
-          holiday season.&rdquo;
-          <footer className="not-italic text-sm text-foreground mt-2">— Specialty boutique buyer, Mid-Atlantic</footer>
-        </blockquote>
-
-        <div className="mt-10">
-          <img
-            src="/wholesale-provisional-drawings-page-4.png"
-            alt="Lay-n-Go Convertible provisional patent drawing (page 4)"
-            loading="lazy"
-            className="mx-auto w-full max-w-3xl rounded-xl border border-border bg-white shadow-sm"
-          />
-        </div>
-      </section>
-
-      <h2 className="mt-10">Business resources</h2>
-      <ul>
-        <li>
-          <Link to="/pages/small-businesses" className="text-primary hover:underline">
-            Supporting small business &amp; future leaders
-          </Link>
-        </li>
-      </ul>
+      <p className="!mt-10 text-sm">
+        <Link to="/pages/small-businesses" className="text-primary hover:underline">
+          Small business resources
+        </Link>
+      </p>
     </StaticPageLayout>
   );
 };
