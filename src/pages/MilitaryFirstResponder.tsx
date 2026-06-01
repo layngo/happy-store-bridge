@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { getCollectionGridSwatchPreview } from "@/components/ProductCard";
 import { cn } from "@/lib/utils";
 import { Loader2, ChevronRight, Home } from "lucide-react";
+import { DefenderHeroVideo } from "@/components/DefenderHeroVideo";
 
 export const MILITARY_FIRST_RESPONDER_PATH = "/collections/military-first-responder";
 
@@ -214,6 +215,10 @@ const MilitaryFirstResponder = () => {
               Select a size
             </p>
           </div>
+        </div>
+
+        <div className="mb-10 w-full sm:mb-12">
+          <DefenderHeroVideo />
         </div>
 
         <section
