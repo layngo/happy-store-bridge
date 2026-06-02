@@ -6,7 +6,7 @@ export type PlayAwardBadge = {
 };
 
 const BASE = "/play-awards";
-const AWARD_ASSET_V = "8";
+const AWARD_ASSET_V = "9";
 
 /** Award seals shown on Large, Lifestyle, and Lite play mat PDPs. */
 const awardSrc = (file: string) => `${BASE}/${file}?v=${AWARD_ASSET_V}`;

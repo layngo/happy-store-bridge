@@ -194,6 +194,10 @@ const LAY_N_GO_TRAVEL_DOG_BED_44_GALLERY_SLIDES = [
     src: "/products/lay-n-go-travel-dog-bed-44/gallery-3.png",
     alt: "Dog on a Lay-n-Go mat draped over a car back seat with red straps on the headrest",
   },
+  {
+    src: "/products/lay-n-go-travel-dog-bed-44/gallery-4.png",
+    alt: "Two dogs on blue and brown Lay-n-Go pet mats secured to the back seat of a car",
+  },
 ] as const;
 
 const LAY_N_GO_DEFENDER_MINI_16_GALLERY_SLIDES = [
