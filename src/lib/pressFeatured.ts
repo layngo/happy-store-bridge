@@ -39,9 +39,9 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     dateLabel: "May 3, 2024:",
     productName:
       "Amy Fazackerley Reveals How She Conquers Business Challenges While Nurturing Family Life",
-    imageSrc: "/press/featured-female-founder-show@2x.png?v=5",
+    imageSrc: "/press/featured-female-founder-show@2x.png?v=6",
     imageSrcSet:
-      "/press/featured-female-founder-show.png?v=5 2048w, /press/featured-female-founder-show@2x.png?v=5 4096w",
+      "/press/featured-female-founder-show.png?v=6 2048w, /press/featured-female-founder-show@2x.png?v=6 4096w",
     imageAlt:
       "The Female Founder Show with Bridget Fitzpatrick and guest Amy Fazackerley of Lay-n-Go on ASBN",
     imageAspect: "2048/768",

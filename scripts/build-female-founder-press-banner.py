@@ -52,34 +52,24 @@ def main() -> None:
         src = src.resize((int(sw * (TARGET_H / sh)), TARGET_H), Image.Resampling.LANCZOS)
         sw, sh = src.size
 
-    pad_left = (TARGET_W - sw) // 2
-    pad_right = TARGET_W - sw - pad_left
+    pad_right = TARGET_W - sw
 
     canvas = Image.new("RGBA", (TARGET_W, TARGET_H), (*BG, 255))
-    canvas.paste(src, (pad_left, 0), src)
+    canvas.paste(src, (0, 0), src)
 
-    # Ensure expanded margins are flat white (generative expand edges).
-    if pad_left > 0:
-        left_fill = Image.new("RGBA", (pad_left, TARGET_H), (*BG, 255))
-        canvas.paste(left_fill, (0, 0))
+    # White expand on the right only (text overlay zone).
     if pad_right > 0:
         right_fill = Image.new("RGBA", (pad_right, TARGET_H), (*BG, 255))
-        canvas.paste(right_fill, (pad_left + sw, 0))
+        canvas.paste(right_fill, (sw, 0))
 
-    top = extract_sprite(src, TOP_CIRCLE_BOX)
-    bottom = extract_sprite(src, BOTTOM_CIRCLE_BOX)
-    top_m = top.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
-    bottom_m = bottom.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+    top_m = extract_sprite(src, TOP_CIRCLE_BOX).transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+    bottom_m = extract_sprite(src, BOTTOM_CIRCLE_BOX).transpose(Image.Transpose.FLIP_LEFT_RIGHT)
 
     tw, th = top.size
     bw, bh = bottom.size
 
-    # Left expanded margin
-    paste_sprite(canvas, top, (pad_left - tw - 48, -18))
-    paste_sprite(canvas, bottom, (36, TARGET_H - bh - 8))
-
-    # Right expanded margin (mirror accents)
-    paste_sprite(canvas, top_m, (pad_left + sw + 48, -18))
+    # Teal circle accents on the expanded right margin
+    paste_sprite(canvas, top_m, (sw + 48, -18))
     paste_sprite(canvas, bottom_m, (TARGET_W - bw - 36, TARGET_H - bh - 8))
 
     out = canvas.convert("RGB")
