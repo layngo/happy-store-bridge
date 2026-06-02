@@ -18,7 +18,10 @@ function PressFeaturedCard({
       <img
         src={item.imageSrc}
         alt={item.imageAlt}
-        className="block aspect-[1024/403] w-full object-cover object-left"
+        className="block w-full object-cover object-left"
+        style={{
+          aspectRatio: (item.imageAspect ?? "1024/403").replace("/", " / "),
+        }}
         loading="eager"
         decoding="async"
       />
@@ -48,9 +51,11 @@ function PressFeaturedCard({
           <p>{item.productName}</p>
         </div>
 
-        <blockquote className="border-l-0 p-0 font-heading text-sm font-medium leading-relaxed text-muted-foreground sm:text-[0.9rem] lg:text-[0.95rem]">
-          &ldquo;{item.quote}&rdquo;
-        </blockquote>
+        {item.quote ? (
+          <blockquote className="border-l-0 p-0 font-heading text-sm font-medium leading-relaxed text-muted-foreground sm:text-[0.9rem] lg:text-[0.95rem]">
+            &ldquo;{item.quote}&rdquo;
+          </blockquote>
+        ) : null}
       </div>
     </article>
   );
@@ -68,7 +73,7 @@ export function PressFeaturedSection() {
         Featured press
       </h2>
       <div className="mx-auto w-full max-w-[min(100%,80rem)] px-4 sm:px-6">
-        <div className="space-y-6">
+        <div className="space-y-8 sm:space-y-10">
           {PRESS_FEATURED_ITEMS.map((item) => (
             <PressFeaturedCard key={item.href} item={item} />
           ))}
