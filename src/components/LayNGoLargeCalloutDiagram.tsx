@@ -155,7 +155,7 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v14";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v12";
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v13";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
 const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v3";
@@ -266,16 +266,19 @@ const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
 /** ~10px left on the same width scale as `LIFESTYLE_MESH_POCKET_DX_20PX`, for Lite lip mat dot. */
 const LITE_LIP_DOT_DX_10PX = (LIFESTYLE_MESH_POCKET_DX_20PX / 20) * 10;
 
+/** ~100px up on Lite diagram stage (768px reference height). */
+const LITE_HANDLE_CALLOUT_UP_100PX_DY = (100 / 768) * 100;
+
 /** Lite 18″: cord/mesh thumbnail anchors swapped vs Lifestyle; lip mat dot nudged for 18″ hero. Cord dot on 6 o'clock drawstring (container %, not image file %). */
 const DEFAULT_LAYOUT_LITE: LayoutState = {
   dots: {
-    handle: { x: 50, y: 14 },
+    handle: { x: 50, y: 14 - LITE_HANDLE_CALLOUT_UP_100PX_DY },
     cord: { x: 50, y: 79 },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.mesh },
     lip: { x: 31 - LITE_LIP_DOT_DX_10PX, y: 49 },
   },
   anchors: {
-    handle: { x: 50, y: 4 },
+    handle: { x: 50, y: 4 - LITE_HANDLE_CALLOUT_UP_100PX_DY },
     cord: { x: DEFAULT_LAYOUT_LIFESTYLE.anchors.mesh.x, y: DEFAULT_LAYOUT_LIFESTYLE.anchors.lip.y },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.cord },
     lip: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.lip },
@@ -1565,7 +1568,13 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           }
 
           return (
-            <div key={k} className="flex flex-col items-center gap-2 px-2">
+            <div
+              key={k}
+              className={cn(
+                "flex flex-col items-center gap-2 px-2",
+                variant === "lite-18" && k === "handle" && "-mt-[100px]",
+              )}
+            >
               {thumb}
               {label}
             </div>

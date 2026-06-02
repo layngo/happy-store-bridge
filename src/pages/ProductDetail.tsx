@@ -40,6 +40,7 @@ import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 import { LayNGoLargePdpHeroVideo } from "@/components/LayNGoLargePdpHeroVideo";
 import { NailspaPdpHeroVideo } from "@/components/NailspaPdpHeroVideo";
 import { DefenderHeroVideo } from "@/components/DefenderHeroVideo";
+import { LayNGoPlayAwardsSection } from "@/components/LayNGoPlayAwardsSection";
 import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
@@ -1910,6 +1911,8 @@ const ProductDetail = () => {
                 )}
               </div>
             </section>
+
+            {isLayNGoPlayReviewsPdp(product.handle) ? <LayNGoPlayAwardsSection /> : null}
 
             {isCosmoStoryPdp ? <CosmoPdpVideoGallery /> : null}
 
