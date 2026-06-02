@@ -579,7 +579,7 @@ function DiameterLine({
             !defenderMini16 &&
             !defenderTactical20 &&
             "mt-2 text-xl sm:text-2xl",
-          lite18 && "mt-2 text-xl sm:mt-2.5 sm:text-2xl",
+          lite18 && "mt-3 text-2xl sm:mt-3.5 sm:text-[1.65rem]",
           (defenderMini16 || defenderTactical20) && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
           !lifestyleChrome && "mt-1 text-lg sm:text-xl",
         )}
@@ -1468,9 +1468,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       {!isDefenderVariant ? (
       <div
         className={cn(
-          "flex flex-col items-center gap-2 md:hidden",
+          "flex flex-col items-center md:hidden",
+          variant === "lite-18" ? "gap-0 pb-14" : "gap-2",
           diagramUsesLifestyleChrome(variant) &&
-            (variant === "lifestyle-44" || variant === "lite-18" ? "gap-2 pb-8" : "gap-3 pb-6"),
+            variant !== "lite-18" &&
+            (variant === "lifestyle-44" ? "gap-2 pb-8" : "gap-3 pb-6"),
         )}
       >
         <img
@@ -1493,13 +1495,19 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           variant={variant}
           className={cn(
             variant === "lite-18"
-              ? "mx-auto w-full max-w-[min(90vw,25.5rem)]"
+              ? "relative z-30 mx-auto w-full max-w-[min(90vw,25.5rem)]"
               : cn("w-full", config.mobileHeroMaxClass),
             variant === "large-60" && "-mt-2 shrink-0 pb-0",
             variant === "lifestyle-44" && "mt-4 shrink-0 pb-2 sm:mt-5 sm:pb-3",
-            variant === "lite-18" && "mt-5 shrink-0 pb-1 sm:mt-6 sm:pb-2",
+            variant === "lite-18" && "mt-6 shrink-0 pb-0 sm:mt-7",
           )}
         />
+        <div
+          className={cn(
+            "flex w-full flex-col items-center",
+            variant === "lite-18" && "mt-10 gap-12 sm:mt-12 sm:gap-14",
+          )}
+        >
         {mobileCalloutKeysForVariant(variant).map((k) => {
           const m = CALLOUT_META[k];
           const mobileThumbCrop = cn(
@@ -1572,8 +1580,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             <div
               key={k}
               className={cn(
-                "flex flex-col items-center gap-2 px-2",
-                variant === "lite-18" && k === "handle" && "-mt-[200px]",
+                "flex flex-col items-center px-2",
+                variant === "lite-18" ? "gap-3" : "gap-2",
               )}
             >
               {thumb}
@@ -1581,6 +1589,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             </div>
           );
         })}
+        </div>
       </div>
       ) : null}
 
