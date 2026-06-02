@@ -103,7 +103,7 @@ function PressFeaturedBannerCard({
       {item.bannerDiagonalDividers ? (
         <div
           aria-hidden
-          className="pointer-events-none absolute top-1/2 left-[47%] z-20 hidden -translate-x-1/2 -translate-y-1/2 md:block"
+          className="pointer-events-none absolute top-1/2 left-[47%] z-30 hidden -translate-x-1/2 -translate-y-1/2 md:block"
         >
           <span className="absolute top-1/2 -left-[11px] h-[120%] w-[3px] -translate-x-1/2 -translate-y-1/2 origin-center rotate-[11deg] bg-black" />
           <span className="absolute top-1/2 left-[11px] h-[120%] w-[3px] -translate-x-1/2 -translate-y-1/2 origin-center rotate-[11deg] bg-black" />
@@ -112,7 +112,7 @@ function PressFeaturedBannerCard({
 
       <div
         className={cn(
-          "flex flex-col justify-center gap-5 bg-white px-5 py-7 sm:px-8 sm:py-8",
+          "relative z-10 flex flex-col justify-center gap-5 bg-white px-5 py-7 sm:px-8 sm:py-8",
           "md:absolute md:inset-y-0 md:right-0 md:w-[min(52%,34rem)] md:bg-transparent md:px-8 md:py-10 lg:px-12 lg:py-12",
         )}
       >
