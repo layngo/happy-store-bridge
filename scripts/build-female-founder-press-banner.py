@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""Expand Female Founder press banner with white margins and teal circle accents."""
+"""Expand Female Founder press banner — art left-aligned, white right, vector circles on top."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = (
@@ -16,29 +15,47 @@ SRC = (
 )
 OUT_DIR = ROOT / "public" / "press"
 BG = (254, 254, 254)
+TEAL = (18, 160, 158, 255)
 TARGET_W = 2048
 TARGET_H = 768
 
-# Decorative circle crops from source art (x0, y0, x1, y1)
-TOP_CIRCLE_BOX = (248, 0, 418, 118)
-BOTTOM_CIRCLE_BOX = (8, 628, 188, 768)
+
+def make_striped_circle(diameter: int) -> Image.Image:
+    """Simple teal / white diagonal stripe disc (vector-style, full opacity on top)."""
+    size = diameter
+    tile_size = int(size * 2.8)
+    tile = Image.new("RGBA", (tile_size, tile_size), (255, 255, 255, 255))
+    draw = ImageDraw.Draw(tile)
+    period = 14
+    half = period // 2
+    for offset in range(-tile_size, tile_size * 2, period):
+        draw.polygon(
+            [
+                (offset, 0),
+                (offset + half, 0),
+                (offset + half + tile_size, tile_size),
+                (offset + tile_size, tile_size),
+            ],
+            fill=TEAL,
+        )
+
+    mask = Image.new("L", (size, size), 0)
+    ImageDraw.Draw(mask).ellipse((0, 0, size - 1, size - 1), fill=255)
+    origin = (tile_size - size) // 2
+    disc = tile.crop((origin, origin, origin + size, origin + size))
+
+    out = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    out.paste(disc, (0, 0), mask)
+    return out
 
 
-def extract_sprite(img: Image.Image, box: tuple[int, int, int, int]) -> Image.Image:
-    crop = img.crop(box).convert("RGBA")
-    data = np.array(crop)
-    rgb = data[:, :, :3].astype(np.int16)
-    # Treat near-white as transparent so circles paste cleanly on margins.
-    near_white = np.all(rgb >= 246, axis=2)
-    dark = np.all(rgb < 40, axis=2)
-    alpha = data[:, :, 3].astype(np.int16)
-    alpha[near_white] = 0
-    alpha[dark] = np.minimum(alpha[dark], 180)
-    data[:, :, 3] = np.clip(alpha, 0, 255).astype(np.uint8)
-    return Image.fromarray(data)
+def erase_play_button(img: Image.Image) -> None:
+    """Remove the white play control from the bottom-left of the source art."""
+    draw = ImageDraw.Draw(img)
+    draw.ellipse((68, 662, 208, 768), fill=(*BG, 255))
 
 
-def paste_sprite(canvas: Image.Image, sprite: Image.Image, xy: tuple[int, int]) -> None:
+def paste_on_top(canvas: Image.Image, sprite: Image.Image, xy: tuple[int, int]) -> None:
     canvas.paste(sprite, xy, sprite)
 
 
@@ -52,23 +69,24 @@ def main() -> None:
         src = src.resize((int(sw * (TARGET_H / sh)), TARGET_H), Image.Resampling.LANCZOS)
         sw, sh = src.size
 
-    pad_right = TARGET_W - sw
+    erase_play_button(src)
 
+    pad_right = TARGET_W - sw
     canvas = Image.new("RGBA", (TARGET_W, TARGET_H), (*BG, 255))
     canvas.paste(src, (0, 0), src)
 
-    # White expand on the right only (text overlay zone).
     if pad_right > 0:
         right_fill = Image.new("RGBA", (pad_right, TARGET_H), (*BG, 255))
         canvas.paste(right_fill, (sw, 0))
 
-    top_m = extract_sprite(src, TOP_CIRCLE_BOX).transpose(Image.Transpose.FLIP_LEFT_RIGHT)
-    bottom_m = extract_sprite(src, BOTTOM_CIRCLE_BOX).transpose(Image.Transpose.FLIP_LEFT_RIGHT)
-    _, bh = bottom_m.size
+    # Vector circles — always composited last, on top of photo + white fill.
+    top_disc = make_striped_circle(176)
+    bottom_disc = make_striped_circle(152)
 
-    # Teal circle accents on the expanded right margin
-    paste_sprite(canvas, top_m, (sw + 48, -18))
-    paste_sprite(canvas, bottom_m, (TARGET_W - bw - 36, TARGET_H - bh - 8))
+    paste_on_top(canvas, top_disc, (292, -22))
+    paste_on_top(canvas, bottom_disc, (28, TARGET_H - bottom_disc.size[1] + 6))
+    paste_on_top(canvas, top_disc, (sw + 56, -22))
+    paste_on_top(canvas, bottom_disc, (TARGET_W - bottom_disc.size[0] - 40, TARGET_H - bottom_disc.size[1] + 6))
 
     out = canvas.convert("RGB")
     out_path = OUT_DIR / "featured-female-founder-show.png"

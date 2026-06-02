@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = (
     Path.home()
     / ".cursor/projects/Users-tombro-happy-store-bridge-1/assets"
-    / "ChatGPT_Image_Jun_2__2026__01_32_14_PM-837ef689-476a-4477-9543-44d4ac480290.png"
+    / "ChatGPT_Image_Jun_2__2026__01_41_56_PM-400e75b0-f081-40ce-8fe9-71950a1c5a18.png"
 )
 OUT_DIR = ROOT / "public" / "press"
 BG = (255, 255, 255)
