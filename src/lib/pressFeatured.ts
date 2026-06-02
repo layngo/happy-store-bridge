@@ -19,6 +19,8 @@ export type PressFeaturedItem = {
   cardImageAspect?: `${number}/${number}`;
   /** Optional faint background texture for card layout. */
   cardBackgroundSrc?: string;
+  /** Slightly larger logo in the card header zone. */
+  cardLogoSize?: "large";
 };
 
 export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
@@ -65,6 +67,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageSrc: "/press/featured-inc-5000.png?v=1",
     imageAlt: "Inc. 5000 — America's fastest-growing private companies",
     cardBackgroundSrc: "/press/featured-inc-5000-bg.png?v=1",
+    cardLogoSize: "large",
   },
   {
     layout: "card",
@@ -78,6 +81,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageAlt: "Oprah Daily logo",
     cardImageAspect: "600/300",
     cardBackgroundSrc: "/press/featured-oprah-daily-bg.png?v=1",
+    cardLogoSize: "large",
   },
   {
     layout: "card",
@@ -87,9 +91,9 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     linkLabel: "FULL ARTICLE",
     dateLabel: "July 13, 2022:",
     productName: "",
-    imageSrc: "/press/featured-cntraveler-editors-picks.png?v=2",
-    imageAlt: "Condé Nast Traveler logo",
-    cardImageAspect: "1024/439",
+    imageSrc: "/press/featured-cntraveler-editors-picks.png?v=3",
+    imageAlt: "Condé Nast Traveller logo",
+    cardLogoSize: "large",
     cardBackgroundSrc: "/press/featured-cntraveler-editors-picks-bg.png?v=1",
   },
   {

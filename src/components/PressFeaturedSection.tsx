@@ -130,11 +130,21 @@ function PressFeaturedCardCard({
       ) : null}
 
       <div className="relative z-10 flex h-full min-h-0 flex-col items-center px-6 py-8 sm:px-8 sm:py-9 md:py-10">
-        <div className="flex w-full items-center justify-center md:min-h-[10.5rem] lg:min-h-[11rem]">
+        <div
+          className={cn(
+            "flex w-full items-center justify-center md:min-h-[10.5rem] lg:min-h-[11rem]",
+            item.cardLogoSize === "large" && "md:min-h-[12rem] lg:min-h-[12.5rem]",
+          )}
+        >
           <img
             src={item.imageSrc}
             alt={item.imageAlt}
-            className="mx-auto block h-auto w-auto max-h-[min(7.25rem,34vw)] max-w-[min(100%,14rem)] object-contain object-center sm:max-h-[7.75rem] sm:max-w-[15rem] md:max-h-[8.25rem] md:max-w-[13.5rem] lg:max-h-[8.75rem]"
+            className={cn(
+              "mx-auto block h-auto w-auto object-contain object-center",
+              item.cardLogoSize === "large"
+                ? "max-h-[min(8.75rem,40vw)] max-w-[min(100%,17.5rem)] sm:max-h-[9.25rem] sm:max-w-[18rem] md:max-h-[10rem] md:max-w-[16.5rem] lg:max-h-[10.5rem]"
+                : "max-h-[min(7.25rem,34vw)] max-w-[min(100%,14rem)] sm:max-h-[7.75rem] sm:max-w-[15rem] md:max-h-[8.25rem] md:max-w-[13.5rem] lg:max-h-[8.75rem]",
+            )}
             loading="lazy"
             decoding="async"
           />
