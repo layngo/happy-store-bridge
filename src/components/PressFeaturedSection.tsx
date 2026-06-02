@@ -18,7 +18,7 @@ function PressFeaturedCard({
       <img
         src={item.imageSrc}
         alt={item.imageAlt}
-        className="block aspect-[1024/380] w-full object-cover object-left"
+        className="block aspect-[1024/403] w-full object-cover object-left"
         loading="eager"
         decoding="async"
       />
@@ -29,13 +29,9 @@ function PressFeaturedCard({
           "md:absolute md:inset-y-0 md:right-0 md:w-[min(52%,34rem)] md:bg-transparent md:px-8 md:py-10 lg:px-12 lg:py-12",
         )}
       >
-        <header className="space-y-2">
-          <p className="font-[Cormorant_Garamond,Georgia,serif] text-2xl font-semibold leading-tight text-foreground sm:text-[1.65rem] lg:text-3xl">
-            {item.publication}
-          </p>
-          <h2 className="font-[Cormorant_Garamond,Georgia,serif] text-[clamp(1.35rem,3.2vw,2.35rem)] font-bold leading-[1.1] tracking-tight text-foreground">
-            {item.headline}
-          </h2>
+        <header className="space-y-1.5 font-heading text-sm font-bold uppercase leading-snug tracking-[0.05em] text-foreground sm:text-[0.95rem] md:text-base">
+          <p>{item.publication}</p>
+          <h2>{item.headline}</h2>
         </header>
 
         <a

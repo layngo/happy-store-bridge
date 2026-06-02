@@ -3,7 +3,7 @@ import { PressArchiveContent } from "@/components/PressArchiveContent";
 import { PressFeaturedSection } from "@/components/PressFeaturedSection";
 
 const Press = () => (
-  <StaticPageLayout title="Press" contentClassName="max-w-6xl">
+  <StaticPageLayout title="FEATURED PRESS" contentClassName="max-w-6xl">
     <PressFeaturedSection />
     <PressArchiveContent />
 
