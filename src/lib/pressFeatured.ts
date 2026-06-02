@@ -56,6 +56,21 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageAspect: "2048/768",
   },
   {
+    publication: "CO— by U.S. Chamber of Commerce",
+    headline: "'Product is King'",
+    href: "https://www.uschamber.com/co/good-company/growth-studio/business-advice-lay-n-go",
+    linkLabel: "FULL ARTICLE",
+    dateLabel: "February 25, 2019:",
+    productName:
+      "Business Lessons from the Founder of Lay-n-Go. Adam Fazackerley describes how he launched his business and what he's learned along the way.",
+    imageSrc: "/press/featured-co-product-is-king-banner@2x.png?v=1",
+    imageSrcSet:
+      "/press/featured-co-product-is-king-banner.png?v=1 2048w, /press/featured-co-product-is-king-banner@2x.png?v=1 4096w",
+    imageAlt:
+      "Adam Fazackerley of Lay-n-Go interviewed on CO— by U.S. Chamber of Commerce with Gregg Greenberg",
+    imageAspect: "2048/768",
+  },
+  {
     layout: "card",
     publication: "",
     headline: "Lay-n-Go Named to the Inc. 5000!",
@@ -124,21 +139,6 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     cardImageAspect: "125/52",
     cardLogoSize: "large",
     cardBackgroundSrc: "/press/featured-women-owned-bg.png?v=1",
-  },
-  {
-    layout: "card",
-    publication: "CO— by U.S. Chamber of Commerce",
-    headline: "'Product is King'",
-    href: "https://www.uschamber.com/co/good-company/growth-studio/business-advice-lay-n-go",
-    linkLabel: "FULL ARTICLE",
-    dateLabel: "February 25, 2019:",
-    productName:
-      "Business Lessons from the Founder of Lay-n-Go. Adam Fazackerley describes how he launched his business and what he's learned along the way.",
-    imageSrc: "/press/featured-co-logo.png?v=1",
-    imageAlt: "CO— by U.S. Chamber of Commerce logo",
-    cardImageAspect: "90/47",
-    cardLogoSize: "large",
-    cardBackgroundSrc: "/press/featured-co-product-is-king-bg.png?v=1",
   },
   {
     layout: "card",

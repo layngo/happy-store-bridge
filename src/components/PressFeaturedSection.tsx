@@ -4,38 +4,8 @@ import { cn } from "@/lib/utils";
 const featuredTextBlockClass =
   "space-y-1.5 font-heading text-sm font-bold uppercase leading-snug tracking-[0.05em] text-foreground sm:text-[0.95rem] md:text-base";
 
-/** Curved black frame with faint concentric rings that fade outward. */
-const PRESS_FEATURED_RIPPLE_RINGS = [
-  "inset-0 rounded-2xl border-black/[0.09]",
-  "-inset-1 rounded-[1.0625rem] border-black/[0.05]",
-  "-inset-2.5 rounded-[1.125rem] border-black/[0.028]",
-  "-inset-[1.125rem] rounded-[1.1875rem] border-black/[0.014]",
-  "-inset-5 rounded-[1.3125rem] border-black/[0.007]",
-] as const;
-
-function PressFeaturedFrame({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={cn("relative", className)}>
-      {PRESS_FEATURED_RIPPLE_RINGS.map((ringClass) => (
-        <span
-          key={ringClass}
-          aria-hidden
-          className={cn(
-            "pointer-events-none absolute border",
-            ringClass,
-          )}
-        />
-      ))}
-      {children}
-    </div>
-  );
-}
+const pressFeaturedBorderClass =
+  "overflow-hidden rounded-2xl border-2 border-black bg-white";
 
 function FeaturedCopy({
   item,
@@ -105,8 +75,7 @@ function PressFeaturedBannerCard({
   className?: string;
 }) {
   return (
-    <PressFeaturedFrame className={className}>
-      <article className="not-prose relative w-full overflow-hidden rounded-2xl bg-white">
+    <article className={cn("not-prose relative w-full", pressFeaturedBorderClass, className)}>
       <img
         src={item.imageSrc}
         srcSet={item.imageSrcSet}
@@ -122,14 +91,13 @@ function PressFeaturedBannerCard({
 
       <div
         className={cn(
-          "flex flex-col justify-center gap-5 bg-[#f5f1e9] px-5 py-7 sm:px-8 sm:py-8",
+          "flex flex-col justify-center gap-5 bg-white px-5 py-7 sm:px-8 sm:py-8",
           "md:absolute md:inset-y-0 md:right-0 md:w-[min(52%,34rem)] md:bg-transparent md:px-8 md:py-10 lg:px-12 lg:py-12",
         )}
       >
         <FeaturedCopy item={item} />
       </div>
     </article>
-    </PressFeaturedFrame>
   );
 }
 
@@ -141,8 +109,13 @@ function PressFeaturedCardCard({
   className?: string;
 }) {
   return (
-    <PressFeaturedFrame className={cn("h-full", className)}>
-      <article className="not-prose relative flex h-full w-full flex-col overflow-hidden rounded-2xl bg-white">
+    <article
+      className={cn(
+        "not-prose relative flex h-full w-full flex-col",
+        pressFeaturedBorderClass,
+        className,
+      )}
+    >
       {item.cardBackgroundSrc ? (
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl" aria-hidden>
           <img
@@ -182,7 +155,6 @@ function PressFeaturedCardCard({
         />
       </div>
     </article>
-    </PressFeaturedFrame>
   );
 }
 
@@ -201,13 +173,13 @@ export function PressFeaturedSection() {
         Featured press
       </h2>
       <div className="mx-auto w-full max-w-[min(100%,80rem)] px-4 sm:px-6">
-        <div className="space-y-10 sm:space-y-12">
+        <div className="space-y-8 sm:space-y-10">
           {bannerItems.map((item) => (
             <PressFeaturedBannerCard key={item.href} item={item} />
           ))}
 
           {cardItems.length > 0 ? (
-            <div className="grid grid-cols-1 items-stretch gap-8 sm:grid-cols-2 sm:gap-10">
+            <div className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 sm:gap-8">
               {cardItems.map((item) => (
                 <PressFeaturedCardCard key={item.href} item={item} />
               ))}
