@@ -101,13 +101,10 @@ function PressFeaturedBannerCard({
       />
 
       {item.bannerDiagonalDividers ? (
-        <div
-          className="pointer-events-none absolute inset-y-0 left-[47%] z-20 hidden -translate-x-1/2 items-center gap-2.5 md:flex"
+        <span
           aria-hidden
-        >
-          <span className="block h-[clamp(4.5rem,38%,7.5rem)] w-[2px] rotate-[32deg] bg-black" />
-          <span className="block h-[clamp(4.5rem,38%,7.5rem)] w-[2px] rotate-[32deg] bg-black" />
-        </div>
+          className="pointer-events-none absolute top-1/2 left-[47%] z-20 hidden h-[120%] w-[3px] -translate-x-1/2 -translate-y-1/2 origin-center rotate-[11deg] bg-black md:block"
+        />
       ) : null}
 
       <div

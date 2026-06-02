@@ -66,22 +66,125 @@ def recolor_near_white_to_dark(img: Image.Image, lum_min: float = 215.0, sat_max
     return Image.fromarray(arr)
 
 
+def _color_stats(arr: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    r, g, b, a = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2], arr[:, :, 3]
+    rf, gf, bf = r.astype(np.float32), g.astype(np.float32), b.astype(np.float32)
+    mx = np.maximum(np.maximum(rf, gf), bf)
+    mn = np.minimum(np.minimum(rf, gf), bf)
+    sat = (mx - mn) / np.maximum(mx, 1.0)
+    lum = 0.299 * rf + 0.587 * gf + 0.114 * bf
+    return lum, sat, a
+
+
+def defringe_dark_halos(img: Image.Image, lum_max: float = 95.0) -> Image.Image:
+    """Drop semi-transparent dark pixels left from background removal."""
+    arr = np.array(img.convert("RGBA"), dtype=np.uint8)
+    lum, _sat, a = _color_stats(arr)
+    halo = (a > 0) & (a < 255) & (lum <= lum_max)
+    arr[halo, 3] = 0
+    return Image.fromarray(arr)
+
+
+def remove_small_dark_specks(
+    img: Image.Image,
+    *,
+    lum_max: float = 54.0,
+    sat_max: float = 0.11,
+    min_area: int = 420,
+) -> Image.Image:
+    """Remove tiny black fragments; keep larger intentional black letter fills."""
+    from scipy.ndimage import label
+
+    arr = np.array(img.convert("RGBA"), dtype=np.uint8)
+    lum, sat, a = _color_stats(arr)
+    dark = (a > 32) & (lum <= lum_max) & (sat <= sat_max)
+    labeled, count = label(dark)
+    for idx in range(1, count + 1):
+        region = labeled == idx
+        if int(region.sum()) < min_area:
+            arr[region, 3] = 0
+    return Image.fromarray(arr)
+
+
+def strip_near_black_pixels(
+    img: Image.Image,
+    *,
+    lum_max: float = 64.0,
+    sat_max: float = 0.14,
+) -> Image.Image:
+    """Remove remaining black matte/halo pixels; colorful letters stay."""
+    arr = np.array(img.convert("RGBA"), dtype=np.uint8)
+    lum, sat, a = _color_stats(arr)
+    mask = (a > 0) & (lum <= lum_max) & (sat <= sat_max)
+    arr[mask, 3] = 0
+    return Image.fromarray(arr)
+
+
+def build_cntraveler_logo(img: Image.Image) -> Image.Image:
+    """Condé Nast Traveler: full-color wordmark, transparent counters, no black halos."""
+    remove_background = load_remove_bg()
+    tmp_path = ROOT / "public" / "press" / ".cntraveler-logo-build.tmp.png"
+    img.save(tmp_path)
+    remove_background(tmp_path)
+    out = Image.open(tmp_path).convert("RGBA")
+    tmp_path.unlink(missing_ok=True)
+
+    out = strip_near_black_pixels(out, lum_max=72.0)
+    out = defringe_dark_halos(out, lum_max=130.0)
+    return out
+
+
+def build_gma_logo(img: Image.Image) -> Image.Image:
+    """GMA Deals & Steals: keep gold, map white headline to brand blue, clean counters."""
+    remove_background = load_remove_bg()
+    tmp = img.copy()
+    tmp_path = Path("/tmp/gma-logo-build.tmp.png")
+    tmp.save(tmp_path)
+    remove_background(tmp_path)
+    out = Image.open(tmp_path).convert("RGBA")
+    tmp_path.unlink(missing_ok=True)
+
+    out = clear_enclosed_black(out, lum_max=56.0, sat_max=0.14)
+
+    arr = np.array(out, dtype=np.uint8)
+    lum, sat, a = _color_stats(arr)
+  # Brand gold — never recolor
+    gold = (a > 32) & (sat > 0.18) & (arr[:, :, 0].astype(np.float32) > 150)
+    # Pure white headline letters only → GMA blue
+    white = (a > 32) & ~gold & (lum >= 238) & (sat <= 0.06)
+    arr[white, 0] = 58
+    arr[white, 1] = 118
+    arr[white, 2] = 188
+
+    out = Image.fromarray(arr)
+    out = defringe_dark_halos(out, lum_max=100.0)
+    return out
+
+
 def build_logo(
     src: Path,
     dst: Path,
     *,
     darken_white: bool = False,
+    mode: str = "default",
 ) -> tuple[int, int]:
-    remove_background = load_remove_bg()
-    tmp = dst.with_suffix(".tmp.png")
-    Image.open(src).convert("RGBA").save(tmp)
-    remove_background(tmp)
-    out = Image.open(tmp).convert("RGBA")
-    tmp.unlink(missing_ok=True)
+    src_img = Image.open(src).convert("RGBA")
 
-    if darken_white:
-        out = clear_enclosed_black(out)
-        out = recolor_near_white_to_dark(out)
+    if mode == "gma":
+        out = build_gma_logo(src_img)
+    elif mode == "cntraveler":
+        out = build_cntraveler_logo(src_img)
+    else:
+        remove_background = load_remove_bg()
+        tmp = dst.with_suffix(".tmp.png")
+        src_img.save(tmp)
+        remove_background(tmp)
+        out = Image.open(tmp).convert("RGBA")
+        tmp.unlink(missing_ok=True)
+
+        if darken_white:
+            out = clear_enclosed_black(out)
+            out = recolor_near_white_to_dark(out)
 
     out = trim_transparent(out, pad=10)
     out.save(dst, format="PNG", optimize=False)
@@ -93,6 +196,7 @@ LOGOS = {
         "src": ASSETS / "ChatGPT_Image_Jun_2__2026__02_59_57_PM-6d0ad19e-5356-4f55-9542-283361ad4116.png",
         "dst": ROOT / "public/press/featured-cntraveler-editors-picks.png",
         "darken_white": False,
+        "mode": "cntraveler",
     },
     "women-owned": {
         "src": ASSETS / "ChatGPT_Image_Jun_2__2026__02_32_08_PM-9ea9bdda-425d-4e65-815e-176475095c08.png",
@@ -102,7 +206,8 @@ LOGOS = {
     "gma": {
         "src": ASSETS / "ChatGPT_Image_Jun_2__2026__02_57_32_PM-b787e122-0555-4044-97fc-b4797094feef.png",
         "dst": ROOT / "public/press/featured-gma-deals-steals-logo.png",
-        "darken_white": True,
+        "darken_white": False,
+        "mode": "gma",
     },
 }
 
@@ -118,7 +223,12 @@ def main() -> int:
         if not src.is_file():
             print(f"Missing source: {src}", file=sys.stderr)
             return 1
-        size = build_logo(src, cfg["dst"], darken_white=cfg["darken_white"])
+        size = build_logo(
+            src,
+            cfg["dst"],
+            darken_white=bool(cfg.get("darken_white")),
+            mode=str(cfg.get("mode", "default")),
+        )
         print(f"{name}: {cfg['dst'].name} {size[0]}x{size[1]}")
     return 0
 
