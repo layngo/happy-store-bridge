@@ -17,6 +17,8 @@ export type PressFeaturedItem = {
   imageAspect?: `${number}/${number}`;
   /** Logo aspect for card layout, e.g. `600/300`. Defaults to square. */
   cardImageAspect?: `${number}/${number}`;
+  /** Optional faint background texture for card layout. */
+  cardBackgroundSrc?: string;
 };
 
 export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
@@ -62,6 +64,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
       "The Most Successful Companies in America--and What They Reveal About the Future of Business",
     imageSrc: "/press/featured-inc-5000.png?v=1",
     imageAlt: "Inc. 5000 — America's fastest-growing private companies",
+    cardBackgroundSrc: "/press/featured-inc-5000-bg.png?v=1",
   },
   {
     layout: "card",
@@ -74,6 +77,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageSrc: "/press/featured-oprah-daily.png?v=1",
     imageAlt: "Oprah Daily logo",
     cardImageAspect: "600/300",
+    cardBackgroundSrc: "/press/featured-oprah-daily-bg.png?v=1",
   },
   {
     layout: "card",

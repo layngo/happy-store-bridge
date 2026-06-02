@@ -108,11 +108,23 @@ function PressFeaturedCardCard({
   return (
     <article
       className={cn(
-        "not-prose mx-auto w-full max-w-[min(100%,28rem)] overflow-hidden rounded-2xl border border-[#e8e2d8] bg-[#f5f1e9] shadow-sm sm:max-w-[min(100%,32rem)]",
+        "not-prose relative flex h-full w-full flex-col overflow-hidden rounded-2xl border border-[#e8e2d8] bg-white shadow-sm",
         className,
       )}
     >
-      <div className="flex flex-col items-center gap-7 px-6 py-8 sm:gap-8 sm:px-10 sm:py-10">
+      {item.cardBackgroundSrc ? (
+        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl" aria-hidden>
+          <img
+            src={item.cardBackgroundSrc}
+            alt=""
+            className="h-full w-full object-cover opacity-[0.07]"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      ) : null}
+
+      <div className="relative z-10 flex flex-1 flex-col items-center gap-7 px-6 py-8 sm:gap-8 sm:px-8 sm:py-9">
         <img
           src={item.imageSrc}
           alt={item.imageAlt}
@@ -134,21 +146,11 @@ function PressFeaturedCardCard({
   );
 }
 
-function PressFeaturedCard({
-  item,
-  className,
-}: {
-  item: PressFeaturedItem;
-  className?: string;
-}) {
-  if (item.layout === "card") {
-    return <PressFeaturedCardCard item={item} className={className} />;
-  }
-  return <PressFeaturedBannerCard item={item} className={className} />;
-}
-
 export function PressFeaturedSection() {
   if (PRESS_FEATURED_ITEMS.length === 0) return null;
+
+  const bannerItems = PRESS_FEATURED_ITEMS.filter((item) => item.layout !== "card");
+  const cardItems = PRESS_FEATURED_ITEMS.filter((item) => item.layout === "card");
 
   return (
     <section
@@ -160,9 +162,17 @@ export function PressFeaturedSection() {
       </h2>
       <div className="mx-auto w-full max-w-[min(100%,80rem)] px-4 sm:px-6">
         <div className="space-y-8 sm:space-y-10">
-          {PRESS_FEATURED_ITEMS.map((item) => (
-            <PressFeaturedCard key={item.href} item={item} />
+          {bannerItems.map((item) => (
+            <PressFeaturedBannerCard key={item.href} item={item} />
           ))}
+
+          {cardItems.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8">
+              {cardItems.map((item) => (
+                <PressFeaturedCardCard key={item.href} item={item} />
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
     </section>
