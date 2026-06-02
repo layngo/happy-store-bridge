@@ -1,17 +1,23 @@
 export type PlayAwardBadge = {
   src: string;
   alt: string;
+  /** Optional visual scale when the asset has extra canvas padding vs other seals. */
+  imgClassName?: string;
 };
 
 const BASE = "/play-awards";
-const AWARD_ASSET_V = "5";
+const AWARD_ASSET_V = "8";
 
 /** Award seals shown on Large, Lifestyle, and Lite play mat PDPs. */
 const awardSrc = (file: string) => `${BASE}/${file}?v=${AWARD_ASSET_V}`;
 
 export const PLAY_AWARD_BADGES: readonly PlayAwardBadge[] = [
   { src: awardSrc("wts-toy-review-5-star.png"), alt: "WTS Toy Review Five Star Certified" },
-  { src: awardSrc("nappa-gold.png"), alt: "NAPPA Gold Winner" },
+  {
+    src: awardSrc("nappa-gold.png"),
+    alt: "NAPPA Gold Winner",
+    imgClassName: "scale-[1.08]",
+  },
   { src: awardSrc("cribsies-winner.png"), alt: "The Cribsie Awards Winner" },
   { src: awardSrc("moms-choice-gold.png"), alt: "Mom's Choice Awards Honoring Excellence" },
   { src: awardSrc("creative-child-top-choice-2012.png"), alt: "Creative Child Magazine Top Choice Award" },

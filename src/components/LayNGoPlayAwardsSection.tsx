@@ -1,4 +1,5 @@
 import { PLAY_AWARD_BADGES } from "@/lib/playAwards";
+import { cn } from "@/lib/utils";
 
 /** Symmetrical award badge grid for play mat PDPs (between gallery and FAQ). */
 export function LayNGoPlayAwardsSection() {
@@ -22,7 +23,7 @@ export function LayNGoPlayAwardsSection() {
               alt={badge.alt}
               loading="lazy"
               decoding="async"
-              className="max-h-full max-w-full object-contain"
+              className={cn("max-h-full max-w-full object-contain", badge.imgClassName)}
             />
           </li>
         ))}
