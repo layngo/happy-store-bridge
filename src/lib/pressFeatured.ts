@@ -1,4 +1,7 @@
+export type PressFeaturedLayout = "banner" | "card";
+
 export type PressFeaturedItem = {
+  layout?: PressFeaturedLayout;
   publication: string;
   headline: string;
   href: string;
@@ -10,8 +13,10 @@ export type PressFeaturedItem = {
   /** Optional responsive sources, e.g. `"/press/foo.png 1024w, /press/foo@2x.png 2048w"`. */
   imageSrcSet?: string;
   imageAlt: string;
-  /** Tailwind aspect-ratio fraction, e.g. `1024/403`. */
+  /** Tailwind aspect-ratio fraction, e.g. `1024/403` (banner layout only). */
   imageAspect?: `${number}/${number}`;
+  /** Logo aspect for card layout, e.g. `600/300`. Defaults to square. */
+  cardImageAspect?: `${number}/${number}`;
 };
 
 export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
@@ -45,5 +50,53 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageAlt:
       "The Female Founder Show with Bridget Fitzpatrick and guest Amy Fazackerley of Lay-n-Go on ASBN",
     imageAspect: "2048/768",
+  },
+  {
+    layout: "card",
+    publication: "",
+    headline: "Lay-n-Go Named to the Inc. 5000!",
+    href: "https://www.inc.com/inc5000",
+    linkLabel: "FULL ARTICLE",
+    dateLabel: "August 16, 2022:",
+    productName:
+      "The Most Successful Companies in America--and What They Reveal About the Future of Business",
+    imageSrc: "/press/featured-inc-5000.png?v=1",
+    imageAlt: "Inc. 5000 — America's fastest-growing private companies",
+  },
+  {
+    layout: "card",
+    publication: "Oprah Daily",
+    headline: "The 18 Best Toiletry Bags That'll Help You Stay Organized in Style",
+    href: "https://www.oprahdaily.com/style/g40902767/best-toiletry-bags/",
+    linkLabel: "FULL ARTICLE",
+    dateLabel: "August 19, 2022:",
+    productName: "",
+    imageSrc: "/press/featured-oprah-daily.png?v=1",
+    imageAlt: "Oprah Daily logo",
+    cardImageAspect: "600/300",
+  },
+  {
+    layout: "card",
+    publication: "Condé Nast Traveler",
+    headline: "17 Picks From Condé Nast Traveler Editors",
+    href: "https://www.cntraveler.com/story/editors-picks-amazon-prime-day-deals-2022-1",
+    linkLabel: "FULL ARTICLE",
+    dateLabel: "July 13, 2022:",
+    productName: "",
+    imageSrc: "/press/featured-cntraveler-editors-picks.png?v=1",
+    imageAlt: "Condé Nast Traveler logo",
+    cardImageAspect: "1024/439",
+  },
+  {
+    layout: "card",
+    publication: "TODAY",
+    headline: "Bobbie Shares 3 Gifts to Give Your Girlfriend",
+    href: "https://www.today.com/style/bobbies-buzz-3-great-gifts-girlfriends-2D11638370",
+    linkLabel: "FULL ARTICLE",
+    dateLabel: "November 22, 2013:",
+    productName: "",
+    imageSrc: "/press/featured-today-bobbies-buzz.png?v=1",
+    imageAlt: "TODAY show Bobbie's Buzz segment featuring Lay-n-Go and girlfriend gift picks",
+    cardImageAspect: "1/1",
   },
 ];
