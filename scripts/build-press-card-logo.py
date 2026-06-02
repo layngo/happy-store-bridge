@@ -144,59 +144,127 @@ def clean_colorful_logo_edges(img: Image.Image) -> Image.Image:
     return Image.fromarray(arr)
 
 
+def _cntraveler_color_mask(arr: np.ndarray, a: np.ndarray) -> np.ndarray:
+    lum, sat, _ = _color_stats(arr)
+    mx = arr[:, :, :3].max(axis=2)
+    return (a > 20) & (sat > 0.13) & (mx > 58) & (lum > 48)
+
+
 def build_cntraveler_logo(img: Image.Image) -> Image.Image:
     """Condé Nast Traveler: full-color wordmark, transparent counters, no black halos."""
     arr = np.array(img.convert("RGBA"), dtype=np.uint8)
     mx = arr[:, :, :3].max(axis=2)
-    arr[mx < 44, 3] = 0
+    arr[mx < 50, 3] = 0
 
     remove_background = load_remove_bg()
     tmp_path = ROOT / "public" / "press" / ".cntraveler-logo-build.tmp.png"
     Image.fromarray(arr).save(tmp_path)
     remove_background(tmp_path)
-    out = Image.open(tmp_path).convert("RGBA")
+    arr = np.array(Image.open(tmp_path).convert("RGBA"), dtype=np.uint8)
     tmp_path.unlink(missing_ok=True)
 
-    out = purge_dark_matte(out, lum_max=96.0, sat_max=0.17)
+    lum, sat, a = _color_stats(arr)
+    color = _cntraveler_color_mask(arr, a)
+
+    arr = np.array(purge_dark_matte(Image.fromarray(arr), lum_max=108.0, sat_max=0.18), dtype=np.uint8)
+
+    lum, sat, a = _color_stats(arr)
+    color = _cntraveler_color_mask(arr, a)
+
+    junk = (a > 12) & ~color & (lum < 112) & (sat < 0.17)
+    arr[junk, 3] = 0
+
+    remove_small_dark_regions(arr, min_area=400, protect=color)
+
+    out = Image.fromarray(arr)
     out = clean_colorful_logo_edges(out)
     out = defringe_dark_halos(out, lum_max=150.0)
     return out
 
 
-def build_gma_logo(img: Image.Image) -> Image.Image:
-    """GMA Deals & Steals: keep gold, map white headline to brand blue, clean counters."""
-    arr = np.array(img.convert("RGBA"), dtype=np.uint8)
+def _gma_gold_mask(arr: np.ndarray, a: np.ndarray, lum: np.ndarray, sat: np.ndarray) -> np.ndarray:
+    rf = arr[:, :, 0].astype(np.float32)
+    gf = arr[:, :, 1].astype(np.float32)
+    bf = arr[:, :, 2].astype(np.float32)
+    return (
+        (a > 24)
+        & (
+            ((sat > 0.13) & (rf > 125) & (gf > 95))
+            | ((rf > 195) & (gf > 155) & (bf < 130))
+        )
+    )
 
-    # Uniform black matte → transparent (cleaner than flood-fill alone).
-    out = strip_near_black_pixels(Image.fromarray(arr), lum_max=52.0, sat_max=0.12)
+
+def _gma_blue_mask(arr: np.ndarray, a: np.ndarray) -> np.ndarray:
+    rf = arr[:, :, 0].astype(np.float32)
+    gf = arr[:, :, 1].astype(np.float32)
+    bf = arr[:, :, 2].astype(np.float32)
+    return (a > 24) & (bf > 65) & (bf >= rf) & (bf >= gf * 0.8)
+
+
+def remove_small_dark_regions(
+    arr: np.ndarray,
+    *,
+    lum_max: float = 102.0,
+    sat_max: float = 0.15,
+    min_area: int = 520,
+    protect: np.ndarray | None = None,
+) -> None:
+    from scipy.ndimage import label
+
+    lum, sat, a = _color_stats(arr)
+    dark = (a > 20) & (lum <= lum_max) & (sat <= sat_max)
+    if protect is not None:
+        dark &= ~protect
+    labeled, count = label(dark)
+    for idx in range(1, count + 1):
+        region = labeled == idx
+        if int(region.sum()) < min_area:
+            arr[region, 3] = 0
+
+
+def build_gma_logo(img: Image.Image) -> Image.Image:
+    """GMA Deals & Steals: keep gold + blue, transparent counters, no black specks."""
+    arr = np.array(img.convert("RGBA"), dtype=np.uint8)
+    mx = arr[:, :, :3].max(axis=2)
+    arr[mx < 50, 3] = 0
 
     remove_background = load_remove_bg()
     tmp_path = ROOT / "public" / "press" / ".gma-logo-build.tmp.png"
-    out.save(tmp_path)
+    Image.fromarray(arr).save(tmp_path)
     remove_background(tmp_path)
-    out = Image.open(tmp_path).convert("RGBA")
+    arr = np.array(Image.open(tmp_path).convert("RGBA"), dtype=np.uint8)
     tmp_path.unlink(missing_ok=True)
 
-    out = strip_near_black_pixels(out, lum_max=58.0, sat_max=0.13)
-
-    arr = np.array(out, dtype=np.uint8)
     lum, sat, a = _color_stats(arr)
-    rf = arr[:, :, 0].astype(np.float32)
-    gf = arr[:, :, 1].astype(np.float32)
-    # Brand gold / yellow — never recolor or strip
-    gold = (a > 32) & (sat > 0.16) & (rf > 140) & (gf > 110)
-    # Pure white headline → GMA blue
-    white = (a > 32) & ~gold & (lum >= 236) & (sat <= 0.05)
+    gold = _gma_gold_mask(arr, a, lum, sat)
+    blue = _gma_blue_mask(arr, a)
+
+    # White headline → brand blue before final matte purge.
+    white = (a > 24) & ~gold & ~blue & (lum >= 234) & (sat <= 0.055)
     arr[white, 0] = 58
     arr[white, 1] = 118
     arr[white, 2] = 188
+    blue = _gma_blue_mask(arr, a)
 
-    # Leftover opaque black inside letterforms (e.g. ampersand, serif strokes).
-    stray_dark = (a > 64) & ~gold & (lum <= 88) & (sat <= 0.12)
-    arr[stray_dark, 3] = 0
+    arr = np.array(
+        purge_dark_matte(Image.fromarray(arr), lum_max=104.0, sat_max=0.15),
+        dtype=np.uint8,
+    )
+
+    lum, sat, a = _color_stats(arr)
+    gold = _gma_gold_mask(arr, a, lum, sat)
+    blue = _gma_blue_mask(arr, a)
+    protect = gold | blue
+
+    junk = (a > 12) & ~protect & (lum < 110) & (sat < 0.16)
+    arr[junk, 3] = 0
+
+    remove_small_dark_regions(arr, min_area=520, protect=protect)
 
     out = Image.fromarray(arr)
-    out = defringe_dark_halos(out, lum_max=135.0)
+    out = clean_colorful_logo_edges(out)
+    out = defringe_dark_halos(out, lum_max=145.0)
     return out
 
 

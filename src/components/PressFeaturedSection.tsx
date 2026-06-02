@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 const featuredTextBlockClass =
   "space-y-1.5 font-heading text-sm font-bold uppercase leading-snug tracking-[0.05em] text-foreground sm:text-[0.95rem] md:text-base";
 
-const pressFeaturedBorderClass =
-  "overflow-hidden rounded-2xl border-2 border-black bg-white";
+const pressFeaturedBorderClass = "rounded-2xl border-2 border-black bg-white";
+const pressFeaturedClipClass = "overflow-hidden rounded-2xl";
 
 function FeaturedCopy({
   item,
@@ -87,26 +87,28 @@ function PressFeaturedBannerCard({
 }) {
   return (
     <article className={cn("not-prose relative w-full", pressFeaturedBorderClass, className)}>
-      <img
-        src={item.imageSrc}
-        srcSet={item.imageSrcSet}
-        sizes={item.imageSrcSet ? "(min-width: 1280px) 80rem, 100vw" : undefined}
-        alt={item.imageAlt}
-        className="block w-full object-contain object-left"
-        style={{
-          aspectRatio: (item.imageAspect ?? "1024/403").replace("/", " / "),
-        }}
-        loading="lazy"
-        decoding="async"
-      />
+      <div className={pressFeaturedClipClass}>
+        <img
+          src={item.imageSrc}
+          srcSet={item.imageSrcSet}
+          sizes={item.imageSrcSet ? "(min-width: 1280px) 80rem, 100vw" : undefined}
+          alt={item.imageAlt}
+          className="block w-full object-contain object-left"
+          style={{
+            aspectRatio: (item.imageAspect ?? "1024/403").replace("/", " / "),
+          }}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
 
       {item.bannerDiagonalDividers ? (
         <div
           aria-hidden
-          className="pointer-events-none absolute top-1/2 left-[47%] z-30 hidden -translate-x-1/2 -translate-y-1/2 md:block"
+          className="pointer-events-none absolute inset-y-0 left-[47%] z-30 hidden -translate-x-1/2 md:block"
         >
-          <span className="absolute top-1/2 -left-[11px] h-[120%] w-[3px] -translate-x-1/2 -translate-y-1/2 origin-center rotate-[11deg] bg-black" />
-          <span className="absolute top-1/2 left-[11px] h-[120%] w-[3px] -translate-x-1/2 -translate-y-1/2 origin-center rotate-[11deg] bg-black" />
+          <span className="absolute inset-y-0 -left-[11px] w-[3px] -translate-x-1/2 rotate-[11deg] bg-black" />
+          <span className="absolute inset-y-0 left-[11px] w-[3px] -translate-x-1/2 rotate-[11deg] bg-black" />
         </div>
       ) : null}
 
@@ -134,6 +136,7 @@ function PressFeaturedCardCard({
       className={cn(
         "not-prose relative flex h-full w-full flex-col",
         pressFeaturedBorderClass,
+        pressFeaturedClipClass,
         className,
       )}
     >
