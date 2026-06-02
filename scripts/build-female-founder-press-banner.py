@@ -64,9 +64,7 @@ def main() -> None:
 
     top_m = extract_sprite(src, TOP_CIRCLE_BOX).transpose(Image.Transpose.FLIP_LEFT_RIGHT)
     bottom_m = extract_sprite(src, BOTTOM_CIRCLE_BOX).transpose(Image.Transpose.FLIP_LEFT_RIGHT)
-
-    tw, th = top.size
-    bw, bh = bottom.size
+    _, bh = bottom_m.size
 
     # Teal circle accents on the expanded right margin
     paste_sprite(canvas, top_m, (sw + 48, -18))
