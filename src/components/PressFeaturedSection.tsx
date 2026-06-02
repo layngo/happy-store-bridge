@@ -20,7 +20,7 @@ function PressFeaturedCard({
         srcSet={item.imageSrcSet}
         sizes={item.imageSrcSet ? "(min-width: 1280px) 80rem, 100vw" : undefined}
         alt={item.imageAlt}
-        className="block w-full object-cover object-left"
+        className="block w-full object-contain object-left"
         style={{
           aspectRatio: (item.imageAspect ?? "1024/403").replace("/", " / "),
         }}

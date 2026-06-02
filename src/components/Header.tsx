@@ -125,7 +125,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
 
         <nav
           className={cn(
-            "flex min-h-[2rem] items-center gap-x-5 overflow-x-auto pt-3 mt-2 border-t md:flex-wrap md:justify-center",
+            "flex min-h-[2rem] w-full flex-wrap items-center justify-center gap-x-5 gap-y-2 px-2 pt-3 mt-2 border-t",
             light ? "border-border/70" : "border-border/60",
           )}
         >
