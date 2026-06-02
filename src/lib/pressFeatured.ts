@@ -15,6 +15,8 @@ export type PressFeaturedItem = {
   imageAlt: string;
   /** Tailwind aspect-ratio fraction, e.g. `1024/403` (banner layout only). */
   imageAspect?: `${number}/${number}`;
+  /** Two diagonal lines between art and copy (banner layout only). */
+  bannerDiagonalDividers?: boolean;
   /** Logo aspect for card layout, e.g. `600/300`. Defaults to square. */
   cardImageAspect?: `${number}/${number}`;
   /** Optional faint background texture for card layout. */
@@ -39,6 +41,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageAlt:
       "Condé Nast Traveler feature: Lay-n-Go drawstring toiletry bag with cosmetics laid flat on a white background",
     imageAspect: "2048/768",
+    bannerDiagonalDividers: true,
   },
   {
     publication: "The Female Founder Show",
@@ -100,15 +103,15 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
   },
   {
     layout: "card",
-    publication: "Condé Nast Traveler",
+    publication: "",
     headline: "17 Picks From Condé Nast Traveler Editors",
     href: "https://www.cntraveler.com/story/editors-picks-amazon-prime-day-deals-2022-1",
     linkLabel: "FULL ARTICLE",
     dateLabel: "July 13, 2022:",
     productName: "",
-    imageSrc: "/press/featured-cntraveler-editors-picks.png?v=5",
+    imageSrc: "/press/featured-cntraveler-editors-picks.png?v=7",
     imageAlt: "Condé Nast Traveler logo",
-    cardImageAspect: "1024/682",
+    cardImageAspect: "987/682",
     cardLogoSize: "large",
     cardBackgroundSrc: "/press/featured-cntraveler-editors-picks-bg.png?v=2",
   },
@@ -128,15 +131,15 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
   {
     layout: "card",
     publication: "",
-    headline: "Women Who Own It",
+    headline: "",
     href: "https://www.womenownedlogo.com/women-who-own-it-/amy-fazackerley-of-lay-n-go",
     linkLabel: "FULL ARTICLE",
     dateLabel: "March 11, 2020:",
     productName:
       "Trendsetters. Trailblazers. Innovators. Entrepreneurs. Get inspired by the incredible female founders leading today's Women Owned businesses.",
-    imageSrc: "/press/featured-women-owned-logo.png?v=3",
+    imageSrc: "/press/featured-women-owned-logo.png?v=4",
     imageAlt: "Women Owned logo",
-    cardImageAspect: "1024/682",
+    cardImageAspect: "737/339",
     cardLogoSize: "large",
     cardBackgroundSrc: "/press/featured-women-owned-bg.png?v=1",
   },
@@ -149,9 +152,9 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     dateLabel: "March 7, 2019:",
     productName:
       'Tory Johnson has exclusive "Deals and Steals" on fabulous products from women-owned businesses to celebrate Women\'s History Month.',
-    imageSrc: "/press/featured-gma-deals-steals-logo.png?v=2",
+    imageSrc: "/press/featured-gma-deals-steals-logo.png?v=3",
     imageAlt: "GMA Deals and Steals with Tory Johnson logo",
-    cardImageAspect: "1024/682",
+    cardImageAspect: "720/634",
     cardLogoSize: "large",
     cardBackgroundSrc: "/press/featured-gma-women-owned-bg.png?v=1",
   },

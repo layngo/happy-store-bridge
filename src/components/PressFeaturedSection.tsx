@@ -30,8 +30,19 @@ function FeaturedCopy({
           align === "center" && "flex w-full flex-col items-center text-center",
         )}
       >
-        {item.publication ? <p>{item.publication}</p> : null}
-        <h2>{item.headline}</h2>
+        {(() => {
+          const publication = item.publication?.trim() ?? "";
+          const headline = item.headline?.trim() ?? "";
+          if (publication && headline && publication === headline) {
+            return <h2>{headline}</h2>;
+          }
+          return (
+            <>
+              {publication ? <p>{publication}</p> : null}
+              {headline ? <h2>{headline}</h2> : null}
+            </>
+          );
+        })()}
       </header>
 
       <a
@@ -89,6 +100,16 @@ function PressFeaturedBannerCard({
         decoding="async"
       />
 
+      {item.bannerDiagonalDividers ? (
+        <div
+          className="pointer-events-none absolute inset-y-0 left-[47%] z-20 hidden -translate-x-1/2 items-center gap-2.5 md:flex"
+          aria-hidden
+        >
+          <span className="block h-[clamp(4.5rem,38%,7.5rem)] w-[2px] rotate-[32deg] bg-black" />
+          <span className="block h-[clamp(4.5rem,38%,7.5rem)] w-[2px] rotate-[32deg] bg-black" />
+        </div>
+      ) : null}
+
       <div
         className={cn(
           "flex flex-col justify-center gap-5 bg-white px-5 py-7 sm:px-8 sm:py-8",
@@ -141,7 +162,7 @@ function PressFeaturedCardCard({
             className={cn(
               "mx-auto block h-auto w-auto object-contain object-center",
               item.cardLogoSize === "large"
-                ? "max-h-[min(8.75rem,40vw)] max-w-[min(100%,17.5rem)] sm:max-h-[9.25rem] sm:max-w-[18rem] md:max-h-[10rem] md:max-w-[16.5rem] lg:max-h-[10.5rem]"
+                ? "max-h-[min(9.5rem,42vw)] max-w-[min(100%,22rem)] sm:max-h-[10rem] sm:max-w-[23rem] md:max-h-[10.75rem] md:max-w-[21rem] lg:max-h-[11.25rem]"
                 : "max-h-[min(7.25rem,34vw)] max-w-[min(100%,14rem)] sm:max-h-[7.75rem] sm:max-w-[15rem] md:max-h-[8.25rem] md:max-w-[13.5rem] lg:max-h-[8.75rem]",
             )}
             loading="lazy"
