@@ -23,6 +23,7 @@ import Contact from "./pages/static/Contact.tsx";
 import LayNGoPatents from "./pages/static/LayNGoPatents.tsx";
 import Press from "./pages/static/Press.tsx";
 import PressSubpage from "./pages/static/PressSubpage.tsx";
+import PressYearRange from "./pages/static/PressYearRange.tsx";
 import ReturnPolicy from "./pages/static/ReturnPolicy.tsx";
 import SmallBusinesses from "./pages/static/SmallBusinesses.tsx";
 import Wholesale from "./pages/static/Wholesale.tsx";
@@ -75,6 +76,7 @@ const AppContent = () => {
         <Route path="/pages/contact" element={<Contact />} />
         <Route path="/pages/lay-n-go-patents" element={<LayNGoPatents />} />
         <Route path="/pages/press" element={<Press />} />
+        <Route path="/pages/press/:rangeId" element={<PressYearRange />} />
         <Route path="/pages/press-subpage" element={<PressSubpage />} />
         <Route path="/pages/return-policy" element={<ReturnPolicy />} />
         <Route path="/pages/small-businesses" element={<SmallBusinesses />} />

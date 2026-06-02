@@ -14,6 +14,42 @@ export const PRESS_ARCHIVE_YEARS = [2018, 2017, 2016, 2015, 2014, 2013, 2012, 20
 
 export type PressArchiveYear = (typeof PRESS_ARCHIVE_YEARS)[number];
 
+export const PRESS_YEAR_RANGES = [
+  { id: "2017-2018", start: 2017, end: 2018, label: "2017 – 2018" },
+  { id: "2015-2016", start: 2015, end: 2016, label: "2015 – 2016" },
+  { id: "2013-2014", start: 2013, end: 2014, label: "2013 – 2014" },
+  { id: "2011-2012", start: 2011, end: 2012, label: "2011 – 2012" },
+] as const;
+
+export type PressYearRangeId = (typeof PRESS_YEAR_RANGES)[number]["id"];
+
+export function isPressYearRangeId(value: string): value is PressYearRangeId {
+  return PRESS_YEAR_RANGES.some((range) => range.id === value);
+}
+
+export function getPressYearRange(id: PressYearRangeId) {
+  const range = PRESS_YEAR_RANGES.find((r) => r.id === id);
+  if (!range) throw new Error(`Unknown press year range: ${id}`);
+  return range;
+}
+
+export function articlesForYearRange(
+  articlesByYear: Record<PressArchiveYear, PressArticle[]>,
+  start: number,
+  end: number,
+): PressArticle[] {
+  const articles: PressArticle[] = [];
+  for (let year = end; year >= start; year -= 1) {
+    const bucket = articlesByYear[year as PressArchiveYear];
+    if (bucket) articles.push(...bucket);
+  }
+  return articles;
+}
+
+export function articleCountLabel(count: number): string {
+  return count === 1 ? "1 article" : `${count} articles`;
+}
+
 export function articleKey(article: PressArticle): string {
   return `${article.href ?? ""}|${article.title}|${article.date}`;
 }
