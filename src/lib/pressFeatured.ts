@@ -7,6 +7,8 @@ export type PressFeaturedItem = {
   productName: string;
   quote?: string;
   imageSrc: string;
+  /** Optional responsive sources, e.g. `"/press/foo.png 1024w, /press/foo@2x.png 2048w"`. */
+  imageSrcSet?: string;
   imageAlt: string;
   /** Tailwind aspect-ratio fraction, e.g. `1024/403`. */
   imageAspect?: `${number}/${number}`;
@@ -22,7 +24,9 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     productName: "Lay-n-Go Drawstring Toiletry Bag",
     quote:
       "Travelers who are also regulars at Sephora or Ulta will appreciate this cool makeup bag: Instead of having to dump out all your products to find what you're looking for, the bag opens up by way of drawstrings, and can be laid out as a circle on any surface, allowing every product to be on display.",
-    imageSrc: "/press/featured-cntraveler-travel-gifts.png?v=3",
+    imageSrc: "/press/featured-cntraveler-travel-gifts.png?v=4",
+    imageSrcSet:
+      "/press/featured-cntraveler-travel-gifts.png?v=4 1024w, /press/featured-cntraveler-travel-gifts@2x.png?v=4 2048w",
     imageAlt:
       "Condé Nast Traveler feature: Lay-n-Go drawstring toiletry bag with cosmetics laid flat on a grey background",
     imageAspect: "1024/403",
@@ -35,7 +39,9 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     dateLabel: "May 3, 2024:",
     productName:
       "Amy Fazackerley Reveals How She Conquers Business Challenges While Nurturing Family Life",
-    imageSrc: "/press/featured-female-founder-show.png",
+    imageSrc: "/press/featured-female-founder-show.png?v=2",
+    imageSrcSet:
+      "/press/featured-female-founder-show.png?v=2 1024w, /press/featured-female-founder-show@2x.png?v=2 2048w",
     imageAlt:
       "The Female Founder Show with Bridget Fitzpatrick and guest Amy Fazackerley of Lay-n-Go on ASBN",
     imageAspect: "1024/446",

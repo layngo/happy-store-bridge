@@ -17,6 +17,8 @@ function PressFeaturedCard({
     >
       <img
         src={item.imageSrc}
+        srcSet={item.imageSrcSet}
+        sizes={item.imageSrcSet ? "(min-width: 1280px) 80rem, 100vw" : undefined}
         alt={item.imageAlt}
         className="block w-full object-cover object-left"
         style={{
