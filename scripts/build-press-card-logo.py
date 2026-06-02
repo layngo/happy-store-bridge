@@ -120,17 +120,46 @@ def strip_near_black_pixels(
     return Image.fromarray(arr)
 
 
+def purge_dark_matte(
+    img: Image.Image,
+    *,
+    lum_max: float = 92.0,
+    sat_max: float = 0.17,
+) -> Image.Image:
+    """Remove black matte and dark fringe pixels; keep saturated letter fills."""
+    arr = np.array(img.convert("RGBA"), dtype=np.uint8)
+    lum, sat, a = _color_stats(arr)
+    mask = (a > 0) & (lum <= lum_max) & (sat <= sat_max)
+    arr[mask, 3] = 0
+    return Image.fromarray(arr)
+
+
+def clean_colorful_logo_edges(img: Image.Image) -> Image.Image:
+    """Drop dark halos on semi-transparent edge pixels after keying."""
+    arr = np.array(img.convert("RGBA"), dtype=np.uint8)
+    lum, sat, a = _color_stats(arr)
+    fringe = (a > 0) & (a < 255) & (lum < 150.0)
+    stray = (a >= 180) & (lum < 82.0) & (sat < 0.15)
+    arr[fringe | stray, 3] = 0
+    return Image.fromarray(arr)
+
+
 def build_cntraveler_logo(img: Image.Image) -> Image.Image:
     """Condé Nast Traveler: full-color wordmark, transparent counters, no black halos."""
+    arr = np.array(img.convert("RGBA"), dtype=np.uint8)
+    mx = arr[:, :, :3].max(axis=2)
+    arr[mx < 44, 3] = 0
+
     remove_background = load_remove_bg()
     tmp_path = ROOT / "public" / "press" / ".cntraveler-logo-build.tmp.png"
-    img.save(tmp_path)
+    Image.fromarray(arr).save(tmp_path)
     remove_background(tmp_path)
     out = Image.open(tmp_path).convert("RGBA")
     tmp_path.unlink(missing_ok=True)
 
-    out = strip_near_black_pixels(out, lum_max=72.0)
-    out = defringe_dark_halos(out, lum_max=130.0)
+    out = purge_dark_matte(out, lum_max=96.0, sat_max=0.17)
+    out = clean_colorful_logo_edges(out)
+    out = defringe_dark_halos(out, lum_max=150.0)
     return out
 
 
