@@ -18,22 +18,31 @@ OUT_DIR = ROOT / "public" / "press"
 BG = (255, 255, 255)
 TARGET_W = 2048
 TARGET_H = 768
-FADE_START_RATIO = 0.52
+# Wide, gentle blend — avoids a visible vertical seam mid-photo.
+FADE_START_RATIO = 0.30
+FADE_END_RATIO = 0.90
+
+
+def _smoothstep(t: np.ndarray) -> np.ndarray:
+    return t * t * (3.0 - 2.0 * t)
 
 
 def apply_white_fade_right(img: Image.Image) -> Image.Image:
-    """Fade the right edge of the photo into white for text overlay."""
+    """Fade the right side of the photo into white for text overlay."""
     rgba = np.array(img.convert("RGBA"), dtype=np.float64)
-    h, w, _ = rgba.shape
-    fade_start = int(w * FADE_START_RATIO)
+    _h, w, _ = rgba.shape
+    fade_start = w * FADE_START_RATIO
+    fade_end = w * FADE_END_RATIO
 
-    for x in range(fade_start, w):
-        t = (x - fade_start) / max(w - fade_start - 1, 1)
-        t = t**0.85
-        rgba[:, x, :3] = rgba[:, x, :3] * (1.0 - t) + 255.0 * t
-        rgba[:, x, 3] = 255.0
+    xs = np.arange(w, dtype=np.float64)
+    t = np.clip((xs - fade_start) / max(fade_end - fade_start, 1.0), 0.0, 1.0)
+    t = _smoothstep(t)
+    t = t.reshape(1, w, 1)
 
-    return Image.fromarray(np.clip(rgba, 0, 255).astype(np.uint8), "RGBA")
+    rgba[:, :, :3] = rgba[:, :, :3] * (1.0 - t) + 255.0 * t
+    rgba[:, :, 3] = 255.0
+
+    return Image.fromarray(np.clip(rgba, 0, 255).astype(np.uint8))
 
 
 def main() -> None:
