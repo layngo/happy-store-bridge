@@ -152,7 +152,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     dateLabel: "March 7, 2019:",
     productName:
       'Tory Johnson has exclusive "Deals and Steals" on fabulous products from women-owned businesses to celebrate Women\'s History Month.',
-    imageSrc: "/press/featured-gma-deals-steals-logo.png?v=4",
+    imageSrc: "/press/featured-gma-deals-steals-logo.png?v=5",
     imageAlt: "GMA Deals and Steals with Tory Johnson logo",
     cardImageAspect: "718/634",
     cardLogoSize: "large",

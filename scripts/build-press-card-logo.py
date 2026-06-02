@@ -136,28 +136,38 @@ def build_cntraveler_logo(img: Image.Image) -> Image.Image:
 
 def build_gma_logo(img: Image.Image) -> Image.Image:
     """GMA Deals & Steals: keep gold, map white headline to brand blue, clean counters."""
+    arr = np.array(img.convert("RGBA"), dtype=np.uint8)
+
+    # Uniform black matte → transparent (cleaner than flood-fill alone).
+    out = strip_near_black_pixels(Image.fromarray(arr), lum_max=52.0, sat_max=0.12)
+
     remove_background = load_remove_bg()
-    tmp = img.copy()
-    tmp_path = Path("/tmp/gma-logo-build.tmp.png")
-    tmp.save(tmp_path)
+    tmp_path = ROOT / "public" / "press" / ".gma-logo-build.tmp.png"
+    out.save(tmp_path)
     remove_background(tmp_path)
     out = Image.open(tmp_path).convert("RGBA")
     tmp_path.unlink(missing_ok=True)
 
-    out = clear_enclosed_black(out, lum_max=56.0, sat_max=0.14)
+    out = strip_near_black_pixels(out, lum_max=58.0, sat_max=0.13)
 
     arr = np.array(out, dtype=np.uint8)
     lum, sat, a = _color_stats(arr)
-  # Brand gold — never recolor
-    gold = (a > 32) & (sat > 0.18) & (arr[:, :, 0].astype(np.float32) > 150)
-    # Pure white headline letters only → GMA blue
-    white = (a > 32) & ~gold & (lum >= 238) & (sat <= 0.06)
+    rf = arr[:, :, 0].astype(np.float32)
+    gf = arr[:, :, 1].astype(np.float32)
+    # Brand gold / yellow — never recolor or strip
+    gold = (a > 32) & (sat > 0.16) & (rf > 140) & (gf > 110)
+    # Pure white headline → GMA blue
+    white = (a > 32) & ~gold & (lum >= 236) & (sat <= 0.05)
     arr[white, 0] = 58
     arr[white, 1] = 118
     arr[white, 2] = 188
 
+    # Leftover opaque black inside letterforms (e.g. ampersand, serif strokes).
+    stray_dark = (a > 64) & ~gold & (lum <= 88) & (sat <= 0.12)
+    arr[stray_dark, 3] = 0
+
     out = Image.fromarray(arr)
-    out = defringe_dark_halos(out, lum_max=100.0)
+    out = defringe_dark_halos(out, lum_max=135.0)
     return out
 
 
