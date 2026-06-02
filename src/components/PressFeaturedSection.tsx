@@ -21,7 +21,12 @@ function FeaturedCopy({
         className,
       )}
     >
-      <header className={cn(featuredTextBlockClass, align === "center" && "items-center")}>
+      <header
+        className={cn(
+          featuredTextBlockClass,
+          align === "center" && "flex w-full flex-col items-center text-center",
+        )}
+      >
         {item.publication ? <p>{item.publication}</p> : null}
         <h2>{item.headline}</h2>
       </header>
@@ -124,23 +129,21 @@ function PressFeaturedCardCard({
         </div>
       ) : null}
 
-      <div className="relative z-10 flex flex-1 flex-col items-center gap-7 px-6 py-8 sm:gap-8 sm:px-8 sm:py-9">
-        <img
-          src={item.imageSrc}
-          alt={item.imageAlt}
-          className={cn(
-            "w-full max-w-[min(17.5rem,78%)] object-contain",
-            item.cardImageAspect ? "" : "aspect-square",
-          )}
-          style={
-            item.cardImageAspect
-              ? { aspectRatio: item.cardImageAspect.replace("/", " / ") }
-              : undefined
-          }
-          loading="lazy"
-          decoding="async"
+      <div className="relative z-10 flex h-full min-h-0 flex-col items-center px-6 py-8 sm:px-8 sm:py-9 md:py-10">
+        <div className="flex w-full items-center justify-center md:min-h-[10.5rem] lg:min-h-[11rem]">
+          <img
+            src={item.imageSrc}
+            alt={item.imageAlt}
+            className="mx-auto block h-auto w-auto max-h-[min(7.25rem,34vw)] max-w-[min(100%,14rem)] object-contain object-center sm:max-h-[7.75rem] sm:max-w-[15rem] md:max-h-[8.25rem] md:max-w-[13.5rem] lg:max-h-[8.75rem]"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <FeaturedCopy
+          item={item}
+          align="center"
+          className="mt-6 w-full max-w-[min(100%,22rem)] shrink-0 md:mt-7"
         />
-        <FeaturedCopy item={item} align="center" className="w-full" />
       </div>
     </article>
   );
@@ -167,7 +170,7 @@ export function PressFeaturedSection() {
           ))}
 
           {cardItems.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8">
+            <div className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 sm:gap-8">
               {cardItems.map((item) => (
                 <PressFeaturedCardCard key={item.href} item={item} />
               ))}
