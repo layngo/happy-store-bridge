@@ -52,7 +52,10 @@ const PressCategory = () => {
         {articleCountLabel(category.articles.length)} in this collection.
       </p>
 
-      <PressCategoryArticleList articles={category.articles} />
+      <PressCategoryArticleList
+        articles={category.articles}
+        showPublicationLogos={categorySlug === "gifts-roundups"}
+      />
     </StaticPageLayout>
   );
 };

@@ -83,56 +83,56 @@ export const PRESS_ARCHIVE_SECTIONS: readonly PressSection[] = [
             "href": "https://www.graziame.com/style/beauty/are-perfumed-lipsticks-the-next-big-thing"
           },
           {
-            "date": "People.com",
+            "date": "Various",
             "publication": "People",
             "title": "You've Never Seen a Makeup Bag That Keeps Your Products This Organized",
             "featured": false,
             "href": "https://people.com/style/youve-never-seen-a-makeup-bag-that-keeps-your-products-this-organized/"
           },
           {
-            "date": "Various",
+            "date": "Jul 14, 2015",
             "publication": "Parents",
             "title": "Entrepreneurial Moms Share: How to Start Your Own Business",
             "featured": false,
             "href": "https://www.parents.com/parenting/work/entrepreneurial-moms/#page=2"
           },
           {
-            "date": "Various",
+            "date": "Jan 7, 2014",
             "publication": "Lifehacker",
             "title": "Lay-n-Go Traveler Makes Finding Small Items in Your Bag Easy",
             "featured": false,
             "href": "https://lifehacker.com/lay-n-go-traveler-makes-finding-small-items-in-your-bag-1496408342"
           },
           {
-            "date": "Various",
+            "date": "Apr 1, 2013",
             "publication": "RedTri",
             "title": "Ways to Organize Your LEGOs",
             "featured": false,
             "href": "https://redtri.com/ways-to-organize-your-legos/?utm_source=FB&utm_medium=NATL&utm_campaign=FB-NATL"
           },
           {
-            "date": "Various",
+            "date": "Mar 24, 2014",
             "publication": "Consumer Reports",
             "title": "Consumer Reports on Lay-n-Go",
             "featured": false,
             "href": "https://drive.google.com/open?id=0B5JfADpkYhTKTzZUUDVkUkhkRXM"
           },
           {
-            "date": "Various",
+            "date": "Sep 5, 2015",
             "publication": "BuzzFeed",
             "title": "42 Storage Ideas That Will Organize Your Entire House",
             "featured": false,
             "href": "https://www.buzzfeed.com/jessicaprobus/store-it-good#.bma95m3qjl"
           },
           {
-            "date": "Various",
+            "date": "Dec 11, 2014",
             "publication": "Elvis Duran / iHeart",
             "title": "What's Trending – December 11th",
             "featured": false,
             "href": "https://elvisduran.iheart.com/articles/whats-trending-461825/whats-trending-december-11th-13055859/"
           },
           {
-            "date": "Various",
+            "date": "Dec 6, 2013",
             "publication": "Gizmodo AU",
             "title": "The Perfect Toiletry Bag for Those Morally Opposed to Organization",
             "featured": false,

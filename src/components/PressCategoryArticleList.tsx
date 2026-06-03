@@ -1,26 +1,104 @@
 import { ArrowUpRight } from "lucide-react";
 
 import { type PressArticle } from "@/data/pressArchive";
+import {
+  formatPressArticleDate,
+  getPressPublicationLogo,
+} from "@/lib/pressPublicationLogos";
 import { cn } from "@/lib/utils";
 
-export const PressCategoryArticleList = ({ articles }: { articles: readonly PressArticle[] }) => (
+type PressCategoryArticleListProps = {
+  articles: readonly PressArticle[];
+  /** Show brand logos in the date column (gifts & roundups). */
+  showPublicationLogos?: boolean;
+};
+
+const PublicationLogo = ({ publication }: { publication: string }) => {
+  const logo = getPressPublicationLogo(publication);
+  if (!logo) {
+    return (
+      <div
+        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-border bg-muted/50 px-1 sm:h-16 sm:w-16"
+        aria-hidden
+      >
+        <span className="text-center font-heading text-[0.55rem] font-bold uppercase leading-tight text-muted-foreground">
+          {publication.slice(0, 3)}
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-border bg-white p-2 sm:h-16 sm:w-16">
+      <img
+        src={logo.src}
+        alt={logo.alt}
+        className="max-h-full max-w-full object-contain object-center"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  );
+};
+
+const ArticleByline = ({
+  article,
+  showPublicationLogos,
+}: {
+  article: PressArticle;
+  showPublicationLogos?: boolean;
+}) => {
+  const displayDate = formatPressArticleDate(article.date);
+
+  if (showPublicationLogos) {
+    return (
+      <p className="text-xs font-semibold uppercase tracking-wide text-foreground sm:text-sm">
+        <span>{article.publication}</span>
+        {displayDate ? (
+          <>
+            <span className="mx-1.5 font-normal text-muted-foreground" aria-hidden>
+              ·
+            </span>
+            <time dateTime={displayDate} className="font-normal normal-case tracking-normal text-muted-foreground">
+              {displayDate}
+            </time>
+          </>
+        ) : null}
+      </p>
+    );
+  }
+
+  return (
+    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      {article.publication}
+    </p>
+  );
+};
+
+export const PressCategoryArticleList = ({
+  articles,
+  showPublicationLogos = false,
+}: PressCategoryArticleListProps) => (
   <ul className="not-prose divide-y divide-border overflow-hidden rounded-2xl border-2 border-black bg-white">
     {articles.map((article, index) => (
       <li
         key={`${article.date}-${article.publication}-${index}`}
         className={cn(article.featured && "bg-primary/[0.06]")}
       >
-        <div className="group flex gap-4 px-5 py-4 sm:px-6 sm:py-5">
-          <time
-            dateTime={article.date}
-            className="w-[5.5rem] shrink-0 pt-0.5 font-heading text-xs font-bold uppercase leading-tight tracking-[0.06em] text-muted-foreground sm:w-[6.25rem]"
-          >
-            {article.date}
-          </time>
+        <div className="group flex gap-4 px-5 py-4 sm:gap-5 sm:px-6 sm:py-5">
+          {showPublicationLogos ? (
+            <PublicationLogo publication={article.publication} />
+          ) : (
+            <time
+              dateTime={article.date}
+              className="w-[5.5rem] shrink-0 pt-0.5 font-heading text-xs font-bold uppercase leading-tight tracking-[0.06em] text-muted-foreground sm:w-[6.25rem]"
+            >
+              {formatPressArticleDate(article.date) ?? article.date}
+            </time>
+          )}
+
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {article.publication}
-            </p>
+            <ArticleByline article={article} showPublicationLogos={showPublicationLogos} />
             {article.unavailable || !article.href ? (
               <p className="mt-1.5 text-sm font-semibold italic leading-snug text-muted-foreground sm:text-base">
                 {article.title}
