@@ -115,23 +115,33 @@ function PressFeaturedBannerCard({
       )}
     >
       <div className={cn("relative shrink-0 overflow-hidden max-md:rounded-t-2xl md:rounded-2xl", pressFeaturedClipClass)}>
-        <div className="relative max-md:aspect-[4/3] md:aspect-auto">
-          <img
-            src={item.imageSrc}
-            srcSet={item.imageSrcSet}
-            sizes={item.imageSrcSet ? "(min-width: 768px) 80rem, 100vw" : undefined}
-            alt={item.imageAlt}
-            className={cn(
-              "object-cover object-left",
-              "absolute inset-0 size-full object-[14%_42%]",
-              "md:relative md:block md:h-auto md:w-full md:object-left",
-            )}
-            style={{
-              aspectRatio: desktopAspect,
-            }}
-            loading="lazy"
-            decoding="async"
-          />
+        <div className="relative max-md:aspect-[4/3] max-md:overflow-hidden max-md:bg-white md:aspect-auto">
+          <picture className="absolute inset-0 size-full max-md:block md:contents">
+            {item.bannerMobileImageSrc ? (
+              <source
+                media="(max-width: 767px)"
+                srcSet={item.bannerMobileImageSrcSet ?? item.bannerMobileImageSrc}
+                sizes="100vw"
+              />
+            ) : null}
+            <img
+              src={item.imageSrc}
+              srcSet={item.imageSrcSet}
+              sizes={item.imageSrcSet ? "(min-width: 768px) 80rem, 100vw" : undefined}
+              alt={item.imageAlt}
+              className={cn(
+                "object-cover object-left",
+                "size-full max-md:absolute max-md:inset-0 max-md:object-[14%_42%]",
+                "md:relative md:block md:h-auto md:w-full md:scale-100 md:object-left",
+                item.bannerMobileImageClass,
+              )}
+              style={{
+                aspectRatio: desktopAspect,
+              }}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
         </div>
       </div>
 

@@ -17,6 +17,11 @@ export type PressFeaturedItem = {
   imageAspect?: `${number}/${number}`;
   /** Two diagonal lines between art and copy (banner layout only). */
   bannerDiagonalDividers?: boolean;
+  /** Extra Tailwind classes for banner art below `md` (object-position, scale, etc.). */
+  bannerMobileImageClass?: string;
+  /** Optional mobile-only banner (e.g. no desktop fade). */
+  bannerMobileImageSrc?: string;
+  bannerMobileImageSrcSet?: string;
   /** Logo aspect for card layout, e.g. `600/300`. Defaults to square. */
   cardImageAspect?: `${number}/${number}`;
   /** Optional faint background texture for card layout. */
@@ -44,6 +49,8 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
       "Condé Nast Traveler feature: Lay-n-Go drawstring toiletry bag with cosmetics laid flat on a white background",
     imageAspect: "2048/768",
     bannerDiagonalDividers: true,
+    bannerMobileImageClass:
+      "max-md:object-[58%_42%] max-md:scale-[0.86] max-md:origin-[58%_42%]",
   },
   {
     publication: "The Female Founder Show",
@@ -59,6 +66,8 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageAlt:
       "The Female Founder Show with Bridget Fitzpatrick and guest Amy Fazackerley of Lay-n-Go on ASBN",
     imageAspect: "2048/768",
+    bannerMobileImageClass:
+      "max-md:object-[62%_40%] max-md:scale-[0.86] max-md:origin-[62%_40%]",
   },
   {
     publication: "CO— by U.S. Chamber of Commerce",
@@ -74,6 +83,10 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageAlt:
       "Adam Fazackerley of Lay-n-Go interviewed on CO— by U.S. Chamber of Commerce with Gregg Greenberg",
     imageAspect: "2048/768",
+    bannerMobileImageSrc: "/press/featured-co-product-is-king-banner-mobile.png?v=1",
+    bannerMobileImageSrcSet:
+      "/press/featured-co-product-is-king-banner-mobile.png?v=1 1536w, /press/featured-co-product-is-king-banner-mobile@2x.png?v=1 3072w",
+    bannerMobileImageClass: "max-md:object-[22%_42%] max-md:scale-[0.92]",
   },
   {
     layout: "card",

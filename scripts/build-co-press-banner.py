@@ -45,36 +45,67 @@ def apply_white_fade_right(img: Image.Image) -> Image.Image:
     return Image.fromarray(np.clip(rgba, 0, 255).astype(np.uint8))
 
 
+def resize_to_height(img: Image.Image, target_h: int) -> Image.Image:
+    sw, sh = img.size
+    if sh == target_h:
+        return img
+    new_w = int(sw * (target_h / sh))
+    return img.resize((new_w, target_h), Image.Resampling.LANCZOS)
+
+
+def build_desktop_banner(src: Image.Image) -> Image.Image:
+    src = apply_white_fade_right(src)
+    sw, sh = src.size
+    pad_right = TARGET_W - sw
+    canvas = Image.new("RGBA", (TARGET_W, TARGET_H), (*BG, 255))
+    canvas.paste(src, (0, 0), src)
+    if pad_right > 0:
+        canvas.paste(Image.new("RGBA", (pad_right, TARGET_H), (*BG, 255)), (sw, 0))
+    return canvas.convert("RGB")
+
+
+MOBILE_W = 1536
+MOBILE_H = 768
+
+
+def build_mobile_banner(src: Image.Image) -> Image.Image:
+    """No right fade — full interview art for stacked mobile layout."""
+    art = resize_to_height(src, MOBILE_H)
+    aw, ah = art.size
+    canvas = Image.new("RGBA", (MOBILE_W, MOBILE_H), (*BG, 255))
+    canvas.paste(art, (0, 0), art)
+    if aw < MOBILE_W:
+        canvas.paste(Image.new("RGBA", (MOBILE_W - aw, MOBILE_H), (*BG, 255)), (aw, 0))
+    return canvas.convert("RGB")
+
+
 def main() -> None:
     if not SRC.is_file():
         raise SystemExit(f"Missing source image: {SRC}")
 
-    src = Image.open(SRC).convert("RGBA")
-    sw, sh = src.size
-    if sh != TARGET_H:
-        src = src.resize((int(sw * (TARGET_H / sh)), TARGET_H), Image.Resampling.LANCZOS)
-        sw, sh = src.size
+    raw = Image.open(SRC).convert("RGBA")
+    desktop_src = resize_to_height(raw, TARGET_H)
 
-    src = apply_white_fade_right(src)
-
-    pad_right = TARGET_W - sw
-    canvas = Image.new("RGBA", (TARGET_W, TARGET_H), (*BG, 255))
-    canvas.paste(src, (0, 0), src)
-
-    if pad_right > 0:
-        right_fill = Image.new("RGBA", (pad_right, TARGET_H), (*BG, 255))
-        canvas.paste(right_fill, (sw, 0))
-
-    out = canvas.convert("RGB")
+    out = build_desktop_banner(desktop_src)
     out_path = OUT_DIR / "featured-co-product-is-king-banner.png"
     out_2x_path = OUT_DIR / "featured-co-product-is-king-banner@2x.png"
     out.save(out_path, format="PNG", optimize=False)
+    out.resize((TARGET_W * 2, TARGET_H * 2), Image.Resampling.LANCZOS).save(
+        out_2x_path, format="PNG", optimize=False
+    )
 
-    out_2x = out.resize((TARGET_W * 2, TARGET_H * 2), Image.Resampling.LANCZOS)
-    out_2x.save(out_2x_path, format="PNG", optimize=False)
+    mobile = build_mobile_banner(raw)
+    mobile_path = OUT_DIR / "featured-co-product-is-king-banner-mobile.png"
+    mobile_2x_path = OUT_DIR / "featured-co-product-is-king-banner-mobile@2x.png"
+    mobile.save(mobile_path, format="PNG", optimize=False)
+    mobile.resize((MOBILE_W * 2, MOBILE_H * 2), Image.Resampling.LANCZOS).save(
+        mobile_2x_path, format="PNG", optimize=False
+    )
 
     print(f"Wrote {out_path} ({out.size[0]}x{out.size[1]})")
-    print(f"Wrote {out_2x_path} ({out_2x.size[0]}x{out_2x.size[1]})")
+    print(f"Wrote {out_2x_path}")
+    print(f"Wrote {mobile_path} ({mobile.size[0]}x{mobile.size[1]}) — no gradient")
+    print(f"Wrote {mobile_2x_path}")
 
 
 if __name__ == "__main__":
