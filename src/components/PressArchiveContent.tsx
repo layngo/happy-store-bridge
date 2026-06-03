@@ -7,16 +7,29 @@ import {
   buildPressArchiveLayout,
 } from "@/lib/pressArchiveLayout";
 import { PressCategoryBox } from "@/components/PressCategoryBox";
+import { PRESS_CATEGORY_META } from "@/lib/pressCategoryMeta";
 
 export const PressArchiveContent = () => {
   const { topicCategories, articlesByYear } = useMemo(() => buildPressArchiveLayout(), []);
+  const categoryByTitle = useMemo(
+    () => new Map(topicCategories.map((category) => [category.title, category])),
+    [topicCategories],
+  );
 
   return (
     <div className="not-prose space-y-12">
       <div className="grid grid-cols-1 items-stretch gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {topicCategories.map((category) => (
-          <PressCategoryBox key={category.title} category={category} />
-        ))}
+        {PRESS_CATEGORY_META.map((meta) => {
+          const category = categoryByTitle.get(meta.archiveTitle);
+          if (!category) return null;
+          return (
+            <PressCategoryBox
+              key={meta.slug}
+              meta={meta}
+              articleCount={category.articles.length}
+            />
+          );
+        })}
       </div>
 
       <section className="space-y-5 border-t border-border pt-10">
