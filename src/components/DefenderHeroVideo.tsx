@@ -1,26 +1,52 @@
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 
-const DEFENDER_VIMEO_ID = "1197934844";
+const DEFENDER_HERO_VIDEO_SRC = "/videos/defender-hero.mp4?v=1";
 
 type DefenderHeroVideoProps = {
   className?: string;
 };
 
-/** Full-bleed autoplaying muted loop with tactical title overlay. */
+/** Full-bleed autoplaying muted loop (defender3) with tactical title overlay. */
 export function DefenderHeroVideo({ className }: DefenderHeroVideoProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mq.matches);
+    const onChange = () => setPrefersReducedMotion(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (prefersReducedMotion) {
+      video.pause();
+      video.removeAttribute("autoplay");
+      return;
+    }
+    void video.play().catch(() => {
+      // Autoplay may be blocked until user gesture; keep muted poster frame.
+    });
+  }, [prefersReducedMotion]);
+
   return (
     <section className={cn("defender-hero-video", className)}>
       <div className="defender-hero-video__embed">
         <div className="defender-hero-video__embed-inner">
-          <PausableAutoplayEmbed
-            provider="vimeo"
-            videoId={DEFENDER_VIMEO_ID}
-            title="Lay-n-Go DEFENDER"
-            className="absolute inset-0 h-full w-full"
-            iframeClassName="absolute inset-0 h-full w-full border-0"
-            showPauseControl={false}
-            vimeoBackground="000000"
+          <video
+            ref={videoRef}
+            className="absolute inset-0 h-full w-full object-cover"
+            src={DEFENDER_HERO_VIDEO_SRC}
+            autoPlay={!prefersReducedMotion}
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label="Lay-n-Go DEFENDER"
           />
         </div>
       </div>
