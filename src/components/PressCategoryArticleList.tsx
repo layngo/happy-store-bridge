@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { type PressArticle } from "@/data/pressArchive";
 import {
   formatPressArticleDate,
-  getPressPublicationLogo,
+  resolvePressPublicationLogo,
 } from "@/lib/pressPublicationLogos";
 import { cn } from "@/lib/utils";
 
@@ -87,7 +87,7 @@ export const PressCategoryArticleList = ({
       >
         <div className="group flex gap-4 px-5 py-4 sm:gap-5 sm:px-6 sm:py-5">
           {showPublicationLogos ? (
-            <PublicationLogo publication={article.publication} />
+            <PublicationLogo article={article} />
           ) : (
             <time
               dateTime={article.date}

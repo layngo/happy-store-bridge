@@ -4,6 +4,7 @@ export type PressCategoryImage = {
   src: string;
   /** Wide hero banner on category detail pages. */
   heroSrc: string;
+  heroSrcSet?: string;
   alt: string;
   /** CSS object-position for card crop. */
   objectPosition?: string;
@@ -11,24 +12,30 @@ export type PressCategoryImage = {
   heroObjectPosition?: string;
 };
 
+const hero = (base: string, version = 3) => {
+  const one = `${base}.png?v=${version}`;
+  const two = `${base}@2x.png?v=${version}`;
+  return { heroSrc: one, heroSrcSet: `${one} 1536w, ${two} 3072w` };
+};
+
 export const PRESS_CATEGORY_IMAGES: Record<string, PressCategoryImage> = {
   "🌍 Travel & Lifestyle": {
     src: "/press/category-travel-lifestyle.png",
-    heroSrc: "/press/category-hero-travel-lifestyle.png?v=1",
+    ...hero("/press/category-hero-travel-lifestyle"),
     alt: "Person walking outdoors at golden hour with Lay-n-Go gear",
-    heroObjectPosition: "50% 50%",
+    heroObjectPosition: "50% 45%",
   },
   "🛍 Gifts & Product Roundups": {
     src: "/press/category-gifts-roundups.png",
-    heroSrc: "/press/category-hero-gifts-roundups.png?v=1",
+    ...hero("/press/category-hero-gifts-roundups"),
     alt: "TODAY show segment featuring Lay-n-Go products on Bobbie's Buzz",
     heroObjectPosition: "50% 50%",
   },
   "🏆 Business & Entrepreneurship": {
     src: "/press/category-business-entrepreneurship.png?v=2",
-    heroSrc: "/press/category-hero-business-entrepreneurship.png?v=1",
+    ...hero("/press/category-hero-business-entrepreneurship"),
     alt: "U.S. Committee on Small Business press event at the Capitol",
     objectPosition: "50% 30%",
-    heroObjectPosition: "50% 50%",
+    heroObjectPosition: "50% 32%",
   },
 };

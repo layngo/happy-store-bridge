@@ -40,6 +40,7 @@ const PressCategory = () => {
         {image ? (
           <PressCategoryHero
             imageSrc={image.heroSrc}
+            imageSrcSet={image.heroSrcSet}
             imageAlt={image.alt}
             title={meta.displayTitle}
             objectPosition={image.heroObjectPosition ?? "center"}

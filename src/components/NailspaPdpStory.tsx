@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 
 const HEADLINE = "THE NAIL BAG THAT ACTUALLY GETS IT.";
 const IMG_MAIN = "/nailspa-pdp/story/image1.png?v=2";
-const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png";
-const IMG_BOTTOM_HOOK = "/nailspa-pdp/story/bottom-hook.png";
+const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png?v=2";
+const IMG_BOTTOM_HOOK = "/nailspa-pdp/story/bottom-hook.png?v=2";
 
 /** Soft edge fade so the diagram white field blends into `bg-background` (restores pre-cleanup look). */
 function NailspaDiagramEdgeVignette() {
@@ -45,6 +45,12 @@ const COMPACT_EDGE_CALLOUT_PANEL =
   "w-max max-w-[min(46vw,12rem)] shrink-0 rounded-md bg-white/[0.82] px-2.5 py-2 text-right shadow-lg shadow-black/[0.06] backdrop-blur-md sm:max-w-[13rem] sm:px-3 sm:py-2.5";
 
 const COMPACT_EDGE_CALLOUT_WRAPPER = "w-max max-w-[min(54%,280px)]";
+
+/** “Room for every tool” — 20% larger than compact edge callouts. */
+const TOOLS_CALLOUT_PANEL =
+  "w-max max-w-[min(46vw,14.4rem)] shrink-0 rounded-md bg-white/[0.82] px-3 py-2.5 text-right shadow-lg shadow-black/[0.06] backdrop-blur-md sm:max-w-[15.6rem] sm:px-3.5 sm:py-3";
+
+const TOOLS_CALLOUT_WRAPPER = "w-max max-w-[min(54%,336px)]";
 
 const LIP_HANDLE_CALLOUT_TITLE = "Convenient Containment Lip & Carrying Handle";
 const LIP_HANDLE_CALLOUT_BODY =
@@ -202,18 +208,18 @@ const ARROWS: ArrowMap = normalizeArrowMap({
   },
   lipTop: {
     viewBox: MAIN_ARROW_WORKSPACE,
-    start: { x: -40.1893380028861, y: -118.9363351549421 },
-    control: { x: -72.72777816227503, y: -106.03788157871791 },
-    end: { x: -44.66602911267961, y: -88.62298202514648 },
+    start: { x: -35.89967441558838, y: -125.90612084524975 },
+    control: { x: -80.60910946982249, y: -118.88331658499584 },
+    end: { x: -54.19076524462018, y: -95.56332560947966 },
     strokeWidth: 1.75,
     headScale: 1,
     rotation: 0,
   },
   handleRight: {
     viewBox: MAIN_ARROW_WORKSPACE,
-    start: { x: 132.72857679639543, y: -118.59763445172992 },
-    control: { x: 176.13033090318953, y: -103.35039247785296 },
-    end: { x: 147.91544355664934, y: -91.98049000331335 },
+    start: { x: 130.21632180895125, y: -124.41143308367052 },
+    control: { x: 176.54855687277666, y: -133.12183380126956 },
+    end: { x: 162.82251971108576, y: -95.9373599461147 },
     strokeWidth: 1.75,
     headScale: 1,
     rotation: 0,
@@ -247,7 +253,7 @@ const ARROWS: ArrowMap = normalizeArrowMap({
   },
 });
 
-const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v14";
+const ARROW_STORAGE_KEY = "nailspa-story-arrow-pts-v15";
 const CORD_BOX_STORAGE_KEY = "nailspa-story-cord-box-v1";
 const MAIN_CALLOUT_BOXES_STORAGE_KEY = "nailspa-story-main-callout-boxes-v6";
 
@@ -894,13 +900,13 @@ function MainImageCallouts({
         alignItems="items-end"
         xClampMin={EDGE_CALLOUT_X_CLAMP.min}
         xClampMax={EDGE_CALLOUT_X_CLAMP.max}
-        boxClassName={COMPACT_EDGE_CALLOUT_WRAPPER}
+        boxClassName={TOOLS_CALLOUT_WRAPPER}
       >
-        <div className={COMPACT_EDGE_CALLOUT_PANEL}>
-          <h2 className="font-heading text-[13px] font-bold leading-snug tracking-tight text-foreground sm:text-sm">
+        <div className={TOOLS_CALLOUT_PANEL}>
+          <h2 className="font-heading text-[15.6px] font-bold leading-snug tracking-tight text-foreground sm:text-[17px]">
             Room for every tool
           </h2>
-          <p className="mt-0.5 text-[10px] leading-snug text-neutral-700 sm:text-[11px]">
+          <p className="mt-0.5 text-[12px] leading-snug text-neutral-700 sm:text-[13px]">
             A convenient area for all your nail tools in the middle.
           </p>
         </div>
@@ -996,8 +1002,8 @@ function BottomProductImage({ className }: { className?: string }) {
           </div>
         </div>
 
-        <p className="pointer-events-none absolute inset-x-0 bottom-[18%] z-30 mx-auto w-full max-w-5xl -translate-y-1/2 px-4 text-center font-heading text-[clamp(1.75rem,6vw,4rem)] font-bold italic uppercase leading-[1.05] tracking-tight text-white mix-blend-exclude [text-shadow:0_2px_14px_rgba(0,0,0,0.85),0_4px_28px_rgba(0,0,0,0.55),0_0_2px_rgba(0,0,0,0.9)] md:bottom-[22%] md:px-10">
-          Portable, anywhere.
+        <p className="pointer-events-none absolute inset-x-0 bottom-[18%] z-30 mx-auto w-full max-w-5xl -translate-y-1/2 px-4 text-center font-heading text-[clamp(1.75rem,6vw,4rem)] font-black uppercase leading-[1.02] tracking-tight text-white [paint-order:stroke_fill] [-webkit-text-stroke:1.25px_#000] md:bottom-[22%] md:px-10 md:text-[clamp(2rem,5.5vw,4.75rem)]">
+          PORTABLE, ANYWHERE.
         </p>
       </div>
     </div>
@@ -1164,9 +1170,11 @@ export function NailspaPdpStory() {
             <h2 className="font-heading text-base font-bold tracking-tight text-foreground">{LIP_HANDLE_CALLOUT_TITLE}</h2>
             <p className="mt-1 text-xs leading-snug text-neutral-700">{LIP_HANDLE_CALLOUT_BODY}</p>
           </div>
-          <div className={CALLOUT_PANEL}>
-            <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Room for every tool</h2>
-            <p className="mt-1 text-xs leading-snug text-neutral-700">
+          <div className={cn(CALLOUT_PANEL, "px-4 py-3 sm:px-5 sm:py-3.5")}>
+            <h2 className="font-heading text-[1.05rem] font-bold tracking-tight text-foreground sm:text-lg">
+              Room for every tool
+            </h2>
+            <p className="mt-1 text-[0.8rem] leading-snug text-neutral-700 sm:text-[0.9rem]">
               A convenient area for all your nail tools in the middle.
             </p>
           </div>

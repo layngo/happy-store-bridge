@@ -5,6 +5,7 @@ const cosmoDisplayHeadlineClass =
 
 type PressCategoryHeroProps = {
   imageSrc: string;
+  imageSrcSet?: string;
   imageAlt: string;
   title: string;
   objectPosition?: string;
@@ -12,6 +13,7 @@ type PressCategoryHeroProps = {
 
 export const PressCategoryHero = ({
   imageSrc,
+  imageSrcSet,
   imageAlt,
   title,
   objectPosition = "center",
@@ -23,8 +25,10 @@ export const PressCategoryHero = ({
     <div className="relative aspect-[5/2] min-h-[11rem] w-full overflow-hidden bg-black sm:aspect-[21/8] sm:min-h-[13rem] md:min-h-[15rem] lg:aspect-[3/1] lg:min-h-[17rem]">
       <img
         src={imageSrc}
+        srcSet={imageSrcSet}
+        sizes="100vw"
         alt={imageAlt}
-        className="absolute inset-0 h-full w-full scale-[1.02] object-cover"
+        className="absolute inset-0 h-full w-full object-cover"
         style={{ objectPosition }}
         loading="eager"
         decoding="async"
