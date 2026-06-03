@@ -13,7 +13,7 @@ export const PressArchiveContent = () => {
 
   return (
     <div className="not-prose space-y-12">
-      <div className="space-y-8 sm:space-y-10">
+      <div className="grid grid-cols-1 items-stretch gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-3">
         {topicCategories.map((category) => (
           <PressCategoryBox key={category.title} category={category} />
         ))}
