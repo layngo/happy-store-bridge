@@ -3,8 +3,40 @@ export type PressPublicationLogo = {
   alt: string;
 };
 
-/** Publication logos for gifts & roundups category rows. */
+/** Publication logos for press category article rows. */
 export const PRESS_PUBLICATION_LOGOS: Record<string, PressPublicationLogo> = {
+  "Condé Nast Traveler": {
+    src: "/press/logos/cntraveler.png",
+    alt: "Condé Nast Traveler",
+  },
+  GoNomad: {
+    src: "/press/logos/gonomad.png",
+    alt: "GoNomad",
+  },
+  "TODAY / Bobbie Thomas": {
+    src: "/press/logos/today.png",
+    alt: "TODAY",
+  },
+  "Inc. Magazine": {
+    src: "/press/logos/inc.png",
+    alt: "Inc. Magazine",
+  },
+  "The Female Founder Show / ASBN": {
+    src: "/press/logos/asbn.png",
+    alt: "The Female Founder Show on ASBN",
+  },
+  "Women Who Own It": {
+    src: "/press/logos/women-owned.png",
+    alt: "Women Who Own It",
+  },
+  "U.S. Chamber of Commerce / CO—": {
+    src: "/press/logos/us-chamber-co.png",
+    alt: "CO— by U.S. Chamber of Commerce",
+  },
+  "Good Morning America": {
+    src: "/press/logos/gma.png",
+    alt: "Good Morning America Deals and Steals",
+  },
   "Oprah Daily": {
     src: "/press/logos/oprah-daily.png",
     alt: "Oprah Daily",

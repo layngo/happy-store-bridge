@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { StaticPageLayout } from "@/components/StaticPageLayout";
 import { PressCategoryArticleList } from "@/components/PressCategoryArticleList";
+import { PressCategoryHero } from "@/components/PressCategoryHero";
 import { articleCountLabel } from "@/lib/pressArchiveLayout";
 import {
   getPressCategoryBySlug,
@@ -11,6 +12,7 @@ import {
   getPressCategoryMeta,
   isPressCategorySlug,
 } from "@/lib/pressCategoryMeta";
+
 const PressCategory = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
   const meta = categorySlug ? getPressCategoryMeta(categorySlug) : undefined;
@@ -25,37 +27,31 @@ const PressCategory = () => {
   }
 
   return (
-    <StaticPageLayout title={meta.displayTitle} contentClassName="max-w-3xl">
-      <Link
-        to="/pages/press"
-        className="not-prose mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to press
-      </Link>
+    <StaticPageLayout title={meta.displayTitle} contentClassName="max-w-3xl" hidePageTitle>
+      <div className="not-prose -mt-2 space-y-8 sm:space-y-10">
+        <Link
+          to="/pages/press"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to press
+        </Link>
 
-      {image ? (
-        <div className="not-prose relative mb-8 aspect-[21/9] w-full overflow-hidden rounded-2xl border-2 border-black sm:aspect-[2.4/1]">
-          <img
-            src={image.src}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
-            style={{ objectPosition: image.objectPosition ?? "center" }}
-            loading="lazy"
-            decoding="async"
+        {image ? (
+          <PressCategoryHero
+            imageSrc={image.heroSrc}
+            imageAlt={image.alt}
+            title={meta.displayTitle}
+            objectPosition={image.heroObjectPosition ?? "center"}
           />
-          <div className="absolute inset-0 bg-black/35" aria-hidden />
-        </div>
-      ) : null}
+        ) : null}
 
-      <p className="not-prose -mt-2 mb-8 text-sm text-muted-foreground">
-        {articleCountLabel(category.articles.length)} in this collection.
-      </p>
+        <p className="text-sm text-muted-foreground">
+          {articleCountLabel(category.articles.length)} in this collection.
+        </p>
 
-      <PressCategoryArticleList
-        articles={category.articles}
-        showPublicationLogos={categorySlug === "gifts-roundups"}
-      />
+        <PressCategoryArticleList articles={category.articles} showPublicationLogos />
+      </div>
     </StaticPageLayout>
   );
 };

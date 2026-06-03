@@ -6,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, typ
 import { cn } from "@/lib/utils";
 
 const HEADLINE = "THE NAIL BAG THAT ACTUALLY GETS IT.";
-const IMG_MAIN = "/nailspa-pdp/story/image1.png";
+const IMG_MAIN = "/nailspa-pdp/story/image1.png?v=2";
 const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png";
 const IMG_BOTTOM_HOOK = "/nailspa-pdp/story/bottom-hook.png";
 
