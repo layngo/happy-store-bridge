@@ -13,8 +13,9 @@ type PressCategoryArticleListProps = {
   showPublicationLogos?: boolean;
 };
 
-const PublicationLogo = ({ publication }: { publication: string }) => {
-  const logo = getPressPublicationLogo(publication);
+const PublicationLogo = ({ article }: { article: PressArticle }) => {
+  const publication = article.publication;
+  const logo = resolvePressPublicationLogo(publication, article.href);
   if (!logo) {
     return (
       <div
