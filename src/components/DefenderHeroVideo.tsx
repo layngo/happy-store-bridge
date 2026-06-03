@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 
-const DEFENDER_VIMEO_ID = "1197222889";
+const DEFENDER_VIMEO_ID = "1197934844";
 
 type DefenderHeroVideoProps = {
   className?: string;
