@@ -43,11 +43,13 @@ export const HOME_CATEGORY_BY_HANDLE: Record<string, HomeCategoryCardConfig> = {
   "technology": {
     label: "TECH + TRAVEL",
     font: "tech",
+    videoId: "1198186125",
     linkTo: TRAVELER_PRODUCT_PATH,
   },
   "play": {
     label: "PLAY",
     font: "play",
+    videoId: "1198184216",
   },
   "military-first-responder": {
     label: "Outdoor / Tactical",

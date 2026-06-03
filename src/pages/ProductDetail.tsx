@@ -1811,6 +1811,7 @@ const ProductDetail = () => {
                       ? "/products/lay-n-go-lifestyle-44/play-strip-headline.png"
                       : undefined
                 }
+                headlineVideoId={isLayNGoTraveler20 ? "1198186125" : undefined}
                 calloutVariant={
                   isLayNGoDefenderMini16
                     ? "defender-mini-16"

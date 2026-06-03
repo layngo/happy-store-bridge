@@ -24,6 +24,7 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
       homeConfig.labelLines && "home-cat-label--stacked",
     );
     const hasVideo = Boolean(homeConfig.videoId);
+    const hoverImageSrc = homeConfig.hoverSrc ?? (hasVideo ? img?.url : undefined);
 
     return (
       <Link to={href} className="group mx-auto block w-[94%]">
@@ -46,9 +47,9 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
           ) : (
             <div className="absolute inset-0 bg-muted" aria-hidden />
           )}
-          {homeConfig.hoverSrc && hasVideo ? (
+          {hoverImageSrc && hasVideo ? (
             <img
-              src={homeConfig.hoverSrc}
+              src={hoverImageSrc}
               alt=""
               className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-0 transition-[opacity,transform] duration-700 ease-out lg:group-hover:opacity-100 lg:group-hover:scale-105"
               loading="lazy"

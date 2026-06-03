@@ -9,6 +9,7 @@ import {
   type LayNGoCalloutDiagramVariant,
 } from "@/components/LayNGoLargeCalloutDiagram";
 import { LayNGoLiteStopMotionStrip } from "@/components/LayNGoLiteStopMotionStrip";
+import { VimeoLoopFadeEmbed } from "@/components/VimeoLoopFadeEmbed";
 
 const HEADLINE = "Play for hours, clean up in seconds";
 const HEADLINE_IMAGE = "/products/lay-n-go-large-pdp/play-blue.png";
@@ -67,6 +68,7 @@ type LayNGoLargePdpPlayStripProps = {
   /** Story-strip headline (rendered with `uppercase` in the h2). Defaults to Large/Lifestyle copy. */
   headline?: string;
   headlineImageSrc?: string;
+  headlineVideoId?: string;
   showLowerSections?: boolean;
   forceHeadlineSingleLine?: boolean;
   showTravelerCalloutSection?: boolean;
@@ -521,6 +523,7 @@ export function FeatureConnector({ label, arrowDirection = "right" }: { label: s
 export function LayNGoLargePdpPlayStrip({
   headline = HEADLINE,
   headlineImageSrc = HEADLINE_IMAGE,
+  headlineVideoId,
   showLowerSections = true,
   forceHeadlineSingleLine = false,
   showTravelerCalloutSection = false,
@@ -595,16 +598,34 @@ export function LayNGoLargePdpPlayStrip({
 
       {calloutVariant !== "lite-18" && !calloutVariant.startsWith("defender-") ? (
         <div className="mx-auto mt-8 max-w-[min(100%,64rem)] sm:mt-10">
-          <img
-            src={headlineImageSrc}
-            alt="Lay-n-Go product hero image"
-            className={cn(
-              "block h-auto w-full max-w-full object-contain",
-              calloutVariant === "lifestyle-44" && LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS,
-            )}
-            loading="lazy"
-            decoding="async"
-          />
+          {headlineVideoId ? (
+            <div className="group relative aspect-video w-full overflow-hidden">
+              <VimeoLoopFadeEmbed
+                videoId={headlineVideoId}
+                title="Lay-n-Go Traveler product video"
+                className="pointer-events-none absolute inset-0 h-full w-full"
+              />
+              <img
+                src={headlineImageSrc}
+                alt="Lay-n-Go Traveler product hero"
+                className="pointer-events-none absolute inset-0 h-full w-full object-contain opacity-0 transition-[opacity,transform] duration-700 ease-out lg:group-hover:opacity-100 lg:group-hover:scale-[1.02]"
+                loading="lazy"
+                decoding="async"
+                aria-hidden
+              />
+            </div>
+          ) : (
+            <img
+              src={headlineImageSrc}
+              alt="Lay-n-Go product hero image"
+              className={cn(
+                "block h-auto w-full max-w-full object-contain",
+                calloutVariant === "lifestyle-44" && LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS,
+              )}
+              loading="lazy"
+              decoding="async"
+            />
+          )}
         </div>
       ) : null}
 

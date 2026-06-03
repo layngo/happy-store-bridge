@@ -155,7 +155,7 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v14";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v15";
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v16";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
 const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v3";
@@ -266,16 +266,19 @@ const DEFAULT_LAYOUT_LIFESTYLE: LayoutState = {
 /** ~10px left on the same width scale as `LIFESTYLE_MESH_POCKET_DX_20PX`, for Lite lip mat dot. */
 const LITE_LIP_DOT_DX_10PX = (LIFESTYLE_MESH_POCKET_DX_20PX / 20) * 10;
 
+/** ~250px up on Lite's ~768px-tall desktop stage, as 0–100 y delta. */
+const LITE_HANDLE_CALLOUT_UP_250PX_DY = (250 / 768) * 100;
+
 /** Lite 18″: cord/mesh thumbnail anchors swapped vs Lifestyle; lip mat dot nudged for 18″ hero. Cord dot on 6 o'clock drawstring (container %, not image file %). */
 const DEFAULT_LAYOUT_LITE: LayoutState = {
   dots: {
-    handle: { x: 50, y: 14 },
+    handle: { x: 50, y: 14 - LITE_HANDLE_CALLOUT_UP_250PX_DY },
     cord: { x: 50, y: 79 },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.mesh },
     lip: { x: 31 - LITE_LIP_DOT_DX_10PX, y: 49 },
   },
   anchors: {
-    handle: { x: 50, y: 10 },
+    handle: { x: 50, y: 10 - LITE_HANDLE_CALLOUT_UP_250PX_DY },
     cord: { x: DEFAULT_LAYOUT_LIFESTYLE.anchors.mesh.x, y: DEFAULT_LAYOUT_LIFESTYLE.anchors.lip.y },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.cord },
     lip: { x: DEFAULT_LAYOUT_LIFESTYLE.anchors.lip.x, y: DEFAULT_LAYOUT_LIFESTYLE.anchors.lip.y + 6 },
@@ -1583,6 +1586,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               className={cn(
                 "flex flex-col items-center px-2",
                 variant === "lite-18" ? "gap-3" : "gap-2",
+                variant === "lite-18" && k === "handle" && "-mt-[250px]",
               )}
             >
               {thumb}
