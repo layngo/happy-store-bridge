@@ -14,15 +14,19 @@ function FeaturedCopy({
   item,
   className,
   align = "left",
+  compactOnMobile = false,
 }: {
   item: PressFeaturedItem;
   className?: string;
   align?: "left" | "center";
+  /** Tighter spacing and hide pull quote below md (banner layout on phones). */
+  compactOnMobile?: boolean;
 }) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-5",
+        "flex flex-col",
+        compactOnMobile ? "gap-3 md:gap-5" : "gap-5",
         align === "center" && "items-center text-center",
         className,
       )}
@@ -64,7 +68,9 @@ function FeaturedCopy({
         )}
       >
         {item.dateLabel ? <p>{item.dateLabel}</p> : null}
-        {item.productName ? <p>{item.productName}</p> : null}
+        {item.productName ? (
+          <p className={cn(compactOnMobile && "line-clamp-3 md:line-clamp-none")}>{item.productName}</p>
+        ) : null}
       </div>
 
       {item.quote ? (
@@ -72,6 +78,7 @@ function FeaturedCopy({
           className={cn(
             "border-l-0 p-0 font-heading text-sm font-medium leading-relaxed text-muted-foreground sm:text-[0.9rem] lg:text-[0.95rem]",
             align === "center" && "max-w-md",
+            compactOnMobile && "hidden md:block",
           )}
         >
           &ldquo;{item.quote}&rdquo;
@@ -88,21 +95,41 @@ function PressFeaturedBannerCard({
   item: PressFeaturedItem;
   className?: string;
 }) {
+  const desktopAspect = (item.imageAspect ?? "2048/768").replace("/", " / ");
+
   return (
-    <article className={cn("not-prose relative w-full", pressFeaturedBorderClass, className)}>
-      <div className={pressFeaturedClipClass}>
-        <img
-          src={item.imageSrc}
-          srcSet={item.imageSrcSet}
-          sizes={item.imageSrcSet ? "(min-width: 1280px) 80rem, 100vw" : undefined}
-          alt={item.imageAlt}
-          className="block w-full object-contain object-left"
-          style={{
-            aspectRatio: (item.imageAspect ?? "1024/403").replace("/", " / "),
-          }}
-          loading="lazy"
-          decoding="async"
-        />
+    <article
+      className={cn(
+        "not-prose relative w-full max-md:min-h-0",
+        pressFeaturedBorderClass,
+        className,
+      )}
+    >
+      <div className={cn("relative overflow-hidden", pressFeaturedClipClass)}>
+        <div className="relative max-md:aspect-[5/4] md:aspect-auto">
+          <img
+            src={item.imageSrc}
+            srcSet={item.imageSrcSet}
+            sizes={item.imageSrcSet ? "(min-width: 768px) 80rem, 100vw" : undefined}
+            alt={item.imageAlt}
+            className={cn(
+              "object-cover object-left",
+              "absolute inset-0 size-full object-[14%_42%]",
+              "md:relative md:block md:h-auto md:w-full md:object-left",
+            )}
+            style={{
+              aspectRatio: desktopAspect,
+            }}
+            loading="lazy"
+            decoding="async"
+          />
+
+          {/* Mobile: fade art into copy so the block reads as one card, not image + slab */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[min(55%,10rem)] bg-gradient-to-t from-white via-white/90 to-transparent md:hidden"
+          />
+        </div>
       </div>
 
       {item.bannerDiagonalDividers ? (
@@ -117,11 +144,12 @@ function PressFeaturedBannerCard({
 
       <div
         className={cn(
-          "relative z-10 flex flex-col justify-center gap-5 bg-white px-5 py-7 sm:px-8 sm:py-8",
+          "relative z-10 flex flex-col justify-center",
+          "max-md:absolute max-md:inset-x-0 max-md:bottom-0 max-md:px-4 max-md:pb-4 max-md:pt-1",
           "md:absolute md:inset-y-0 md:right-0 md:w-[min(52%,34rem)] md:bg-transparent md:px-8 md:py-10 lg:px-12 lg:py-12",
         )}
       >
-        <FeaturedCopy item={item} />
+        <FeaturedCopy item={item} compactOnMobile />
       </div>
     </article>
   );
@@ -202,7 +230,7 @@ export function PressFeaturedSection() {
         Featured press
       </h2>
       <div className="mx-auto w-full max-w-[min(100%,80rem)] px-4 sm:px-6">
-        <div className="space-y-8 sm:space-y-10">
+        <div className="space-y-6 sm:space-y-8 md:space-y-10">
           {bannerItems.map((item) => (
             <PressFeaturedBannerCard key={item.href} item={item} />
           ))}

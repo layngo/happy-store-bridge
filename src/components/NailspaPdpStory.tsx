@@ -7,8 +7,12 @@ import { cn } from "@/lib/utils";
 
 const HEADLINE = "THE NAIL BAG THAT ACTUALLY GETS IT.";
 const IMG_MAIN = "/nailspa-pdp/story/image1.png?v=2";
-const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png?v=2";
-const IMG_BOTTOM_HOOK = "/nailspa-pdp/story/bottom-hook.png?v=3";
+const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png?v=4";
+const IMG_BOTTOM_HOOK = "/nailspa-pdp/story/bottom-hook.png?v=4";
+
+/** Transparent cutouts — soft shadow follows the product silhouette, not the image box. */
+const BOTTOM_STORY_IMG_SHADOW =
+  "drop-shadow-[0_12px_28px_rgba(0,0,0,0.08)] drop-shadow-[0_3px_10px_rgba(0,0,0,0.05)]";
 
 /** Soft edge fade so the diagram white field blends into `bg-background` (restores pre-cleanup look). */
 function NailspaDiagramEdgeVignette() {
@@ -22,7 +26,7 @@ function NailspaDiagramEdgeVignette() {
   );
 }
 
-const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:px-4 sm:py-3";
+const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-md shadow-black/[0.04] backdrop-blur-md sm:px-4 sm:py-3";
 
 /** Large workspace — must fit dragged joints; old saves used points outside -80..160. */
 const MAIN_ARROW_WORKSPACE = "-170 -85 380 210";
@@ -38,17 +42,17 @@ const MAX_ARROW_ROTATION = 45;
 
 /** Lip + handle callout — wide panel so title/body wrap on fewer lines. */
 const LIP_HANDLE_CALLOUT_PANEL =
-  "w-[min(92vw,28rem)] min-w-[min(72%,18rem)] max-w-none shrink-0 rounded-md bg-white/[0.82] px-3 py-2.5 shadow-lg shadow-black/[0.06] backdrop-blur-md sm:w-[26rem] sm:px-4 sm:py-3 md:w-[30rem]";
+  "w-[min(92vw,28rem)] min-w-[min(72%,18rem)] max-w-none shrink-0 rounded-md bg-white/[0.82] px-3 py-2.5 shadow-md shadow-black/[0.04] backdrop-blur-md sm:w-[26rem] sm:px-4 sm:py-3 md:w-[30rem]";
 
 /** Tools + wash — compact; drag point is the right edge of the text (end anchor). */
 const COMPACT_EDGE_CALLOUT_PANEL =
-  "w-max max-w-[min(46vw,12rem)] shrink-0 rounded-md bg-white/[0.82] px-2.5 py-2 text-right shadow-lg shadow-black/[0.06] backdrop-blur-md sm:max-w-[13rem] sm:px-3 sm:py-2.5";
+  "w-max max-w-[min(46vw,12rem)] shrink-0 rounded-md bg-white/[0.82] px-2.5 py-2 text-right shadow-md shadow-black/[0.04] backdrop-blur-md sm:max-w-[13rem] sm:px-3 sm:py-2.5";
 
 const COMPACT_EDGE_CALLOUT_WRAPPER = "w-max max-w-[min(54%,280px)]";
 
 /** “Room for every tool” — 20% larger than compact edge callouts. */
 const TOOLS_CALLOUT_PANEL =
-  "w-max max-w-[min(46vw,14.4rem)] shrink-0 rounded-md bg-white/[0.82] px-3 py-2.5 text-right shadow-lg shadow-black/[0.06] backdrop-blur-md sm:max-w-[15.6rem] sm:px-3.5 sm:py-3";
+  "w-max max-w-[min(46vw,14.4rem)] shrink-0 rounded-md bg-white/[0.82] px-3 py-2.5 text-right shadow-md shadow-black/[0.04] backdrop-blur-md sm:max-w-[15.6rem] sm:px-3.5 sm:py-3";
 
 const TOOLS_CALLOUT_WRAPPER = "w-max max-w-[min(54%,336px)]";
 
@@ -985,7 +989,10 @@ function BottomProductImage({ className }: { className?: string }) {
             <img
               src={IMG_BOTTOM}
               alt="Lay-n-Go NAILSPA cinched closed with carry handle"
-              className="block h-auto w-[min(52vw,440px)] max-w-none object-contain object-left-bottom max-md:origin-bottom-left max-md:scale-[0.85] sm:w-[min(50vw,500px)] md:w-[min(125%,50vw)] md:scale-100 lg:w-[min(118%,48vw)]"
+              className={cn(
+                "block h-auto w-[min(52vw,440px)] max-w-none object-contain object-left-bottom max-md:origin-bottom-left max-md:scale-[0.85] sm:w-[min(50vw,500px)] md:w-[min(125%,50vw)] md:scale-100 lg:w-[min(118%,48vw)]",
+                BOTTOM_STORY_IMG_SHADOW,
+              )}
               draggable={false}
               loading="lazy"
             />
@@ -995,14 +1002,14 @@ function BottomProductImage({ className }: { className?: string }) {
             <img
               src={IMG_BOTTOM_HOOK}
               alt="Lay-n-Go NAILSPA hanging on a wall hook"
-              className="block h-auto w-full max-w-none object-contain"
+              className={cn("block h-auto w-full max-w-none object-contain", BOTTOM_STORY_IMG_SHADOW)}
               draggable={false}
               loading="lazy"
             />
           </div>
         </div>
 
-        <p className="pointer-events-none absolute inset-x-0 bottom-[18%] z-30 mx-auto w-full max-w-5xl -translate-y-1/2 px-4 text-center font-heading text-[clamp(1.75rem,6vw,4rem)] font-black uppercase leading-[1.02] tracking-tight text-white [paint-order:stroke_fill] [-webkit-text-stroke:1.25px_#000] [text-shadow:0_3px_10px_rgba(0,0,0,0.28),0_8px_24px_rgba(0,0,0,0.18)] md:bottom-[22%] md:px-10 md:text-[clamp(2rem,5.5vw,4.75rem)]">
+        <p className="pointer-events-none absolute inset-x-0 bottom-[18%] z-30 mx-auto w-full max-w-5xl -translate-y-1/2 px-4 text-center font-heading text-[clamp(1.75rem,6vw,4rem)] font-black uppercase leading-[1.02] tracking-tight text-white [paint-order:stroke_fill] [-webkit-text-stroke:1.25px_#000] [text-shadow:0_2px_8px_rgba(0,0,0,0.22),0_6px_18px_rgba(0,0,0,0.12)] md:bottom-[22%] md:px-10 md:text-[clamp(2rem,5.5vw,4.75rem)]">
           PORTABLE, ANYWHERE.
         </p>
       </div>

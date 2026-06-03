@@ -23,9 +23,9 @@ const hero = (base: string, version = 3) => {
 export const PRESS_CATEGORY_IMAGES: Record<string, PressCategoryImage> = {
   "🌍 Travel & Lifestyle": {
     src: "/press/category-travel-lifestyle.png",
-    ...hero("/press/category-hero-travel-lifestyle"),
+    ...hero("/press/category-hero-travel-lifestyle", 4),
     alt: "Person walking outdoors at golden hour with Lay-n-Go gear",
-    heroObjectPosition: "50% 100%",
+    heroObjectPosition: "50% 50%",
   },
   "🛍 Gifts & Product Roundups": {
     src: "/press/category-gifts-roundups.png",
@@ -39,6 +39,6 @@ export const PRESS_CATEGORY_IMAGES: Record<string, PressCategoryImage> = {
     ...hero("/press/category-hero-business-entrepreneurship"),
     alt: "U.S. Committee on Small Business press event at the Capitol",
     objectPosition: "50% 30%",
-    heroObjectPosition: "50% 16%",
+    heroObjectPosition: "50% 8%",
   },
 };
