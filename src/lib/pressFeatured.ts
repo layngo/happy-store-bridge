@@ -50,7 +50,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageAspect: "2048/768",
     bannerDiagonalDividers: true,
     bannerMobileImageClass:
-      "max-md:object-[58%_42%] max-md:scale-[0.86] max-md:origin-[58%_42%]",
+      "max-md:origin-left max-md:scale-[0.86] max-md:object-left max-md:translate-x-[10%]",
   },
   {
     publication: "The Female Founder Show",
@@ -67,7 +67,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
       "The Female Founder Show with Bridget Fitzpatrick and guest Amy Fazackerley of Lay-n-Go on ASBN",
     imageAspect: "2048/768",
     bannerMobileImageClass:
-      "max-md:object-[62%_40%] max-md:scale-[0.86] max-md:origin-[62%_40%]",
+      "max-md:origin-left max-md:scale-[0.86] max-md:object-left max-md:translate-x-[10%]",
   },
   {
     publication: "CO— by U.S. Chamber of Commerce",
