@@ -39,25 +39,19 @@ function FeaturedCopy({
         className={cn(
           featuredTextBlockClass,
           (align === "center" || compactOnMobile) && "flex w-full flex-col items-center text-center",
-          compactOnMobile && "gap-2.5",
+          compactOnMobile && cn(mobileBannerTitlePanelClass, "gap-1.5 py-3.5"),
         )}
       >
         {(() => {
           const publication = item.publication?.trim() ?? "";
           const headline = item.headline?.trim() ?? "";
           if (publication && headline && publication === headline) {
-            return (
-              <h2 className={cn(compactOnMobile && mobileBannerTitlePanelClass)}>{headline}</h2>
-            );
+            return <h2>{headline}</h2>;
           }
           return (
             <>
-              {publication ? (
-                <p className={cn(compactOnMobile && mobileBannerTitlePanelClass)}>{publication}</p>
-              ) : null}
-              {headline ? (
-                <h2 className={cn(compactOnMobile && mobileBannerTitlePanelClass)}>{headline}</h2>
-              ) : null}
+              {publication ? <p>{publication}</p> : null}
+              {headline ? <h2>{headline}</h2> : null}
             </>
           );
         })()}
