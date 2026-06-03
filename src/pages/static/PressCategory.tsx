@@ -44,6 +44,7 @@ const PressCategory = () => {
             imageAlt={image.alt}
             title={meta.displayTitle}
             objectPosition={image.heroObjectPosition ?? "center"}
+            imageScale={image.heroScale}
           />
         ) : null}
 

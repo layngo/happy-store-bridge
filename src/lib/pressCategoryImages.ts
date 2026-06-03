@@ -10,6 +10,8 @@ export type PressCategoryImage = {
   objectPosition?: string;
   /** CSS object-position for page hero (defaults to center). */
   heroObjectPosition?: string;
+  /** Page hero zoom (below 1 shows more of the frame). */
+  heroScale?: number;
 };
 
 const hero = (base: string, version = 3) => {
@@ -23,19 +25,20 @@ export const PRESS_CATEGORY_IMAGES: Record<string, PressCategoryImage> = {
     src: "/press/category-travel-lifestyle.png",
     ...hero("/press/category-hero-travel-lifestyle"),
     alt: "Person walking outdoors at golden hour with Lay-n-Go gear",
-    heroObjectPosition: "50% 45%",
+    heroObjectPosition: "50% 100%",
   },
   "🛍 Gifts & Product Roundups": {
     src: "/press/category-gifts-roundups.png",
     ...hero("/press/category-hero-gifts-roundups"),
     alt: "TODAY show segment featuring Lay-n-Go products on Bobbie's Buzz",
-    heroObjectPosition: "50% 50%",
+    heroObjectPosition: "50% 44%",
+    heroScale: 0.88,
   },
   "🏆 Business & Entrepreneurship": {
     src: "/press/category-business-entrepreneurship.png?v=2",
     ...hero("/press/category-hero-business-entrepreneurship"),
     alt: "U.S. Committee on Small Business press event at the Capitol",
     objectPosition: "50% 30%",
-    heroObjectPosition: "50% 32%",
+    heroObjectPosition: "50% 16%",
   },
 };

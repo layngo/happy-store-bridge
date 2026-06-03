@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const HEADLINE = "THE NAIL BAG THAT ACTUALLY GETS IT.";
 const IMG_MAIN = "/nailspa-pdp/story/image1.png?v=2";
 const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png?v=2";
-const IMG_BOTTOM_HOOK = "/nailspa-pdp/story/bottom-hook.png?v=2";
+const IMG_BOTTOM_HOOK = "/nailspa-pdp/story/bottom-hook.png?v=3";
 
 /** Soft edge fade so the diagram white field blends into `bg-background` (restores pre-cleanup look). */
 function NailspaDiagramEdgeVignette() {
@@ -1002,7 +1002,7 @@ function BottomProductImage({ className }: { className?: string }) {
           </div>
         </div>
 
-        <p className="pointer-events-none absolute inset-x-0 bottom-[18%] z-30 mx-auto w-full max-w-5xl -translate-y-1/2 px-4 text-center font-heading text-[clamp(1.75rem,6vw,4rem)] font-black uppercase leading-[1.02] tracking-tight text-white [paint-order:stroke_fill] [-webkit-text-stroke:1.25px_#000] md:bottom-[22%] md:px-10 md:text-[clamp(2rem,5.5vw,4.75rem)]">
+        <p className="pointer-events-none absolute inset-x-0 bottom-[18%] z-30 mx-auto w-full max-w-5xl -translate-y-1/2 px-4 text-center font-heading text-[clamp(1.75rem,6vw,4rem)] font-black uppercase leading-[1.02] tracking-tight text-white [paint-order:stroke_fill] [-webkit-text-stroke:1.25px_#000] [text-shadow:0_3px_10px_rgba(0,0,0,0.28),0_8px_24px_rgba(0,0,0,0.18)] md:bottom-[22%] md:px-10 md:text-[clamp(2rem,5.5vw,4.75rem)]">
           PORTABLE, ANYWHERE.
         </p>
       </div>

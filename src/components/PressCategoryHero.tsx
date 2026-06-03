@@ -9,6 +9,8 @@ type PressCategoryHeroProps = {
   imageAlt: string;
   title: string;
   objectPosition?: string;
+  /** Below 1 zooms out within the crop (e.g. 0.88). */
+  imageScale?: number;
 };
 
 export const PressCategoryHero = ({
@@ -29,7 +31,12 @@ export const PressCategoryHero = ({
         sizes="100vw"
         alt={imageAlt}
         className="absolute inset-0 h-full w-full object-cover"
-        style={{ objectPosition }}
+        style={{
+          objectPosition,
+          ...(imageScale != null && imageScale < 1
+            ? { transform: `scale(${imageScale})`, transformOrigin: objectPosition }
+            : {}),
+        }}
         loading="eager"
         decoding="async"
       />
