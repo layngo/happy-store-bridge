@@ -4,6 +4,10 @@ import { cn } from "@/lib/utils";
 const featuredTextBlockClass =
   "space-y-1.5 font-heading text-sm font-bold uppercase leading-snug tracking-[0.05em] text-foreground sm:text-[0.95rem] md:text-base";
 
+/** Mobile banner titles — readable on busy photos (first 3 featured). */
+const mobileBannerTitlePanelClass =
+  "w-full max-w-[min(100%,22rem)] rounded-lg bg-white px-4 py-2.5 text-center shadow-[0_2px_12px_rgba(0,0,0,0.08)] ring-1 ring-black/10";
+
 const pressFeaturedBorderClass = "rounded-2xl border-2 border-black bg-white";
 const pressFeaturedClipClass = "overflow-hidden rounded-2xl";
 
@@ -34,19 +38,26 @@ function FeaturedCopy({
       <header
         className={cn(
           featuredTextBlockClass,
-          align === "center" && "flex w-full flex-col items-center text-center",
+          (align === "center" || compactOnMobile) && "flex w-full flex-col items-center text-center",
+          compactOnMobile && "gap-2.5",
         )}
       >
         {(() => {
           const publication = item.publication?.trim() ?? "";
           const headline = item.headline?.trim() ?? "";
           if (publication && headline && publication === headline) {
-            return <h2>{headline}</h2>;
+            return (
+              <h2 className={cn(compactOnMobile && mobileBannerTitlePanelClass)}>{headline}</h2>
+            );
           }
           return (
             <>
-              {publication ? <p>{publication}</p> : null}
-              {headline ? <h2>{headline}</h2> : null}
+              {publication ? (
+                <p className={cn(compactOnMobile && mobileBannerTitlePanelClass)}>{publication}</p>
+              ) : null}
+              {headline ? (
+                <h2 className={cn(compactOnMobile && mobileBannerTitlePanelClass)}>{headline}</h2>
+              ) : null}
             </>
           );
         })()}
@@ -56,21 +67,25 @@ function FeaturedCopy({
         href={item.href}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex w-fit items-center justify-center rounded-full bg-primary px-6 py-2.5 font-heading text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className={cn(
+          "inline-flex w-fit items-center justify-center rounded-full bg-primary px-6 py-2.5 font-heading text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          compactOnMobile && "mx-auto",
+        )}
       >
         {item.linkLabel}
       </a>
 
       <div
         className={cn(
-          "space-y-1 font-heading text-sm font-semibold text-foreground/85 sm:text-[0.95rem]",
+          "space-y-1 font-heading text-sm font-semibold sm:text-[0.95rem]",
           align === "center" && "max-w-md",
+          compactOnMobile
+            ? "w-full max-w-[min(100%,22rem)] text-center text-foreground"
+            : "text-foreground/85",
         )}
       >
         {item.dateLabel ? <p>{item.dateLabel}</p> : null}
-        {item.productName ? (
-          <p className={cn(compactOnMobile && "line-clamp-3 md:line-clamp-none")}>{item.productName}</p>
-        ) : null}
+        {item.productName ? <p>{item.productName}</p> : null}
       </div>
 
       {item.quote ? (
@@ -100,13 +115,13 @@ function PressFeaturedBannerCard({
   return (
     <article
       className={cn(
-        "not-prose relative w-full max-md:min-h-0",
+        "not-prose relative flex w-full flex-col",
         pressFeaturedBorderClass,
         className,
       )}
     >
-      <div className={cn("relative overflow-hidden", pressFeaturedClipClass)}>
-        <div className="relative max-md:aspect-[5/4] md:aspect-auto">
+      <div className={cn("relative shrink-0 overflow-hidden max-md:rounded-t-2xl md:rounded-2xl", pressFeaturedClipClass)}>
+        <div className="relative max-md:aspect-[4/3] md:aspect-auto">
           <img
             src={item.imageSrc}
             srcSet={item.imageSrcSet}
@@ -123,12 +138,6 @@ function PressFeaturedBannerCard({
             loading="lazy"
             decoding="async"
           />
-
-          {/* Mobile: fade art into copy so the block reads as one card, not image + slab */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[min(55%,10rem)] bg-gradient-to-t from-white via-white/90 to-transparent md:hidden"
-          />
         </div>
       </div>
 
@@ -142,14 +151,14 @@ function PressFeaturedBannerCard({
         </div>
       ) : null}
 
-      <div
-        className={cn(
-          "relative z-10 flex flex-col justify-center",
-          "max-md:absolute max-md:inset-x-0 max-md:bottom-0 max-md:px-4 max-md:pb-4 max-md:pt-1",
-          "md:absolute md:inset-y-0 md:right-0 md:w-[min(52%,34rem)] md:bg-transparent md:px-8 md:py-10 lg:px-12 lg:py-12",
-        )}
-      >
-        <FeaturedCopy item={item} compactOnMobile />
+      {/* Mobile: image on top, copy on solid white (no overlay) */}
+      <div className="relative z-10 flex flex-col items-center bg-white px-5 py-6 text-center max-md:rounded-b-2xl md:hidden">
+        <FeaturedCopy item={item} compactOnMobile align="center" />
+      </div>
+
+      {/* Desktop: copy over the right blank area of the banner */}
+      <div className="relative z-10 hidden flex-col justify-center md:absolute md:inset-y-0 md:right-0 md:flex md:w-[min(52%,34rem)] md:bg-transparent md:px-8 md:py-10 lg:px-12 lg:py-12">
+        <FeaturedCopy item={item} />
       </div>
     </article>
   );
