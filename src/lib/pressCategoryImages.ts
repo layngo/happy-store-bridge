@@ -36,9 +36,9 @@ export const PRESS_CATEGORY_IMAGES: Record<string, PressCategoryImage> = {
   },
   "🏆 Business & Entrepreneurship": {
     src: "/press/category-business-entrepreneurship.png?v=2",
-    ...hero("/press/category-hero-business-entrepreneurship"),
+    ...hero("/press/category-hero-business-entrepreneurship", 4),
     alt: "U.S. Committee on Small Business press event at the Capitol",
     objectPosition: "50% 30%",
-    heroObjectPosition: "50% 8%",
+    heroObjectPosition: "50% 0%",
   },
 };
