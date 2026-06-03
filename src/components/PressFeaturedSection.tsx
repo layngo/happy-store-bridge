@@ -7,6 +7,9 @@ const featuredTextBlockClass =
 const pressFeaturedBorderClass = "rounded-2xl border-2 border-black bg-white";
 const pressFeaturedClipClass = "overflow-hidden rounded-2xl";
 
+/** Faint background on square press cards (was 7%; +15% visibility). */
+const pressFeaturedCardBgOpacityClass = "opacity-[0.081]";
+
 function FeaturedCopy({
   item,
   className,
@@ -145,7 +148,7 @@ function PressFeaturedCardCard({
           <img
             src={item.cardBackgroundSrc}
             alt=""
-            className="h-full w-full object-cover opacity-[0.07]"
+            className={cn("h-full w-full object-cover", pressFeaturedCardBgOpacityClass)}
             loading="lazy"
             decoding="async"
           />
@@ -167,6 +170,8 @@ function PressFeaturedCardCard({
               item.cardLogoSize === "large"
                 ? "max-h-[min(9.5rem,42vw)] max-w-[min(100%,22rem)] sm:max-h-[10rem] sm:max-w-[23rem] md:max-h-[10.75rem] md:max-w-[21rem] lg:max-h-[11.25rem]"
                 : "max-h-[min(7.25rem,34vw)] max-w-[min(100%,14rem)] sm:max-h-[7.75rem] sm:max-w-[15rem] md:max-h-[8.25rem] md:max-w-[13.5rem] lg:max-h-[8.75rem]",
+              item.cardLogoDropShadow &&
+                "[filter:drop-shadow(0_2px_4px_rgba(0,0,0,0.18))_drop-shadow(0_8px_20px_rgba(0,0,0,0.22))]",
             )}
             loading="lazy"
             decoding="async"

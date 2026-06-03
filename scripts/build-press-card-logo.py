@@ -23,6 +23,53 @@ def load_remove_bg():
     return mod.remove_background
 
 
+def crop_source_border(img: Image.Image, pad: int = 26) -> Image.Image:
+    """Strip outer gray/white fringe and excess black matte before logo keying."""
+    arr = np.array(img.convert("RGB"), dtype=np.float32)
+    h, w = arr.shape[:2]
+    lum = 0.299 * arr[:, :, 0] + 0.587 * arr[:, :, 1] + 0.114 * arr[:, :, 2]
+    mx = arr.max(axis=2)
+    mn = arr.min(axis=2)
+    sat = np.divide(mx - mn, mx, where=mx > 0, out=np.zeros_like(mx))
+    color = (sat > 0.13) & (mx > 58) & (lum > 48)
+
+    def is_fringe_row(i: int) -> bool:
+        return float(lum[i].mean()) > 32 and int(color[i].sum()) < 8
+
+    def is_fringe_col(j: int) -> bool:
+        return float(lum[:, j].mean()) > 32 and int(color[:, j].sum()) < 8
+
+    top = 0
+    while top < h and is_fringe_row(top):
+        top += 1
+    bottom = h - 1
+    while bottom > top and is_fringe_row(bottom):
+        bottom -= 1
+    left = 0
+    while left < w and is_fringe_col(left):
+        left += 1
+    right = w - 1
+    while right > left and is_fringe_col(right):
+        right -= 1
+
+    cropped = arr[top : bottom + 1, left : right + 1]
+    mx = cropped.max(axis=2)
+    mn = cropped.min(axis=2)
+    lum = 0.299 * cropped[:, :, 0] + 0.587 * cropped[:, :, 1] + 0.114 * cropped[:, :, 2]
+    sat = np.divide(mx - mn, mx, where=mx > 0, out=np.zeros_like(mx))
+    color = (sat > 0.13) & (mx > 58) & (lum > 48)
+    ys, xs = np.where(color)
+    if len(xs) == 0:
+        return img.crop((left, top, right + 1, bottom + 1))
+
+    ch, cw = cropped.shape[:2]
+    x0 = max(0, int(xs.min()) - pad)
+    y0 = max(0, int(ys.min()) - pad)
+    x1 = min(cw, int(xs.max()) + pad + 1)
+    y1 = min(ch, int(ys.max()) + pad + 1)
+    return img.crop((left + x0, top + y0, left + x1, top + y1))
+
+
 def trim_transparent(img: Image.Image, pad: int = 8) -> Image.Image:
     rgba = np.array(img.convert("RGBA"))
     alpha = rgba[:, :, 3]
@@ -152,6 +199,7 @@ def _cntraveler_color_mask(arr: np.ndarray, a: np.ndarray) -> np.ndarray:
 
 def build_cntraveler_logo(img: Image.Image) -> Image.Image:
     """Condé Nast Traveler: full-color wordmark, transparent counters, no black halos."""
+    img = crop_source_border(img)
     arr = np.array(img.convert("RGBA"), dtype=np.uint8)
     mx = arr[:, :, :3].max(axis=2)
     arr[mx < 50, 3] = 0
@@ -300,7 +348,7 @@ def build_logo(
 
 LOGOS = {
     "cntraveler": {
-        "src": ASSETS / "ChatGPT_Image_Jun_2__2026__02_59_57_PM-6d0ad19e-5356-4f55-9542-283361ad4116.png",
+        "src": ASSETS / "ChatGPT_Image_Jun_2__2026__10_13_19_PM-fc631a4e-d3c5-470a-9d62-c97c4e9fc9d2.png",
         "dst": ROOT / "public/press/featured-cntraveler-editors-picks.png",
         "darken_white": False,
         "mode": "cntraveler",
@@ -311,7 +359,7 @@ LOGOS = {
         "darken_white": True,
     },
     "gma": {
-        "src": ASSETS / "ChatGPT_Image_Jun_2__2026__02_57_32_PM-b787e122-0555-4044-97fc-b4797094feef.png",
+        "src": ASSETS / "ChatGPT_Image_Jun_2__2026__10_05_54_PM-d31d4e6f-d078-42c1-9aa9-c147419060bb.png",
         "dst": ROOT / "public/press/featured-gma-deals-steals-logo.png",
         "darken_white": False,
         "mode": "gma",

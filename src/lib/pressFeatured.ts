@@ -23,6 +23,8 @@ export type PressFeaturedItem = {
   cardBackgroundSrc?: string;
   /** Slightly larger logo in the card header zone. */
   cardLogoSize?: "large";
+  /** Soft drop shadow on the card logo (for dark-on-transparent wordmarks). */
+  cardLogoDropShadow?: boolean;
 };
 
 export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
@@ -109,9 +111,9 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     linkLabel: "FULL ARTICLE",
     dateLabel: "July 13, 2022:",
     productName: "",
-    imageSrc: "/press/featured-cntraveler-editors-picks.png?v=10",
+    imageSrc: "/press/featured-cntraveler-editors-picks.png?v=11",
     imageAlt: "Condé Nast Traveler logo",
-    cardImageAspect: "987/682",
+    cardImageAspect: "887/350",
     cardLogoSize: "large",
     cardBackgroundSrc: "/press/featured-cntraveler-editors-picks-bg.png?v=2",
   },
@@ -132,7 +134,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     layout: "card",
     publication: "",
     headline: "",
-    href: "https://www.womenownedlogo.com/women-who-own-it-/amy-fazackerley-of-lay-n-go",
+    href: "https://buywomenowned.com/news/amy-fazackerley-of-lay-n-go/",
     linkLabel: "FULL ARTICLE",
     dateLabel: "March 11, 2020:",
     productName:
@@ -152,10 +154,11 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     dateLabel: "March 7, 2019:",
     productName:
       'Tory Johnson has exclusive "Deals and Steals" on fabulous products from women-owned businesses to celebrate Women\'s History Month.',
-    imageSrc: "/press/featured-gma-deals-steals-logo.png?v=6",
+    imageSrc: "/press/featured-gma-deals-steals-logo.png?v=7",
     imageAlt: "GMA Deals and Steals with Tory Johnson logo",
     cardImageAspect: "718/634",
     cardLogoSize: "large",
+    cardLogoDropShadow: true,
     cardBackgroundSrc: "/press/featured-gma-women-owned-bg.png?v=1",
   },
 ];

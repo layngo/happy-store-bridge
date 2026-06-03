@@ -6,26 +6,16 @@ import {
   articlesForYearRange,
   buildPressArchiveLayout,
 } from "@/lib/pressArchiveLayout";
-import { type PressCategory } from "@/data/pressArchive";
-import { PressArticleTable } from "@/components/PressArticleTable";
-
-const TopicCategoryBlock = ({ category }: { category: PressCategory }) => (
-  <div className="space-y-3">
-    <h2 className="font-heading border-l-4 border-primary bg-muted/30 py-1 pl-3 text-base font-semibold text-foreground">
-      {category.title}
-    </h2>
-    <PressArticleTable category={category} />
-  </div>
-);
+import { PressCategoryBox } from "@/components/PressCategoryBox";
 
 export const PressArchiveContent = () => {
   const { topicCategories, articlesByYear } = useMemo(() => buildPressArchiveLayout(), []);
 
   return (
     <div className="not-prose space-y-12">
-      <div className="space-y-10">
+      <div className="space-y-8 sm:space-y-10">
         {topicCategories.map((category) => (
-          <TopicCategoryBlock key={category.title} category={category} />
+          <PressCategoryBox key={category.title} category={category} />
         ))}
       </div>
 

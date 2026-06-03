@@ -162,7 +162,7 @@ export const PRESS_ARCHIVE_SECTIONS: readonly PressSection[] = [
             "publication": "Women Who Own It",
             "title": "\"Women Who Own It\" – Amy Fazackerley of Lay-n-Go",
             "featured": false,
-            "href": "https://www.womenownedlogo.com/women-who-own-it-/amy-fazackerley-of-lay-n-go"
+            "href": "https://buywomenowned.com/news/amy-fazackerley-of-lay-n-go/"
           },
           {
             "date": "Feb 25, 2019",

@@ -18,8 +18,14 @@ const ArticleTitle = ({ article }: { article: PressArticle }) => {
   );
 };
 
-export const PressArticleTable = ({ category }: { category: PressCategory }) => (
-  <div className="overflow-x-auto rounded-lg border border-border">
+export const PressArticleTable = ({
+  category,
+  className,
+}: {
+  category: PressCategory;
+  className?: string;
+}) => (
+  <div className={cn("overflow-x-auto rounded-lg border border-border", className)}>
     <table className="w-full min-w-[640px] border-collapse text-sm">
       <thead>
         <tr className="border-b border-border bg-muted/50">
