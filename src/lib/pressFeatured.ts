@@ -50,7 +50,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageAspect: "2048/768",
     bannerDiagonalDividers: true,
     bannerMobileImageClass:
-      "max-md:origin-left max-md:scale-[0.86] max-md:object-left max-md:translate-x-[10%]",
+      "max-md:origin-left max-md:scale-[0.86] max-md:object-left max-md:translate-x-[5%]",
   },
   {
     publication: "The Female Founder Show",
