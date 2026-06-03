@@ -20,7 +20,8 @@ export const PressCategoryHero = ({
   title,
   objectPosition = "center",
   imageScale,
-}: PressCategoryHeroProps) => (
+}: PressCategoryHeroProps) => {
+  return (
   <section
     className="not-prose relative left-1/2 mb-10 w-screen max-w-[100vw] -translate-x-1/2 sm:mb-12"
     aria-labelledby="press-category-hero-title"
@@ -64,4 +65,5 @@ export const PressCategoryHero = ({
       </h1>
     </div>
   </section>
-);
+  );
+};

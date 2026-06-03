@@ -23,9 +23,10 @@ const hero = (base: string, version = 3) => {
 export const PRESS_CATEGORY_IMAGES: Record<string, PressCategoryImage> = {
   "🌍 Travel & Lifestyle": {
     src: "/press/category-travel-lifestyle.png",
-    ...hero("/press/category-hero-travel-lifestyle", 4),
+    ...hero("/press/category-hero-travel-lifestyle", 5),
     alt: "Person walking outdoors at golden hour with Lay-n-Go gear",
-    heroObjectPosition: "50% 50%",
+    heroObjectPosition: "50% 42%",
+    heroScale: 0.94,
   },
   "🛍 Gifts & Product Roundups": {
     src: "/press/category-gifts-roundups.png",
