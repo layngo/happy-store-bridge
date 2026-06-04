@@ -38,7 +38,7 @@ type StoryChapter = {
 
 const PLACEHOLDER = (seed: string) => `https://picsum.photos/seed/${seed}/1200/640`;
 
-const ABOUT_US_V2_ASSET_VER = "5";
+const ABOUT_US_V2_ASSET_VER = "6";
 const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_US_V2_ASSET_VER}`;
 
 const CHAPTERS: StoryChapter[] = [
@@ -79,10 +79,12 @@ const CHAPTERS: StoryChapter[] = [
     hideHeading: true,
     panels: [
       {
-        src: PLACEHOLDER("lng-about-04"),
-        title: "Growing household energy",
-        alt: "Growing household energy",
-        storyText: "Growing household energy",
+        src: aboutUsV2Png("they-have-a-family-beach.png"),
+        title: "They have a family",
+        alt: "The Lay-n-Go founders and their three sons on the beach",
+        imagePosition: "center 35%",
+        storyText:
+          "Five years later, the family grew to five and the toys kept getting smaller and smaller each year.",
       },
       {
         src: PLACEHOLDER("lng-about-05"),
