@@ -82,7 +82,7 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("they-have-a-family-beach.png"),
         title: "They have a family",
         alt: "The Lay-n-Go founders and their three sons on the beach",
-        imagePosition: "42% 48%",
+        imagePosition: "46% 42%",
         storyText:
           "Five years later, the family grew to five and the toys kept getting smaller and smaller each year.",
       },
