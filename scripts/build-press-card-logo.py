@@ -194,7 +194,29 @@ def clean_colorful_logo_edges(img: Image.Image) -> Image.Image:
 def _cntraveler_color_mask(arr: np.ndarray, a: np.ndarray) -> np.ndarray:
     lum, sat, _ = _color_stats(arr)
     mx = arr[:, :, :3].max(axis=2)
-    return (a > 20) & (sat > 0.13) & (mx > 58) & (lum > 48)
+    return (a > 0) & (sat > 0.13) & (mx > 58) & (lum > 58)
+
+
+def _cntraveler_white_mask(arr: np.ndarray, a: np.ndarray) -> np.ndarray:
+    lum, sat, _ = _color_stats(arr)
+    return (a > 0) & (lum >= 212) & (sat <= 0.08)
+
+
+def strip_cntraveler_fringe(arr: np.ndarray, keep: np.ndarray) -> np.ndarray:
+    """Remove dark/muddy edge pixels and anything outside the keep mask."""
+    out = arr.copy()
+    lum, sat, a = _color_stats(out)
+
+    junk = (a > 0) & ~keep
+    muddy = (a > 0) & keep & (lum < 145) & (sat < 0.14)
+    soft = (a > 0) & (a < 252) & (lum < 168) & (sat < 0.115)
+    achro = (a > 0) & (lum < 108) & (sat < 0.14)
+    brown = (a > 0) & (arr[:, :, :3].max(axis=2) < 100) & (lum < 120)
+    out[junk | muddy | soft | achro | brown, 3] = 0
+
+    solid = out[:, :, 3] > 12
+    out[solid, 3] = 255
+    return out
 
 
 def clear_enclosed_black_flood(img: Image.Image, lum_max: float = 52.0, sat_max: float = 0.12) -> Image.Image:
@@ -233,24 +255,29 @@ def apply_keep_mask(arr: np.ndarray, keep: np.ndarray) -> np.ndarray:
 
 
 def build_cntraveler_logo(img: Image.Image) -> Image.Image:
-    """Condé Nast Traveler: keep color fills + white stroke only; no black fringe."""
+    """Condé Nast Traveler: saturated fills + white stroke; no dark matte fringe."""
     img = crop_source_border(img)
     arr = np.array(img.convert("RGBA"), dtype=np.uint8)
     lum, sat, a = _color_stats(arr)
-    mx = arr[:, :, :3].max(axis=2)
 
     bg = (lum < 42) & (sat < 0.11)
     arr[bg, 3] = 0
 
     lum, sat, a = _color_stats(arr)
-    mx = arr[:, :, :3].max(axis=2)
-    color = (a > 0) & (sat > 0.11) & (mx > 52) & (lum > 42)
-    white_stroke = (a > 0) & (lum >= 198) & (sat <= 0.10)
-    arr = apply_keep_mask(arr, color | white_stroke)
+    color = _cntraveler_color_mask(arr, a)
+    white = _cntraveler_white_mask(arr, a)
+    keep = color | white
+    arr = apply_keep_mask(arr, keep)
+    arr = strip_cntraveler_fringe(arr, keep)
 
     out = Image.fromarray(arr)
-    out = clear_enclosed_black_flood(out, lum_max=38.0, sat_max=0.09)
-    return out
+    out = clear_enclosed_black_flood(out, lum_max=42.0, sat_max=0.10)
+    arr = np.array(out, dtype=np.uint8)
+    lum, sat, a = _color_stats(arr)
+    color = _cntraveler_color_mask(arr, a)
+    white = _cntraveler_white_mask(arr, a)
+    arr = strip_cntraveler_fringe(arr, color | white)
+    return Image.fromarray(arr)
 
 
 def _gma_gold_mask(arr: np.ndarray, a: np.ndarray, lum: np.ndarray, sat: np.ndarray) -> np.ndarray:
@@ -314,9 +341,10 @@ def remove_small_dark_regions(
             arr[region, 3] = 0
 
 
-def build_gma_logo(img: Image.Image) -> Image.Image:
+def build_gma_logo(img: Image.Image, *, skip_source_crop: bool = True) -> Image.Image:
     """GMA Deals & Steals: gold + abc blue + white headline; CSS drop shadow on site."""
-    img = crop_source_border(img)
+    if not skip_source_crop:
+        img = crop_source_border(img)
     arr = np.array(img.convert("RGBA"), dtype=np.uint8)
     lum, sat, a = _color_stats(arr)
 
@@ -361,23 +389,40 @@ def build_logo(
             out = clear_enclosed_black(out)
             out = recolor_near_white_to_dark(out)
 
-    out = trim_transparent(out, pad=10)
-    card_targets: dict[str, tuple[int, int, Path | None]] = {
-        "cntraveler": (887, 350, ROOT / "public/press/logos/cntraveler.png"),
-        "gma": (718, 634, ROOT / "public/press/logos/gma.png"),
+    trim_pad = 56 if mode == "gma" else 10
+    out = trim_transparent(out, pad=trim_pad)
+    card_targets: dict[str, tuple[int, int, Path | None, float]] = {
+        "cntraveler": (887, 350, ROOT / "public/press/logos/cntraveler.png", 1.0),
+        "gma": (718, 634, ROOT / "public/press/logos/gma.png", 0.88),
     }
     if mode in card_targets:
-        target_w, target_h, logo_dst = card_targets[mode]
+        target_w, target_h, logo_dst, canvas_inset = card_targets[mode]
         w, h = out.size
-        scale = min(target_w / w, target_h / h)
+        scale = min(target_w / w, target_h / h) * canvas_inset
         nw, nh = max(1, int(w * scale)), max(1, int(h * scale))
         resized = out.resize((nw, nh), Image.Resampling.LANCZOS)
         canvas = Image.new("RGBA", (target_w, target_h), (0, 0, 0, 0))
         canvas.paste(resized, ((target_w - nw) // 2, (target_h - nh) // 2), resized)
         out = canvas
+        if mode == "cntraveler":
+            arr = np.array(out, dtype=np.uint8)
+            lum, sat, a = _color_stats(arr)
+            color = _cntraveler_color_mask(arr, a)
+            white = _cntraveler_white_mask(arr, a)
+            arr = strip_cntraveler_fringe(arr, color | white)
+            vis = arr[:, :, 3] > 12
+            resize_fringe = vis & (
+                ((lum < 112) & (sat < 0.14))
+                | ((a < 248) & (lum < 155) & (sat < 0.115))
+                | ((arr[:, :, :3].max(axis=2) < 105) & (lum < 125))
+            )
+            arr[resize_fringe, 3] = 0
+            solid = arr[:, :, 3] > 12
+            arr[solid, 3] = 255
+            out = Image.fromarray(arr)
     out.save(dst, format="PNG", optimize=False)
     if mode in card_targets:
-        _, _, logo_dst = card_targets[mode]
+        _, _, logo_dst, _ = card_targets[mode]
         if logo_dst is not None:
             out.save(logo_dst, format="PNG", optimize=False)
     return out.size
