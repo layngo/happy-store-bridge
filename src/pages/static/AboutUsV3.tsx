@@ -31,6 +31,8 @@ type StoryPanel = {
 
 type StoryChapter = {
   heading: string;
+  /** When true, the large chapter title (e.g. "They meet") is not shown above the panels. */
+  hideHeading?: boolean;
   panels: StoryPanel[];
 };
 
@@ -42,6 +44,7 @@ const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_U
 const CHAPTERS: StoryChapter[] = [
   {
     heading: "They meet",
+    hideHeading: true,
     panels: [
       {
         src: aboutUsV2Png("founders-southside-painting.png"),
@@ -579,7 +582,7 @@ function StoryChapterSection({
 }) {
   return (
     <section className="border-b border-border/40 last:border-b-0">
-      <ChapterHero heading={chapter.heading} />
+      {!chapter.hideHeading ? <ChapterHero heading={chapter.heading} /> : null}
       <div className="space-y-12 pb-14 sm:space-y-14 sm:pb-16 md:space-y-16 md:pb-20">
         {chapter.panels.map((panel, i) => {
           const panelKey = panelTapeKey(chapter.heading, panel.title);
