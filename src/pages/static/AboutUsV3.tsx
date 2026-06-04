@@ -76,6 +76,7 @@ const CHAPTERS: StoryChapter[] = [
   },
   {
     heading: "They have a family",
+    hideHeading: true,
     panels: [
       {
         src: PLACEHOLDER("lng-about-04"),
