@@ -22,18 +22,20 @@ const hero = (base: string, version = 3) => {
 
 export const PRESS_CATEGORY_IMAGES: Record<string, PressCategoryImage> = {
   "🌍 Travel & Lifestyle": {
-    src: "/press/category-travel-lifestyle.png",
-    ...hero("/press/category-hero-travel-lifestyle", 5),
+    src: "/press/category-travel-lifestyle.png?v=2",
+    heroSrc: "/press/category-hero-travel-lifestyle.png?v=6",
+    heroSrcSet:
+      "/press/category-hero-travel-lifestyle.png?v=6 2048w, /press/category-hero-travel-lifestyle@2x.png?v=6 4096w",
     alt: "Person walking outdoors at golden hour with Lay-n-Go gear",
     heroObjectPosition: "50% 42%",
-    heroScale: 0.94,
   },
   "🛍 Gifts & Product Roundups": {
-    src: "/press/category-gifts-roundups.png",
-    ...hero("/press/category-hero-gifts-roundups"),
-    alt: "TODAY show segment featuring Lay-n-Go products on Bobbie's Buzz",
-    heroObjectPosition: "50% 44%",
-    heroScale: 0.88,
+    src: "/press/category-gifts-roundups.png?v=2",
+    heroSrc: "/press/category-hero-gifts-roundups.png?v=6",
+    heroSrcSet:
+      "/press/category-hero-gifts-roundups.png?v=6 2048w, /press/category-hero-gifts-roundups@2x.png?v=6 4096w",
+    alt: "TODAY show Bobbie's Buzz segment featuring Lay-n-Go girlfriend gifts",
+    heroObjectPosition: "50% 42%",
   },
   "🏆 Business & Entrepreneurship": {
     src: "/press/category-business-entrepreneurship.png?v=2",

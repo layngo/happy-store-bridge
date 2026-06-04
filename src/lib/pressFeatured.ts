@@ -124,7 +124,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     linkLabel: "FULL ARTICLE",
     dateLabel: "July 13, 2022:",
     productName: "",
-    imageSrc: "/press/featured-cntraveler-editors-picks.png?v=11",
+    imageSrc: "/press/featured-cntraveler-editors-picks.png?v=12",
     imageAlt: "Condé Nast Traveler logo",
     cardImageAspect: "887/350",
     cardLogoSize: "large",
@@ -167,7 +167,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     dateLabel: "March 7, 2019:",
     productName:
       'Tory Johnson has exclusive "Deals and Steals" on fabulous products from women-owned businesses to celebrate Women\'s History Month.',
-    imageSrc: "/press/featured-gma-deals-steals-logo.png?v=7",
+    imageSrc: "/press/featured-gma-deals-steals-logo.png?v=8",
     imageAlt: "GMA Deals and Steals with Tory Johnson logo",
     cardImageAspect: "718/634",
     cardLogoSize: "large",

@@ -197,37 +197,48 @@ def _cntraveler_color_mask(arr: np.ndarray, a: np.ndarray) -> np.ndarray:
     return (a > 20) & (sat > 0.13) & (mx > 58) & (lum > 48)
 
 
+def clear_enclosed_black_flood(img: Image.Image, lum_max: float = 52.0, sat_max: float = 0.12) -> Image.Image:
+    """Knock out letter counters: dark pixels not connected to image edges."""
+    arr = np.array(img.convert("RGBA"), dtype=np.uint8)
+    lum, sat, a = _color_stats(arr)
+    dark = (a > 0) & (lum <= lum_max) & (sat <= sat_max)
+    h, w = dark.shape
+    exterior = np.zeros_like(dark)
+    stack: list[tuple[int, int]] = []
+    for x in range(w):
+        if dark[0, x]:
+            stack.append((0, x))
+        if dark[h - 1, x]:
+            stack.append((h - 1, x))
+    for y in range(h):
+        if dark[y, 0]:
+            stack.append((y, 0))
+        if dark[y, w - 1]:
+            stack.append((y, w - 1))
+    while stack:
+        y, x = stack.pop()
+        if y < 0 or y >= h or x < 0 or x >= w or exterior[y, x] or not dark[y, x]:
+            continue
+        exterior[y, x] = True
+        stack.extend([(y - 1, x), (y + 1, x), (y, x - 1), (y, x + 1)])
+    arr[dark & ~exterior, 3] = 0
+    return Image.fromarray(arr)
+
+
 def build_cntraveler_logo(img: Image.Image) -> Image.Image:
-    """Condé Nast Traveler: full-color wordmark, transparent counters, no black halos."""
+    """Condé Nast Traveler: full-color wordmark on black — key matte, transparent counters."""
     img = crop_source_border(img)
     arr = np.array(img.convert("RGBA"), dtype=np.uint8)
-    mx = arr[:, :, :3].max(axis=2)
-    arr[mx < 50, 3] = 0
-
-    remove_background = load_remove_bg()
-    tmp_path = ROOT / "public" / "press" / ".cntraveler-logo-build.tmp.png"
-    Image.fromarray(arr).save(tmp_path)
-    remove_background(tmp_path)
-    arr = np.array(Image.open(tmp_path).convert("RGBA"), dtype=np.uint8)
-    tmp_path.unlink(missing_ok=True)
-
     lum, sat, a = _color_stats(arr)
-    color = _cntraveler_color_mask(arr, a)
 
-    arr = np.array(purge_dark_matte(Image.fromarray(arr), lum_max=108.0, sat_max=0.18), dtype=np.uint8)
-
-    lum, sat, a = _color_stats(arr)
-    color = _cntraveler_color_mask(arr, a)
-
-    junk = (a > 12) & ~color & (lum < 112) & (sat < 0.17)
-    arr[junk, 3] = 0
-
-    remove_small_dark_regions(arr, min_area=400, protect=color)
+    # Pure black export background → transparent (skip rembg; it leaves counter specks).
+    bg = (lum < 42) & (sat < 0.11)
+    arr[bg, 3] = 0
 
     out = Image.fromarray(arr)
-    out = clean_colorful_logo_edges(out)
-    out = defringe_dark_halos(out, lum_max=150.0)
-    return out
+    out = clear_enclosed_black_flood(out)
+    out = defringe_dark_halos(out, lum_max=120.0)
+    return clean_colorful_logo_edges(out)
 
 
 def _gma_gold_mask(arr: np.ndarray, a: np.ndarray, lum: np.ndarray, sat: np.ndarray) -> np.ndarray:
@@ -272,48 +283,35 @@ def remove_small_dark_regions(
 
 
 def build_gma_logo(img: Image.Image) -> Image.Image:
-    """GMA Deals & Steals: keep gold + blue, transparent counters, no black specks."""
+    """GMA Deals & Steals: key black export, blue headline for white press cards."""
+    img = crop_source_border(img)
     arr = np.array(img.convert("RGBA"), dtype=np.uint8)
-    mx = arr[:, :, :3].max(axis=2)
-    arr[mx < 50, 3] = 0
+    lum, sat, a = _color_stats(arr)
 
-    remove_background = load_remove_bg()
-    tmp_path = ROOT / "public" / "press" / ".gma-logo-build.tmp.png"
-    Image.fromarray(arr).save(tmp_path)
-    remove_background(tmp_path)
-    arr = np.array(Image.open(tmp_path).convert("RGBA"), dtype=np.uint8)
-    tmp_path.unlink(missing_ok=True)
+    bg = (lum < 42) & (sat < 0.11)
+    arr[bg, 3] = 0
 
     lum, sat, a = _color_stats(arr)
     gold = _gma_gold_mask(arr, a, lum, sat)
     blue = _gma_blue_mask(arr, a)
-
-    # White headline → brand blue before final matte purge.
     white = (a > 24) & ~gold & ~blue & (lum >= 234) & (sat <= 0.055)
     arr[white, 0] = 58
     arr[white, 1] = 118
     arr[white, 2] = 188
-    blue = _gma_blue_mask(arr, a)
-
-    arr = np.array(
-        purge_dark_matte(Image.fromarray(arr), lum_max=104.0, sat_max=0.15),
-        dtype=np.uint8,
-    )
 
     lum, sat, a = _color_stats(arr)
     gold = _gma_gold_mask(arr, a, lum, sat)
     blue = _gma_blue_mask(arr, a)
-    protect = gold | blue
-
-    junk = (a > 12) & ~protect & (lum < 110) & (sat < 0.16)
-    arr[junk, 3] = 0
-
-    remove_small_dark_regions(arr, min_area=520, protect=protect)
+    protect = gold | blue | ((a > 0) & (lum > 180))
 
     out = Image.fromarray(arr)
-    out = clean_colorful_logo_edges(out)
-    out = defringe_dark_halos(out, lum_max=145.0)
-    return out
+    out = clear_enclosed_black_flood(out, lum_max=46.0, sat_max=0.11)
+    arr = np.array(out, dtype=np.uint8)
+    lum, sat, a = _color_stats(arr)
+    fringe = (a > 0) & (a < 255) & (lum < 115) & (sat < 0.14) & ~protect
+    arr[fringe, 3] = 0
+    out = Image.fromarray(arr)
+    return clean_colorful_logo_edges(out)
 
 
 def build_logo(
@@ -342,7 +340,24 @@ def build_logo(
             out = recolor_near_white_to_dark(out)
 
     out = trim_transparent(out, pad=10)
+    card_targets: dict[str, tuple[int, int, Path | None]] = {
+        "cntraveler": (887, 350, ROOT / "public/press/logos/cntraveler.png"),
+        "gma": (718, 634, ROOT / "public/press/logos/gma.png"),
+    }
+    if mode in card_targets:
+        target_w, target_h, logo_dst = card_targets[mode]
+        w, h = out.size
+        scale = min(target_w / w, target_h / h)
+        nw, nh = max(1, int(w * scale)), max(1, int(h * scale))
+        resized = out.resize((nw, nh), Image.Resampling.LANCZOS)
+        canvas = Image.new("RGBA", (target_w, target_h), (0, 0, 0, 0))
+        canvas.paste(resized, ((target_w - nw) // 2, (target_h - nh) // 2), resized)
+        out = canvas
     out.save(dst, format="PNG", optimize=False)
+    if mode in card_targets:
+        _, _, logo_dst = card_targets[mode]
+        if logo_dst is not None:
+            out.save(logo_dst, format="PNG", optimize=False)
     return out.size
 
 
