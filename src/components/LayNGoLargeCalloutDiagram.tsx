@@ -155,7 +155,7 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v14";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v22";
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v23";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
 const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v3";
@@ -269,7 +269,7 @@ const LITE_LIP_DOT_DX_10PX = (LIFESTYLE_MESH_POCKET_DX_20PX / 20) * 10;
 /** Lite 18″: cord/mesh thumbnail anchors swapped vs Lifestyle; lip mat dot nudged for 18″ hero. Cord dot on 6 o'clock drawstring (container %, not image file %). */
 const DEFAULT_LAYOUT_LITE: LayoutState = {
   dots: {
-    handle: { x: 50, y: 20 },
+    handle: { x: 50, y: 18 },
     cord: { x: 50, y: 79 },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.mesh },
     lip: { x: 31 - LITE_LIP_DOT_DX_10PX, y: 49 },
@@ -1060,7 +1060,7 @@ function FloatingCallout({
       className={cn(
         "absolute z-20 flex flex-col items-center",
         liteHandle
-          ? "-translate-x-1/2 -translate-y-8 sm:-translate-y-10 md:-translate-y-12"
+          ? "-translate-x-1/2 -translate-y-14 sm:-translate-y-18 md:-translate-y-24"
           : "-translate-x-1/2 -translate-y-1/2",
         cordLifestyleCompact ? "gap-1" : "gap-2",
         editorMode
@@ -1501,7 +1501,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         )}
       >
         {variant === "lite-18" && config.handleCalloutSrc ? (
-          <div className="-mt-10 mb-8 flex w-full flex-col items-center gap-2 px-2 sm:-mt-12 sm:mb-10">
+          <div className="-mt-14 mb-8 flex w-full flex-col items-center gap-2 px-2 sm:-mt-16 md:-mt-20 sm:mb-10">
             <p className="max-w-xs text-center font-heading text-xs font-bold uppercase leading-snug text-neutral-900">
               {CALLOUT_META.handle.label}
             </p>
