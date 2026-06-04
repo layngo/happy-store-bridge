@@ -155,7 +155,7 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v14";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v19";
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v20";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
 const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v3";
@@ -269,13 +269,13 @@ const LITE_LIP_DOT_DX_10PX = (LIFESTYLE_MESH_POCKET_DX_20PX / 20) * 10;
 /** Lite 18″: cord/mesh thumbnail anchors swapped vs Lifestyle; lip mat dot nudged for 18″ hero. Cord dot on 6 o'clock drawstring (container %, not image file %). */
 const DEFAULT_LAYOUT_LITE: LayoutState = {
   dots: {
-    handle: { x: 50, y: 28 },
+    handle: { x: 50, y: 24 },
     cord: { x: 50, y: 79 },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.mesh },
     lip: { x: 31 - LITE_LIP_DOT_DX_10PX, y: 49 },
   },
   anchors: {
-    handle: { x: 50, y: 8 },
+    handle: { x: 50, y: 4 },
     cord: { x: DEFAULT_LAYOUT_LIFESTYLE.anchors.mesh.x, y: DEFAULT_LAYOUT_LIFESTYLE.anchors.lip.y },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.cord },
     lip: { x: DEFAULT_LAYOUT_LIFESTYLE.anchors.lip.x, y: DEFAULT_LAYOUT_LIFESTYLE.anchors.lip.y + 6 },
@@ -360,11 +360,11 @@ function sanitizeLiteLayout(layout: LayoutState, fallback: LayoutState): LayoutS
   return {
     dots: {
       ...layout.dots,
-      handle: clampY(layout.dots.handle ?? fallback.dots.handle, 24, 34),
+      handle: clampY(layout.dots.handle ?? fallback.dots.handle, 20, 30),
     },
     anchors: {
       ...layout.anchors,
-      handle: clampY(layout.anchors.handle ?? fallback.anchors.handle, 6, 11),
+      handle: clampY(layout.anchors.handle ?? fallback.anchors.handle, 3, 7),
     },
   };
 }
@@ -1006,7 +1006,7 @@ function FloatingCallout({
   const thumbSrc = imageSrcOverride ?? imageSrc;
   const { x, y: anchorY } = layout.anchors[calloutKey];
   const liteHandle = variant === "lite-18" && calloutKey === "handle";
-  const y = liteHandle ? Math.max(6, Math.min(11, anchorY)) : anchorY;
+  const y = liteHandle ? Math.max(3, Math.min(7, anchorY)) : anchorY;
   const lifestyleThumb = diagramUsesLifestyleChrome(variant);
   /** Lifestyle 44″ only — Lite uses full-size cord thumb and lip-like stacking (see `textAbove`). */
   const cordLifestyleCompact = lifestyleThumb && calloutKey === "cord" && variant !== "lite-18";
@@ -1499,7 +1499,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         )}
       >
         {variant === "lite-18" && config.handleCalloutSrc ? (
-          <div className="mb-10 flex w-full flex-col items-center gap-2 px-2 sm:mb-12">
+          <div className="-mt-2 mb-8 flex w-full flex-col items-center gap-2 px-2 sm:-mt-4 sm:mb-10">
             <p className="max-w-xs text-center font-heading text-xs font-bold uppercase leading-snug text-neutral-900">
               {CALLOUT_META.handle.label}
             </p>
