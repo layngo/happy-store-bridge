@@ -80,7 +80,7 @@ export function LayNGoLiteStopMotionStrip({ className }: { className?: string })
           <StopMotionPlayer frames={COLOR_B_FRAMES} frameIndex={frameIndex} className="w-full" />
         </div>
 
-        <div className="mt-8 pb-12 text-center sm:mt-10 sm:pb-14 md:pb-20 lg:pb-24">
+        <div className="mt-8 pb-8 text-center sm:mt-10 sm:pb-10 md:pb-12">
           <p className="brand-eyebrow text-foreground">Reversible colors</p>
           <p className="brand-display mx-auto mt-2 max-w-none text-[clamp(1rem,4.2vw,2rem)] leading-tight text-foreground whitespace-nowrap">
             Two colors in one... fully reversible.
