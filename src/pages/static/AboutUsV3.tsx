@@ -53,7 +53,7 @@ const CHAPTERS: StoryChapter[] = [
         title: "Love at first sight",
         alt: "Amy and Adam at Southside 815",
         storyText:
-          "On February 1, 1999, Amy walked into Southside 815 in Alexandria, Virginia, and caught Adam's eye immediately. A mutual friend introduced them, and four hours of conversation went by like it was 20 minutes. Adam walked Amy home that evening — meeting her two golden retrievers, Maggie & Molson — and they made plans to see Gil Scott-Heron at the legendary Blues Alley two days later. Both Amy and Adam had found their missing piece.\n\n22 years later, for Amy's 50th birthday, Adam had famed Alexandria painter and close friend Judy Heiser, memorialize the exact moment before both of their lives changed.",
+          "On February 1, 1999, Amy walked into Southside 815 in Alexandria, Virginia, and caught Adam's eye immediately. A mutual friend introduced them, and four hours of conversation went by like it was 20 minutes. Adam walked Amy home that evening — meeting her two golden retrievers, Maggie & Molson. Both Amy and Adam had found their missing piece.\n\n22 years later, for Amy's 50th birthday, Adam had famed Alexandria painter Judy Heiser, memorialize the exact moment before both of their lives changed.",
       },
       {
         src: aboutUsV2Png("they-meet-world-travelers-maggie-molson.png"),
@@ -72,7 +72,7 @@ const CHAPTERS: StoryChapter[] = [
         downloadUrl: "/about-us-v2/they-meet-wedding-toast-wide.png",
         downloadFileName: "its-official-wedding-toast.png",
         storyText:
-          "On April 21, 2001, Amy and Adam tied the knot in Baltimore, Maryland. Surrounded by family and their closest friends, they danced the night away until it was time to leave for the airport. The adventure was underway...they had no idea how crazy it was about to get!",
+          "On April 21, 2001, Amy and Adam tied the knot in Baltimore. Surrounded by family and their closest friends, they danced the night away until it was time to leave for the airport. The adventure was underway...they had no idea how crazy it was about to get!",
       },
     ],
   },
@@ -553,10 +553,10 @@ function StoryFadePanel({
 function AboutUsV3Intro() {
   return (
     <header className="py-12 text-center sm:py-14 md:py-16 lg:py-20">
-      <p className="mx-auto max-w-4xl font-logo text-[clamp(1.3125rem,3.75vw,2.1875rem)] font-light uppercase leading-snug tracking-tight text-foreground">
-        Let&apos;s face it, most About Us pages are boring!
+      <p className="mx-auto max-w-4xl font-heading text-[clamp(1.625rem,4.25vw,2.5rem)] font-medium leading-snug tracking-normal text-foreground">
+        Let&apos;s face it, most About Us pages are boring.
         <br />
-        Lay-n-Go always keeps it fun and saves you time.
+        Lay-n-Go always keeps it fun and saves you time!
       </p>
     </header>
   );
