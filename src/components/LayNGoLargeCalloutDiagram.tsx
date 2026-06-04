@@ -1426,7 +1426,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           ? cn("mt-8 rounded-2xl bg-background px-0 sm:mt-10 sm:px-2", editorMode && "overflow-visible")
           : variant === "lite-18"
             ? cn(
-                "mt-12 rounded-2xl px-2 sm:mt-14 sm:px-4 md:mt-16 lg:mt-20",
+                "mt-20 rounded-2xl px-2 sm:mt-24 sm:px-4 md:mt-32 lg:mt-40",
                 diagramMatSurfaceBg(variant),
               )
           : diagramUsesLifestyleChrome(variant)
@@ -1499,7 +1499,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         )}
       >
         {variant === "lite-18" && config.handleCalloutSrc ? (
-          <div className="mb-6 flex w-full flex-col items-center gap-2 px-2 sm:mb-8">
+          <div className="mb-10 flex w-full flex-col items-center gap-2 px-2 sm:mb-12">
             <p className="max-w-xs text-center font-heading text-xs font-bold uppercase leading-snug text-neutral-900">
               {CALLOUT_META.handle.label}
             </p>
@@ -1527,7 +1527,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             "w-full object-contain",
             config.mobileHeroMaxClass,
             matProductImgClass(variant),
-            variant === "lite-18" && "mt-2 sm:mt-4",
+            variant === "lite-18" && "mt-6 sm:mt-10",
               diagramUsesLifestyleChrome(variant) &&
                 variant !== "lite-18" &&
                 variant !== "lifestyle-44" &&
@@ -1776,7 +1776,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                 ? "relative z-10 mx-auto w-[min(64vw,624px)]"
                 : cn(
                     "pointer-events-none absolute left-1/2 z-10 -translate-x-1/2 -translate-y-1/2",
-                    variant === "lite-18" ? "top-[58%]" : "top-1/2",
+                    variant === "lite-18" ? "top-[66%]" : "top-1/2",
                     config.heroWidthClass,
                   ),
               diagramUsesLifestyleChrome(variant) &&
