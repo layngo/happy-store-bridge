@@ -40,7 +40,7 @@ type StoryChapter = {
 
 const PLACEHOLDER = (seed: string) => `https://picsum.photos/seed/${seed}/1200/640`;
 
-const ABOUT_US_V2_ASSET_VER = "6";
+const ABOUT_US_V2_ASSET_VER = "7";
 const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_US_V2_ASSET_VER}`;
 
 const CHAPTERS: StoryChapter[] = [
@@ -90,10 +90,12 @@ const CHAPTERS: StoryChapter[] = [
           "Five years later, the family grew to five and the toys kept getting smaller and smaller each year.",
       },
       {
-        src: PLACEHOLDER("lng-about-05"),
-        title: "Kids dive into creative play",
-        alt: "Kids dive into creative play",
-        storyText: "Kids dive into creative play",
+        src: aboutUsV2Png("they-have-a-mess-lego.png"),
+        title: "They have a mess",
+        alt: "A playroom floor covered in LEGO bricks and overflowing storage bins",
+        previewText: "Lego, Lego everywhere and not a solution in sight...",
+        storyText:
+          "LEGO, LEGO everywhere and not a solution in sight. Amy loved organization and Adam loved buying the kids more and more LEGO. The bins, baskets, sheets, and everything else on the market just did not support creative play that also allowed parents to keep their sanity. Bins of small pieces became our morning alarm clock. The challenge to design something better was a task we were both up to!",
       },
       {
         src: PLACEHOLDER("lng-about-06"),
