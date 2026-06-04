@@ -588,9 +588,7 @@ export function LayNGoLargePdpPlayStrip({
             <DefenderFlankStrip {...FLANK_STRIPS_BY_VARIANT["lite-18"]!} variant="lite-18" />
           ) : null}
           <LayNGoLiteStopMotionStrip />
-          <div className="mt-24 sm:mt-28 md:mt-32 lg:mt-36">
-            <LayNGoLargeCalloutDiagram variant="lite-18" />
-          </div>
+          <LayNGoLargeCalloutDiagram variant="lite-18" />
         </>
       ) : calloutVariant && FLANK_STRIPS_BY_VARIANT[calloutVariant] ? (
         <DefenderFlankStrip {...FLANK_STRIPS_BY_VARIANT[calloutVariant]!} variant={calloutVariant} />
