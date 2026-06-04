@@ -21,6 +21,8 @@ type StoryPanel = {
   title: string;
   alt: string;
   storyText: string;
+  /** Short tape preview; defaults to truncated `storyText` when omitted. */
+  previewText?: string;
   imagePosition?: string;
   layoutOverride?: {
     text: "left" | "right";
@@ -83,6 +85,7 @@ const CHAPTERS: StoryChapter[] = [
         title: "They have a family",
         alt: "The Lay-n-Go founders and their three sons on the beach",
         imagePosition: "46% 42%",
+        previewText: "Five years later...",
         storyText:
           "Five years later, the family grew to five and the toys kept getting smaller and smaller each year.",
       },
@@ -514,13 +517,13 @@ function StoryFadePanel({
               {panel.title}
             </h3>
             <StoryTeaser
-              text={panel.storyText}
+              text={panel.previewText ?? panel.storyText}
               maxLength={STORY_TEASER_MOBILE_MAX}
               fadeRight={!textRight}
               className="max-w-[12.5rem] text-[0.95rem] leading-tight sm:hidden"
             />
             <StoryTeaser
-              text={panel.storyText}
+              text={panel.previewText ?? panel.storyText}
               maxLength={STORY_TEASER_DESKTOP_MAX}
               fadeRight={!textRight}
               className="mt-4 hidden text-[1.1rem] sm:block sm:text-[1.35rem]"
