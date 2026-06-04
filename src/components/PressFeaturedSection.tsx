@@ -168,6 +168,10 @@ function PressFeaturedBannerCard({
   );
 }
 
+/** Crisp black drop shadow for transparent wordmarks on light press cards. */
+const pressCardLogoShadowClass =
+  "[filter:drop-shadow(0_1px_0_rgba(0,0,0,0.92))_drop-shadow(0_2px_0_rgba(0,0,0,0.78))_drop-shadow(0_5px_14px_rgba(0,0,0,0.42))]";
+
 function PressFeaturedCardCard({
   item,
   className,
@@ -208,11 +212,10 @@ function PressFeaturedCardCard({
             alt={item.imageAlt}
             className={cn(
               "mx-auto block h-auto w-auto object-contain object-center",
+              pressCardLogoShadowClass,
               item.cardLogoSize === "large"
                 ? "max-h-[min(9.5rem,42vw)] max-w-[min(100%,22rem)] sm:max-h-[10rem] sm:max-w-[23rem] md:max-h-[10.75rem] md:max-w-[21rem] lg:max-h-[11.25rem]"
                 : "max-h-[min(7.25rem,34vw)] max-w-[min(100%,14rem)] sm:max-h-[7.75rem] sm:max-w-[15rem] md:max-h-[8.25rem] md:max-w-[13.5rem] lg:max-h-[8.75rem]",
-              item.cardLogoDropShadow &&
-                "[filter:drop-shadow(0_2px_4px_rgba(0,0,0,0.18))_drop-shadow(0_8px_20px_rgba(0,0,0,0.22))]",
             )}
             loading="lazy"
             decoding="async"

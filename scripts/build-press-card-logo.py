@@ -225,20 +225,32 @@ def clear_enclosed_black_flood(img: Image.Image, lum_max: float = 52.0, sat_max:
     return Image.fromarray(arr)
 
 
+def apply_keep_mask(arr: np.ndarray, keep: np.ndarray) -> np.ndarray:
+    """Zero alpha on everything outside the keep mask — removes dark matte halos."""
+    out = arr.copy()
+    out[~keep, 3] = 0
+    return out
+
+
 def build_cntraveler_logo(img: Image.Image) -> Image.Image:
-    """Condé Nast Traveler: full-color wordmark on black — key matte, transparent counters."""
+    """Condé Nast Traveler: keep color fills + white stroke only; no black fringe."""
     img = crop_source_border(img)
     arr = np.array(img.convert("RGBA"), dtype=np.uint8)
     lum, sat, a = _color_stats(arr)
+    mx = arr[:, :, :3].max(axis=2)
 
-    # Pure black export background → transparent (skip rembg; it leaves counter specks).
     bg = (lum < 42) & (sat < 0.11)
     arr[bg, 3] = 0
 
+    lum, sat, a = _color_stats(arr)
+    mx = arr[:, :, :3].max(axis=2)
+    color = (a > 0) & (sat > 0.11) & (mx > 52) & (lum > 42)
+    white_stroke = (a > 0) & (lum >= 198) & (sat <= 0.10)
+    arr = apply_keep_mask(arr, color | white_stroke)
+
     out = Image.fromarray(arr)
-    out = clear_enclosed_black_flood(out)
-    out = defringe_dark_halos(out, lum_max=120.0)
-    return clean_colorful_logo_edges(out)
+    out = clear_enclosed_black_flood(out, lum_max=38.0, sat_max=0.09)
+    return out
 
 
 def _gma_gold_mask(arr: np.ndarray, a: np.ndarray, lum: np.ndarray, sat: np.ndarray) -> np.ndarray:
@@ -258,7 +270,27 @@ def _gma_blue_mask(arr: np.ndarray, a: np.ndarray) -> np.ndarray:
     rf = arr[:, :, 0].astype(np.float32)
     gf = arr[:, :, 1].astype(np.float32)
     bf = arr[:, :, 2].astype(np.float32)
-    return (a > 24) & (bf > 65) & (bf >= rf) & (bf >= gf * 0.8)
+    # Tight abc wordmark blue only — avoids cyan fringe on the gold ampersand.
+    return (a > 24) & (bf > 80) & (rf < 85) & (gf < 125) & (bf >= rf + 20)
+
+
+def _gma_white_mask(arr: np.ndarray, a: np.ndarray, lum: np.ndarray, sat: np.ndarray) -> np.ndarray:
+    return (a > 24) & (lum >= 212) & (sat <= 0.075)
+
+
+def strip_gma_fringe(arr: np.ndarray, keep: np.ndarray) -> np.ndarray:
+    """Drop halos, cyan keying junk, and semi-transparent edge pixels."""
+    out = arr.copy()
+    lum, sat, a = _color_stats(out)
+    rf = out[:, :, 0].astype(np.float32)
+    gf = out[:, :, 1].astype(np.float32)
+    bf = out[:, :, 2].astype(np.float32)
+
+    cyan = (a > 0) & ~keep & (bf >= rf) & (bf >= gf * 0.92) & (lum < 210)
+    dark = (a > 0) & ~keep & (lum < 118) & (sat < 0.16)
+    soft = (a > 0) & (a < 210) & ~keep
+    out[cyan | dark | soft, 3] = 0
+    return out
 
 
 def remove_small_dark_regions(
@@ -283,7 +315,7 @@ def remove_small_dark_regions(
 
 
 def build_gma_logo(img: Image.Image) -> Image.Image:
-    """GMA Deals & Steals: key black export, blue headline for white press cards."""
+    """GMA Deals & Steals: gold + abc blue + white headline; CSS drop shadow on site."""
     img = crop_source_border(img)
     arr = np.array(img.convert("RGBA"), dtype=np.uint8)
     lum, sat, a = _color_stats(arr)
@@ -294,24 +326,14 @@ def build_gma_logo(img: Image.Image) -> Image.Image:
     lum, sat, a = _color_stats(arr)
     gold = _gma_gold_mask(arr, a, lum, sat)
     blue = _gma_blue_mask(arr, a)
-    white = (a > 24) & ~gold & ~blue & (lum >= 234) & (sat <= 0.055)
-    arr[white, 0] = 58
-    arr[white, 1] = 118
-    arr[white, 2] = 188
-
-    lum, sat, a = _color_stats(arr)
-    gold = _gma_gold_mask(arr, a, lum, sat)
-    blue = _gma_blue_mask(arr, a)
-    protect = gold | blue | ((a > 0) & (lum > 180))
+    white = _gma_white_mask(arr, a, lum, sat)
+    keep = gold | blue | white
+    arr = apply_keep_mask(arr, keep)
+    arr = strip_gma_fringe(arr, keep)
 
     out = Image.fromarray(arr)
-    out = clear_enclosed_black_flood(out, lum_max=46.0, sat_max=0.11)
-    arr = np.array(out, dtype=np.uint8)
-    lum, sat, a = _color_stats(arr)
-    fringe = (a > 0) & (a < 255) & (lum < 115) & (sat < 0.14) & ~protect
-    arr[fringe, 3] = 0
-    out = Image.fromarray(arr)
-    return clean_colorful_logo_edges(out)
+    out = clear_enclosed_black_flood(out, lum_max=40.0, sat_max=0.10)
+    return out
 
 
 def build_logo(
