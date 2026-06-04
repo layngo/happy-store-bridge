@@ -550,8 +550,10 @@ function StoryFadePanel({
 function AboutUsV3Intro() {
   return (
     <header className="py-12 text-center sm:py-14 md:py-16 lg:py-20">
-      <p className="mx-auto max-w-4xl font-story text-[clamp(1.25rem,3.5vw,2.15rem)] font-bold leading-snug text-foreground">
-        Let&apos;s face it, about us pages are boring. See the visuals for yourself.
+      <p className="mx-auto max-w-4xl font-logo text-[clamp(1.375rem,4vw,2.25rem)] font-semibold uppercase leading-snug tracking-tight text-foreground">
+        Let&apos;s face it, most About Us pages are boring!
+        <br />
+        Lay-n-Go always keeps it fun and saves you time.
       </p>
     </header>
   );
