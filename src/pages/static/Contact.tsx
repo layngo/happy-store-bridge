@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { toast } from "sonner";
 import { StaticPageLayout } from "@/components/StaticPageLayout";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { submitContactForm } from "@/lib/contactApi";
 import { cn } from "@/lib/utils";
 
 const wholesaleStats = [
@@ -26,6 +28,7 @@ const Contact = () => {
   const [orderNumber, setOrderNumber] = useState("");
   const [company, setCompany] = useState("");
   const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (location.hash !== "#wholesale") return;
@@ -37,23 +40,37 @@ const Contact = () => {
     });
   }, [location.hash]);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const isWholesale = topic === "wholesale";
-    const subject = isWholesale ? "Wholesale inquiry" : "Lay-n-Go contact";
-    const body = [
-      `Topic: ${isWholesale ? "Wholesale / retail" : "Order or product help"}`,
-      `Name: ${firstName} ${lastName}`,
-      `Email: ${email}`,
-      phone && `Phone: ${phone}`,
-      !isWholesale && orderNumber && `Order: ${orderNumber}`,
-      isWholesale && company && `Store / company: ${company}`,
-      "",
-      message,
-    ]
-      .filter(Boolean)
-      .join("\n");
-    window.location.href = `mailto:info@layngo.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setSubmitting(true);
+    try {
+      const result = await submitContactForm({
+        topic,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
+        phone: phone.trim() || undefined,
+        orderNumber: topic === "general" ? orderNumber.trim() || undefined : undefined,
+        company: topic === "wholesale" ? company.trim() || undefined : undefined,
+        message: message.trim(),
+      });
+
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+
+      toast.success(result.message);
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPhone("");
+      setOrderNumber("");
+      setCompany("");
+      setMessage("");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -219,8 +236,8 @@ const Contact = () => {
             />
           </div>
 
-          <button type="submit" className="brand-btn-editorial w-full sm:w-auto">
-            Send message
+          <button type="submit" className="brand-btn-editorial w-full sm:w-auto" disabled={submitting}>
+            {submitting ? "Sending…" : "Send message"}
           </button>
         </form>
       </div>

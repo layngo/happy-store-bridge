@@ -155,7 +155,7 @@ const STORAGE_KEY_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout-v14";
 const LAYOUT_SYNC_EVENT_LARGE = "lay-n-go-large-callout-layout";
 const LAYOUT_SYNC_EVENT_LIFESTYLE = "lay-n-go-lifestyle-44-callout-layout";
 
-const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v19";
+const STORAGE_KEY_LITE = "lay-n-go-lite-18-callout-layout-v23";
 const LAYOUT_SYNC_EVENT_LITE = "lay-n-go-lite-18-callout-layout";
 
 const STORAGE_KEY_DEFENDER_MINI = "lay-n-go-defender-mini-16-callout-layout-v3";
@@ -269,13 +269,13 @@ const LITE_LIP_DOT_DX_10PX = (LIFESTYLE_MESH_POCKET_DX_20PX / 20) * 10;
 /** Lite 18″: cord/mesh thumbnail anchors swapped vs Lifestyle; lip mat dot nudged for 18″ hero. Cord dot on 6 o'clock drawstring (container %, not image file %). */
 const DEFAULT_LAYOUT_LITE: LayoutState = {
   dots: {
-    handle: { x: 50, y: 28 },
+    handle: { x: 50, y: 18 },
     cord: { x: 50, y: 79 },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.dots.mesh },
     lip: { x: 31 - LITE_LIP_DOT_DX_10PX, y: 49 },
   },
   anchors: {
-    handle: { x: 50, y: 8 },
+    handle: { x: 50, y: 0 },
     cord: { x: DEFAULT_LAYOUT_LIFESTYLE.anchors.mesh.x, y: DEFAULT_LAYOUT_LIFESTYLE.anchors.lip.y },
     mesh: { ...DEFAULT_LAYOUT_LIFESTYLE.anchors.cord },
     lip: { x: DEFAULT_LAYOUT_LIFESTYLE.anchors.lip.x, y: DEFAULT_LAYOUT_LIFESTYLE.anchors.lip.y + 6 },
@@ -360,11 +360,11 @@ function sanitizeLiteLayout(layout: LayoutState, fallback: LayoutState): LayoutS
   return {
     dots: {
       ...layout.dots,
-      handle: clampY(layout.dots.handle ?? fallback.dots.handle, 24, 34),
+      handle: clampY(layout.dots.handle ?? fallback.dots.handle, 16, 26),
     },
     anchors: {
       ...layout.anchors,
-      handle: clampY(layout.anchors.handle ?? fallback.anchors.handle, 6, 11),
+      handle: clampY(layout.anchors.handle ?? fallback.anchors.handle, 0, 3),
     },
   };
 }
@@ -491,9 +491,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 18,
       containerMinHClass: "min-h-[min(76.8vh,768px)]",
       heroWidthClass: "w-[min(75.2vw,736px)]",
-      /** Bracket sits just under the mat (no overlap on drawstring); width tracks hero. */
+      /** Bracket below mat — positive margin clears drawstring / pocket. */
       dimensionWrapClass:
-        "relative z-20 mx-auto flex w-[min(75.2vw,736px)] flex-col items-center -mt-[1.5rem] pt-2 pb-2 sm:-mt-[1.75rem] sm:pt-3 sm:pb-3 md:-mt-[2.5rem] md:pt-4 md:pb-4 lg:-mt-[3rem] lg:pt-5 lg:pb-5",
+        "relative z-20 mx-auto flex w-[min(75.2vw,736px)] flex-col items-center mt-6 pt-2 pb-2 sm:mt-8 sm:pt-3 sm:pb-3 md:mt-10 md:pt-4 md:pb-4 lg:mt-12 lg:pt-5 lg:pb-6",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP_LITE,
@@ -593,7 +593,7 @@ function DiameterLine({
             !defenderMini16 &&
             !defenderTactical20 &&
             "mt-2 text-xl sm:text-2xl",
-          lite18 && "mt-3 text-2xl sm:mt-3.5 sm:text-[1.65rem]",
+          lite18 && "mt-5 text-2xl sm:mt-6 sm:text-[1.65rem]",
           (defenderMini16 || defenderTactical20) && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
           !lifestyleChrome && "mt-1 text-lg sm:text-xl",
         )}
@@ -1006,7 +1006,7 @@ function FloatingCallout({
   const thumbSrc = imageSrcOverride ?? imageSrc;
   const { x, y: anchorY } = layout.anchors[calloutKey];
   const liteHandle = variant === "lite-18" && calloutKey === "handle";
-  const y = liteHandle ? Math.max(6, Math.min(11, anchorY)) : anchorY;
+  const y = liteHandle ? Math.max(0, Math.min(3, anchorY)) : anchorY;
   const lifestyleThumb = diagramUsesLifestyleChrome(variant);
   /** Lifestyle 44″ only — Lite uses full-size cord thumb and lip-like stacking (see `textAbove`). */
   const cordLifestyleCompact = lifestyleThumb && calloutKey === "cord" && variant !== "lite-18";
@@ -1059,7 +1059,9 @@ function FloatingCallout({
     <div
       className={cn(
         "absolute z-20 flex flex-col items-center",
-        liteHandle ? "-translate-x-1/2" : "-translate-x-1/2 -translate-y-1/2",
+        liteHandle
+          ? "-translate-x-1/2 -translate-y-14 sm:-translate-y-18 md:-translate-y-24"
+          : "-translate-x-1/2 -translate-y-1/2",
         cordLifestyleCompact ? "gap-1" : "gap-2",
         editorMode
           ? "cursor-grab touch-none pointer-events-auto active:cursor-grabbing"
@@ -1426,7 +1428,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
           ? cn("mt-8 rounded-2xl bg-background px-0 sm:mt-10 sm:px-2", editorMode && "overflow-visible")
           : variant === "lite-18"
             ? cn(
-                "mt-12 rounded-2xl px-2 sm:mt-14 sm:px-4 md:mt-16 lg:mt-20",
+                "mt-20 rounded-2xl px-2 sm:mt-24 sm:px-4 md:mt-32 lg:mt-40",
                 diagramMatSurfaceBg(variant),
               )
           : diagramUsesLifestyleChrome(variant)
@@ -1499,7 +1501,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         )}
       >
         {variant === "lite-18" && config.handleCalloutSrc ? (
-          <div className="mb-6 flex w-full flex-col items-center gap-2 px-2 sm:mb-8">
+          <div className="-mt-14 mb-8 flex w-full flex-col items-center gap-2 px-2 sm:-mt-16 md:-mt-20 sm:mb-10">
             <p className="max-w-xs text-center font-heading text-xs font-bold uppercase leading-snug text-neutral-900">
               {CALLOUT_META.handle.label}
             </p>
@@ -1527,7 +1529,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             "w-full object-contain",
             config.mobileHeroMaxClass,
             matProductImgClass(variant),
-            variant === "lite-18" && "mt-2 sm:mt-4",
+            variant === "lite-18" && "mt-6 sm:mt-10",
               diagramUsesLifestyleChrome(variant) &&
                 variant !== "lite-18" &&
                 variant !== "lifestyle-44" &&
@@ -1545,7 +1547,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               : cn("w-full", config.mobileHeroMaxClass),
             variant === "large-60" && "-mt-2 shrink-0 pb-0",
             variant === "lifestyle-44" && "mt-4 shrink-0 pb-2 sm:mt-5 sm:pb-3",
-            variant === "lite-18" && "mt-6 shrink-0 pb-0 sm:mt-7",
+            variant === "lite-18" && "mt-10 shrink-0 pb-2 sm:mt-12 sm:pb-3",
           )}
         />
         <div
@@ -1776,7 +1778,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                 ? "relative z-10 mx-auto w-[min(64vw,624px)]"
                 : cn(
                     "pointer-events-none absolute left-1/2 z-10 -translate-x-1/2 -translate-y-1/2",
-                    variant === "lite-18" ? "top-[58%]" : "top-1/2",
+                    variant === "lite-18" ? "top-[66%]" : "top-1/2",
                     config.heroWidthClass,
                   ),
               diagramUsesLifestyleChrome(variant) &&
