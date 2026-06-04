@@ -1586,7 +1586,6 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               className={cn(
                 "flex flex-col items-center px-2",
                 variant === "lite-18" ? "gap-3" : "gap-2",
-                variant === "lite-18" && k === "handle" && "-mt-[250px]",
               )}
             >
               {thumb}
@@ -1619,7 +1618,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
               : cn(
                   "w-full",
                   config.containerMinHClass,
-                  variant === "lite-18" && "overflow-visible pt-20 md:pt-24 lg:pt-28",
+                  variant === "lite-18" && "overflow-visible pt-28 md:pt-32 lg:pt-36",
                 ),
             diagramUsesLifestyleChrome(variant) &&
               variant !== "lite-18" &&
