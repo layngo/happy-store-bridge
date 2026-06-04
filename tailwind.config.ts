@@ -18,6 +18,7 @@ export default {
         heading: ['"League Spartan"', "ui-sans-serif", "system-ui", "sans-serif"],
         body: ['"League Spartan"', "ui-sans-serif", "system-ui", "sans-serif"],
         story: ['"Caveat"', '"Kalam"', "cursive", "sans-serif"],
+        logo: ['"Archivo"', '"League Spartan"', "ui-sans-serif", "system-ui", "sans-serif"],
       },
       typography: {
         DEFAULT: {
