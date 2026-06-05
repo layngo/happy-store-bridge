@@ -7,16 +7,22 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { sendDiscountVerificationCode, verifyDiscountCode } from "@/lib/discountApi";
+import {
+  markDiscountDismissedToday,
+  markDiscountSignupComplete,
+  shouldShowDiscountPopup,
+} from "@/lib/discountPopupStorage";
 import { cn } from "@/lib/utils";
 
-/** On `/`, opens after load (again on every refresh). On any path, add `?showDiscount=1` to preview. */
+/** Add `?showDiscount=1` to preview. Otherwise shows on site visits until completed, or again each new day after dismiss. */
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
-/** Intrinsic pixel size of `HERO_IMAGE` (must match file). */
 const HERO_WIDTH = 1024;
 const HERO_HEIGHT = 804;
 const DISCOUNT_CODE = "LAYNGO15";
 
-type Step = "intro" | "email" | "phone" | "code";
+type Step = "intro" | "email" | "phone" | "verify" | "code";
 
 const redeemFieldClass =
   "font-cosmo-cta flex h-12 w-full items-center justify-center rounded-md border border-neutral-700 bg-[#2c2c2c] px-4 text-center text-base font-semibold tracking-wide text-neutral-50 placeholder:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
@@ -27,7 +33,9 @@ export function FirstVisitDiscountPopup() {
   const [step, setStep] = useState<Step>("intro");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
   const [marketingConsent, setMarketingConsent] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -35,30 +43,29 @@ export function FirstVisitDiscountPopup() {
       setStep("intro");
       setEmail("");
       setPhone("");
+      setOtp("");
       setMarketingConsent(false);
       setOpen(true);
       return;
     }
 
-    if (location.pathname !== "/") {
+    if (!shouldShowDiscountPopup()) {
       setOpen(false);
       return;
     }
 
     setStep("intro");
-    setEmail("");
-    setPhone("");
-    setMarketingConsent(false);
     const id = window.setTimeout(() => setOpen(true), 600);
     return () => window.clearTimeout(id);
   }, [location.pathname, location.key]);
 
   const dismiss = () => {
+    markDiscountDismissedToday();
     setOpen(false);
   };
 
   const handleOpenChange = (next: boolean) => {
-    if (!next) setOpen(false);
+    if (!next) dismiss();
     else setOpen(true);
   };
 
@@ -69,10 +76,11 @@ export function FirstVisitDiscountPopup() {
       toast.error("Please enter a valid email.");
       return;
     }
+    setEmail(trimmed);
     setStep("phone");
   };
 
-  const submitPhone = (e: FormEvent) => {
+  const submitPhone = async (e: FormEvent) => {
     e.preventDefault();
     if (!marketingConsent) {
       toast.error("Please agree to receive texts and marketing emails from Lay-n-Go.");
@@ -83,7 +91,64 @@ export function FirstVisitDiscountPopup() {
       toast.error("Please enter a valid phone number.");
       return;
     }
+
+    setBusy(true);
+    const result = await sendDiscountVerificationCode({
+      email: email.trim(),
+      phone: phone.trim(),
+      marketingConsent,
+    });
+    setBusy(false);
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+
+    toast.success(result.message ?? "We sent a 6-digit code to your phone.");
+    setOtp("");
+    setStep("verify");
+  };
+
+  const submitVerify = async (e: FormEvent) => {
+    e.preventDefault();
+    if (otp.length < 6) {
+      toast.error("Enter the 6-digit code we sent you.");
+      return;
+    }
+
+    setBusy(true);
+    const result = await verifyDiscountCode({
+      email: email.trim(),
+      phone: phone.trim(),
+      code: otp,
+    });
+    setBusy(false);
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+
+    markDiscountSignupComplete();
+    toast.success(result.message ?? "You're verified!");
     setStep("code");
+  };
+
+  const resendCode = async () => {
+    setBusy(true);
+    const result = await sendDiscountVerificationCode({
+      email: email.trim(),
+      phone: phone.trim(),
+      marketingConsent,
+    });
+    setBusy(false);
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    toast.success("New code sent.");
   };
 
   const copyCode = async () => {
@@ -96,6 +161,7 @@ export function FirstVisitDiscountPopup() {
   };
 
   const finish = () => {
+    markDiscountSignupComplete();
     setOpen(false);
   };
 
@@ -219,11 +285,47 @@ export function FirstVisitDiscountPopup() {
                     <Button
                       type="submit"
                       size="lg"
-                      disabled={!marketingConsent}
+                      disabled={!marketingConsent || busy}
                       className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
                     >
-                      Get my code
+                      {busy ? "Sending code…" : "Send verification code"}
                     </Button>
+                  </form>
+                ) : null}
+
+                {step === "verify" ? (
+                  <form onSubmit={submitVerify} className="space-y-2">
+                    <p className="text-[0.65rem] font-medium text-neutral-800 sm:text-xs">
+                      Enter the 6-digit code we texted to {phone}
+                    </p>
+                    <div className="flex justify-end">
+                      <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </div>
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={busy || otp.length < 6}
+                      className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
+                    >
+                      {busy ? "Verifying…" : "Verify & get my code"}
+                    </Button>
+                    <button
+                      type="button"
+                      onClick={resendCode}
+                      disabled={busy}
+                      className="w-full text-[0.65rem] font-medium text-neutral-700 underline-offset-2 hover:underline disabled:opacity-50 sm:text-xs"
+                    >
+                      Resend code
+                    </button>
                   </form>
                 ) : null}
 
