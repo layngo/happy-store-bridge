@@ -154,8 +154,7 @@ export function SubmitReviewDialog({ productHandle, onReviewSubmitted }: SubmitR
         toast.error(result.error);
         return;
       }
-      onReviewSubmitted(result.review);
-      toast.success("Thank you! Your review has been posted.");
+      toast.success(result.message ?? "Thank you! Your review will be published shortly.");
       setOpen(false);
       resetForm();
     } catch {

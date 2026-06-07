@@ -123,7 +123,7 @@ export function createDiscountApiMiddleware(env: Record<string, string>) {
 
         sendJson(res, 200, {
           ok: true,
-          message: data?.message ?? "Verification code sent to your phone.",
+          message: data?.message ?? "Check your email for the code.",
         });
       } catch (err) {
         console.error("[discount-api] send-code", err);

@@ -27,6 +27,9 @@ type Step = "intro" | "email" | "phone" | "verify" | "code";
 const redeemFieldClass =
   "font-cosmo-cta flex h-12 w-full items-center justify-center rounded-md border border-neutral-700 bg-[#2c2c2c] px-4 text-center text-base font-semibold tracking-wide text-neutral-50 placeholder:text-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
+const otpSlotClass =
+  "h-11 w-9 border-neutral-400 bg-white text-lg font-bold text-neutral-900 shadow-sm first:rounded-l-md first:border-l sm:h-12 sm:w-11 sm:text-xl";
+
 export function FirstVisitDiscountPopup() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -105,7 +108,7 @@ export function FirstVisitDiscountPopup() {
       return;
     }
 
-    toast.success(result.message ?? "We sent a 6-digit code to your phone.");
+    toast.success(result.message ?? "Check your email for the code.");
     setOtp("");
     setStep("verify");
   };
@@ -113,7 +116,7 @@ export function FirstVisitDiscountPopup() {
   const submitVerify = async (e: FormEvent) => {
     e.preventDefault();
     if (otp.length < 6) {
-      toast.error("Enter the 6-digit code we sent you.");
+      toast.error("Enter the 6-digit code from your email.");
       return;
     }
 
@@ -148,7 +151,7 @@ export function FirstVisitDiscountPopup() {
       toast.error(result.error);
       return;
     }
-    toast.success("New code sent.");
+    toast.success("Check your email for the new code.");
   };
 
   const copyCode = async () => {
@@ -288,25 +291,30 @@ export function FirstVisitDiscountPopup() {
                       disabled={!marketingConsent || busy}
                       className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
                     >
-                      {busy ? "Sending code…" : "Send verification code"}
+                      {busy ? "Sending code…" : "Email me a verification code"}
                     </Button>
                   </form>
                 ) : null}
 
                 {step === "verify" ? (
-                  <form onSubmit={submitVerify} className="space-y-2">
-                    <p className="text-[0.65rem] font-medium text-neutral-800 sm:text-xs">
-                      Enter the 6-digit code we texted to {phone}
+                  <form onSubmit={submitVerify} className="space-y-2.5 rounded-xl border border-neutral-200/90 bg-white/95 p-3 text-right shadow-md backdrop-blur-sm sm:space-y-3 sm:p-4">
+                    <p className="text-left text-xs font-semibold leading-snug text-neutral-900 sm:text-sm">
+                      Check your email for the code
                     </p>
-                    <div className="flex justify-end">
-                      <InputOTP maxLength={6} value={otp} onChange={setOtp}>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={0} />
-                          <InputOTPSlot index={1} />
-                          <InputOTPSlot index={2} />
-                          <InputOTPSlot index={3} />
-                          <InputOTPSlot index={4} />
-                          <InputOTPSlot index={5} />
+                    <p className="text-left text-[0.65rem] leading-snug text-neutral-600 sm:text-xs">
+                      We sent a 6-digit code to{" "}
+                      <span className="font-medium text-neutral-900">{email}</span>. Check spam if you
+                      don&apos;t see it.
+                    </p>
+                    <div className="flex justify-center sm:justify-end">
+                      <InputOTP maxLength={6} value={otp} onChange={setOtp} autoFocus>
+                        <InputOTPGroup className="gap-1.5 sm:gap-2">
+                          <InputOTPSlot index={0} className={otpSlotClass} />
+                          <InputOTPSlot index={1} className={otpSlotClass} />
+                          <InputOTPSlot index={2} className={otpSlotClass} />
+                          <InputOTPSlot index={3} className={otpSlotClass} />
+                          <InputOTPSlot index={4} className={otpSlotClass} />
+                          <InputOTPSlot index={5} className={otpSlotClass} />
                         </InputOTPGroup>
                       </InputOTP>
                     </div>
@@ -324,7 +332,7 @@ export function FirstVisitDiscountPopup() {
                       disabled={busy}
                       className="w-full text-[0.65rem] font-medium text-neutral-700 underline-offset-2 hover:underline disabled:opacity-50 sm:text-xs"
                     >
-                      Resend code
+                      Resend code to email
                     </button>
                   </form>
                 ) : null}
