@@ -40,7 +40,7 @@ type StoryChapter = {
 
 const PLACEHOLDER = (seed: string) => `https://picsum.photos/seed/${seed}/1200/640`;
 
-const ABOUT_US_V2_ASSET_VER = "8";
+const ABOUT_US_V2_ASSET_VER = "9";
 const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_US_V2_ASSET_VER}`;
 
 const CHAPTERS: StoryChapter[] = [
@@ -106,6 +106,14 @@ const CHAPTERS: StoryChapter[] = [
           "After one year developing their idea, Adam and Amy applied for a patent and took their idea to the open market...",
         storyText:
           "After spending a year developing their idea, Adam and Amy knew they were onto something. They protected their innovative design by applying for a patent and launched their product to the open market. The response was immediate and very promising.",
+      },
+      {
+        src: aboutUsV2Png("cosmo-launch-2013.png"),
+        title: "2013...The COSMO launches",
+        alt: "Models lying in a circle around an open Lay-n-Go COSMO cosmetic bag",
+        previewText: "The success of the Lay-n-Go design was a perfect fit for cosmetics and makeup...",
+        storyText:
+          "The success of the Lay-n-Go design was a perfect fit for cosmetics and makeup. The COSMO was an instant hit and was launched at CosmoProf in Las Vegas. Soon the product could be found in Target, Costco, on QVC, and in thousands of independent retailers. The COSMO is the best selling product Lay-n-Go has ever launched.",
       },
     ],
   },
