@@ -40,7 +40,7 @@ type StoryChapter = {
 
 const PLACEHOLDER = (seed: string) => `https://picsum.photos/seed/${seed}/1200/640`;
 
-const ABOUT_US_V2_ASSET_VER = "7";
+const ABOUT_US_V2_ASSET_VER = "8";
 const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_US_V2_ASSET_VER}`;
 
 const CHAPTERS: StoryChapter[] = [
@@ -99,10 +99,13 @@ const CHAPTERS: StoryChapter[] = [
           "LEGO, LEGO everywhere and not a solution in sight. Amy loved organization and Adam loved buying the kids more and more LEGO. The bins, baskets, sheets, and everything else on the market just did not support creative play that also allowed parents to keep their sanity. Bins of small pieces became our morning alarm clock. The challenge to design something better was a task we were both up to!",
       },
       {
-        src: PLACEHOLDER("lng-about-06"),
-        title: "Weekends together at home",
-        alt: "Weekends together at home",
-        storyText: "Weekends together at home",
+        src: aboutUsV2Png("our-first-prototype.png"),
+        title: "Our first prototype",
+        alt: "Amy and her three sons on the first Lay-n-Go play mat surrounded by LEGO bricks",
+        previewText:
+          "After one year developing their idea, Adam and Amy applied for a patent and took their idea to the open market...",
+        storyText:
+          "After spending a year developing their idea, Adam and Amy knew they were onto something. They protected their innovative design by applying for a patent and launched their product to the open market. The response was immediate and very promising.",
       },
     ],
   },
