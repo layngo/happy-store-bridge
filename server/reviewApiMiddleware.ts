@@ -1,6 +1,11 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { URL } from "url";
 
+const DEFAULT_REVIEW_SUBMIT_WEBHOOK =
+  "https://layngo.app.n8n.cloud/webhook/layngo-review-submit";
+const DEFAULT_REVIEWS_LIST_WEBHOOK =
+  "https://layngo.app.n8n.cloud/webhook/layngo-reviews-list";
+
 function readBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
@@ -16,7 +21,21 @@ function sendJson(res: ServerResponse, status: number, data: unknown) {
   res.end(JSON.stringify(data));
 }
 
+async function fetchPublishedReviews(
+  productHandle: string,
+  webhookUrl: string,
+): Promise<unknown[]> {
+  const url = `${webhookUrl}?productHandle=${encodeURIComponent(productHandle)}`;
+  const upstream = await fetch(url, { method: "GET" });
+  if (!upstream.ok) return [];
+  const data = (await upstream.json().catch(() => null)) as { reviews?: unknown[] } | null;
+  return data?.reviews ?? [];
+}
+
 export function createReviewApiMiddleware(env: Record<string, string>) {
+  const submitWebhook = env.REVIEW_SUBMIT_WEBHOOK_URL || DEFAULT_REVIEW_SUBMIT_WEBHOOK;
+  const listWebhook = env.REVIEWS_LIST_WEBHOOK_URL || DEFAULT_REVIEWS_LIST_WEBHOOK;
+
   return async (req: IncomingMessage, res: ServerResponse, next: () => void) => {
     if (!req.url || !req.url.startsWith("/api/reviews")) {
       next();
@@ -30,8 +49,12 @@ export function createReviewApiMiddleware(env: Record<string, string>) {
       if (req.method === "GET" && pathname === "/api/reviews") {
         const productHandle = url.searchParams.get("productHandle") ?? "";
         const { listReviewsForProduct, storedToCustomerReview } = await import("./reviewStore");
-        const stored = await listReviewsForProduct(productHandle);
-        sendJson(res, 200, { reviews: stored.map(storedToCustomerReview) });
+        const local = await listReviewsForProduct(productHandle);
+        const remote = (await fetchPublishedReviews(productHandle, listWebhook)) as ReturnType<
+          typeof storedToCustomerReview
+        >[];
+        const merged = [...local.map(storedToCustomerReview), ...remote];
+        sendJson(res, 200, { reviews: merged });
         return;
       }
 
@@ -51,21 +74,82 @@ export function createReviewApiMiddleware(env: Record<string, string>) {
         }
 
         if (pathname === "/api/reviews/submit") {
-          const { submitReview, storedToCustomerReview } = await import("./reviewStore");
-          const result = await submitReview({
-            productHandle: String(json.productHandle ?? ""),
-            name: String(json.name ?? ""),
-            verificationToken: String(json.verificationToken ?? ""),
-            rating: Number(json.rating),
-            title: json.title ? String(json.title) : undefined,
-            text: String(json.text ?? ""),
-            imageBase64: json.imageBase64 ? String(json.imageBase64) : undefined,
-          });
-          if (!result.ok) {
-            sendJson(res, 400, result);
+          const { consumeVerificationToken } = await import("./reviewSessions");
+          const productHandle = String(json.productHandle ?? "");
+          const name = String(json.name ?? "").trim();
+          const text = String(json.text ?? "").trim();
+          const verificationToken = String(json.verificationToken ?? "");
+          const rating = Number(json.rating);
+          const title = json.title ? String(json.title).trim() : undefined;
+          const imageBase64 = json.imageBase64 ? String(json.imageBase64) : undefined;
+
+          const session = consumeVerificationToken(verificationToken, productHandle);
+          if (!session.ok) {
+            sendJson(res, 400, session);
             return;
           }
-          sendJson(res, 200, { ok: true, review: storedToCustomerReview(result.review) });
+
+          if (name.length < 2) {
+            sendJson(res, 400, { ok: false, error: "Please enter your name." });
+            return;
+          }
+          if (text.length < 10) {
+            sendJson(res, 400, {
+              ok: false,
+              error: "Please write at least a few words in your review.",
+            });
+            return;
+          }
+
+          const normalizedRating = Math.round(rating * 2) / 2;
+          if (normalizedRating < 1 || normalizedRating > 5) {
+            sendJson(res, 400, { ok: false, error: "Rating must be between 1 and 5 stars." });
+            return;
+          }
+
+          if (imageBase64 && imageBase64.length > 2_500_000) {
+            sendJson(res, 400, {
+              ok: false,
+              error: "Photo is too large. Please use an image under 2MB.",
+            });
+            return;
+          }
+
+          const upstream = await fetch(submitWebhook, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              productHandle,
+              name,
+              orderName: session.orderName,
+              rating: normalizedRating,
+              title,
+              text,
+              hasImage: Boolean(imageBase64),
+            }),
+          });
+
+          const data = (await upstream.json().catch(() => null)) as {
+            ok?: boolean;
+            pending?: boolean;
+            message?: string;
+            error?: string;
+          } | null;
+
+          if (!upstream.ok) {
+            sendJson(res, upstream.status, {
+              ok: false,
+              error: data?.error ?? "Could not submit your review. Please try again.",
+            });
+            return;
+          }
+
+          sendJson(res, 200, {
+            ok: true,
+            pending: true,
+            message:
+              data?.message ?? "Thank you! Your review will be published shortly.",
+          });
           return;
         }
       }

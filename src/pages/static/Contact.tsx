@@ -116,7 +116,7 @@ const Contact = () => {
                   onChange={() => setTopic("general")}
                   className="h-4 w-4 border-foreground/30 text-foreground focus-visible:ring-foreground"
                 />
-                Order or product help
+                Customer support
               </label>
               <label className="flex cursor-pointer items-center gap-2.5 text-sm font-medium text-foreground">
                 <input
@@ -127,7 +127,7 @@ const Contact = () => {
                   onChange={() => setTopic("wholesale")}
                   className="h-4 w-4 border-foreground/30 text-foreground focus-visible:ring-foreground"
                 />
-                Wholesale / retail
+                Vendor support
               </label>
             </div>
           </fieldset>
