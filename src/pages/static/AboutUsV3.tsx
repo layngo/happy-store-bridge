@@ -24,6 +24,8 @@ type StoryPanel = {
   /** Short tape preview; defaults to truncated `storyText` when omitted. */
   previewText?: string;
   imagePosition?: string;
+  /** Scales the photo within the crop (e.g. 1.12 zooms in slightly). */
+  imageScale?: number;
   layoutOverride?: {
     text: "left" | "right";
   };
@@ -109,8 +111,10 @@ const CHAPTERS: StoryChapter[] = [
       },
       {
         src: aboutUsV2Png("cosmo-launch-2013.png"),
-        title: "2013...The COSMO launches",
+        title: "The COSMO launches",
         alt: "Models lying in a circle around an open Lay-n-Go COSMO cosmetic bag",
+        imagePosition: "center 42%",
+        imageScale: 1.12,
         previewText: "The success of the Lay-n-Go design was a perfect fit for cosmetics and makeup...",
         storyText:
           "The success of the Lay-n-Go design was a perfect fit for cosmetics and makeup. The COSMO was an instant hit and was launched at CosmoProf in Las Vegas. Soon the product could be found in Target, Costco, on QVC, and in thousands of independent retailers. The COSMO is the best selling product Lay-n-Go has ever launched.",
@@ -492,6 +496,7 @@ function StoryFadePanel({
               className="absolute inset-0 h-full w-full object-cover"
               style={{
                 objectPosition: panel.imagePosition ?? "center",
+                transform: panel.imageScale ? `scale(${panel.imageScale})` : undefined,
                 WebkitMaskImage: verticalEdgeMask,
                 maskImage: verticalEdgeMask,
               }}
