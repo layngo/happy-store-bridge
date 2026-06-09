@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useParams, Link, useSearchParams, useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import {
   fetchProductByHandle,
   fetchRelatedProducts,
@@ -1636,6 +1637,37 @@ const ProductDetail = () => {
             : "bg-background",
       )}
     >
+      <Helmet>
+        <title>{`${product.title} — Lay-n-Go`}</title>
+        <meta
+          name="description"
+          content={(product.description?.replace(/<[^>]+>/g, "").trim().slice(0, 155)) || `Shop the ${product.title} from Lay-n-Go.`}
+        />
+        <link rel="canonical" href={`https://happy-store-bridge.lovable.app/product/${product.handle}`} />
+        <meta property="og:title" content={`${product.title} — Lay-n-Go`} />
+        <meta property="og:description" content={(product.description?.replace(/<[^>]+>/g, "").trim().slice(0, 200)) || product.title} />
+        <meta property="og:url" content={`https://happy-store-bridge.lovable.app/product/${product.handle}`} />
+        <meta property="og:type" content="product" />
+        {product.images?.edges?.[0]?.node?.url ? (
+          <meta property="og:image" content={product.images.edges[0].node.url} />
+        ) : null}
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.title,
+          description: product.description?.replace(/<[^>]+>/g, "").trim().slice(0, 500) || product.title,
+          image: product.images?.edges?.map((e) => e.node.url).filter(Boolean) ?? [],
+          brand: { "@type": "Brand", name: "Lay-n-Go" },
+          url: `https://happy-store-bridge.lovable.app/product/${product.handle}`,
+          offers: {
+            "@type": "Offer",
+            url: `https://happy-store-bridge.lovable.app/product/${product.handle}`,
+            price: priceDisplay,
+            priceCurrency: selectedVariant?.price.currencyCode || product.priceRange.minVariantPrice.currencyCode || "USD",
+            availability: selectedVariant?.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          },
+        })}</script>
+      </Helmet>
       <Header />
       <main id="main-content" className="container py-8 flex-1">
         <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6">
