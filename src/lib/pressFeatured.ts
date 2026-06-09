@@ -30,6 +30,8 @@ export type PressFeaturedItem = {
   cardLogoSize?: "large";
   /** Soft drop shadow on the card logo (for dark-on-transparent wordmarks). */
   cardLogoDropShadow?: boolean;
+  /** Extra Tailwind classes for the card logo below `md` (e.g. smaller on phones). */
+  cardLogoMobileClassName?: string;
 };
 
 export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
@@ -129,6 +131,8 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     cardImageAspect: "887/350",
     cardLogoSize: "large",
     cardBackgroundSrc: "/press/featured-cntraveler-editors-picks-bg.png?v=2",
+    cardLogoMobileClassName:
+      "max-md:max-h-[min(6.65rem,29vw)] max-md:max-w-[min(100%,15.5rem)] sm:max-md:max-h-[7rem] sm:max-md:max-w-[16rem]",
   },
   {
     layout: "card",
@@ -157,6 +161,8 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     cardImageAspect: "737/339",
     cardLogoSize: "large",
     cardBackgroundSrc: "/press/featured-women-owned-bg.png?v=1",
+    cardLogoMobileClassName:
+      "max-md:max-h-[min(6.65rem,29vw)] max-md:max-w-[min(100%,15.5rem)] sm:max-md:max-h-[7rem] sm:max-md:max-w-[16rem]",
   },
   {
     layout: "card",
