@@ -14,7 +14,7 @@ export type ChatMessage = {
 };
 
 export const CHAT_SAMPLE_QUESTIONS = [
-  'What are our best sellers (COSMO 20")?',
+  "What are our best sellers?",
   "What's your return policy?",
   "Where do you ship?",
 ] as const;

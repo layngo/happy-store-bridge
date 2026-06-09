@@ -235,25 +235,43 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="bg-white py-16">
-        <div className="container max-w-6xl px-4">
-          <p className="brand-eyebrow text-center">Reviews</p>
-          <h2 className="brand-display mt-2 text-center text-[clamp(1.5rem,5vw,2.25rem)] text-foreground">
-            Don&apos;t just take our word for it.
-          </h2>
+      <section className="home-reviews-section relative overflow-hidden py-16 sm:py-20">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(120,120,128,0.08),transparent_60%)]"
+        />
+        <div className="container relative max-w-6xl px-4">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6e6e73]">Reviews</p>
+            <h2 className="mt-3 text-[clamp(1.75rem,4.5vw,2.75rem)] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
+              Don&apos;t just take our word for it.
+            </h2>
+            <p className="mt-3 text-base leading-relaxed text-[#6e6e73]">
+              Real feedback from customers who use Lay-n-Go every day.
+            </p>
+          </div>
 
-          <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
             {testimonials.map((t) => (
-              <li key={t.name}>
-                <article className="brand-review-card flex h-full flex-col bg-white px-5 py-6 sm:px-6 sm:py-7">
-                  <blockquote className="font-heading text-base font-normal leading-relaxed tracking-normal text-foreground/90 normal-case sm:text-[1.0625rem]">
+              <li key={t.name} className="h-full">
+                <article className="home-review-card group flex h-full flex-col">
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <StarRating rating={5} size="sm" className="text-[#ff9f0a]" />
+                    <span className="rounded-full border border-white/80 bg-white/70 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#6e6e73] shadow-[inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-sm">
+                      Verified
+                    </span>
+                  </div>
+                  <blockquote className="flex-1 text-[0.98rem] font-normal leading-[1.65] tracking-[-0.01em] text-[#1d1d1f] sm:text-[1.05rem]">
                     &ldquo;{t.quote}&rdquo;
                   </blockquote>
-                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-foreground/10 pt-4">
-                    <span className="font-heading text-sm font-medium text-foreground/70 normal-case">
-                      {t.name}
+                  <div className="mt-5 flex items-center gap-3 border-t border-[#d2d2d7]/60 pt-4">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#e8e8ed] to-[#d2d2d7] text-sm font-semibold text-[#1d1d1f] shadow-[inset_0_1px_0_rgba(255,255,255,0.85)]">
+                      {t.name.charAt(0)}
                     </span>
-                    <StarRating rating={5} size="sm" />
+                    <div>
+                      <p className="text-sm font-semibold tracking-[-0.01em] text-[#1d1d1f]">{t.name}</p>
+                      <p className="text-xs text-[#86868b]">Lay-n-Go customer</p>
+                    </div>
                   </div>
                 </article>
               </li>
