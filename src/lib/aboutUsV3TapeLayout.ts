@@ -29,8 +29,8 @@ export const DEFAULT_ABOUT_US_V3_TAPE_LAYOUT: AboutUsV3TapeLayoutState = {
     far: { x: 1.18160494450475, y: 95.8582756115269, rotate: 46 },
   },
   "They meet::It's official": {
-    near: { x: 1.3180360263325452, y: 3.3269381917880336, rotate: -46 },
-    far: { x: 98.67079550203776, y: 95.1762287929327, rotate: -46 },
+    near: { x: 91, y: 5.5, rotate: 46 },
+    far: { x: 7, y: 91, rotate: 46 },
   },
   "They have a family::They have a family": {
     near: { x: 99.4877859961797, y: 1.539459344869929, rotate: 46 },
