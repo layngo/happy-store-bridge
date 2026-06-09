@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, MessageCircle, SendHorizontal, Sparkles, X } from "lucide-react";
+import { Loader2, MessageCircle, SendHorizontal, X } from "lucide-react";
 
 import { CHAT_SAMPLE_QUESTIONS, type ChatMessage } from "@/lib/chatbotKnowledge";
 import { sendChatMessage } from "@/lib/chatApi";
 import { cn } from "@/lib/utils";
+
+const HEADING_CLASS =
+  "font-heading font-extrabold uppercase tracking-[0.04em] text-foreground";
 
 function ChatBubble({ message }: { message: ChatMessage }) {
   const isUser = message.role === "user";
@@ -13,31 +16,22 @@ function ChatBubble({ message }: { message: ChatMessage }) {
     <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
       <div
         className={cn(
-          "relative max-w-[88%] overflow-hidden rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
+          "max-w-[88%] rounded-2xl px-3.5 py-2.5 font-heading text-sm leading-relaxed",
           isUser
-            ? "rounded-br-md bg-gradient-to-br from-[#3eb8cc] via-primary to-[#2a8f9e] text-primary-foreground shadow-[0_8px_24px_-6px_hsla(191,54%,40%,0.55),inset_0_1px_0_0_rgba(255,255,255,0.35)]"
-            : "rounded-bl-md border border-white/70 bg-white/75 text-foreground shadow-[0_8px_28px_-10px_rgba(15,23,42,0.18),inset_0_1px_0_0_rgba(255,255,255,0.95)] backdrop-blur-xl",
+            ? "rounded-br-md bg-primary text-primary-foreground"
+            : "rounded-bl-md border border-border bg-white text-foreground",
         )}
       >
-        <span
-          aria-hidden
-          className={cn(
-            "pointer-events-none absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-white/70 to-transparent",
-            !isUser && "via-white",
-          )}
-        />
-        <p className="relative">{message.content}</p>
+        <p>{message.content}</p>
         {message.links && message.links.length > 0 ? (
-          <ul className="relative mt-2.5 space-y-1.5">
+          <ul className="mt-2 space-y-1">
             {message.links.map((link) => (
               <li key={link.href}>
                 <Link
                   to={link.href}
                   className={cn(
-                    "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors",
-                    isUser
-                      ? "bg-white/15 text-white hover:bg-white/25"
-                      : "bg-primary/10 text-primary hover:bg-primary/15",
+                    "text-xs font-bold uppercase tracking-[0.06em] underline underline-offset-2",
+                    isUser ? "text-primary-foreground/95" : "text-primary",
                   )}
                 >
                   {link.label}
@@ -61,7 +55,10 @@ export function SiteChatbot() {
 
   useEffect(() => {
     if (!open) return;
-    inputRef.current?.focus();
+    const id = window.requestAnimationFrame(() => {
+      inputRef.current?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(id);
   }, [open]);
 
   useEffect(() => {
@@ -102,57 +99,39 @@ export function SiteChatbot() {
   };
 
   return (
-    <>
+    <div className="pointer-events-none fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
       {open ? (
         <div
-          className="chat-gloss-panel relative fixed bottom-[5.25rem] right-4 z-[100] flex w-[min(calc(100vw-2rem),26rem)] flex-col overflow-hidden rounded-[1.35rem] border border-white/60 bg-gradient-to-b from-white/95 via-white/88 to-slate-50/90 shadow-[0_24px_60px_-12px_rgba(15,23,42,0.35),0_0_0_1px_rgba(255,255,255,0.5)_inset,0_1px_0_0_rgba(255,255,255,0.9)_inset] backdrop-blur-2xl sm:right-6"
+          className="pointer-events-auto flex w-[min(calc(100vw-2rem),24rem)] flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_12px_40px_-12px_rgba(15,23,42,0.25)]"
           role="dialog"
           aria-label="Lay-n-Go chat assistant"
         >
-          <header className="relative overflow-hidden border-b border-white/40 px-4 py-3.5">
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-br from-[#5ec9db] via-primary to-[#247a88]"
-            />
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.42)_0%,rgba(255,255,255,0.08)_38%,transparent_100%)]"
-            />
-            <div className="relative flex items-center justify-between gap-3 text-primary-foreground">
-              <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/35 bg-white/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] backdrop-blur-sm">
-                  <Sparkles className="h-4 w-4" />
-                </span>
-                <div>
-                  <p className="font-heading text-sm font-bold uppercase tracking-[0.1em] drop-shadow-sm">
-                    Lay-n-Go Assistant
-                  </p>
-                  <p className="text-xs text-white/90">Products, shipping & returns</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="rounded-full border border-white/25 bg-white/15 p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] transition-colors hover:bg-white/25"
-                aria-label="Close chat"
-              >
-                <X className="h-4 w-4" />
-              </button>
+          <header className="flex items-center justify-between border-b border-border px-4 py-3">
+            <div>
+              <p className={cn(HEADING_CLASS, "text-sm leading-tight")}>Lay-n-Go Assistant</p>
+              <p className="mt-0.5 font-heading text-xs font-medium normal-case tracking-normal text-muted-foreground">
+                Products, shipping & returns
+              </p>
             </div>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              aria-label="Close chat"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </header>
 
           <div
             ref={scrollRef}
-            className="chat-gloss-messages flex max-h-[min(26rem,52vh)] min-h-[15rem] flex-col gap-3 overflow-y-auto px-3.5 py-4"
+            className="flex max-h-[min(22rem,45dvh)] min-h-[12rem] flex-col gap-3 overflow-y-auto overscroll-contain bg-white px-3 py-4"
           >
             {messages.length === 0 ? (
-              <div className="space-y-4">
-                <div className="rounded-2xl border border-white/70 bg-white/55 px-3.5 py-3 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_10px_30px_-18px_rgba(15,23,42,0.35)] backdrop-blur-md">
-                  <p className="text-sm font-medium text-foreground/90">
-                    Hi — ask me anything about Lay-n-Go.
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">Try one of these to get started:</p>
-                </div>
+              <div className="space-y-3">
+                <p className="text-center font-heading text-sm font-medium normal-case tracking-normal text-muted-foreground">
+                  Ask about best sellers, returns, or shipping.
+                </p>
                 <div className="flex flex-col gap-2">
                   {CHAT_SAMPLE_QUESTIONS.map((question) => (
                     <button
@@ -160,13 +139,9 @@ export function SiteChatbot() {
                       type="button"
                       disabled={loading}
                       onClick={() => void submitQuestion(question)}
-                      className="group relative overflow-hidden rounded-2xl border border-white/80 bg-gradient-to-b from-white/90 to-white/65 px-3.5 py-3 text-left text-sm font-medium text-foreground shadow-[0_8px_22px_-14px_rgba(15,23,42,0.45),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-[0_14px_28px_-12px_hsla(191,54%,40%,0.45)] disabled:opacity-60"
+                      className="rounded-xl border border-border bg-white px-3 py-2.5 text-left font-heading text-sm font-semibold normal-case tracking-normal text-foreground transition-colors hover:border-primary/30 hover:bg-primary/5 disabled:opacity-60"
                     >
-                      <span
-                        aria-hidden
-                        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100"
-                      />
-                      <span className="relative">{question}</span>
+                      {question}
                     </button>
                   ))}
                 </div>
@@ -176,18 +151,14 @@ export function SiteChatbot() {
             )}
 
             {loading ? (
-              <div className="flex items-center gap-2 rounded-full border border-white/70 bg-white/60 px-3 py-1.5 text-sm text-muted-foreground shadow-sm backdrop-blur-sm w-fit">
+              <div className="flex items-center gap-2 font-heading text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin text-primary" />
                 Thinking…
               </div>
             ) : null}
           </div>
 
-          <form onSubmit={onSubmit} className="relative border-t border-white/50 bg-gradient-to-b from-white/80 to-white/95 p-3 backdrop-blur-md">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent"
-            />
+          <form onSubmit={onSubmit} className="border-t border-border bg-white p-3">
             <div className="flex items-center gap-2">
               <input
                 ref={inputRef}
@@ -197,13 +168,13 @@ export function SiteChatbot() {
                 onKeyDown={onInputKeyDown}
                 placeholder="Type your question…"
                 disabled={loading}
-                className="h-11 min-w-0 flex-1 rounded-full border border-white/80 bg-white/70 px-4 text-sm shadow-[inset_0_1px_2px_rgba(15,23,42,0.06),0_1px_0_rgba(255,255,255,0.9)] outline-none backdrop-blur-sm placeholder:text-muted-foreground/80 focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
+                className="h-10 min-w-0 flex-1 rounded-full border border-border bg-white px-4 font-heading text-sm font-medium normal-case tracking-normal outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
                 aria-label="Chat message"
               />
               <button
                 type="submit"
                 disabled={loading || !input.trim()}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/30 bg-gradient-to-br from-[#5ec9db] via-primary to-[#247a88] text-primary-foreground shadow-[0_10px_22px_-8px_hsla(191,54%,40%,0.65),inset_0_1px_0_rgba(255,255,255,0.4)] transition-all hover:scale-105 hover:shadow-[0_14px_26px_-8px_hsla(191,54%,40%,0.75)] disabled:scale-100 disabled:opacity-45"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-45"
                 aria-label="Send message"
               >
                 <SendHorizontal className="h-4 w-4" />
@@ -216,21 +187,12 @@ export function SiteChatbot() {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className={cn(
-          "fixed bottom-4 right-4 z-[100] flex h-[3.75rem] w-[3.75rem] items-center justify-center rounded-full border border-white/40 text-primary-foreground shadow-[0_16px_40px_-10px_hsla(191,54%,40%,0.75),0_0_0_1px_rgba(255,255,255,0.25)_inset,inset_0_1px_0_rgba(255,255,255,0.45)] transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 sm:right-6",
-          open
-            ? "bg-gradient-to-br from-slate-600 to-slate-800"
-            : "bg-gradient-to-br from-[#6fd4e4] via-primary to-[#1f7a88]",
-        )}
+        className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-[1.03] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         aria-label={open ? "Close chat assistant" : "Open chat assistant"}
         aria-expanded={open}
       >
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-[3px] rounded-full bg-[linear-gradient(180deg,rgba(255,255,255,0.38)_0%,transparent_55%)]"
-        />
-        {open ? <X className="relative h-6 w-6" /> : <MessageCircle className="relative h-6 w-6" />}
+        {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
       </button>
-    </>
+    </div>
   );
 }

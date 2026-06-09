@@ -192,9 +192,12 @@ const Index = () => {
               <div className="absolute inset-0 bg-black/35 transition-colors duration-500 group-hover:bg-white/50" />
               <div className="absolute inset-0 flex items-end">
                 <div className="p-6 sm:p-8 md:p-10">
-                  <h2 className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold uppercase tracking-[0.08em] text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.7)] transition-all duration-500 group-hover:-translate-y-1 group-hover:tracking-[0.11em] group-hover:text-slate-900 group-hover:drop-shadow-none">
+                  <h2 className="font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold uppercase tracking-[0.08em] text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.7)] transition-all duration-500 group-hover:-translate-y-1 group-hover:tracking-[0.11em] group-hover:text-slate-900 group-hover:drop-shadow-none">
                     Our Story
                   </h2>
+                  <p className="mt-2 font-heading text-lg font-semibold uppercase tracking-[0.14em] text-white/95 drop-shadow-[0_2px_12px_rgba(0,0,0,0.65)] transition-colors duration-500 sm:mt-3 sm:text-xl md:text-2xl group-hover:text-slate-700 group-hover:drop-shadow-none">
+                    16+ years in business
+                  </p>
                 </div>
               </div>
             </article>
@@ -235,21 +238,12 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="home-reviews-section relative overflow-hidden py-16 sm:py-20">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(120,120,128,0.08),transparent_60%)]"
-        />
+      <section className="home-reviews-section relative overflow-hidden bg-white py-16 sm:py-20">
         <div className="container relative max-w-6xl px-4">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6e6e73]">Reviews</p>
-            <h2 className="mt-3 text-[clamp(1.75rem,4.5vw,2.75rem)] font-semibold tracking-[-0.03em] text-[#1d1d1f]">
-              Don&apos;t just take our word for it.
-            </h2>
-            <p className="mt-3 text-base leading-relaxed text-[#6e6e73]">
-              Real feedback from customers who use Lay-n-Go every day.
-            </p>
-          </div>
+          <p className="brand-eyebrow text-center">Reviews</p>
+          <h2 className="brand-display mt-2 text-center text-[clamp(1.5rem,5vw,2.25rem)] text-foreground">
+            Don&apos;t just take our word for it.
+          </h2>
 
           <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
             {testimonials.map((t) => (

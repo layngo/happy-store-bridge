@@ -61,7 +61,7 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
   );
 
   return (
-    <footer className={variant === "light" ? "bg-white" : "border-t border-border bg-muted"}>
+    <footer className={variant === "light" ? "border-t border-border bg-white" : "border-t border-border bg-muted"}>
       <div className="container max-w-5xl py-6 sm:py-7">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-6 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-6">
           {/* Brand */}
