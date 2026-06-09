@@ -1,5 +1,6 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { generateOtpCode, saveOtp, verifyOtp } from "./discountOtpStore";
+import { createPopupSignupDiscount } from "./shopifyDiscountCodes";
 
 const DEFAULT_SEND_CODE_WEBHOOK =
   "https://layngo.app.n8n.cloud/webhook/layngo-discount-send-code";
@@ -153,11 +154,19 @@ export function createDiscountApiMiddleware(env: Record<string, string>) {
             return;
           }
 
+          const shopifyResult = await createPopupSignupDiscount(env);
+          if (!shopifyResult.ok) {
+            sendJson(res, 500, { ok: false, error: shopifyResult.error });
+            return;
+          }
+
           const { upstream, data } = await proxyToN8n(verifyWebhook, {
             email: result.record.email,
             phone: result.record.phone,
             marketingConsent: result.record.marketingConsent,
             verified: true,
+            discountCode: shopifyResult.code,
+            shopifyCreated: true,
           });
 
           if (!upstream.ok) {
@@ -171,7 +180,7 @@ export function createDiscountApiMiddleware(env: Record<string, string>) {
           sendJson(res, 200, {
             ok: true,
             message: data?.message ?? "You're verified! Use your code at checkout.",
-            discountCode: data?.discountCode,
+            discountCode: shopifyResult.code,
           });
           return;
         }
