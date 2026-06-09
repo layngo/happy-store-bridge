@@ -74,6 +74,53 @@ SEARCH: /search to find products on site.
 
 const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
   {
+    test:
+      /^(hi|hey|hello|howdy|greetings|good\s+(morning|afternoon|evening)|sup|yo|hiya|heya)\b[\s!.,?]*$|^(hi|hey|hello|howdy)\b[\s,]+(there|everyone|folks|team|lay-n-go)/i,
+    reply: {
+      content:
+        "Hi there! Welcome to Lay-n-Go. I can help with our products (Cosmo cosmetic bags, Play mats, Traveler, and more), shipping, returns, or our story. What can I help you with today?",
+      links: [{ label: "Shop collections", href: "/collections" }],
+    },
+  },
+  {
+    test: /^(thanks|thank\s+you|thx|ty|appreciate\s+it|much\s+appreciated)\b/i,
+    reply: {
+      content: "You're welcome! If you have any other questions about Lay-n-Go, just ask.",
+    },
+  },
+  {
+    test: /^(bye|goodbye|see\s+ya|see\s+you|later|take\s+care|good\s+night)\b/i,
+    reply: {
+      content:
+        "Goodbye! Feel free to come back anytime — or email info@layngo.com if you need a hand from our team.",
+      links: [{ label: "Contact us", href: "/pages/contact" }],
+    },
+  },
+  {
+    test: /what\s+can\s+you\s+(do|help)|how\s+can\s+you\s+help|who\s+are\s+you|what\s+are\s+you|help\s+me/i,
+    reply: {
+      content:
+        "I'm the Lay-n-Go assistant. Ask me about best sellers, product categories, shipping, returns, wholesale, or how our patented open-flat, cinch-closed bags work — I'll point you to the right page or policy.",
+      links: [
+        { label: "Best seller — Cosmo 20\"", href: "/product/lay-n-go-cosmo-20" },
+        { label: "Contact support", href: "/pages/contact" },
+      ],
+    },
+  },
+  {
+    test: /how\s+are\s+you|how\s+is\s+it\s+going|what'?s\s+up|whats\s+up/i,
+    reply: {
+      content:
+        "Doing great, thanks for asking! I'm here to help with Lay-n-Go products and orders. What would you like to know?",
+    },
+  },
+  {
+    test: /^(ok|okay|cool|great|perfect|awesome|got\s+it|understood|nice)\b[\s!.,?]*$/i,
+    reply: {
+      content: "Glad that helps! Let me know if you want to explore products, shipping, or anything else.",
+    },
+  },
+  {
     test: /best\s*seller|top\s*sell|popular|bestseller|most\s*popular|what\s*should\s*i\s*buy/i,
     reply: {
       content:
@@ -300,7 +347,7 @@ export function answerFromKnowledge(userMessage: string): ChatAssistantReply {
 
   return {
     content:
-      "I'm not sure about that one. Try asking about our best sellers, a product category (Cosmo, Play, Traveler, Pets), shipping, returns, or our story — or email info@layngo.com and our team can help.",
+      "I'm not sure I caught that. I'm best at Lay-n-Go product questions, shipping, returns, and our story — try something like \"What are your best sellers?\" or say hi and I'll help you get started.",
     links: [
       { label: "Contact us", href: "/pages/contact" },
       { label: "Shop collections", href: "/collections" },

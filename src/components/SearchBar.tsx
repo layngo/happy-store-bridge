@@ -12,10 +12,10 @@ const SEARCH_SUGGESTIONS = [
     image: "/cosmetic-bags-v2/cosmo-20.png",
   },
   {
-    title: "Lay-n-Go Play",
-    subtitle: "Toy cleanup & play mats",
-    href: "/collections/play",
-    image: "/products/lay-n-go-lite-18/lite-gallery-1.png",
+    title: 'Lay-n-Go Large 60"',
+    subtitle: "Activity & toy cleanup mat",
+    href: "/product/lay-n-go-large-60",
+    image: "/products/lay-n-go-large-pdp/hero-callout-main.png",
   },
 ] as const;
 

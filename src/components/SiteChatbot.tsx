@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent, type Keyboard
 import { Link } from "react-router-dom";
 import { ArrowUp, MessageCircle, X } from "lucide-react";
 
-import { CHAT_SAMPLE_QUESTIONS, type ChatLink, type ChatMessage } from "@/lib/chatbotKnowledge";
+import { CHAT_SAMPLE_QUESTIONS, findKnowledgeReply, type ChatLink, type ChatMessage } from "@/lib/chatbotKnowledge";
 import { sendChatMessage } from "@/lib/chatApi";
 import { useDialogA11y } from "@/hooks/useDialogA11y";
 import { cn } from "@/lib/utils";
@@ -213,12 +213,15 @@ export function SiteChatbot() {
     setInput("");
     setThinking(true);
     const thinkingStarted = Date.now();
+    const hasLocalAnswer = findKnowledgeReply(trimmed) !== null;
 
     try {
       const reply = await sendChatMessage(nextMessages);
-      const elapsed = Date.now() - thinkingStarted;
-      if (elapsed < MIN_THINKING_MS) {
-        await new Promise((resolve) => window.setTimeout(resolve, MIN_THINKING_MS - elapsed));
+      if (!hasLocalAnswer) {
+        const elapsed = Date.now() - thinkingStarted;
+        if (elapsed < MIN_THINKING_MS) {
+          await new Promise((resolve) => window.setTimeout(resolve, MIN_THINKING_MS - elapsed));
+        }
       }
       const assistantId = nextMessageId();
       setMessages((prev) => [
