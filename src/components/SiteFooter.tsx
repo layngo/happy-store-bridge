@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Facebook, Globe, Instagram } from "lucide-react";
 import { footerCatalogLinks, footerInfoLinks, socialLinks } from "@/lib/siteNav";
+import { subscribeToNewsletter } from "@/lib/newsletterApi";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 interface SiteFooterProps {
   variant?: "light" | "dark";
@@ -15,11 +17,23 @@ const sectionHeading =
 
 export const SiteFooter = (_props: SiteFooterProps) => {
   const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const onNewsletter = (e: React.FormEvent) => {
+  const onNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
-    toast.success("Thanks!", { description: "Newsletter signup is coming soon. We captured your interest." });
+    const trimmed = email.trim();
+    if (!trimmed || submitting) return;
+
+    setSubmitting(true);
+    const result = await subscribeToNewsletter({ email: trimmed });
+    setSubmitting(false);
+
+    if (!result.ok) {
+      toast.error("Could not join", { description: result.error });
+      return;
+    }
+
+    toast.success("You are on the list!", { description: result.message });
     setEmail("");
   };
 
@@ -91,9 +105,11 @@ export const SiteFooter = (_props: SiteFooterProps) => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-9 flex-1 bg-background text-sm"
+                disabled={submitting}
+                required
               />
-              <Button type="submit" size="sm" className="h-9 shrink-0 px-4 sm:w-auto w-full">
-                Join
+              <Button type="submit" size="sm" className="h-9 shrink-0 px-4 sm:w-auto w-full" disabled={submitting}>
+                {submitting ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : "Join"}
               </Button>
             </form>
           </div>

@@ -3,6 +3,7 @@ import { loadEnv } from "vite";
 import { createReviewApiMiddleware } from "../server/reviewApiMiddleware";
 import { createContactApiMiddleware } from "../server/contactApiMiddleware";
 import { createDiscountApiMiddleware } from "../server/discountApiMiddleware";
+import { createNewsletterApiMiddleware } from "../server/newsletterApiMiddleware";
 
 export function reviewApiPlugin(): Plugin {
   return {
@@ -10,12 +11,14 @@ export function reviewApiPlugin(): Plugin {
     configureServer(server) {
       const env = loadEnv(server.config.mode, process.cwd(), "");
       server.middlewares.use(createContactApiMiddleware(env));
+      server.middlewares.use(createNewsletterApiMiddleware(env));
       server.middlewares.use(createDiscountApiMiddleware(env));
       server.middlewares.use(createReviewApiMiddleware(env));
     },
     configurePreviewServer(server) {
       const env = loadEnv(server.config.mode, process.cwd(), "");
       server.middlewares.use(createContactApiMiddleware(env));
+      server.middlewares.use(createNewsletterApiMiddleware(env));
       server.middlewares.use(createDiscountApiMiddleware(env));
       server.middlewares.use(createReviewApiMiddleware(env));
     },
