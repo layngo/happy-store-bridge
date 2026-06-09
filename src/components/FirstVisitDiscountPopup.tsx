@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 import { toast } from "sonner";
@@ -10,12 +10,13 @@ import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { sendDiscountVerificationCode, verifyDiscountCode } from "@/lib/discountApi";
 import {
+  DISCOUNT_POPUP_HOME_EVENT,
   hasCompletedDiscountSignup,
   markDiscountSignupComplete,
 } from "@/lib/discountPopupStorage";
 import { cn } from "@/lib/utils";
 
-/** Add `?showDiscount=1` to preview on any page. Shows on every home visit (and each Home nav click) until signup is completed. */
+/** Add `?showDiscount=1` to preview on any page. Opens on each Home nav click until signup is completed. */
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
 const HERO_WIDTH = 1024;
 const HERO_HEIGHT = 804;
@@ -37,21 +38,37 @@ export function FirstVisitDiscountPopup() {
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
   const [busy, setBusy] = useState(false);
+  const pendingHomePopupRef = useRef(false);
+
+  const openPopup = useCallback(() => {
+    if (hasCompletedDiscountSignup()) return;
+    setStep("intro");
+    setEmail("");
+    setPhone("");
+    setOtp("");
+    setMarketingConsent(false);
+    setDiscountCode("");
+    setOpen(true);
+  }, []);
 
   useEffect(() => {
-    const resetAndOpen = () => {
-      setStep("intro");
-      setEmail("");
-      setPhone("");
-      setOtp("");
-      setMarketingConsent(false);
-      setDiscountCode("");
-      setOpen(true);
+    const onHomeButton = () => {
+      if (hasCompletedDiscountSignup()) return;
+      if (location.pathname !== "/") {
+        pendingHomePopupRef.current = true;
+        return;
+      }
+      openPopup();
     };
 
+    window.addEventListener(DISCOUNT_POPUP_HOME_EVENT, onHomeButton);
+    return () => window.removeEventListener(DISCOUNT_POPUP_HOME_EVENT, onHomeButton);
+  }, [location.pathname, openPopup]);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("showDiscount") === "1") {
-      resetAndOpen();
+      openPopup();
       return;
     }
 
@@ -60,14 +77,12 @@ export function FirstVisitDiscountPopup() {
       return;
     }
 
-    if (hasCompletedDiscountSignup()) {
-      setOpen(false);
-      return;
+    if (pendingHomePopupRef.current) {
+      pendingHomePopupRef.current = false;
+      const id = window.setTimeout(openPopup, 100);
+      return () => window.clearTimeout(id);
     }
-
-    const id = window.setTimeout(resetAndOpen, 600);
-    return () => window.clearTimeout(id);
-  }, [location.pathname, location.key, location.state]);
+  }, [location.pathname, openPopup]);
 
   const dismiss = () => {
     setOpen(false);

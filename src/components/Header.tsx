@@ -1,6 +1,6 @@
 import { type ComponentPropsWithoutRef, type MouseEvent, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { DISCOUNT_POPUP_HOME_STATE_KEY } from "@/lib/discountPopupStorage";
+import { DISCOUNT_POPUP_HOME_EVENT, requestHomeDiscountPopup } from "@/lib/discountPopupStorage";
 import { CartDrawer } from "./CartDrawer";
 import { cn } from "@/lib/utils";
 import { shopCollectionLinks } from "@/lib/siteNav";
@@ -99,7 +99,10 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
 
   const goHomeWithDiscountPopup = (e: MouseEvent) => {
     e.preventDefault();
-    navigate("/", { state: { [DISCOUNT_POPUP_HOME_STATE_KEY]: Date.now() } });
+    if (pathname !== "/") {
+      navigate("/");
+    }
+    requestHomeDiscountPopup();
   };
 
   return (

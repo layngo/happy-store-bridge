@@ -1,4 +1,10 @@
 export const DISCOUNT_POPUP_HOME_STATE_KEY = "showDiscountPopup";
+export const DISCOUNT_POPUP_HOME_EVENT = "layngo:home-discount-popup";
+
+/** Fired when the user clicks Home in the menu bar. */
+export function requestHomeDiscountPopup(): void {
+  window.dispatchEvent(new CustomEvent(DISCOUNT_POPUP_HOME_EVENT));
+}
 
 const SUBMITTED_KEY = "layngo-discount-submitted";
 const DISMISSED_DATE_KEY = "layngo-discount-dismissed-date";
