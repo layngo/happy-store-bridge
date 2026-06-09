@@ -11,7 +11,7 @@ export type DiscountVerifyCodePayload = {
 };
 
 export type DiscountApiResponse =
-  | { ok: true; message?: string }
+  | { ok: true; message?: string; discountCode?: string }
   | { ok: false; error: string };
 
 const DEFAULT_SEND_CODE_WEBHOOK =

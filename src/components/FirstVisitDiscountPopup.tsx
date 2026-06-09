@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 import { toast } from "sonner";
@@ -10,18 +10,16 @@ import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { sendDiscountVerificationCode, verifyDiscountCode } from "@/lib/discountApi";
 import {
-  markDiscountDismissedToday,
+  DISCOUNT_POPUP_HOME_EVENT,
+  hasCompletedDiscountSignup,
   markDiscountSignupComplete,
-  shouldShowDiscountPopup,
 } from "@/lib/discountPopupStorage";
 import { cn } from "@/lib/utils";
 
-/** Add `?showDiscount=1` to preview. Otherwise shows on site visits until completed, or again each new day after dismiss. */
+/** Shows on every homepage visit until signup is completed; never again after that (localStorage). */
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
 const HERO_WIDTH = 1024;
 const HERO_HEIGHT = 804;
-const DISCOUNT_CODE = "LAYNGO15";
-
 type Step = "intro" | "email" | "phone" | "verify" | "code";
 
 const redeemFieldClass =
@@ -38,32 +36,62 @@ export function FirstVisitDiscountPopup() {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [marketingConsent, setMarketingConsent] = useState(false);
+  const [discountCode, setDiscountCode] = useState("");
   const [busy, setBusy] = useState(false);
+  const pendingHomePopupRef = useRef(false);
+
+  const openPopup = useCallback(() => {
+    if (hasCompletedDiscountSignup()) return;
+    setStep("intro");
+    setEmail("");
+    setPhone("");
+    setOtp("");
+    setMarketingConsent(false);
+    setDiscountCode("");
+    setOpen(true);
+  }, []);
+
+  useEffect(() => {
+    const onHomeButton = () => {
+      if (hasCompletedDiscountSignup()) return;
+      if (location.pathname !== "/") {
+        pendingHomePopupRef.current = true;
+        return;
+      }
+      openPopup();
+    };
+
+    window.addEventListener(DISCOUNT_POPUP_HOME_EVENT, onHomeButton);
+    return () => window.removeEventListener(DISCOUNT_POPUP_HOME_EVENT, onHomeButton);
+  }, [location.pathname, openPopup]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("showDiscount") === "1") {
-      setStep("intro");
-      setEmail("");
-      setPhone("");
-      setOtp("");
-      setMarketingConsent(false);
-      setOpen(true);
+      openPopup();
       return;
     }
 
-    if (!shouldShowDiscountPopup()) {
+    if (location.pathname !== "/") {
       setOpen(false);
       return;
     }
 
-    setStep("intro");
-    const id = window.setTimeout(() => setOpen(true), 600);
+    if (hasCompletedDiscountSignup()) {
+      setOpen(false);
+      return;
+    }
+
+    const fromHomeButton = pendingHomePopupRef.current;
+    if (fromHomeButton) {
+      pendingHomePopupRef.current = false;
+    }
+
+    const id = window.setTimeout(openPopup, fromHomeButton ? 100 : 600);
     return () => window.clearTimeout(id);
-  }, [location.pathname, location.key]);
+  }, [location.pathname, location.key, openPopup]);
 
   const dismiss = () => {
-    markDiscountDismissedToday();
     setOpen(false);
   };
 
@@ -133,7 +161,8 @@ export function FirstVisitDiscountPopup() {
       return;
     }
 
-    markDiscountSignupComplete();
+    markDiscountSignupComplete(email.trim());
+    setDiscountCode(result.discountCode ?? "");
     toast.success(result.message ?? "You're verified!");
     setStep("code");
   };
@@ -155,8 +184,9 @@ export function FirstVisitDiscountPopup() {
   };
 
   const copyCode = async () => {
+    if (!discountCode) return;
     try {
-      await navigator.clipboard.writeText(DISCOUNT_CODE);
+      await navigator.clipboard.writeText(discountCode);
       toast.success("Code copied to clipboard");
     } catch {
       toast.error("Could not copy");
@@ -164,7 +194,7 @@ export function FirstVisitDiscountPopup() {
   };
 
   const finish = () => {
-    markDiscountSignupComplete();
+    markDiscountSignupComplete(email.trim());
     setOpen(false);
   };
 
@@ -342,7 +372,7 @@ export function FirstVisitDiscountPopup() {
                     <p className="text-xs font-medium text-neutral-700 sm:text-sm">Your discount code</p>
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
                       <code className="w-full rounded-md border border-neutral-200 bg-white px-2 py-2 text-center font-mono text-base font-semibold tracking-wide text-foreground sm:flex-1 sm:text-lg sm:text-right">
-                        {DISCOUNT_CODE}
+                        {discountCode}
                       </code>
                       <Button type="button" variant="outline" size="sm" className="shrink-0" onClick={copyCode}>
                         Copy

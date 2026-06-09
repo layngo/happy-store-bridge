@@ -33,20 +33,20 @@ export const DEFAULT_ABOUT_US_V3_TAPE_LAYOUT: AboutUsV3TapeLayoutState = {
     far: { x: 98.67079550203776, y: 95.1762287929327, rotate: -46 },
   },
   "They have a family::They have a family": {
-    near: { x: 91, y: 5.5, rotate: 46 },
-    far: { x: 7, y: 91, rotate: 46 },
+    near: { x: 99.4877859961797, y: 1.539459344869929, rotate: 46 },
+    far: { x: 1.2226941492271055, y: 95.85150103944893, rotate: 46 },
   },
   "They have a family::Our first prototype": {
-    near: { x: 91, y: 5.5, rotate: 46 },
-    far: { x: 7, y: 91, rotate: 46 },
+    near: { x: 98.48489412847073, y: 3.5555808509244002, rotate: 46 },
+    far: { x: 1.5797283159007844, y: 95.6209186524099, rotate: 46 },
   },
   "They have a family::The COSMO launches": {
-    near: { x: 7, y: 5.5, rotate: -46 },
-    far: { x: 91, y: 91, rotate: -46 },
+    near: { x: 1.5023378969305812, y: 2.363940775049193, rotate: -46 },
+    far: { x: 98.49207471172483, y: 96.26809635001452, rotate: -46 },
   },
   "They have a family::Lay-n-Go named to the Inc 5000": {
-    near: { x: 91, y: 5.5, rotate: 46 },
-    far: { x: 7, y: 91, rotate: 46 },
+    near: { x: 98.921316515061, y: 3.329846932137248, rotate: 46 },
+    far: { x: 1.936364184597088, y: 94.83811667849918, rotate: 46 },
   },
 };
 

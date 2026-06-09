@@ -1,5 +1,6 @@
-import { type ComponentPropsWithoutRef, type ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { type ComponentPropsWithoutRef, type MouseEvent, type ReactNode } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { DISCOUNT_POPUP_HOME_EVENT, requestHomeDiscountPopup } from "@/lib/discountPopupStorage";
 import { CartDrawer } from "./CartDrawer";
 import { cn } from "@/lib/utils";
 import { shopCollectionLinks } from "@/lib/siteNav";
@@ -93,7 +94,16 @@ function NavMenuTrigger({
 
 export const Header = ({ variant = "default" }: { variant?: "default" | "light" }) => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const light = variant === "light";
+
+  const goHomeWithDiscountPopup = (e: MouseEvent) => {
+    e.preventDefault();
+    if (pathname !== "/") {
+      navigate("/");
+    }
+    requestHomeDiscountPopup();
+  };
 
   return (
     <header
@@ -129,7 +139,12 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
             light ? "border-border/70" : "border-border/60",
           )}
         >
-          <NavItem to="/" active={isHomePath(pathname)} light={light}>
+          <NavItem
+            to="/"
+            active={isHomePath(pathname)}
+            light={light}
+            onClick={goHomeWithDiscountPopup}
+          >
             Home
           </NavItem>
 

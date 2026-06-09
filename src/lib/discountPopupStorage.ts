@@ -1,4 +1,13 @@
+export const DISCOUNT_POPUP_HOME_STATE_KEY = "showDiscountPopup";
+export const DISCOUNT_POPUP_HOME_EVENT = "layngo:home-discount-popup";
+
+/** Fired when the user clicks Home in the menu bar. */
+export function requestHomeDiscountPopup(): void {
+  window.dispatchEvent(new CustomEvent(DISCOUNT_POPUP_HOME_EVENT));
+}
+
 const SUBMITTED_KEY = "layngo-discount-submitted";
+const SUBMITTED_EMAIL_KEY = "layngo-discount-email";
 const DISMISSED_DATE_KEY = "layngo-discount-dismissed-date";
 
 function todayLocal(): string {
@@ -17,9 +26,21 @@ export function hasCompletedDiscountSignup(): boolean {
   }
 }
 
-export function markDiscountSignupComplete(): void {
+export function getCompletedDiscountEmail(): string | null {
+  try {
+    return localStorage.getItem(SUBMITTED_EMAIL_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function markDiscountSignupComplete(email?: string): void {
   try {
     localStorage.setItem(SUBMITTED_KEY, "1");
+    const normalized = email?.trim().toLowerCase();
+    if (normalized) {
+      localStorage.setItem(SUBMITTED_EMAIL_KEY, normalized);
+    }
     localStorage.removeItem(DISMISSED_DATE_KEY);
   } catch {
     /* ignore */
