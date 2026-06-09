@@ -5,6 +5,8 @@ type UseDialogA11yOptions = {
   onClose: () => void;
   /** Element to restore focus to when the dialog closes. */
   returnFocusRef?: React.RefObject<HTMLElement | null>;
+  /** Skip auto-focus on open (caller handles focus). */
+  autoFocus?: boolean;
 };
 
 const FOCUSABLE =
@@ -17,25 +19,34 @@ function getFocusable(container: HTMLElement): HTMLElement[] {
 }
 
 /** Focus trap, Escape-to-close, and focus restore for custom dialogs. */
-export function useDialogA11y({ open, onClose, returnFocusRef }: UseDialogA11yOptions) {
+export function useDialogA11y({
+  open,
+  onClose,
+  returnFocusRef,
+  autoFocus = false,
+}: UseDialogA11yOptions) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!open) return;
 
     previousFocusRef.current = document.activeElement as HTMLElement | null;
 
-    const dialog = dialogRef.current;
-    if (dialog) {
-      const focusable = getFocusable(dialog);
-      (focusable[0] ?? dialog).focus();
+    if (autoFocus) {
+      const dialog = dialogRef.current;
+      if (dialog) {
+        const focusable = getFocusable(dialog);
+        (focusable[0] ?? dialog).focus();
+      }
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onClose();
+        onCloseRef.current();
         return;
       }
 
@@ -61,12 +72,14 @@ export function useDialogA11y({ open, onClose, returnFocusRef }: UseDialogA11yOp
     };
 
     document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      const target = returnFocusRef?.current ?? previousFocusRef.current;
-      target?.focus?.();
-    };
-  }, [open, onClose, returnFocusRef]);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, autoFocus]);
+
+  useEffect(() => {
+    if (open) return;
+    const target = returnFocusRef?.current ?? previousFocusRef.current;
+    target?.focus?.();
+  }, [open, returnFocusRef]);
 
   return dialogRef;
 }

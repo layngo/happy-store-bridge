@@ -112,8 +112,10 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
       )}
     >
       <div className="container pt-3 pb-2">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center">
-          <div />
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+          <div className="flex min-w-0 justify-start">
+            <SearchBar light={light} className="w-full max-w-[10.5rem] sm:max-w-xs" />
+          </div>
 
           <div className="flex justify-center">
             <Link to="/" className="flex flex-col items-center" aria-label="Lay-n-Go home">
@@ -130,10 +132,6 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
               triggerClassName={light ? "text-foreground hover:bg-muted/80 hover:text-foreground" : undefined}
             />
           </div>
-        </div>
-
-        <div className="flex justify-center px-2 pt-2">
-          <SearchBar light={light} className="w-full max-w-md" />
         </div>
 
         <nav aria-label="Main navigation" className={cn(

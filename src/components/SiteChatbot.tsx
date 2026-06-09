@@ -7,19 +7,20 @@ import { sendChatMessage } from "@/lib/chatApi";
 import { useDialogA11y } from "@/hooks/useDialogA11y";
 import { cn } from "@/lib/utils";
 
-/** Closed Cosmo bag / fabric close-ups — cycle while the assistant is thinking. */
+/** Closed Cosmo bag shots — cycle while the assistant is thinking. */
 const THINKING_COSMO_IMAGES = [
-  { src: "/cosmo-pdp/gallery/01.png", alt: "Cosmo bag" },
-  { src: "/cosmo-pdp/gallery/02.png", alt: "Cosmo bag pattern" },
-  { src: "/swatches/cosmo-20-paisley.jpg", alt: "Cosmo paisley" },
-  { src: "/swatches/cosmo-20-butterfly.jpg", alt: "Cosmo butterfly print" },
-  { src: "/swatches/cosmo-20-stars.jpg", alt: "Cosmo stars print" },
-  { src: "/swatches/cosmo-20-pink-camo.jpg", alt: "Cosmo pink camo" },
-  { src: "/cosmo-pdp/gallery/04.png", alt: "Cosmo closed bag" },
-  { src: "/swatches/cosmo-20-checkered.jpg", alt: "Cosmo checkered" },
+  "/cosmetic-bags-v2/cosmo-16.png",
+  "/cosmetic-bags-v2/cosmo-20.png",
+  "/cosmetic-bags-v2/cosmo-22.png",
+  "/promo/first-visit-cosmo-hero.png",
+  "/swatches/cosmo-20-paisley.jpg",
+  "/swatches/cosmo-20-butterfly.jpg",
+  "/swatches/cosmo-20-stars.jpg",
+  "/swatches/cosmo-20-pink-camo.jpg",
 ] as const;
 
 const STREAM_WORD_MS = 28;
+const MIN_THINKING_MS = 900;
 const HEADING_CLASS =
   "font-heading font-extrabold uppercase tracking-[0.04em] text-foreground";
 
@@ -62,44 +63,27 @@ function MessageLinks({ links }: { links: ChatLink[] }) {
 
 function CosmoThinkingIndicator() {
   const [index, setIndex] = useState(0);
-  const [prevIndex, setPrevIndex] = useState(0);
-  const [crossfading, setCrossfading] = useState(false);
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      setIndex((current) => {
-        setPrevIndex(current);
-        setCrossfading(true);
-        return (current + 1) % THINKING_COSMO_IMAGES.length;
-      });
-    }, 720);
+      setIndex((current) => (current + 1) % THINKING_COSMO_IMAGES.length);
+    }, 650);
     return () => window.clearInterval(id);
   }, []);
-
-  useEffect(() => {
-    if (!crossfading) return;
-    const id = window.setTimeout(() => setCrossfading(false), 380);
-    return () => window.clearTimeout(id);
-  }, [crossfading, index]);
-
-  const current = THINKING_COSMO_IMAGES[index];
-  const previous = THINKING_COSMO_IMAGES[prevIndex];
 
   return (
     <div className="chat-thinking-row" role="status" aria-live="polite" aria-label="Assistant is thinking">
       <div className="chat-thinking-orbit" aria-hidden>
         <div className="chat-thinking-glow" />
         <div className="chat-thinking-avatar">
-          <img
-            src={previous.src}
-            alt=""
-            className={cn("chat-thinking-img", crossfading && "chat-thinking-img--out")}
-          />
-          <img
-            src={current.src}
-            alt=""
-            className={cn("chat-thinking-img", crossfading ? "chat-thinking-img--in" : "chat-thinking-img--active")}
-          />
+          {THINKING_COSMO_IMAGES.map((src, i) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              className={cn("chat-thinking-img", i === index && "chat-thinking-img--visible")}
+            />
+          ))}
         </div>
       </div>
       <span className="chat-thinking-label">Thinking…</span>
@@ -181,14 +165,15 @@ export function SiteChatbot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<UiChatMessage[]>([]);
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [thinking, setThinking] = useState(false);
   const [streamingId, setStreamingId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const closeChat = useCallback(() => setOpen(false), []);
   const dialogRef = useDialogA11y({
     open,
-    onClose: () => setOpen(false),
+    onClose: closeChat,
     returnFocusRef: toggleRef,
   });
 
@@ -210,9 +195,9 @@ export function SiteChatbot() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, loading, streamingId, scrollToBottom]);
+  }, [messages, thinking, streamingId, scrollToBottom]);
 
-  const busy = loading || streamingId !== null;
+  const busy = thinking || streamingId !== null;
 
   const submitQuestion = async (question: string) => {
     const trimmed = question.trim();
@@ -226,10 +211,15 @@ export function SiteChatbot() {
     const nextMessages = [...messages, userMessage];
     setMessages(nextMessages);
     setInput("");
-    setLoading(true);
+    setThinking(true);
+    const thinkingStarted = Date.now();
 
     try {
       const reply = await sendChatMessage(nextMessages);
+      const elapsed = Date.now() - thinkingStarted;
+      if (elapsed < MIN_THINKING_MS) {
+        await new Promise((resolve) => window.setTimeout(resolve, MIN_THINKING_MS - elapsed));
+      }
       const assistantId = nextMessageId();
       setMessages((prev) => [
         ...prev,
@@ -242,7 +232,7 @@ export function SiteChatbot() {
       ]);
       setStreamingId(assistantId);
     } finally {
-      setLoading(false);
+      setThinking(false);
     }
   };
 
@@ -258,16 +248,17 @@ export function SiteChatbot() {
     }
   };
 
-  const resizeComposer = () => {
+  const resizeComposer = useCallback(() => {
     const el = inputRef.current;
     if (!el) return;
     el.style.height = "auto";
     el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
-  };
+  }, []);
 
-  useEffect(() => {
-    resizeComposer();
-  }, [input]);
+  const onInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value);
+    requestAnimationFrame(resizeComposer);
+  };
 
   return (
     <div className="pointer-events-none fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
@@ -286,7 +277,7 @@ export function SiteChatbot() {
             </div>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={closeChat}
               className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               aria-label="Close chat"
             >
@@ -298,7 +289,7 @@ export function SiteChatbot() {
             ref={scrollRef}
             className="chat-conversation flex min-h-[14rem] max-h-[min(28rem,52dvh)] flex-1 flex-col overflow-y-auto overscroll-contain px-4 py-5 sm:px-5"
           >
-            {messages.length === 0 && !loading ? (
+            {messages.length === 0 && !thinking ? (
               <div className="flex flex-1 flex-col justify-end gap-3 pb-2">
                 <p className="font-sans text-[0.9375rem] leading-relaxed text-muted-foreground sm:text-base">
                   Ask about products, shipping, returns, or anything Lay-n-Go.
@@ -342,7 +333,7 @@ export function SiteChatbot() {
                     </article>
                   ),
                 )}
-                {loading ? <CosmoThinkingIndicator /> : null}
+                {thinking ? <CosmoThinkingIndicator /> : null}
               </div>
             )}
           </div>
@@ -357,7 +348,7 @@ export function SiteChatbot() {
                 ref={inputRef}
                 rows={1}
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={onInputChange}
                 onKeyDown={onInputKeyDown}
                 placeholder="Message Lay-n-Go…"
                 disabled={busy}
