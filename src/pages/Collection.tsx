@@ -63,6 +63,21 @@ const Collection = () => {
 
   return (
     <div className="min-h-dvh bg-background flex flex-col">
+      <Helmet>
+        <title>{`${collection.title} — Lay-n-Go`}</title>
+        <meta name="description" content={(collection.description?.slice(0, 155)) || `Shop the ${collection.title} collection from Lay-n-Go — patented drawstring mats and organizers.`} />
+        <link rel="canonical" href={`https://happy-store-bridge.lovable.app/collections/${handle}`} />
+        <meta property="og:title" content={`${collection.title} — Lay-n-Go`} />
+        <meta property="og:description" content={(collection.description?.slice(0, 200)) || `Shop the ${collection.title} collection from Lay-n-Go.`} />
+        <meta property="og:url" content={`https://happy-store-bridge.lovable.app/collections/${handle}`} />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: collection.title,
+          url: `https://happy-store-bridge.lovable.app/collections/${handle}`,
+        })}</script>
+      </Helmet>
       <Header />
       <main id="main-content" className="container py-8 flex-1">
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8 flex-wrap">
