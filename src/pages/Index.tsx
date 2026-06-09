@@ -208,20 +208,20 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Last bag banner — full-bleed image, headline upper right */}
+      {/* Last bag banner — left-aligned image, headline upper right */}
       <section className="relative w-full overflow-hidden border-t border-border bg-white">
-        <div className="relative w-full">
+        <div className="relative w-fit max-w-full">
           <img
             src={LAST_BAG_BANNER}
             alt="Lay-n-Go Cosmo Deluxe bag with motion graphic"
-            className="block w-full min-h-[200px] object-cover object-left sm:min-h-[300px] md:min-h-[400px] lg:min-h-[500px]"
+            className="block h-auto max-h-[200px] w-auto max-w-[min(100%,42rem)] object-contain object-left sm:max-h-[260px] md:max-h-[300px] lg:max-h-[340px]"
             loading="lazy"
           />
           <div
-            className="pointer-events-none absolute inset-0 flex items-start justify-end pt-6 pr-5 sm:pt-10 sm:pr-10 md:pt-14 md:pr-14 lg:pt-16 lg:pr-20 xl:pt-20 xl:pr-28"
+            className="pointer-events-none absolute inset-0 flex items-start justify-end pt-4 pr-4 sm:pt-6 sm:pr-6 md:pt-8 md:pr-10 lg:pt-10 lg:pr-14"
             aria-hidden
           >
-            <p className="font-heading text-right text-[clamp(1.35rem,4.2vw,3.5rem)] font-extrabold uppercase leading-[1.02] tracking-[0.05em] text-foreground">
+            <p className="font-heading text-right text-[clamp(1.1rem,3vw,2.5rem)] font-extrabold uppercase leading-[1.02] tracking-[0.05em] text-foreground">
               <span className="block">The last</span>
               <span className="block">bag you&apos;ll ever</span>
               <span className="block">need</span>

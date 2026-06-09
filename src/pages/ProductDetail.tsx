@@ -1800,12 +1800,12 @@ const ProductDetail = () => {
               <LayNGoLargePdpPlayStrip
                 headline={
                   isLayNGoTraveler20
-                    ? "Play for hours, clean up in seconds,"
+                    ? "Packed for wherever work takes you."
                     : isLayNGoDefenderMini16 || isLayNGoDefenderTactical20
                       ? "Mission-Ready in Seconds"
                       : undefined
                 }
-                forceHeadlineSingleLine={isLayNGoTraveler20 || isLayNGoDefenderMini16 || isLayNGoDefenderTactical20}
+                forceHeadlineSingleLine={isLayNGoDefenderMini16 || isLayNGoDefenderTactical20}
                 showLowerSections={!isLayNGoTraveler20}
                 showTravelerCalloutSection={isLayNGoTraveler20}
                 headlineImageSrc={
