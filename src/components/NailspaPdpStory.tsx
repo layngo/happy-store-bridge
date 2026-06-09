@@ -1018,55 +1018,9 @@ function BottomProductImage({ className }: { className?: string }) {
 }
 
 export function NailspaPdpStory() {
-  const [arrows, setArrows] = useState<ArrowMap>(ARROWS);
-  const [editorMode, setEditorMode] = useState(false);
-  const [editArrowKey, setEditArrowKey] = useState<ArrowKey>("lipTop");
-  const [mainCalloutBoxes, setMainCalloutBoxes] = useState<MainCalloutBoxes>(DEFAULT_MAIN_CALLOUT_BOXES);
-  const [cordBoxPos, setCordBoxPos] = useState<CordBoxPos>(DEFAULT_CORD_BOX_POS);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    const enabled = params.get("editArrows") === "1";
-    setEditorMode(enabled);
-    if (enabled) {
-      setArrows(loadArrowsFromStorage() ?? ARROWS);
-      setMainCalloutBoxes(loadMainCalloutBoxesFromStorage() ?? DEFAULT_MAIN_CALLOUT_BOXES);
-      setCordBoxPos(loadCordBoxFromStorage() ?? DEFAULT_CORD_BOX_POS);
-    }
-  }, []);
-
-  const updateArrow = useCallback((key: ArrowKey, next: ArrowGeomUpdater) => {
-    setArrows((prev) => ({
-      ...prev,
-      [key]: resolveArrowGeom(prev[key], next),
-    }));
-    setEditArrowKey(key);
-  }, []);
-
-  const editArrow = arrows[editArrowKey];
-  const editArrowStroke = editArrow?.strokeWidth ?? DEFAULT_ARROW_STROKE;
-  const editHeadScale = editArrow?.headScale ?? DEFAULT_HEAD_SCALE;
-  const editRotation = editArrow?.rotation ?? 0;
-  const patchEditArrow = (patch: Partial<ArrowGeom>) => {
-    setArrows((prev) => ({
-      ...prev,
-      [editArrowKey]: { ...prev[editArrowKey], ...patch },
-    }));
-  };
-
-  const updateMainCalloutBox = (key: MainCalloutBoxKey, next: BoxPos) => {
-    setMainCalloutBoxes((prev) => ({ ...prev, [key]: next }));
-  };
-
-  const save = () => {
-    try {
-      localStorage.setItem(ARROW_STORAGE_KEY, JSON.stringify(arrows));
-      localStorage.setItem(MAIN_CALLOUT_BOXES_STORAGE_KEY, JSON.stringify(mainCalloutBoxes));
-      localStorage.setItem(CORD_BOX_STORAGE_KEY, JSON.stringify(cordBoxPos));
-      window.dispatchEvent(new Event("nailspa-arrows-updated"));
-    } catch {
-      // no-op
+  const [arrows] = useState<ArrowMap>(ARROWS);
+  const [mainCalloutBoxes] = useState<MainCalloutBoxes>(DEFAULT_MAIN_CALLOUT_BOXES);
+  const [cordBoxPos] = useState<CordBoxPos>(DEFAULT_CORD_BOX_POS);
     }
   };
 

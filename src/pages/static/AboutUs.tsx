@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useMemo, useRef, useState, type RefObject } from "react";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PageSeo } from "@/components/PageSeo";
@@ -8,16 +7,13 @@ import { Button } from "@/components/ui/button";
 import { useDialogA11y } from "@/hooks/useDialogA11y";
 import { cn } from "@/lib/utils";
 import {
-  ABOUT_US_V3_TAPE_LAYOUT_SYNC_EVENT,
   type AboutUsV3TapeLayoutState,
   type PanelTapeLayout,
   type TapePlacement,
   getPanelTapeLayout,
   loadAboutUsV3TapeLayout,
   panelTapeKey,
-  saveAboutUsV3TapeLayout,
 } from "@/lib/aboutUsV3TapeLayout";
-import { toast } from "sonner";
 
 type StoryPanel = {
   src: string;
@@ -324,51 +320,6 @@ function PanelCornerTapes({
   );
 }
 
-function TapeEditorToolbar({
-  getLayout,
-  onDone,
-}: {
-  getLayout: () => AboutUsV3TapeLayoutState;
-  onDone: () => void;
-}) {
-  const save = () => {
-    try {
-      saveAboutUsV3TapeLayout(getLayout());
-      toast.success("Saved corner tape layout in this browser");
-    } catch {
-      toast.error("Could not save");
-    }
-  };
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(JSON.stringify(getLayout(), null, 2));
-      toast.success("Copied tape layout JSON");
-    } catch {
-      toast.error("Clipboard unavailable");
-    }
-  };
-
-  return (
-    <div className="fixed bottom-0 left-0 right-0 z-[300] border-t border-amber-200/90 bg-amber-50/95 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-sm md:left-1/2 md:right-auto md:mx-auto md:w-[min(100%,42rem)] md:-translate-x-1/2 md:rounded-t-xl md:border-x md:border-t">
-      <div className="flex flex-wrap items-center justify-center gap-2">
-        <Button type="button" size="sm" onClick={save}>
-          Save layout
-        </Button>
-        <Button type="button" size="sm" variant="outline" onClick={copy}>
-          Copy JSON
-        </Button>
-        <Button type="button" size="sm" variant="secondary" onClick={onDone}>
-          Done editing
-        </Button>
-      </div>
-      <p className="mt-2 text-center text-[11px] text-muted-foreground">
-        Drag each tape strip on a panel. Near tape sits on the text side; far tape is the opposite diagonal.
-      </p>
-    </div>
-  );
-}
-
 function StoryFadePanel({
   panel,
   index,
@@ -541,36 +492,10 @@ function StoryChapterSection({
 }
 
 const AboutUs = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [searchParams] = useSearchParams();
-  const editorMode = searchParams.get("editTapes") === "1" || searchParams.get("editTapes") === "true";
-
   const panelTapeMeta = useMemo(() => buildPanelTapeMeta(), []);
-  const [tapeLayout, setTapeLayout] = useState<AboutUsV3TapeLayoutState>(() =>
+  const [tapeLayout] = useState<AboutUsV3TapeLayoutState>(() =>
     loadAboutUsV3TapeLayout(panelTapeMeta.keys, panelTapeMeta.textRightByKey),
   );
-  const tapeLayoutRef = useRef(tapeLayout);
-  tapeLayoutRef.current = tapeLayout;
-
-  useEffect(() => {
-    const sync = () => setTapeLayout(loadAboutUsV3TapeLayout(panelTapeMeta.keys, panelTapeMeta.textRightByKey));
-    sync();
-    window.addEventListener(ABOUT_US_V3_TAPE_LAYOUT_SYNC_EVENT, sync);
-    window.addEventListener("storage", sync);
-    return () => {
-      window.removeEventListener(ABOUT_US_V3_TAPE_LAYOUT_SYNC_EVENT, sync);
-      window.removeEventListener("storage", sync);
-    };
-  }, [panelTapeMeta]);
-
-  const toggleEditor = () => {
-    const params = new URLSearchParams(location.search);
-    if (editorMode) params.delete("editTapes");
-    else params.set("editTapes", "1");
-    const search = params.toString();
-    navigate({ pathname: location.pathname, search: search ? `?${search}` : "" }, { replace: true });
-  };
 
   let panelIndex = 0;
 
@@ -583,34 +508,18 @@ const AboutUs = () => {
         keywords={getStaticPageSeo("/pages/about-us").keywords}
       />
       <Header />
-      <main
-        id="main-content"
-        className={cn(
-          "mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 lg:px-8",
-          editorMode && "pb-28",
-        )}
-      >
+      <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 lg:px-8">
         <div className="not-prose">
           <AboutUsV3Intro />
-          <div className="mb-6 flex justify-end">
-            <Button type="button" size="sm" variant="outline" onClick={toggleEditor}>
-              {editorMode ? "Stop editing tapes" : "Edit corner tapes"}
-            </Button>
-          </div>
           {CHAPTERS.map((chapter) => {
             const section = (
               <StoryChapterSection
                 key={chapter.heading}
                 chapter={chapter}
                 startIndex={panelIndex}
-                editorMode={editorMode}
+                editorMode={false}
                 tapeLayout={tapeLayout}
-                onTapeLayoutChange={(panelKey, next) =>
-                  setTapeLayout((prev) => ({
-                    ...prev,
-                    [panelKey]: next,
-                  }))
-                }
+                onTapeLayoutChange={() => {}}
               />
             );
             panelIndex += chapter.panels.length;
@@ -619,9 +528,6 @@ const AboutUs = () => {
         </div>
       </main>
       <SiteFooter />
-      {editorMode ? (
-        <TapeEditorToolbar getLayout={() => tapeLayoutRef.current} onDone={toggleEditor} />
-      ) : null}
     </div>
   );
 };

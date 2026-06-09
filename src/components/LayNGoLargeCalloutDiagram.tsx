@@ -1244,10 +1244,7 @@ type LayNGoLargeCalloutDiagramProps = {
 };
 
 export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeCalloutDiagramProps) {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [searchParams] = useSearchParams();
-  const editorMode = searchParams.get("editLargeCallouts") === "1" || searchParams.get("editLargeCallouts") === "true";
+  const editorMode = false;
 
   const config = useMemo(() => diagramConfig(variant), [variant]);
   const lite18 = variant === "lite-18";
@@ -1407,18 +1404,6 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
     containerRef.current?.setPointerCapture(e.pointerId);
   };
 
-  const toggleDefenderEditor = () => {
-    const params = new URLSearchParams(location.search);
-    const next = !editorMode;
-    if (next) params.set("editLargeCallouts", "1");
-    else params.delete("editLargeCallouts");
-    const s = params.toString();
-    navigate({ pathname: location.pathname, search: s ? `?${s}` : "" }, { replace: true });
-    if (next && defenderFallback) {
-      setDefenderLayout(loadDefenderLayout(config.storageKey, defenderFallback));
-    }
-  };
-
   return (
     <div
       className={cn(
@@ -1450,30 +1435,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
                 : "Lay-n-Go Large product details"
       }
     >
-      {editorMode && isDefenderVariant ? (
-        <div className="sticky top-0 z-[250] mb-4 border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
-          <strong>Defender diagram edit mode</strong> — drag any amber-ringed callout circle to reposition it; use
-          Arrow below to pick a leader, then drag blue/rose handles. Save when finished.
-        </div>
-      ) : null}
-
-      {editorMode && !usesFixedDefenderCalloutStage(variant) ? (
-        <div className="sticky top-0 z-[250] mb-4 border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
-          <strong>Callout edit mode</strong> — drag dots on the mat and drag detail photos. Then Save layout.
-        </div>
-      ) : null}
-
       {isDefenderVariant ? (
-        <div className={cn("relative px-1 pb-8 sm:px-2 md:pb-10", editorMode && "overflow-visible")}>
-          <div className="absolute right-2 top-2 z-[330] sm:right-3 sm:top-3">
-            <button
-              type="button"
-              onClick={toggleDefenderEditor}
-              className="rounded-md border border-neutral-300 bg-white/95 px-3 py-1.5 text-xs font-semibold text-neutral-900 shadow-sm backdrop-blur-sm"
-            >
-              {editorMode ? "Stop editing" : "Edit diagram"}
-            </button>
-          </div>
+        <div className="relative px-1 pb-8 sm:px-2 md:pb-10">
           <EditableDefenderCalloutStage
             variant={defenderVariant}
             heroSrc={config.heroSrc}
@@ -1856,25 +1819,6 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
         </div>
         </div>
       </div>
-      ) : null}
-
-      {editorMode && isDefenderVariant ? (
-        <DefenderCalloutEditorToolbar
-          getLayout={() => defenderLayoutRef.current}
-          storageKey={config.storageKey}
-          layoutSyncEvent={config.layoutEvent}
-          leaderKeys={defenderLeaderKeys}
-          activeLeaderKey={defenderEditKey}
-          onActiveLeaderKeyChange={setDefenderEditKey}
-        />
-      ) : null}
-
-      {editorMode && !usesFixedDefenderCalloutStage(variant) ? (
-        <LargeCalloutEditorToolbar
-          getLayout={() => layoutRef.current}
-          storageKey={config.storageKey}
-          layoutSyncEvent={config.layoutEvent}
-        />
       ) : null}
     </div>
   );

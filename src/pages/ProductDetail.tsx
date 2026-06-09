@@ -1032,10 +1032,6 @@ const ProductDetail = () => {
       Boolean(product.description?.trim()),
   );
 
-  const [searchParams] = useSearchParams();
-  const cosmoStoryArrowEditMode =
-    isCosmoStoryPdp &&
-    (searchParams.get("editArrows") === "1" || searchParams.get("editArrows") === "true");
 
   const cosmoYoutubeId = useMemo(() => {
     if (!product) return null;
@@ -1910,7 +1906,7 @@ const ProductDetail = () => {
 
             {isNailspa18Product(product.handle) ? <NailspaPdpStory /> : null}
 
-            {isCosmoStoryPdp ? <CosmoPdpStory editorMode={cosmoStoryArrowEditMode} /> : null}
+            {isCosmoStoryPdp ? <CosmoPdpStory /> : null}
 
             <section
               className="mt-14 sm:mt-16"
