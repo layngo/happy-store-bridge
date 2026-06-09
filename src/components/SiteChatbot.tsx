@@ -2,25 +2,29 @@ import { useCallback, useEffect, useRef, useState, type FormEvent, type Keyboard
 import { Link } from "react-router-dom";
 import { ArrowUp, MessageCircle, X } from "lucide-react";
 
-import { CHAT_SAMPLE_QUESTIONS, findKnowledgeReply, type ChatLink, type ChatMessage } from "@/lib/chatbotKnowledge";
+import { COSMO_20_SWATCHES } from "@/components/Cosmo20ColorSelector";
+import { CHAT_SAMPLE_QUESTIONS, type ChatLink, type ChatMessage } from "@/lib/chatbotKnowledge";
 import { sendChatMessage } from "@/lib/chatApi";
 import { useDialogA11y } from "@/hooks/useDialogA11y";
 import { cn } from "@/lib/utils";
 
-/** Closed Cosmo bag shots — cycle while the assistant is thinking. */
-const THINKING_COSMO_IMAGES = [
-  "/cosmetic-bags-v2/cosmo-16.png",
-  "/cosmetic-bags-v2/cosmo-20.png",
-  "/cosmetic-bags-v2/cosmo-22.png",
-  "/promo/first-visit-cosmo-hero.png",
-  "/swatches/cosmo-20-paisley.jpg",
-  "/swatches/cosmo-20-butterfly.jpg",
-  "/swatches/cosmo-20-stars.jpg",
-  "/swatches/cosmo-20-pink-camo.jpg",
-] as const;
+/** Closed Cosmo 20" — one hero per color, cycles while the assistant is thinking. */
+const THINKING_COSMO_20_IMAGES = (() => {
+  const seen = new Set<string>();
+  return COSMO_20_SWATCHES.filter((s) => !s.forceUnavailable)
+    .map((s) => ({ src: s.bagImageUrl, label: s.tooltip }))
+    .filter((item) => {
+      if (seen.has(item.src)) return false;
+      seen.add(item.src);
+      return true;
+    });
+})();
 
 const STREAM_WORD_MS = 28;
-const MIN_THINKING_MS = 900;
+/** Minimum time to show the thinking animation (also caps how fast FAQ replies appear). */
+const MIN_THINKING_MS = 3_600;
+/** Ms per Cosmo 20 color while thinking — longer = slower color scroll. */
+const THINKING_CYCLE_MS = 820;
 const HEADING_CLASS =
   "font-heading font-extrabold uppercase tracking-[0.04em] text-foreground";
 
@@ -66,8 +70,8 @@ function CosmoThinkingIndicator() {
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      setIndex((current) => (current + 1) % THINKING_COSMO_IMAGES.length);
-    }, 650);
+      setIndex((current) => (current + 1) % THINKING_COSMO_20_IMAGES.length);
+    }, THINKING_CYCLE_MS);
     return () => window.clearInterval(id);
   }, []);
 
@@ -76,11 +80,12 @@ function CosmoThinkingIndicator() {
       <div className="chat-thinking-orbit" aria-hidden>
         <div className="chat-thinking-glow" />
         <div className="chat-thinking-avatar">
-          {THINKING_COSMO_IMAGES.map((src, i) => (
+          {THINKING_COSMO_20_IMAGES.map((item, i) => (
             <img
-              key={src}
-              src={src}
+              key={item.src}
+              src={item.src}
               alt=""
+              title={item.label}
               className={cn("chat-thinking-img", i === index && "chat-thinking-img--visible")}
             />
           ))}
@@ -213,15 +218,12 @@ export function SiteChatbot() {
     setInput("");
     setThinking(true);
     const thinkingStarted = Date.now();
-    const hasLocalAnswer = findKnowledgeReply(trimmed) !== null;
 
     try {
       const reply = await sendChatMessage(nextMessages);
-      if (!hasLocalAnswer) {
-        const elapsed = Date.now() - thinkingStarted;
-        if (elapsed < MIN_THINKING_MS) {
-          await new Promise((resolve) => window.setTimeout(resolve, MIN_THINKING_MS - elapsed));
-        }
+      const elapsed = Date.now() - thinkingStarted;
+      if (elapsed < MIN_THINKING_MS) {
+        await new Promise((resolve) => window.setTimeout(resolve, MIN_THINKING_MS - elapsed));
       }
       const assistantId = nextMessageId();
       setMessages((prev) => [

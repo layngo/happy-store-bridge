@@ -244,12 +244,18 @@ const Index = () => {
       {/* Last bag banner — image left, headline beside it */}
       <section className="w-full overflow-hidden bg-white py-6 sm:py-8 md:py-10">
         <div className="flex w-full max-w-[100vw] flex-col items-center gap-6 sm:flex-row sm:items-center sm:gap-8 md:gap-12 lg:gap-16">
-          <img
-            src={LAST_BAG_BANNER}
-            alt="Lay-n-Go Cosmo Deluxe bag with motion graphic"
-            className="block h-auto max-h-[300px] w-auto max-w-[min(100%,63rem)] shrink-0 object-contain object-left sm:max-h-[390px] md:max-h-[450px] lg:max-h-[510px]"
-            loading="lazy"
-          />
+          <div className="relative inline-block max-w-[min(100%,63rem)] shrink-0">
+            <img
+              src={LAST_BAG_BANNER}
+              alt="Lay-n-Go Cosmo Deluxe bag with motion graphic"
+              className="block h-auto max-h-[300px] w-auto max-w-full object-contain object-left sm:max-h-[390px] md:max-h-[450px] lg:max-h-[510px]"
+              loading="lazy"
+            />
+            <div
+              className="pointer-events-none absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-white via-white/70 to-transparent sm:h-10 md:h-12"
+              aria-hidden
+            />
+          </div>
           <div className="font-heading flex min-w-0 flex-1 flex-col items-center gap-5 px-4 text-center sm:gap-6 sm:px-0 sm:pr-6 md:pr-10 lg:pr-16">
             <p className="text-[clamp(2.25rem,6.5vw,5.5rem)] font-extrabold uppercase leading-[1.08] tracking-[0.04em] text-foreground">
               <span className="block whitespace-nowrap">The last</span>
