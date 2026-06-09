@@ -18,6 +18,7 @@ export const footerInfoLinks = [
   { to: "/policies/shipping-policy", label: "Shipping information" },
   { to: "/policies/privacy-policy", label: "Privacy policy" },
   { to: "/pages/return-policy", label: "Returns & refund policy" },
+  { to: "/policies/sms-policy", label: "SMS policy" },
   { to: "/pages/lay-n-go-patents", label: "Lay-n-Go Patents" },
   { to: "/pages/contact", label: "Contact" },
   { to: "/pages/about-us", label: "About Us" },

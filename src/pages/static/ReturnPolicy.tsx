@@ -1,34 +1,44 @@
-import { StaticPageLayout } from "@/components/StaticPageLayout";
 import { Link } from "react-router-dom";
+import { StaticPageLayout } from "@/components/StaticPageLayout";
 
 const ReturnPolicy = () => (
   <StaticPageLayout title="Return Policy">
+    <p>Dear valued customers,</p>
+
     <p>
-      We want you to love your Lay-n-Go purchase. This policy summarizes how returns and exchanges generally work;
-      for the legally binding version hosted on our storefront, see our{" "}
-      <Link to="/policies/refund-policy" className="text-primary hover:underline">
-        refund policy
-      </Link>{" "}
-      on Shopify.
+      We will gladly accept returns within <strong>14 days</strong> of receiving your order. Items should be returned
+      in unused condition with all original packaging. We will not accept returns or exchanges that are not
+      accompanied by a Return Authorization number and the original layngo.com order number.
     </p>
-    <h2>Eligibility</h2>
-    <ul>
-      <li>Items should be unused, in original condition, with tags and packaging when possible.</li>
-      <li>Time limits and exceptions may apply to seasonal or promotional items.</li>
-    </ul>
+
+    <p>
+      Lay-n-Go is not responsible for return shipping costs, nor will the original shipping costs be refunded. To
+      receive a Return Authorization number for your item, please email us at{" "}
+      <a href="mailto:info@layngo.com" className="text-primary hover:underline">
+        info@layngo.com
+      </a>
+      .
+    </p>
+
     <h2>How to start a return</h2>
     <ol>
-      <li>Email <a href="mailto:info@layngo.com">info@layngo.com</a> with your order number and reason for return.</li>
-      <li>Wait for return authorization and any required RMA instructions.</li>
-      <li>Ship the item as directed; keep your tracking number.</li>
+      <li>
+        Email{" "}
+        <a href="mailto:info@layngo.com" className="text-primary hover:underline">
+          info@layngo.com
+        </a>{" "}
+        with your layngo.com order number and the item(s) you wish to return.
+      </li>
+      <li>Wait for your Return Authorization (RA) number and return instructions.</li>
+      <li>Ship the item in unused condition with original packaging. Keep your tracking number.</li>
     </ol>
+
     <h2>Refunds</h2>
     <p>
-      Approved refunds are typically issued to the original payment method once the return is received and inspected.
-      Shipping charges may be non-refundable unless the error was ours.
+      Once your return is received and approved, refunds are issued to the original payment method. Original shipping
+      charges are non-refundable unless the return is due to our error.
     </p>
-    <h2>Exchanges</h2>
-    <p>Where inventory allows, we may offer an exchange for a different size or color. Contact us to coordinate.</p>
+
     <h2>Questions</h2>
     <p>
       <Link to="/pages/contact" className="text-primary hover:underline">
