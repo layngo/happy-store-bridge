@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
@@ -36,14 +35,6 @@ export default function CosmoArrowPlayground() {
             production, copy each path into{" "}
             <code className="rounded bg-muted px-1 text-xs">src/data/cosmoPdpStoryArrows.ts</code> as{" "}
             <code className="rounded bg-muted px-1 text-xs">COSMO_STORY_ARROW_PATH_DEFAULT</code>.
-          </p>
-          <p className="text-sm">
-            <Link
-              to="/product/lay-n-go-cosmo-20?editArrows=1"
-              className="text-primary underline-offset-4 hover:underline"
-            >
-              Example: Cosmo 20″ PDP (arrow edit mode)
-            </Link>
           </p>
         </div>
 

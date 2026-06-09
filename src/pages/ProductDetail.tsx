@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { useParams, Link, useSearchParams, useLocation } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { PageSeo } from "@/components/PageSeo";
 import { breadcrumbJsonLd, absoluteUrl, itemListJsonLd, productJsonLd, faqJsonLd, stripHtml, truncateText } from "@/lib/siteSeo";
 import {

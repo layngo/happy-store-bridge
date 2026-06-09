@@ -1021,68 +1021,12 @@ export function NailspaPdpStory() {
   const [arrows] = useState<ArrowMap>(ARROWS);
   const [mainCalloutBoxes] = useState<MainCalloutBoxes>(DEFAULT_MAIN_CALLOUT_BOXES);
   const [cordBoxPos] = useState<CordBoxPos>(DEFAULT_CORD_BOX_POS);
-    }
-  };
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(
-        JSON.stringify({ arrows, mainCalloutBoxes, cordBoxPos }, null, 2),
-      );
-    } catch {
-      // no-op
-    }
-  };
-
-  const done = () => {
-    if (typeof window === "undefined") return;
-    const url = new URL(window.location.href);
-    url.searchParams.delete("editArrows");
-    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
-    setEditorMode(false);
-  };
-
-  const arrowJson = useMemo(
-    () =>
-      JSON.stringify({ arrows, mainCalloutBoxes, cordBoxPos }, null, 2),
-    [arrows, mainCalloutBoxes, cordBoxPos],
-  );
 
   return (
     <section
       className="relative left-1/2 -ml-[50vw] w-screen overflow-x-hidden bg-background pt-10 text-foreground sm:pt-12 md:pt-14"
       aria-labelledby="nailspa-story-headline"
     >
-      <div className="fixed right-3 top-3 z-[320]">
-        <button
-          type="button"
-          onClick={() => {
-            setEditorMode((v) => {
-              const next = !v;
-              if (typeof window !== "undefined") {
-                const url = new URL(window.location.href);
-                if (next) url.searchParams.set("editArrows", "1");
-                else url.searchParams.delete("editArrows");
-                window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
-              }
-              if (next) {
-                setArrows(loadArrowsFromStorage() ?? ARROWS);
-                setMainCalloutBoxes(loadMainCalloutBoxesFromStorage() ?? DEFAULT_MAIN_CALLOUT_BOXES);
-                setCordBoxPos(loadCordBoxFromStorage() ?? DEFAULT_CORD_BOX_POS);
-              }
-              return next;
-            });
-          }}
-          className="rounded-md border border-neutral-300 bg-white/95 px-3 py-1.5 text-xs font-semibold text-neutral-900 shadow-sm backdrop-blur-sm"
-        >
-          {editorMode ? "Stop editing" : "Edit diagram"}
-        </button>
-      </div>
-      {editorMode ? (
-        <div className="sticky top-0 z-[250] border-b border-amber-200/90 bg-amber-50 px-4 py-2.5 text-center text-sm text-amber-950 shadow-sm">
-          <strong>Arrow edit mode</strong> — choose an arrow, drag joints 1–3 on the image (same as moving a text box). Adjust line, head, and rotation below. Save when finished.
-        </div>
-      ) : null}
       <div className="relative px-5 pb-12 sm:px-8 sm:pb-14 md:pb-16 lg:pb-20">
         <p
           id="nailspa-story-headline"
@@ -1100,22 +1044,15 @@ export function NailspaPdpStory() {
             <NailspaDiagramEdgeVignette />
           </div>
           <MainImageCallouts
-            className={cn(
-              "absolute inset-0 z-10 overflow-visible",
-              editorMode ? "pointer-events-auto" : "pointer-events-none md:pointer-events-none max-md:hidden",
-            )}
+            className="absolute inset-0 z-10 overflow-visible pointer-events-none md:pointer-events-none max-md:hidden"
             arrows={arrows}
-            editorMode={editorMode}
-            onArrowChange={updateArrow}
-            activeArrowKey={
-              MAIN_CALLOUT_ARROW_KEYS.includes(editArrowKey as MainCalloutArrowKey)
-                ? (editArrowKey as MainCalloutArrowKey)
-                : "lipTop"
-            }
+            editorMode={false}
+            onArrowChange={() => {}}
+            activeArrowKey="lipTop"
             mainCalloutBoxes={mainCalloutBoxes}
-            onMainCalloutBoxChange={updateMainCalloutBox}
+            onMainCalloutBoxChange={() => {}}
             cordBoxPos={cordBoxPos}
-            onCordBoxPosChange={setCordBoxPos}
+            onCordBoxPosChange={() => {}}
           />
         </div>
 
@@ -1163,74 +1100,6 @@ export function NailspaPdpStory() {
       <div className="relative w-full pb-14 pt-0 sm:pb-16 sm:pt-6 md:pt-10">
         <BottomProductImage className="max-md:-mt-3" />
       </div>
-      {editorMode ? (
-        <div className="fixed bottom-0 left-0 right-0 z-[300] border-t border-neutral-200 bg-white/95 px-4 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-sm md:left-1/2 md:right-auto md:mx-auto md:w-[min(100%,42rem)] md:-translate-x-1/2 md:rounded-t-xl md:border-x md:border-t">
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <label className="flex items-center gap-2 text-xs font-medium text-neutral-800">
-              Arrow
-              <select
-                value={editArrowKey}
-                onChange={(e) => setEditArrowKey(e.target.value as ArrowKey)}
-                className="rounded border border-neutral-300 bg-white px-2 py-1 text-xs"
-              >
-                {EDITOR_ARROW_KEYS.map((key) => (
-                  <option key={key} value={key}>
-                    {key}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="flex min-w-[9rem] flex-1 items-center gap-2 text-xs font-medium text-neutral-800">
-              Line
-              <input
-                type="range"
-                min={MIN_ARROW_STROKE}
-                max={MAX_ARROW_STROKE}
-                step={0.25}
-                value={editArrowStroke}
-                onChange={(e) => patchEditArrow({ strokeWidth: Number(e.target.value) })}
-                className="w-full"
-              />
-            </label>
-            <label className="flex min-w-[9rem] flex-1 items-center gap-2 text-xs font-medium text-neutral-800">
-              Head
-              <input
-                type="range"
-                min={MIN_HEAD_SCALE}
-                max={MAX_HEAD_SCALE}
-                step={0.1}
-                value={editHeadScale}
-                onChange={(e) => patchEditArrow({ headScale: Number(e.target.value) })}
-                className="w-full"
-              />
-            </label>
-            <label className="flex min-w-[9rem] flex-1 items-center gap-2 text-xs font-medium text-neutral-800">
-              Rotate
-              <input
-                type="range"
-                min={MIN_ARROW_ROTATION}
-                max={MAX_ARROW_ROTATION}
-                step={1}
-                value={editRotation}
-                onChange={(e) => patchEditArrow({ rotation: Number(e.target.value) })}
-                className="w-full"
-              />
-              <span className="tabular-nums text-neutral-600">{editRotation}°</span>
-            </label>
-            <button type="button" onClick={save} className="rounded-md bg-black px-3 py-1.5 text-xs font-semibold text-white">
-              Save to this browser
-            </button>
-            <button type="button" onClick={copy} className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-900">
-              Copy Coordinates
-            </button>
-            <button type="button" onClick={done} className="rounded-md border border-neutral-300 bg-neutral-100 px-3 py-1.5 text-xs font-semibold text-neutral-900">
-              Done editing
-            </button>
-          </div>
-          <p className="mt-2 text-center text-[11px] text-muted-foreground">Use `?editArrows=1` in URL, drag dots, then Save or Copy.</p>
-          <textarea readOnly value={arrowJson} className="mt-2 h-24 w-full rounded border border-neutral-300 p-2 font-mono text-[10px]" />
-        </div>
-      ) : null}
     </section>
   );
 }
