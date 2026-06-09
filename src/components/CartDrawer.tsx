@@ -1,23 +1,126 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
-import { useCartStore } from "@/stores/cartStore";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { ShoppingBag, Minus, Plus, Trash2, ArrowRight, Loader2 } from "lucide-react";
+import { useCartStore, type CartItem } from "@/stores/cartStore";
 import { cn } from "@/lib/utils";
+
+function formatOptions(item: CartItem) {
+  return item.selectedOptions
+    .filter((o) => o.value && o.value !== "Default Title")
+    .map((o) => o.value)
+    .join(" · ");
+}
+
+function CartLineItem({
+  item,
+  onRemove,
+  onDecrease,
+  onIncrease,
+}: {
+  item: CartItem;
+  onRemove: () => void;
+  onDecrease: () => void;
+  onIncrease: () => void;
+}) {
+  const { node } = item.product;
+  const image = node.images?.edges?.[0]?.node;
+  const unitPrice = parseFloat(item.price.amount);
+  const lineTotal = unitPrice * item.quantity;
+  const optionsLabel = formatOptions(item);
+
+  return (
+    <article className="cart-line group">
+      <Link to={`/product/${node.handle}`} className="cart-line__media">
+        {image ? (
+          <img src={image.url} alt={image.altText || node.title} className="cart-line__img" loading="lazy" />
+        ) : (
+          <span className="cart-line__img-placeholder" aria-hidden />
+        )}
+      </Link>
+
+      <div className="cart-line__body">
+        <div className="cart-line__head">
+          <Link to={`/product/${node.handle}`} className="cart-line__title">
+            {node.title}
+          </Link>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={`Remove ${node.title} from cart`}
+            className="cart-line__remove"
+            onClick={onRemove}
+          >
+            <Trash2 className="h-4 w-4" aria-hidden />
+          </Button>
+        </div>
+
+        {optionsLabel ? <p className="cart-line__options">{optionsLabel}</p> : null}
+
+        <div className="cart-line__footer">
+          <div className="cart-line__qty" role="group" aria-label={`Quantity for ${node.title}`}>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              aria-label={`Decrease quantity of ${node.title}`}
+              className="cart-line__qty-btn"
+              onClick={onDecrease}
+            >
+              <Minus className="h-4 w-4" aria-hidden />
+            </Button>
+            <span className="cart-line__qty-value" aria-live="polite">
+              {item.quantity}
+            </span>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              aria-label={`Increase quantity of ${node.title}`}
+              className="cart-line__qty-btn"
+              onClick={onIncrease}
+            >
+              <Plus className="h-4 w-4" aria-hidden />
+            </Button>
+          </div>
+
+          <div className="cart-line__pricing">
+            <p className="cart-line__line-total">${lineTotal.toFixed(2)}</p>
+            {item.quantity > 1 ? (
+              <p className="cart-line__unit-price">${unitPrice.toFixed(2)} each</p>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
 
 export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } = useCartStore();
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
+  const totalPrice = items.reduce((sum, item) => sum + parseFloat(item.price.amount) * item.quantity, 0);
+  const busy = isLoading || isSyncing;
 
-  useEffect(() => { if (isOpen) syncCart(); }, [isOpen, syncCart]);
+  useEffect(() => {
+    if (isOpen) syncCart();
+  }, [isOpen, syncCart]);
 
   const handleCheckout = () => {
     const checkoutUrl = getCheckoutUrl();
     if (checkoutUrl) {
-      window.open(checkoutUrl, '_blank');
+      window.open(checkoutUrl, "_blank");
       setIsOpen(false);
     }
   };
@@ -31,70 +134,83 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
           aria-label={totalItems > 0 ? `Open cart, ${totalItems} item${totalItems !== 1 ? "s" : ""}` : "Open cart"}
           className={cn("relative", triggerClassName)}
         >
-          <ShoppingCart className="h-5 w-5" />
+          <ShoppingBag className="h-5 w-5" />
           {totalItems > 0 && (
-            <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary text-primary-foreground">
+            <Badge className="absolute -top-1.5 -right-1.5 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-background bg-primary px-1 text-[10px] font-semibold text-primary-foreground">
               {totalItems}
             </Badge>
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-lg flex flex-col h-full bg-card border-border">
-        <SheetHeader className="flex-shrink-0">
-          <SheetTitle className="font-heading text-foreground">Shopping Cart</SheetTitle>
-          <SheetDescription className="text-muted-foreground">
-            {totalItems === 0 ? "Your cart is empty" : `${totalItems} item${totalItems !== 1 ? 's' : ''} in your cart`}
+
+      <SheetContent className="cart-drawer flex h-full w-full flex-col gap-0 border-border bg-[#f5f5f7] p-0 sm:max-w-[min(100vw,28rem)]">
+        <SheetHeader className="cart-drawer__header flex-shrink-0 border-b border-black/[0.06] bg-white px-5 pb-4 pt-6 text-left">
+          <SheetTitle className="font-heading text-xl font-semibold tracking-[-0.02em] text-foreground">
+            Your bag
+          </SheetTitle>
+          <SheetDescription className="text-sm text-muted-foreground">
+            {totalItems === 0
+              ? "Nothing here yet — add something you love."
+              : `${totalItems} item${totalItems !== 1 ? "s" : ""}`}
           </SheetDescription>
         </SheetHeader>
-        <div className="flex flex-col flex-1 pt-6 min-h-0">
+
+        <div className="flex min-h-0 flex-1 flex-col">
           {items.length === 0 ? (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="text-center">
-                <ShoppingCart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Your cart is empty</p>
+            <div className="flex flex-1 flex-col items-center justify-center gap-5 px-6 py-12 text-center">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+                <ShoppingBag className="h-7 w-7 text-muted-foreground" aria-hidden />
+              </span>
+              <div className="space-y-1">
+                <p className="font-heading text-lg font-semibold text-foreground">Your bag is empty</p>
+                <p className="max-w-[16rem] text-sm leading-relaxed text-muted-foreground">
+                  Browse our collections and add a Lay-n-Go to get started.
+                </p>
               </div>
+              <Button asChild className="rounded-full px-8" onClick={() => setIsOpen(false)}>
+                <Link to="/collections">Shop collections</Link>
+              </Button>
             </div>
           ) : (
             <>
-              <div className="flex-1 overflow-y-auto pr-2 min-h-0">
-                <div className="space-y-4">
+              <div className="cart-drawer__items min-h-0 flex-1 overflow-y-auto px-4 py-4">
+                <div className="space-y-3">
                   {items.map((item) => (
-                    <div key={item.variantId} className="flex gap-4 p-3 rounded-lg bg-secondary/50">
-                      <div className="w-16 h-16 bg-muted rounded-md overflow-hidden flex-shrink-0">
-                        {item.product.node.images?.edges?.[0]?.node && (
-                          <img src={item.product.node.images.edges[0].node.url} alt={item.product.node.title} className="w-full h-full object-cover" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-medium text-sm text-foreground truncate">{item.product.node.title}</h4>
-                        <p className="text-xs text-muted-foreground">{item.selectedOptions.map(o => o.value).join(' · ')}</p>
-                        <p className="font-semibold text-sm text-primary mt-1">${parseFloat(item.price.amount).toFixed(2)}</p>
-                      </div>
-                      <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                        <Button variant="ghost" size="icon" aria-label={`Remove ${item.product.node.title} from cart`} className="h-6 w-6 text-muted-foreground hover:text-destructive" onClick={() => removeItem(item.variantId)}>
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                        <div className="flex items-center gap-1">
-                          <Button variant="outline" size="icon" aria-label={`Decrease quantity of ${item.product.node.title}`} className="h-6 w-6" onClick={() => updateQuantity(item.variantId, item.quantity - 1)}>
-                            <Minus className="h-3 w-3" />
-                          </Button>
-                          <span className="w-8 text-center text-sm text-foreground" aria-live="polite" aria-label={`Quantity ${item.quantity}`}>{item.quantity}</span>
-                          <Button variant="outline" size="icon" aria-label={`Increase quantity of ${item.product.node.title}`} className="h-6 w-6" onClick={() => updateQuantity(item.variantId, item.quantity + 1)}>
-                            <Plus className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
+                    <CartLineItem
+                      key={item.variantId}
+                      item={item}
+                      onRemove={() => removeItem(item.variantId)}
+                      onDecrease={() => updateQuantity(item.variantId, item.quantity - 1)}
+                      onIncrease={() => updateQuantity(item.variantId, item.quantity + 1)}
+                    />
                   ))}
                 </div>
               </div>
-              <div className="flex-shrink-0 space-y-4 pt-4 border-t border-border">
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-heading text-foreground">Total</span>
-                  <span className="text-xl font-bold text-primary">${totalPrice.toFixed(2)}</span>
+
+              <div className="cart-drawer__footer flex-shrink-0 border-t border-black/[0.06] bg-white px-5 py-5">
+                <div className="mb-4 flex items-baseline justify-between gap-4">
+                  <span className="text-sm font-medium text-muted-foreground">Subtotal</span>
+                  <span className="font-heading text-2xl font-bold tracking-[-0.02em] text-foreground">
+                    ${totalPrice.toFixed(2)}
+                  </span>
                 </div>
-                <Button onClick={handleCheckout} className="w-full bg-primary text-primary-foreground hover:bg-primary/90" size="lg" disabled={items.length === 0 || isLoading || isSyncing}>
-                  {isLoading || isSyncing ? <Loader2 className="w-4 h-4 animate-spin" /> : <><ExternalLink className="w-4 h-4 mr-2" />Checkout</>}
+                <p className="mb-4 text-xs leading-relaxed text-muted-foreground">
+                  Shipping and taxes calculated at checkout.
+                </p>
+                <Button
+                  onClick={handleCheckout}
+                  className="h-12 w-full rounded-full text-base font-semibold"
+                  size="lg"
+                  disabled={items.length === 0 || busy}
+                >
+                  {busy ? (
+                    <Loader2 className="h-5 w-5 animate-spin" aria-label="Updating cart" />
+                  ) : (
+                    <>
+                      Checkout
+                      <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+                    </>
+                  )}
                 </Button>
               </div>
             </>
