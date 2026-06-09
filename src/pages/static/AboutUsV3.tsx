@@ -54,8 +54,10 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("founders-southside-painting.png"),
         title: "Love at first sight",
         alt: "Amy and Adam at Southside 815",
+        previewText:
+          "On February 1, 1999, Amy walked into Southside 815 in Alexandria, Virginia, and caught Adam's eye immediately....",
         storyText:
-          "On February 1, 1999, Amy walked into Southside 815 in Alexandria, Virginia, and caught Adam's eye immediately. A mutual friend introduced them, and four hours of conversation went by like it was 20 minutes. Adam walked Amy home that evening — meeting her two golden retrievers, Maggie & Molson. Both Amy and Adam had found their missing piece.\n\n22 years later, for Amy's 50th birthday, Adam had famed Alexandria painter Judy Heiser, memorialize the exact moment before both of their lives changed.",
+          "Four hours of conversation went by like it was 20 minutes. Adam walked Amy home that evening — meeting her two golden retrievers, Maggie & Molson.\n\n22 years later, for Amy's 50th birthday, Adam had Alexandria painter Judy Heiser, memorialize the moment before both of their lives changed forever.",
       },
       {
         src: aboutUsV2Png("they-meet-world-travelers-maggie-molson.png"),
