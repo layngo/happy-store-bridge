@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CollectionCard } from "@/components/CollectionCard";
@@ -82,6 +83,26 @@ const Index = () => {
 
   return (
     <div className="min-h-dvh bg-white flex flex-col">
+      <Helmet>
+        <title>Lay-n-Go — Patented Drawstring Mats for Life, Play & Travel</title>
+        <meta name="description" content="Shop Lay-n-Go drawstring activity mats and Cosmo cosmetic bags. Lay flat, then cinch shut in seconds for cleanup, storage, and travel." />
+        <link rel="canonical" href="https://happy-store-bridge.lovable.app/" />
+        <meta property="og:title" content="Lay-n-Go — Patented Drawstring Mats for Life, Play & Travel" />
+        <meta property="og:description" content="Lay flat, then cinch shut in seconds. Cosmetic bags, play mats, travel kits, pet beds, and tactical gear." />
+        <meta property="og:url" content="https://happy-store-bridge.lovable.app/" />
+        <meta property="og:type" content="website" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Lay-n-Go",
+          url: "https://happy-store-bridge.lovable.app/",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://happy-store-bridge.lovable.app/search?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        })}</script>
+      </Helmet>
       <Header variant="light" />
 
       <main id="main-content" className="flex-1">

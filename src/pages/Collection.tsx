@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { fetchCollectionByHandle, type ShopifyCollectionDetail } from "@/lib/shopify";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
