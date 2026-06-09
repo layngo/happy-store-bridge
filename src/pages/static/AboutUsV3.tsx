@@ -40,8 +40,6 @@ type StoryChapter = {
   panels: StoryPanel[];
 };
 
-const PLACEHOLDER = (seed: string) => `https://picsum.photos/seed/${seed}/1200/640`;
-
 const ABOUT_US_V2_ASSET_VER = "12";
 const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_US_V2_ASSET_VER}`;
 
