@@ -25,8 +25,8 @@ import Press from "./pages/static/Press.tsx";
 import PressSubpage from "./pages/static/PressSubpage.tsx";
 import PressCategory from "./pages/static/PressCategory.tsx";
 import PressYearRange from "./pages/static/PressYearRange.tsx";
-import PrivacyPolicy from "./pages/static/PrivacyPolicy.tsx";
 import ReturnPolicy from "./pages/static/ReturnPolicy.tsx";
+import TermsAndPrivacy from "./pages/static/TermsAndPrivacy.tsx";
 import ShippingPolicy from "./pages/static/ShippingPolicy.tsx";
 import SmsPolicy from "./pages/static/SmsPolicy.tsx";
 import SmallBusinesses from "./pages/static/SmallBusinesses.tsx";
@@ -87,7 +87,8 @@ const AppContent = () => {
         <Route path="/pages/small-businesses" element={<SmallBusinesses />} />
         <Route path="/pages/wholesale" element={<Wholesale />} />
 
-        <Route path="/policies/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/policies/terms-of-service" element={<TermsAndPrivacy />} />
+        <Route path="/policies/privacy-policy" element={<TermsAndPrivacy />} />
         <Route path="/policies/shipping-policy" element={<ShippingPolicy />} />
         <Route path="/policies/sms-policy" element={<SmsPolicy />} />
         <Route path="/policies/refund-policy" element={<ReturnPolicy />} />

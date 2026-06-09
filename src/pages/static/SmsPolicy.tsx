@@ -94,8 +94,8 @@ const SmsPolicy = () => (
     </p>
     <p>
       See also our{" "}
-      <Link to="/policies/privacy-policy" className="text-primary hover:underline">
-        Privacy Policy
+      <Link to="/policies/terms-of-service#privacy" className="text-primary hover:underline">
+        Terms &amp; Privacy
       </Link>
       .
     </p>

@@ -14,9 +14,8 @@ export const footerCatalogLinks = shopCollectionLinks;
 
 export const footerInfoLinks = [
   { to: "/pages/business-license-certification", label: "Business License" },
-  { to: "/policies/terms-of-service", label: "Terms & conditions" },
+  { to: "/policies/terms-of-service", label: "Terms & privacy" },
   { to: "/policies/shipping-policy", label: "Shipping information" },
-  { to: "/policies/privacy-policy", label: "Privacy policy" },
   { to: "/pages/return-policy", label: "Returns & refund policy" },
   { to: "/policies/sms-policy", label: "SMS policy" },
   { to: "/pages/lay-n-go-patents", label: "Lay-n-Go Patents" },
