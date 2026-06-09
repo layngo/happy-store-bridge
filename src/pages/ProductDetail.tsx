@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useParams, Link, useSearchParams, useLocation } from "react-router-dom";
 import { PageSeo } from "@/components/PageSeo";
-import { breadcrumbJsonLd, absoluteUrl, itemListJsonLd, productJsonLd, stripHtml, truncateText } from "@/lib/siteSeo";
+import { breadcrumbJsonLd, absoluteUrl, itemListJsonLd, productJsonLd, faqJsonLd, stripHtml, truncateText } from "@/lib/siteSeo";
 import {
   fetchProductByHandle,
   fetchRelatedProducts,
@@ -1651,7 +1651,7 @@ const ProductDetail = () => {
         type="product"
         image={product.images?.edges?.[0]?.node?.url ?? undefined}
         imageAlt={`${product.title} — Lay-n-Go product photo`}
-        keywords={`${product.title}, Lay-n-Go, drawstring bag, ${product.productType || "organizer"}`}
+        keywords={`${product.title}, Lay-n-Go, drawstring bag, ${product.tags?.[0] || "organizer"}`}
         jsonLd={[
           productJsonLd({
             name: product.title,
@@ -1668,6 +1668,28 @@ const ProductDetail = () => {
             { name: "Home", path: "/" },
             { name: "Collections", path: "/collections" },
             { name: product.title, path: `/product/${product.handle}` },
+          ]),
+          faqJsonLd([
+            {
+              question: `How does the ${product.title} work?`,
+              answer:
+                "It's a patented drawstring organizer that opens flat so you can see and reach every item, then cinches closed into a compact bag for travel or storage — one pull of the cord packs it up.",
+            },
+            {
+              question: `What is the return policy for the ${product.title}?`,
+              answer:
+                "Returns are accepted within 14 days of delivery. Items must be unused with original packaging. Email info@layngo.com with your order number for a Return Authorization before shipping items back.",
+            },
+            {
+              question: "How long does shipping take?",
+              answer:
+                "Economy shipping is 5–8 business days, Standard 3–4 days, and Express 1–2 business days after the order ships. U.S. and international options are available at checkout.",
+            },
+            {
+              question: "Is the Lay-n-Go design patented?",
+              answer:
+                "Yes. The open-flat, cinch-closed drawstring design is protected by U.S. utility patents. See layngo.com/pages/lay-n-go-patents for details.",
+            },
           ]),
         ]}
       />
