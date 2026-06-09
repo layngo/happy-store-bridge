@@ -1799,7 +1799,11 @@ const ProductDetail = () => {
             {hasLayNGoLargeStoryLayout ? (
               <LayNGoLargePdpPlayStrip
                 headline={
-                  isLayNGoDefenderMini16 || isLayNGoDefenderTactical20 ? "Mission-Ready in Seconds" : undefined
+                  isLayNGoTraveler20
+                    ? "Play for hours, clean up in seconds,"
+                    : isLayNGoDefenderMini16 || isLayNGoDefenderTactical20
+                      ? "Mission-Ready in Seconds"
+                      : undefined
                 }
                 forceHeadlineSingleLine={isLayNGoTraveler20 || isLayNGoDefenderMini16 || isLayNGoDefenderTactical20}
                 showLowerSections={!isLayNGoTraveler20}
@@ -1811,7 +1815,6 @@ const ProductDetail = () => {
                       ? "/products/lay-n-go-lifestyle-44/play-strip-headline.png"
                       : undefined
                 }
-                headlineVideoId={isLayNGoTraveler20 ? "1198186125" : undefined}
                 calloutVariant={
                   isLayNGoDefenderMini16
                     ? "defender-mini-16"
