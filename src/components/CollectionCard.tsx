@@ -12,6 +12,9 @@ interface CollectionCardProps {
   variant?: "default" | "home";
 }
 
+/** Site `--radius` is 0; collection tiles use explicit rounding. */
+const COLLECTION_TILE_RADIUS = "rounded-2xl";
+
 export const CollectionCard = ({ collection, variant = "default" }: CollectionCardProps) => {
   const img = collection.image;
   const homeConfig = variant === "home" ? getHomeCategoryConfig(collection.handle) : undefined;
@@ -28,9 +31,19 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
 
     return (
       <Link to={href} className="group mx-auto block w-[94%]">
-        <article className="relative aspect-square overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
+        <article
+          className={cn(
+            "relative aspect-square overflow-hidden border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5",
+            COLLECTION_TILE_RADIUS,
+          )}
+        >
           {hasVideo ? (
-            <div className="absolute left-1/2 top-1/2 h-full aspect-video -translate-x-1/2 -translate-y-1/2">
+            <div
+              className={cn(
+                "absolute left-1/2 top-1/2 h-full aspect-video -translate-x-1/2 -translate-y-1/2 overflow-hidden",
+                COLLECTION_TILE_RADIUS,
+              )}
+            >
               <VimeoLoopFadeEmbed
                 videoId={homeConfig.videoId!}
                 title={`${homeConfig.label} category video`}
@@ -85,8 +98,13 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
 
   return (
     <Link to={defaultHref} className="group block">
-      <div className="overflow-hidden rounded-lg bg-card border border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
-        <div className="aspect-[4/3] relative overflow-hidden bg-muted">
+      <div
+        className={cn(
+          "overflow-hidden bg-card border border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5",
+          COLLECTION_TILE_RADIUS,
+        )}
+      >
+        <div className={cn("aspect-[4/3] relative overflow-hidden bg-muted", COLLECTION_TILE_RADIUS)}>
           {img ? (
             <img
               src={img.url}

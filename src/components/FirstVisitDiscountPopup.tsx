@@ -15,7 +15,7 @@ import {
 } from "@/lib/discountPopupStorage";
 import { cn } from "@/lib/utils";
 
-/** Add `?showDiscount=1` to preview on any page. Otherwise shows on every home page visit until signup is completed. */
+/** Add `?showDiscount=1` to preview on any page. Shows on every home visit (and each Home nav click) until signup is completed. */
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
 const HERO_WIDTH = 1024;
 const HERO_HEIGHT = 804;
@@ -39,8 +39,7 @@ export function FirstVisitDiscountPopup() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("showDiscount") === "1") {
+    const resetAndOpen = () => {
       setStep("intro");
       setEmail("");
       setPhone("");
@@ -48,6 +47,11 @@ export function FirstVisitDiscountPopup() {
       setMarketingConsent(false);
       setDiscountCode("");
       setOpen(true);
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("showDiscount") === "1") {
+      resetAndOpen();
       return;
     }
 
@@ -61,15 +65,9 @@ export function FirstVisitDiscountPopup() {
       return;
     }
 
-    setStep("intro");
-    setEmail("");
-    setPhone("");
-    setOtp("");
-    setMarketingConsent(false);
-    setDiscountCode("");
-    const id = window.setTimeout(() => setOpen(true), 600);
+    const id = window.setTimeout(resetAndOpen, 600);
     return () => window.clearTimeout(id);
-  }, [location.pathname, location.key]);
+  }, [location.pathname, location.key, location.state]);
 
   const dismiss = () => {
     setOpen(false);

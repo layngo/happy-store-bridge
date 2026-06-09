@@ -1,3 +1,5 @@
+export const DISCOUNT_POPUP_HOME_STATE_KEY = "showDiscountPopup";
+
 const SUBMITTED_KEY = "layngo-discount-submitted";
 const DISMISSED_DATE_KEY = "layngo-discount-dismissed-date";
 
