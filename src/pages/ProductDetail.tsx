@@ -1329,6 +1329,7 @@ const ProductDetail = () => {
               key={`${url}-${i}`}
               type="button"
               onClick={() => setCosmo22GalleryIndex(i)}
+              aria-label={`View ${product.title} variant photo ${i + 1} of ${cosmo22HeroUrls.length}`}
               className={cn(
                 "flex h-16 w-16 shrink-0 items-center justify-center bg-muted/15 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                 i === cosmo22GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
@@ -1346,6 +1347,7 @@ const ProductDetail = () => {
               key={`${url}-${i}`}
               type="button"
               onClick={() => setCosmo20GalleryIndex(i)}
+              aria-label={`View ${product.title} variant photo ${i + 1} of ${cosmo20HeroUrls.length}`}
               className={cn(
                 "flex h-16 w-16 shrink-0 items-center justify-center bg-muted/15 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                 i === cosmo20GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
@@ -1363,6 +1365,7 @@ const ProductDetail = () => {
               key={`${url}-${i}`}
               type="button"
               onClick={() => setNailspa18GalleryIndex(i)}
+              aria-label={`View ${product.title} variant photo ${i + 1} of ${nailspa18HeroUrls.length}`}
               className={cn(
                 "flex h-16 w-16 shrink-0 items-center justify-center bg-background transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 i === nailspa18GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-0",
@@ -1393,6 +1396,7 @@ const ProductDetail = () => {
               key={i}
               type="button"
               onClick={() => setSelectedImage(i)}
+              aria-label={img.node.altText || `View ${product.title} photo ${i + 1} of ${orderedImages.length}`}
               className={cn(
                 "flex h-16 w-16 shrink-0 items-center justify-center transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 isCosmoPdp

@@ -1,0 +1,35 @@
+# Lay-n-Go
+
+> Lay-n-Go makes the patented drawstring activity mat that doubles as cleanup, storage, and carryall — for cosmetics, play, travel, pets, and tactical gear. Pull the cord and the mat cinches shut in seconds.
+
+## Pages
+
+- [Home](/): Brand overview and shop entry points.
+- [Shop all collections](/collections): Browse every Lay-n-Go product line.
+- [About us](/pages/about-us): Family-founded story behind the product.
+- [Contact](/pages/contact): Customer support and wholesale inquiries.
+- [Press](/pages/press): Editorial coverage and press features.
+- [Wholesale](/pages/wholesale): Wholesale program details.
+- [Patents](/pages/lay-n-go-patents): U.S. patents protecting Lay-n-Go products.
+- [Return policy](/pages/return-policy): Return and exchange terms.
+
+## Collections
+
+- [Cosmetic bags](/collections/cosmetic-bags): Cosmo lay-flat makeup bags in three sizes.
+- [Play](/collections/play): Activity play mats that cinch into a carry bag.
+- [Technology](/collections/technology): Tech and travel organizers.
+- [Military & first responder](/collections/military-first-responder): Tactical Defender bags.
+
+## Featured products
+
+- [Cosmo 20](/product/lay-n-go-cosmo-20): The original 20" lay-flat cosmetic bag.
+- [Cosmo 22 Deluxe](/product/lay-n-go-cosmo-22-deluxe): Largest Cosmo with extra capacity.
+- [Cosmo Mini 16](/product/cosmo-16-mini): Compact Cosmo for travel.
+- [Lay-n-Go Large 60"](/product/lay-n-go-large-60): Largest activity play mat.
+- [Lay-n-Go Lifestyle 44"](/product/lay-n-go-lifestyle-44): Backpack-style play mat.
+- [Lay-n-Go Lite 18"](/product/lay-n-go-lite-18): Personal-size travel play mat.
+- [NAILSPA 18"](/product/lay-n-go-nailspa-18): Portable nail-care station.
+- [Traveler 20"](/product/lay-n-go-traveler-20): Men's lay-flat Dopp kit.
+- [Travel Dog Bed 44"](/product/lay-n-go-travel-dog-bed-44): Portable dog bed and carry-all.
+- [Defender Mini 16"](/product/lay-n-go-defender-mini-16): Tactical organizer for warfighters.
+- [Defender Tactical 20"](/product/lay-n-go-tactical-bag-20): Larger tactical organizer.
