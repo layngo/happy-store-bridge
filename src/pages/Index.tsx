@@ -217,10 +217,10 @@ const Index = () => {
             className="block h-auto max-h-[300px] w-auto max-w-[min(100%,63rem)] shrink-0 object-contain object-left sm:max-h-[390px] md:max-h-[450px] lg:max-h-[510px]"
             loading="lazy"
           />
-          <p className="font-heading px-4 text-left text-[clamp(1.75rem,4.75vw,4.25rem)] font-extrabold uppercase leading-[1.05] tracking-[0.05em] text-foreground sm:px-0 sm:pr-6 md:pr-10 lg:pr-16">
-            <span className="block">The last</span>
-            <span className="block">bag you&apos;ll</span>
-            <span className="block">ever need</span>
+          <p className="font-heading min-w-0 flex-1 px-4 text-left text-[clamp(2.25rem,6.5vw,5.5rem)] font-extrabold uppercase leading-[1.08] tracking-[0.04em] text-foreground sm:px-0 sm:pr-6 md:pr-10 lg:pr-16">
+            <span className="block whitespace-nowrap">The last</span>
+            <span className="block whitespace-nowrap">bag you&apos;ll</span>
+            <span className="block whitespace-nowrap">ever need</span>
           </p>
         </div>
       </section>
