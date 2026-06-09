@@ -36,10 +36,6 @@ export const DEFAULT_ABOUT_US_V3_TAPE_LAYOUT: AboutUsV3TapeLayoutState = {
     near: { x: 91, y: 5.5, rotate: 46 },
     far: { x: 7, y: 91, rotate: 46 },
   },
-  "They have a family::They have a mess": {
-    near: { x: 7, y: 5.5, rotate: -46 },
-    far: { x: 91, y: 91, rotate: -46 },
-  },
   "They have a family::Our first prototype": {
     near: { x: 91, y: 5.5, rotate: 46 },
     far: { x: 7, y: 91, rotate: 46 },
