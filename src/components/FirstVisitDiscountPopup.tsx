@@ -10,13 +10,12 @@ import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { sendDiscountVerificationCode, verifyDiscountCode } from "@/lib/discountApi";
 import {
-  markDiscountDismissedToday,
+  hasCompletedDiscountSignup,
   markDiscountSignupComplete,
-  shouldShowDiscountPopup,
 } from "@/lib/discountPopupStorage";
 import { cn } from "@/lib/utils";
 
-/** Add `?showDiscount=1` to preview. Otherwise shows on site visits until completed, or again each new day after dismiss. */
+/** Add `?showDiscount=1` to preview on any page. Otherwise shows on every home page visit until signup is completed. */
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
 const HERO_WIDTH = 1024;
 const HERO_HEIGHT = 804;
@@ -52,18 +51,26 @@ export function FirstVisitDiscountPopup() {
       return;
     }
 
-    if (!shouldShowDiscountPopup()) {
+    if (location.pathname !== "/") {
+      setOpen(false);
+      return;
+    }
+
+    if (hasCompletedDiscountSignup()) {
       setOpen(false);
       return;
     }
 
     setStep("intro");
+    setEmail("");
+    setPhone("");
+    setOtp("");
+    setMarketingConsent(false);
     const id = window.setTimeout(() => setOpen(true), 600);
     return () => window.clearTimeout(id);
   }, [location.pathname, location.key]);
 
   const dismiss = () => {
-    markDiscountDismissedToday();
     setOpen(false);
   };
 
