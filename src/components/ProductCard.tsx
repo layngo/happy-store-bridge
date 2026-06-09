@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { ButtonSpinner } from "@/components/LoadingSpinner";
 import { useCartStore, type ShopifyProduct } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -293,6 +293,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
                     type="button"
                     role="radio"
                     aria-checked={selected}
+                    aria-label={colorLabel}
                     title={colorLabel}
                     onClick={(e) => {
                       e.preventDefault();
@@ -343,7 +344,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
           disabled={isLoading || !selectedVariant?.availableForSale}
           className="mt-auto h-11 w-full rounded-md border border-foreground/25 bg-transparent text-foreground hover:bg-muted"
         >
-          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Add to Cart"}
+          {isLoading ? <ButtonSpinner label="Adding to cart" /> : "Add to Cart"}
         </Button>
       </div>
     </article>

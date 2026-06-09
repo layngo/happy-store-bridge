@@ -13,6 +13,7 @@ dist-ssr
 *.local
 .env
 .env.*
+!.env.example
 
 # Customer reviews submitted via the site (dev / self-hosted API)
 data/submitted-reviews.json

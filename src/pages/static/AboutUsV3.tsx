@@ -2,7 +2,10 @@ import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
+import { PageSeo } from "@/components/PageSeo";
+import { getStaticPageSeo } from "@/lib/staticPageSeo";
 import { Button } from "@/components/ui/button";
+import { useDialogA11y } from "@/hooks/useDialogA11y";
 import { cn } from "@/lib/utils";
 import {
   ABOUT_US_V3_TAPE_LAYOUT_SYNC_EVENT,
@@ -170,25 +173,34 @@ function StoryTeaser({
 }
 
 function TapeStoryModal({ text, onClose }: { text: string; onClose: () => void }) {
+  const dialogRef = useDialogA11y({ open: true, onClose });
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 p-4 sm:p-8"
       onClick={onClose}
+      role="presentation"
     >
       <div
-        className="tape-sheet mx-auto w-full"
+        ref={dialogRef}
+        tabIndex={-1}
+        className="tape-sheet mx-auto w-full outline-none"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label="Full story"
+        aria-labelledby="tape-story-modal-title"
       >
         <div className="tape-sheet__body">
+          <h2 id="tape-story-modal-title" className="sr-only">
+            Full story
+          </h2>
           <button
+            type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label="Close full story"
             className="absolute top-4 right-4 z-[3] flex h-8 w-8 items-center justify-center rounded-full font-story text-lg font-bold text-foreground/55 transition-colors hover:bg-black/5 hover:text-foreground"
           >
-            ✕
+            <span aria-hidden>✕</span>
           </button>
           <div className="relative z-[1] space-y-4 pr-6 font-story text-base font-bold leading-relaxed text-foreground/90 sm:text-lg">
             {text.split("\n\n").map((para, i) => (
@@ -468,11 +480,11 @@ function StoryFadePanel({
 function AboutUsV3Intro() {
   return (
     <header className="py-12 text-center sm:py-14 md:py-16 lg:py-20">
-      <p className="mx-auto max-w-4xl font-heading text-[clamp(1.625rem,4.25vw,2.5rem)] font-medium leading-snug tracking-normal text-foreground">
+      <h1 className="mx-auto max-w-4xl font-heading text-[clamp(1.625rem,4.25vw,2.5rem)] font-medium leading-snug tracking-normal text-foreground">
         Let&apos;s face it, who reads an About Us page?
         <br />
         Lay-n-Go always keeps it fun and saves you time!
-      </p>
+      </h1>
     </header>
   );
 }
@@ -564,6 +576,12 @@ const AboutUsV3 = () => {
 
   return (
     <div className="flex min-h-dvh flex-col bg-background">
+      <PageSeo
+        title="Our Story"
+        description={getStaticPageSeo("/pages/about-usV3").description}
+        pathname="/pages/about-usV3"
+        keywords={getStaticPageSeo("/pages/about-usV3").keywords}
+      />
       <Header />
       <main
         id="main-content"

@@ -2,6 +2,7 @@ import type { IncomingMessage, ServerResponse } from "http";
 import {
   CHAT_KNOWLEDGE_TEXT,
   answerFromKnowledge,
+  findKnowledgeReply,
   type ChatAssistantReply,
   type ChatMessage,
 } from "../src/lib/chatbotKnowledge";
@@ -88,8 +89,12 @@ export function createChatApiMiddleware(env: Record<string, string>) {
       const apiKey = env.OPENAI_API_KEY?.trim();
       const model = env.OPENAI_CHAT_MODEL?.trim() || "gpt-4o-mini";
 
+      const knowledgeMatch = findKnowledgeReply(lastUser.content);
       let reply: ChatAssistantReply;
-      if (apiKey) {
+
+      if (knowledgeMatch) {
+        reply = knowledgeMatch;
+      } else if (apiKey) {
         try {
           reply = await answerWithOpenAi(apiKey, messages, model);
         } catch (err) {

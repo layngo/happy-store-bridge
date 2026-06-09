@@ -1,7 +1,40 @@
+User-agent: *
+Allow: /
+
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: cohere-ai
 Allow: /
 
 User-agent: Twitterbot
@@ -10,7 +43,22 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: Meta-ExternalAgent
 Allow: /
 
-Sitemap: https://happy-store-bridge.lovable.app/sitemap.xml
+User-agent: Bytespider
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+# AI-readable site summary: https://www.layngo.com/llms.txt
+# Alternate: https://www.layngo.com/ai.txt
+
+Sitemap: https://www.layngo.com/sitemap.xml

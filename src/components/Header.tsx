@@ -1,7 +1,8 @@
 import { type ComponentPropsWithoutRef, type MouseEvent, type ReactNode } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { DISCOUNT_POPUP_HOME_EVENT, requestHomeDiscountPopup } from "@/lib/discountPopupStorage";
 import { CartDrawer } from "./CartDrawer";
+import { SearchBar } from "./SearchBar";
 import { cn } from "@/lib/utils";
 import { shopCollectionLinks } from "@/lib/siteNav";
 import { ChevronDown } from "lucide-react";
@@ -94,13 +95,11 @@ function NavMenuTrigger({
 
 export const Header = ({ variant = "default" }: { variant?: "default" | "light" }) => {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   const light = variant === "light";
 
   const goHomeWithDiscountPopup = (e: MouseEvent) => {
-    e.preventDefault();
-    if (pathname !== "/") {
-      navigate("/");
+    if (pathname === "/") {
+      e.preventDefault();
     }
     requestHomeDiscountPopup();
   };
@@ -117,7 +116,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           <div />
 
           <div className="flex justify-center">
-            <Link to="/" className="flex flex-col items-center">
+            <Link to="/" className="flex flex-col items-center" aria-label="Lay-n-Go home">
               <img
                 src="/layngo-logo-outlined.png"
                 alt="Lay-n-Go"
@@ -133,8 +132,11 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           </div>
         </div>
 
-        <nav
-          className={cn(
+        <div className="flex justify-center px-2 pt-2">
+          <SearchBar light={light} className="w-full max-w-md" />
+        </div>
+
+        <nav aria-label="Main navigation" className={cn(
             "flex min-h-[2rem] w-full flex-wrap items-center justify-center gap-x-5 gap-y-2 px-2 pt-3 mt-2",
             !light && "border-t border-border/60",
           )}
@@ -151,7 +153,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           <DropdownMenu>
             <NavMenuTrigger active={isShopPath(pathname)} light={light}>
               Shop
-              <ChevronDown className="hidden sm:block h-3 w-3 shrink-0 opacity-70" />
+              <ChevronDown className="hidden sm:block h-3 w-3 shrink-0 opacity-70" aria-hidden />
             </NavMenuTrigger>
             <DropdownMenuContent
               align="center"
@@ -179,7 +181,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           <DropdownMenu>
             <NavMenuTrigger active={isAboutPath(pathname)} light={light}>
               About Us
-              <ChevronDown className="hidden sm:block h-3 w-3 shrink-0 opacity-70" />
+              <ChevronDown className="hidden sm:block h-3 w-3 shrink-0 opacity-70" aria-hidden />
             </NavMenuTrigger>
             <DropdownMenuContent
               align="center"

@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
+import { PageSeo } from "@/components/PageSeo";
 import { CollectionCard } from "@/components/CollectionCard";
 import { fetchCollections, type ShopifyCollectionSummary } from "@/lib/shopify";
 import { sortCollectionsForDisplay } from "@/lib/collectionOrder";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { testimonials } from "@/lib/siteNav";
-import { Loader2 } from "lucide-react";
 import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 import { StarRating } from "@/components/StarRating";
+import { faqJsonLd, HOME_FAQS, itemListJsonLd, SITE_TAGLINE, siteNavigationJsonLd, webPageJsonLd } from "@/lib/siteSeo";
+import { shopCollectionLinks } from "@/lib/siteNav";
 
 const HOME_HERO_VIMEO_ID = "1185281289";
 const OUR_STORY_IMAGES = [
@@ -83,26 +85,36 @@ const Index = () => {
 
   return (
     <div className="min-h-dvh bg-white flex flex-col">
-      <Helmet>
-        <title>Lay-n-Go — Patented Drawstring Mats for Life, Play & Travel</title>
-        <meta name="description" content="Shop Lay-n-Go drawstring activity mats and Cosmo cosmetic bags. Lay flat, then cinch shut in seconds for cleanup, storage, and travel." />
-        <link rel="canonical" href="https://happy-store-bridge.lovable.app/" />
-        <meta property="og:title" content="Lay-n-Go — Patented Drawstring Mats for Life, Play & Travel" />
-        <meta property="og:description" content="Lay flat, then cinch shut in seconds. Cosmetic bags, play mats, travel kits, pet beds, and tactical gear." />
-        <meta property="og:url" content="https://happy-store-bridge.lovable.app/" />
-        <meta property="og:type" content="website" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "Lay-n-Go",
-          url: "https://happy-store-bridge.lovable.app/",
-          potentialAction: {
-            "@type": "SearchAction",
-            target: "https://happy-store-bridge.lovable.app/search?q={search_term_string}",
-            "query-input": "required name=search_term_string",
-          },
-        })}</script>
-      </Helmet>
+      <PageSeo
+        title={`${SITE_TAGLINE}`}
+        description="Shop Lay-n-Go patented drawstring organizers — Cosmo cosmetic bags, Play toy mats, Traveler tech bags, pet beds, and tactical gear. Open flat, cinch closed in seconds."
+        pathname="/"
+        keywords="Lay-n-Go, Cosmo makeup bag, drawstring organizer, toy cleanup mat, travel toiletry bag, patented cosmetic bag"
+        jsonLd={[
+          webPageJsonLd(
+            SITE_TAGLINE,
+            "Shop Lay-n-Go patented drawstring organizers — Cosmo cosmetic bags, Play toy mats, Traveler tech bags, pet beds, and tactical gear.",
+            "/",
+          ),
+          faqJsonLd([...HOME_FAQS]),
+          itemListJsonLd("Shop by category", [
+            { name: "Cosmetic Bags", url: "/collections/cosmetic-bags" },
+            { name: "Nail Solutions", url: "/product/lay-n-go-nailspa-18" },
+            { name: "Play", url: "/collections/play" },
+            { name: "Tech & Travel", url: "/product/lay-n-go-traveler-20" },
+            { name: "Pet Solutions", url: "/product/lay-n-go-travel-dog-bed-44" },
+            { name: "Outdoor / Tactical", url: "/collections/military-first-responder" },
+          ]),
+          siteNavigationJsonLd([
+            { name: "Home", url: "/" },
+            { name: "Collections", url: "/collections" },
+            ...shopCollectionLinks.map((l) => ({ name: l.label, url: l.to })),
+            { name: "Press", url: "/pages/press" },
+            { name: "About Us", url: "/pages/about-usV3" },
+            { name: "Contact", url: "/pages/contact" },
+          ]),
+        ]}
+      />
       <Header variant="light" />
 
       <main id="main-content" className="flex-1">
@@ -115,7 +127,7 @@ const Index = () => {
               videoId={HOME_HERO_VIMEO_ID}
               title="Lay-n-Go brand film"
               iframeClassName="absolute inset-0 h-full w-full border-0 select-none"
-              showPauseControl={false}
+              showPauseControl
             />
           </div>
           <div
@@ -129,13 +141,11 @@ const Index = () => {
               for Life, Play, and Travel
             </h1>
             <div className="pointer-events-auto">
-              <Link to="/collections">
-                <button
-                  type="button"
-                  className="bg-primary text-primary-foreground rounded-full px-8 py-2.5 text-sm font-semibold tracking-wide shadow-lg transition-colors hover:bg-primary/90 md:px-9 md:py-3 md:text-base"
-                >
-                  Shop Now
-                </button>
+              <Link
+                to="/collections"
+                className="inline-flex rounded-full bg-primary px-8 py-2.5 text-sm font-semibold tracking-wide text-primary-foreground shadow-lg transition-colors hover:bg-primary/90 md:px-9 md:py-3 md:text-base"
+              >
+                Shop Now
               </Link>
             </div>
           </div>
@@ -151,9 +161,7 @@ const Index = () => {
           Cosmetic bags, tech &amp; travel, play, pets, outdoor, tactical, and nail solutions.
         </p>
         {collectionsLoading ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          </div>
+          <LoadingSpinner label="Loading categories" className="py-16" />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {displayCollections.map((c) => (
@@ -164,12 +172,12 @@ const Index = () => {
       </section>
 
       {/* Press logos */}
-      <section className="bg-white pb-14">
+      <section className="bg-white pb-14" aria-labelledby="featured-in-heading">
         <div className="container">
-          <p className="text-center text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground mb-6">
+          <p id="featured-in-heading" className="text-center text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground mb-6">
             Featured In
           </p>
-          <div className="overflow-hidden rounded-full border border-border bg-white py-4">
+          <div className="overflow-hidden rounded-full border border-border bg-white py-4" aria-label="Press and media logos">
             <div className="press-carousel-track">
               {[...PRESS_LOGOS, ...PRESS_LOGOS].map((logo, i) => (
                 <a
@@ -205,7 +213,8 @@ const Index = () => {
                 />
                 <img
                   src={OUR_STORY_IMAGES[1]}
-                  alt="Lay-n-Go founder story alternate"
+                  alt=""
+                  aria-hidden
                   className="our-story-slide our-story-slide-b h-full w-full object-cover"
                 />
               </div>
@@ -247,13 +256,11 @@ const Index = () => {
               <span className="block whitespace-nowrap">bag you&apos;ll</span>
               <span className="block whitespace-nowrap">ever need</span>
             </p>
-            <Link to="/collections">
-              <button
-                type="button"
-                className="rounded-full bg-primary px-8 py-2.5 text-sm font-semibold tracking-wide text-primary-foreground shadow-lg transition-colors hover:bg-primary/90 md:px-9 md:py-3 md:text-base"
-              >
-                Shop Now
-              </button>
+            <Link
+              to="/collections"
+              className="inline-flex rounded-full bg-primary px-8 py-2.5 text-sm font-semibold tracking-wide text-primary-foreground shadow-lg transition-colors hover:bg-primary/90 md:px-9 md:py-3 md:text-base"
+            >
+              Shop Now
             </Link>
           </div>
         </div>
@@ -284,7 +291,9 @@ const Index = () => {
                       {t.name.charAt(0)}
                     </span>
                     <div>
-                      <p className="text-sm font-semibold tracking-[-0.01em] text-[#1d1d1f]">{t.name}</p>
+                      <p className="text-sm font-semibold tracking-[-0.01em] text-[#1d1d1f]">
+                        <cite className="not-italic">{t.name}</cite>
+                      </p>
                       <p className="text-xs text-[#86868b]">Lay-n-Go customer</p>
                     </div>
                   </div>

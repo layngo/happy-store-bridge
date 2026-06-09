@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useParams, Link, useSearchParams, useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { PageSeo } from "@/components/PageSeo";
+import { breadcrumbJsonLd, absoluteUrl, itemListJsonLd, productJsonLd, stripHtml, truncateText } from "@/lib/siteSeo";
 import {
   fetchProductByHandle,
   fetchRelatedProducts,
@@ -11,7 +12,8 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
-import { ArrowLeft, ShoppingCart, Loader2, Minus, Plus, ChevronRight, Home } from "lucide-react";
+import { LoadingSpinner, ButtonSpinner } from "@/components/LoadingSpinner";
+import { ArrowLeft, ShoppingCart, Minus, Plus, ChevronRight, Home } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import {
@@ -1195,7 +1197,7 @@ const ProductDetail = () => {
       <div className="min-h-dvh bg-background flex flex-col">
         <Header />
         <main id="main-content" className="flex flex-1 items-center justify-center py-32">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <LoadingSpinner label="Loading product" />
         </main>
         <SiteFooter />
       </div>
@@ -1336,7 +1338,7 @@ const ProductDetail = () => {
                 i === cosmo22GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
               )}
             >
-              <img src={url} alt="" className="max-h-full max-w-full object-contain" />
+              <img src={url} alt={`${product.title} — photo ${i + 1}`} className="max-h-full max-w-full object-contain" />
             </button>
           ))}
         </div>
@@ -1354,7 +1356,7 @@ const ProductDetail = () => {
                 i === cosmo20GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
               )}
             >
-              <img src={url} alt="" className="max-h-full max-w-full object-contain" />
+              <img src={url} alt={`${product.title} — photo ${i + 1}`} className="max-h-full max-w-full object-contain" />
             </button>
           ))}
         </div>
@@ -1372,7 +1374,7 @@ const ProductDetail = () => {
                 i === nailspa18GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-0",
               )}
             >
-              <img src={url} alt="" className={NAILSPA_PRODUCT_IMAGE_CLASS} />
+              <img src={url} alt={`${product.title} — photo ${i + 1}`} className={NAILSPA_PRODUCT_IMAGE_CLASS} />
             </button>
           ))}
         </div>
@@ -1512,7 +1514,9 @@ const ProductDetail = () => {
                         : undefined
                     }
                     disabled={!node.availableForSale}
-                    aria-label={displayOptValue}
+                    aria-label={
+                      !node.availableForSale ? `${displayOptValue}, unavailable` : displayOptValue
+                    }
                     title={displayOptValue}
                   >
                     {isColor ? <span className="sr-only">{displayOptValue}</span> : displayOptValue}
@@ -1576,7 +1580,7 @@ const ProductDetail = () => {
       className="w-full bg-primary text-base text-primary-foreground hover:bg-primary/90"
     >
       {isLoading ? (
-        <Loader2 className="h-5 w-5 animate-spin" />
+        <ButtonSpinner label="Adding to cart" />
       ) : (
         <>
           <ShoppingCart className="mr-2 h-5 w-5" />
@@ -1594,7 +1598,7 @@ const ProductDetail = () => {
       className="font-cosmo-cta w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-base font-semibold tracking-wide text-neutral-50 shadow-none hover:bg-[#1f1f1f] disabled:opacity-50"
     >
       {isLoading ? (
-        <Loader2 className="h-5 w-5 animate-spin" />
+        <ButtonSpinner label="Adding to cart" />
       ) : (
         <>
           <ShoppingCart className="mr-2 h-5 w-5 opacity-90" />
@@ -1637,71 +1641,70 @@ const ProductDetail = () => {
             : "bg-background",
       )}
     >
-      <Helmet>
-        <title>{`${product.title} — Lay-n-Go`}</title>
-        <meta
-          name="description"
-          content={(product.description?.replace(/<[^>]+>/g, "").trim().slice(0, 155)) || `Shop the ${product.title} from Lay-n-Go.`}
-        />
-        <link rel="canonical" href={`https://happy-store-bridge.lovable.app/product/${product.handle}`} />
-        <meta property="og:title" content={`${product.title} — Lay-n-Go`} />
-        <meta property="og:description" content={(product.description?.replace(/<[^>]+>/g, "").trim().slice(0, 200)) || product.title} />
-        <meta property="og:url" content={`https://happy-store-bridge.lovable.app/product/${product.handle}`} />
-        <meta property="og:type" content="product" />
-        {product.images?.edges?.[0]?.node?.url ? (
-          <meta property="og:image" content={product.images.edges[0].node.url} />
-        ) : null}
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Product",
-          name: product.title,
-          description: product.description?.replace(/<[^>]+>/g, "").trim().slice(0, 500) || product.title,
-          image: product.images?.edges?.map((e) => e.node.url).filter(Boolean) ?? [],
-          brand: { "@type": "Brand", name: "Lay-n-Go" },
-          url: `https://happy-store-bridge.lovable.app/product/${product.handle}`,
-          offers: {
-            "@type": "Offer",
-            url: `https://happy-store-bridge.lovable.app/product/${product.handle}`,
-            price: priceDisplay,
-            priceCurrency: selectedVariant?.price.currencyCode || product.priceRange.minVariantPrice.currencyCode || "USD",
-            availability: selectedVariant?.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-          },
-        })}</script>
-      </Helmet>
+      <PageSeo
+        title={product.title}
+        description={
+          truncateText(stripHtml(product.description || ""), 160) ||
+          `Shop the ${product.title} — patented Lay-n-Go drawstring organizer that opens flat and cinches closed for travel and storage.`
+        }
+        pathname={`/product/${product.handle}`}
+        type="product"
+        image={product.images?.edges?.[0]?.node?.url ?? undefined}
+        imageAlt={`${product.title} — Lay-n-Go product photo`}
+        keywords={`${product.title}, Lay-n-Go, drawstring bag, ${product.productType || "organizer"}`}
+        jsonLd={[
+          productJsonLd({
+            name: product.title,
+            description: stripHtml(product.description || "") || product.title,
+            handle: product.handle,
+            images: product.images?.edges?.map((e) => e.node.url).filter(Boolean) ?? [],
+            price: String(priceDisplay),
+            currency: selectedVariant?.price.currencyCode || product.priceRange.minVariantPrice.currencyCode || "USD",
+            inStock: Boolean(selectedVariant?.availableForSale),
+            sku: selectedVariant?.id?.split("/").pop() ?? product.handle,
+            tags: product.tags,
+          }),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Collections", path: "/collections" },
+            { name: product.title, path: `/product/${product.handle}` },
+          ]),
+        ]}
+      />
       <Header />
       <main id="main-content" className="container py-8 flex-1">
-        <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6">
+        <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6" aria-label="Breadcrumb">
           <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground transition-colors">
-            <Home className="w-4 h-4" />
+            <Home className="w-4 h-4" aria-hidden />
             Home
           </Link>
-          <ChevronRight className="w-4 h-4 shrink-0" />
+          <ChevronRight className="w-4 h-4 shrink-0" aria-hidden />
           <Link to="/collections" className="hover:text-foreground transition-colors">
             Collections
           </Link>
           {fromCosmeticBagsV2 ? (
             <>
-              <ChevronRight className="w-4 h-4 shrink-0" />
+              <ChevronRight className="w-4 h-4 shrink-0" aria-hidden />
               <Link to={COSMETIC_BAGS_V2_PATH} className="hover:text-foreground transition-colors">
                 Cosmetic Bags V2
               </Link>
             </>
           ) : fromMilitaryFirstResponder ? (
             <>
-              <ChevronRight className="w-4 h-4 shrink-0" />
+              <ChevronRight className="w-4 h-4 shrink-0" aria-hidden />
               <Link to={MILITARY_FIRST_RESPONDER_PATH} className="hover:text-foreground transition-colors">
                 Outdoor / Tactical
               </Link>
             </>
           ) : collectionHandle ? (
             <>
-              <ChevronRight className="w-4 h-4 shrink-0" />
+              <ChevronRight className="w-4 h-4 shrink-0" aria-hidden />
               <Link to={`/collections/${collectionHandle}`} className="hover:text-foreground transition-colors capitalize">
                 {collectionHandle.replace(/-/g, " ")}
               </Link>
             </>
           ) : null}
-          <ChevronRight className="w-4 h-4 shrink-0" />
+          <ChevronRight className="w-4 h-4 shrink-0" aria-hidden />
           <span className="text-foreground font-medium line-clamp-1">{product.title}</span>
         </nav>
 
@@ -2225,7 +2228,7 @@ const ProductDetail = () => {
             )}
           >
             {isLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <ButtonSpinner label="Adding to cart" />
             ) : (
               <>
                 <ShoppingCart className={cn("mr-2 h-5 w-5", isCosmoPdp && "opacity-90")} />
@@ -2255,7 +2258,7 @@ const ProductDetail = () => {
             <div className="mx-auto flex w-full max-w-[220px] justify-center sm:max-w-[260px]">
               <img
                 src={stickyConfirmPreviewUrl}
-                alt=""
+                alt={`${product.title} color preview`}
                 className="h-auto max-h-[min(42vh,280px)] w-full object-contain"
                 loading="eager"
                 decoding="async"
@@ -2281,7 +2284,11 @@ const ProductDetail = () => {
                     )}
                     style={pdpColorCircleSwatchStyle(product.handle, isCosmoMini16, choice.rawValue, choice.node)}
                     disabled={!choice.node.availableForSale}
-                    aria-label={choice.displayValue}
+                    aria-label={
+                      !choice.node.availableForSale
+                        ? `${choice.displayValue}, unavailable`
+                        : choice.displayValue
+                    }
                     title={choice.displayValue}
                     aria-pressed={choice.idx === selectedVariantIdx}
                   >
@@ -2314,7 +2321,7 @@ const ProductDetail = () => {
               className="font-cosmo-cta border border-neutral-700 bg-[#2c2c2c] text-neutral-50 hover:bg-[#1f1f1f]"
             >
               {isLoading ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
+                <ButtonSpinner label="Adding to cart" />
               ) : (
                 <>
                   <ShoppingCart className="mr-2 h-5 w-5 opacity-90" />

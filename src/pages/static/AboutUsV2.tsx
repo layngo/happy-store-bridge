@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
+import { PageSeo } from "@/components/PageSeo";
+import { getStaticPageSeo } from "@/lib/staticPageSeo";
+import { useDialogA11y } from "@/hooks/useDialogA11y";
 import { cn } from "@/lib/utils";
 
 type GridSlot = {
@@ -137,28 +140,40 @@ const SECTIONS: SectionBlock[] = [
 ];
 
 function AboutTextWindow({ text, onClose }: { text: string; onClose: () => void }) {
+  const dialogRef = useDialogA11y({ open: true, onClose });
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       onClick={onClose}
+      role="presentation"
     >
       <div
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="about-text-window-title"
         className={cn(
-          "relative max-w-lg w-full rounded-2xl px-8 py-7 shadow-2xl",
+          "relative max-w-lg w-full rounded-2xl px-8 py-7 shadow-2xl outline-none",
           "bg-background/80 backdrop-blur-md border border-border/60",
         )}
         onClick={(e) => e.stopPropagation()}
       >
+        <h2 id="about-text-window-title" className="sr-only">
+          Story details
+        </h2>
         <button
+          type="button"
           onClick={onClose}
-          aria-label="Close"
+          aria-label="Close story details"
           className={cn(
             "absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full",
             "text-foreground/50 hover:text-foreground transition-colors",
             "bg-muted/60 hover:bg-muted",
           )}
         >
-          ✕
+          <span aria-hidden>✕</span>
         </button>
         <div className="space-y-3 pr-4">
           {text.split("\n\n").map((para, i) => (
@@ -205,7 +220,9 @@ function StoryGridCell({ src, caption, storyText }: GridSlot) {
               <>
                 {" "}
                 <button
+                  type="button"
                   onClick={() => setOpen(true)}
+                  aria-label={`Read more about ${caption}`}
                   className="underline underline-offset-2 hover:text-primary/70 transition-colors normal-case tracking-normal font-semibold"
                 >
                   (Click for more)
@@ -258,8 +275,11 @@ function StorySection({ block }: { block: SectionBlock }) {
   );
 }
 
-const AboutUsV2 = () => (
+const AboutUsV2 = () => {
+  const seo = getStaticPageSeo("/pages/about-usV2");
+  return (
   <div className="min-h-dvh bg-background flex flex-col">
+    <PageSeo title="About Us" description={seo.description} pathname="/pages/about-usV2" keywords={seo.keywords} />
     <Header />
     <main id="main-content" className="container flex-1 py-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="not-prose text-base font-medium leading-normal text-foreground/88">
@@ -275,6 +295,7 @@ const AboutUsV2 = () => (
     </main>
     <SiteFooter />
   </div>
-);
+  );
+};
 
 export default AboutUsV2;

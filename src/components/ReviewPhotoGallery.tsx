@@ -30,7 +30,7 @@ export function ReviewPhotoGallery({ images, photoLabel = "Customer", className 
             >
               <img
                 src={src}
-                alt=""
+                alt={`${photoLabel} review photo ${index + 1}`}
                 width={88}
                 height={88}
                 loading="lazy"

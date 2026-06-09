@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -7,11 +7,17 @@ import { cn } from "@/lib/utils";
 interface SearchBarProps {
   className?: string;
   light?: boolean;
+  /** Pre-fill from URL or page context. */
+  defaultQuery?: string;
 }
 
-export const SearchBar = ({ className, light }: SearchBarProps) => {
-  const [q, setQ] = useState("");
+export const SearchBar = ({ className, light, defaultQuery = "" }: SearchBarProps) => {
+  const [q, setQ] = useState(defaultQuery);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setQ(defaultQuery);
+  }, [defaultQuery]);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();

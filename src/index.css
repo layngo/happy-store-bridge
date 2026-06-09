@@ -204,6 +204,96 @@
     animation-delay: 0.3s;
   }
 
+  /* Claude-style conversation UI */
+  .chat-conversation {
+    @apply bg-white;
+  }
+
+  .chat-message {
+    @apply w-full font-sans text-[0.9375rem] leading-[1.65] tracking-normal sm:text-base sm:leading-[1.7];
+  }
+
+  .chat-message--user {
+    @apply text-foreground;
+  }
+
+  .chat-message--user .chat-message__text {
+    @apply font-medium text-foreground/90;
+  }
+
+  .chat-message--assistant {
+    @apply text-foreground;
+  }
+
+  .chat-message--assistant .chat-message__text {
+    @apply font-normal text-foreground;
+  }
+
+  .chat-stream-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.05em;
+    margin-left: 1px;
+    vertical-align: text-bottom;
+    background: hsl(var(--primary));
+    animation: chat-cursor-blink 0.9s step-end infinite;
+  }
+
+  .chat-thinking-row {
+    @apply flex items-center gap-3 py-1;
+  }
+
+  .chat-thinking-label {
+    @apply font-sans text-sm font-medium text-muted-foreground;
+    animation: chat-thinking-pulse 1.8s ease-in-out infinite;
+  }
+
+  .chat-thinking-orbit {
+    @apply relative flex h-11 w-11 shrink-0 items-center justify-center;
+    animation: chat-orbit-pulse 2.2s ease-in-out infinite;
+  }
+
+  .chat-thinking-glow {
+    @apply absolute inset-0 rounded-full opacity-60;
+    background: radial-gradient(circle at 30% 30%, hsl(var(--primary) / 0.35), transparent 70%);
+  }
+
+  .chat-thinking-avatar {
+    @apply relative h-9 w-9 overflow-hidden rounded-full border border-border/80 bg-white shadow-sm;
+  }
+
+  .chat-thinking-img {
+    @apply absolute inset-0 h-full w-full object-cover;
+    opacity: 0;
+    transform: scale(1.08);
+    transition:
+      opacity 0.36s ease,
+      transform 0.36s ease;
+  }
+
+  .chat-thinking-img--active,
+  .chat-thinking-img--in {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .chat-thinking-img--out {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  .chat-composer-inner {
+    @apply flex items-end gap-2 rounded-xl border border-border/80 bg-neutral-50/80 px-3 py-2 transition-colors focus-within:border-primary/40 focus-within:bg-white focus-within:ring-2 focus-within:ring-primary/15;
+  }
+
+  .chat-composer-input {
+    @apply min-h-[1.5rem] max-h-[7.5rem] min-w-0 flex-1 resize-none border-0 bg-transparent py-1.5 font-sans text-base font-normal leading-snug text-foreground outline-none placeholder:text-muted-foreground disabled:opacity-50;
+  }
+
+  .chat-composer-send {
+    @apply mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-35;
+  }
+
   .brand-review-body {
     @apply text-[0.9375rem] font-normal leading-[1.65] tracking-normal text-foreground/85;
   }
@@ -910,6 +1000,38 @@
   30% {
     transform: translateY(-5px);
     opacity: 1;
+  }
+}
+
+@keyframes chat-cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes chat-thinking-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes chat-orbit-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.85;
   }
 }
 

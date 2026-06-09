@@ -277,6 +277,15 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
   },
 ];
 
+export function findKnowledgeReply(userMessage: string): ChatAssistantReply | null {
+  const trimmed = userMessage.trim();
+  if (!trimmed) return null;
+  for (const { test, reply } of TOPIC_MATCHERS) {
+    if (test.test(trimmed)) return reply;
+  }
+  return null;
+}
+
 export function answerFromKnowledge(userMessage: string): ChatAssistantReply {
   const trimmed = userMessage.trim();
   if (!trimmed) {
@@ -286,9 +295,8 @@ export function answerFromKnowledge(userMessage: string): ChatAssistantReply {
     };
   }
 
-  for (const { test, reply } of TOPIC_MATCHERS) {
-    if (test.test(trimmed)) return reply;
-  }
+  const match = findKnowledgeReply(trimmed);
+  if (match) return match;
 
   return {
     content:

@@ -1,0 +1,20 @@
+{
+  "name": "Lay-n-Go",
+  "short_name": "Lay-n-Go",
+  "description": "Patented drawstring organizers for cosmetics, travel, play, pets, and tactical gear. Open flat, cinch closed.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3a9fb0",
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "/layngo-logo-outlined.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["shopping", "lifestyle"]
+}

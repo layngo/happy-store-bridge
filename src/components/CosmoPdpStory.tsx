@@ -269,7 +269,7 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
             <div className="w-[clamp(132px,38vw,220px)] shrink-0 md:w-[clamp(148px,34vw,340px)]">
               <RippleLipImage
                 src="/cosmo-pdp/story/image1.png"
-                alt=""
+                alt="Lay-n-Go Cosmo cosmetic bag opened flat with makeup and brushes visible"
                 className="block h-auto w-full max-w-none"
                 loading="lazy"
                 scale={5}
@@ -322,7 +322,7 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
               <div className="relative mx-auto w-full max-w-[min(100%,620px)]">
                 <RippleLipImage
                   src="/cosmo-pdp/story/image2.png"
-                  alt=""
+                  alt="Lay-n-Go Cosmo bag laid flat — every cosmetic visible at once"
                   className="block h-auto w-full object-contain object-bottom max-md:max-h-[min(72vh,560px)] md:max-h-[min(68vh,540px)]"
                   loading="lazy"
                   scale={7}
@@ -352,7 +352,7 @@ export function CosmoPdpStory({ editorMode = false }: CosmoPdpStoryProps) {
               <div className="relative ml-auto mr-0 w-full max-md:max-w-[min(76vw,340px)] md:max-w-[min(62vw,520px)] lg:max-w-[560px]">
                 <RippleLipImage
                   src="/cosmo-pdp/story/image3.png"
-                  alt=""
+                  alt="Lay-n-Go Cosmo bag cinched closed and ready for travel"
                   className="block h-auto w-full object-contain object-bottom object-right max-md:max-h-[min(34vh,320px)] md:max-h-[min(60vh,560px)] lg:max-h-[620px]"
                   loading="lazy"
                   scale={7}

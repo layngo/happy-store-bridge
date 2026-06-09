@@ -27,7 +27,7 @@ export const PressCategoryBox = ({ meta, articleCount }: { meta: PressCategoryMe
         {image ? (
           <img
             src={image.src}
-            alt=""
+            alt={`${meta.displayTitle} press coverage`}
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
             style={{ objectPosition: image.objectPosition ?? "center" }}
             loading="lazy"

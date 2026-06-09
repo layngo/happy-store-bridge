@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Facebook, Globe, Instagram } from "lucide-react";
 import { footerCatalogLinks, footerInfoLinks, socialLinks } from "@/lib/siteNav";
 import { subscribeToNewsletter } from "@/lib/newsletterApi";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { ButtonSpinner } from "@/components/LoadingSpinner";
 
 interface SiteFooterProps {
   variant?: "light" | "dark";
@@ -98,8 +99,13 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
             <form
               onSubmit={onNewsletter}
               className="flex w-full max-w-[300px] flex-col gap-2 sm:max-w-none sm:flex-row sm:items-center"
+              aria-label="Newsletter signup"
             >
+              <Label htmlFor="footer-newsletter-email" className="sr-only">
+                Email address for newsletter
+              </Label>
               <Input
+                id="footer-newsletter-email"
                 type="email"
                 placeholder="Email"
                 value={email}
@@ -107,15 +113,16 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
                 className="h-9 flex-1 bg-background text-sm"
                 disabled={submitting}
                 required
+                autoComplete="email"
               />
-              <Button type="submit" size="sm" className="h-9 shrink-0 px-4 sm:w-auto w-full" disabled={submitting}>
-                {submitting ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : "Join"}
+              <Button type="submit" size="sm" className="h-9 shrink-0 px-4 sm:w-auto w-full" disabled={submitting} aria-busy={submitting}>
+                {submitting ? <ButtonSpinner label="Subscribing" /> : "Join"}
               </Button>
             </form>
           </div>
 
           {/* Catalog */}
-          <div className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
+          <nav aria-label="Product catalog" className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
             <h3 className={sectionHeading}>Catalog</h3>
             <ul className="space-y-1.5 text-sm text-muted-foreground">
               {footerCatalogLinks.map((l) => (
@@ -126,10 +133,10 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
 
           {/* Company */}
-          <div className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
+          <nav aria-label="Company information" className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
             <h3 className={sectionHeading}>Company</h3>
             <ul className="space-y-1.5 text-sm text-muted-foreground">
               {footerInfoLinks.map((l) => (
@@ -140,7 +147,7 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         </div>
 
         {/* Socials centered under Newsletter + Catalog columns on large screens */}

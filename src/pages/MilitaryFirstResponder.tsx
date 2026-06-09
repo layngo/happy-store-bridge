@@ -3,9 +3,13 @@ import { Link } from "react-router-dom";
 import { fetchCollectionByHandle, type ShopifyCollectionDetail } from "@/lib/shopify";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
+import { PageSeo } from "@/components/PageSeo";
+import { getStaticPageSeo } from "@/lib/staticPageSeo";
 import { getCollectionGridSwatchPreview } from "@/components/ProductCard";
 import { cn } from "@/lib/utils";
-import { Loader2, ChevronRight, Home } from "lucide-react";
+import { PageBreadcrumb } from "@/components/PageBreadcrumb";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
+import { ChevronRight, Home } from "lucide-react";
 import { DefenderHeroVideo } from "@/components/DefenderHeroVideo";
 
 export const MILITARY_FIRST_RESPONDER_PATH = "/collections/military-first-responder";
@@ -165,7 +169,7 @@ const MilitaryFirstResponder = () => {
       <div className="min-h-dvh bg-background flex flex-col">
         <Header />
         <main id="main-content" className="flex flex-1 items-center justify-center py-32">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <LoadingSpinner label="Loading outdoor and tactical collection" />
         </main>
         <SiteFooter />
       </div>
@@ -177,7 +181,8 @@ const MilitaryFirstResponder = () => {
       <div className="min-h-dvh bg-background flex flex-col">
         <Header />
         <main id="main-content" className="container py-20 text-center flex-1">
-          <p className="text-muted-foreground text-lg">Collection not found</p>
+          <h1 className="font-heading text-3xl font-bold text-foreground mb-4">Collection not found</h1>
+          <p className="text-muted-foreground text-lg">We couldn&apos;t find this collection.</p>
           <Link to="/collections" className="text-primary hover:underline mt-4 inline-block">
             View all collections
           </Link>
@@ -189,24 +194,28 @@ const MilitaryFirstResponder = () => {
 
   return (
     <div className="min-h-dvh bg-background flex flex-col">
+      <PageSeo
+        title="Outdoor / Tactical"
+        description={getStaticPageSeo("/collections/military-first-responder").description}
+        pathname="/collections/military-first-responder"
+        keywords={getStaticPageSeo("/collections/military-first-responder").keywords}
+      />
       <Header />
       <main id="main-content" className="container py-8 flex-1">
-        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8 flex-wrap">
+        <PageBreadcrumb className="mb-8 flex-wrap">
           <Link to="/" className="inline-flex items-center gap-1 hover:text-foreground transition-colors">
-            <Home className="w-4 h-4" />
+            <Home className="w-4 h-4" aria-hidden />
             Home
           </Link>
-          <ChevronRight className="w-4 h-4 shrink-0" />
+          <ChevronRight className="w-4 h-4 shrink-0" aria-hidden />
           <Link to="/collections" className="hover:text-foreground transition-colors">
             Collections
           </Link>
-          <ChevronRight className="w-4 h-4 shrink-0" />
-          <Link to={`/collections/${COLLECTION_HANDLE}`} className="hover:text-foreground transition-colors">
+          <ChevronRight className="w-4 h-4 shrink-0" aria-hidden />
+          <span className="text-foreground font-medium" aria-current="page">
             {collection.title}
-          </Link>
-          <ChevronRight className="w-4 h-4 shrink-0" />
-          <span className="text-foreground font-medium">{collection.title}</span>
-        </nav>
+          </span>
+        </PageBreadcrumb>
 
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8">
           <div>

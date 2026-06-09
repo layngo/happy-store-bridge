@@ -1,35 +1,71 @@
-# Lay-n-Go
+# Lay-n-Go (layngo.com)
 
-> Lay-n-Go makes the patented drawstring activity mat that doubles as cleanup, storage, and carryall — for cosmetics, play, travel, pets, and tactical gear. Pull the cord and the mat cinches shut in seconds.
+> Patented drawstring organizers that open flat for full visibility and cinch closed for storage and travel.
 
-## Pages
+Lay-n-Go sells organizational solutions for cosmetics, travel, play, pets, nails, and tactical/outdoor use. Founded by Amy and Adam Fazackerley. 16+ years in business. U.S. utility patents protect the open-flat, cinch-closed design.
 
-- [Home](/): Brand overview and shop entry points.
-- [Shop all collections](/collections): Browse every Lay-n-Go product line.
-- [About us](/pages/about-us): Family-founded story behind the product.
-- [Contact](/pages/contact): Customer support and wholesale inquiries.
-- [Press](/pages/press): Editorial coverage and press features.
-- [Wholesale](/pages/wholesale): Wholesale program details.
-- [Patents](/pages/lay-n-go-patents): U.S. patents protecting Lay-n-Go products.
-- [Return policy](/pages/return-policy): Return and exchange terms.
+## Primary pages
+
+- Homepage: https://www.layngo.com/
+- Shop all collections: https://www.layngo.com/collections
+- Search products: https://www.layngo.com/search
+- Our story: https://www.layngo.com/pages/about-usV3
+- Contact & wholesale: https://www.layngo.com/pages/contact
+- Press & media: https://www.layngo.com/pages/press
+
+## Best-selling products
+
+- Lay-n-Go Cosmo 20" (cosmetic/makeup bag): https://www.layngo.com/product/lay-n-go-cosmo-20
+- Lay-n-Go Cosmo Deluxe 22": https://www.layngo.com/product/lay-n-go-cosmo-deluxe-22
+- Lay-n-Go Traveler 20" (tech & travel): https://www.layngo.com/product/lay-n-go-traveler-20
+- Lay-n-Go Nailspa 18": https://www.layngo.com/product/lay-n-go-nailspa-18
+- Lay-n-Go Travel Dog Bed 44": https://www.layngo.com/product/lay-n-go-travel-dog-bed-44
 
 ## Collections
 
-- [Cosmetic bags](/collections/cosmetic-bags): Cosmo lay-flat makeup bags in three sizes.
-- [Play](/collections/play): Activity play mats that cinch into a carry bag.
-- [Technology](/collections/technology): Tech and travel organizers.
-- [Military & first responder](/collections/military-first-responder): Tactical Defender bags.
+- Cosmetic bags: https://www.layngo.com/collections/cosmetic-bags
+- Play (toy cleanup mats): https://www.layngo.com/collections/play
+- Tech & travel: https://www.layngo.com/collections/technology
+- Pet solutions: https://www.layngo.com/collections/pet-solutions
+- Outdoor / tactical: https://www.layngo.com/collections/military-first-responder
+- Nail solutions: https://www.layngo.com/product/lay-n-go-nailspa-18
 
-## Featured products
+## Policies
 
-- [Cosmo 20](/product/lay-n-go-cosmo-20): The original 20" lay-flat cosmetic bag.
-- [Cosmo 22 Deluxe](/product/lay-n-go-cosmo-22-deluxe): Largest Cosmo with extra capacity.
-- [Cosmo Mini 16](/product/cosmo-16-mini): Compact Cosmo for travel.
-- [Lay-n-Go Large 60"](/product/lay-n-go-large-60): Largest activity play mat.
-- [Lay-n-Go Lifestyle 44"](/product/lay-n-go-lifestyle-44): Backpack-style play mat.
-- [Lay-n-Go Lite 18"](/product/lay-n-go-lite-18): Personal-size travel play mat.
-- [NAILSPA 18"](/product/lay-n-go-nailspa-18): Portable nail-care station.
-- [Traveler 20"](/product/lay-n-go-traveler-20): Men's lay-flat Dopp kit.
-- [Travel Dog Bed 44"](/product/lay-n-go-travel-dog-bed-44): Portable dog bed and carry-all.
-- [Defender Mini 16"](/product/lay-n-go-defender-mini-16): Tactical organizer for warfighters.
-- [Defender Tactical 20"](/product/lay-n-go-tactical-bag-20): Larger tactical organizer.
+- Shipping (Economy 5–8 days, Standard 3–4, Express 1–2 business days): https://www.layngo.com/policies/shipping-policy
+- Returns (14 days, unused, RA required): https://www.layngo.com/pages/return-policy
+- Terms & privacy: https://www.layngo.com/policies/terms-of-service
+- SMS/text policy (STOP to opt out): https://www.layngo.com/policies/sms-policy
+- Patents: https://www.layngo.com/pages/lay-n-go-patents
+
+## Customer support
+
+- Email: info@layngo.com
+- Fax: 703.995.4916
+- Account login: https://www.layngo.com/account/login
+
+## How the product works
+
+Lay-n-Go is a drawstring mat/bag hybrid: spread it flat to see and use all contents, then pull the drawstring to cinch everything closed for storage or travel. Used for makeup, toys/LEGO cleanup, toiletries, tech cables, pet travel, nail tools, and tactical gear.
+
+## Frequently asked questions
+
+Q: What is Lay-n-Go's best seller?
+A: The Lay-n-Go Cosmo 20" cosmetic/makeup bag — opens flat, cinches closed.
+
+Q: What is the return policy?
+A: 14 days from delivery; items must be unused with original packaging. Email info@layngo.com for a Return Authorization before shipping back.
+
+Q: How does shipping work?
+A: Economy 5–8 business days, Standard 3–4, Express 1–2 after the order ships. U.S. and international options at checkout.
+
+Q: How does the product work?
+A: A patented drawstring mat opens flat for full visibility, then cinches into a bag for storage or travel.
+
+Q: Wholesale and bulk orders?
+A: Contact info@layngo.com via https://www.layngo.com/pages/contact#wholesale
+
+## Extended site map
+
+- Full URL list: https://www.layngo.com/sitemap.xml
+- Machine-readable product data: Product schema on each /product/ page

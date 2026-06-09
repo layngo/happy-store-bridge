@@ -174,7 +174,7 @@ export function ProductLifestyleGallery({
                   : "border-border/60 opacity-90 hover:border-border hover:opacity-100",
               )}
             >
-              <img src={item.src} alt="" className="h-full w-full object-contain" draggable={false} />
+              <img src={item.src} alt={item.alt} className="h-full w-full object-contain" draggable={false} />
             </button>
           ))}
         </div>

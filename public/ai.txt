@@ -1,0 +1,11 @@
+# Lay-n-Go — AI discovery file
+
+This site welcomes AI crawlers and assistants. For a full machine-readable summary of products, policies, and support, see:
+
+https://www.layngo.com/llms.txt
+
+Sitemap: https://www.layngo.com/sitemap.xml
+Homepage: https://www.layngo.com/
+
+Brand: Lay-n-Go — patented drawstring organizers (Cosmo cosmetic bags, Play mats, Traveler tech bags, Nailspa, pet beds, tactical gear).
+Contact: info@layngo.com

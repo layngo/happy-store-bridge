@@ -1,11 +1,25 @@
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
-import { MessageCircle, SendHorizontal, X } from "lucide-react";
+import { ArrowUp, MessageCircle, X } from "lucide-react";
 
-import { CHAT_SAMPLE_QUESTIONS, type ChatMessage } from "@/lib/chatbotKnowledge";
+import { CHAT_SAMPLE_QUESTIONS, type ChatLink, type ChatMessage } from "@/lib/chatbotKnowledge";
 import { sendChatMessage } from "@/lib/chatApi";
+import { useDialogA11y } from "@/hooks/useDialogA11y";
 import { cn } from "@/lib/utils";
 
+/** Closed Cosmo bag / fabric close-ups — cycle while the assistant is thinking. */
+const THINKING_COSMO_IMAGES = [
+  { src: "/cosmo-pdp/gallery/01.png", alt: "Cosmo bag" },
+  { src: "/cosmo-pdp/gallery/02.png", alt: "Cosmo bag pattern" },
+  { src: "/swatches/cosmo-20-paisley.jpg", alt: "Cosmo paisley" },
+  { src: "/swatches/cosmo-20-butterfly.jpg", alt: "Cosmo butterfly print" },
+  { src: "/swatches/cosmo-20-stars.jpg", alt: "Cosmo stars print" },
+  { src: "/swatches/cosmo-20-pink-camo.jpg", alt: "Cosmo pink camo" },
+  { src: "/cosmo-pdp/gallery/04.png", alt: "Cosmo closed bag" },
+  { src: "/swatches/cosmo-20-checkered.jpg", alt: "Cosmo checkered" },
+] as const;
+
+const STREAM_WORD_MS = 28;
 const HEADING_CLASS =
   "font-heading font-extrabold uppercase tracking-[0.04em] text-foreground";
 
@@ -15,19 +29,9 @@ function nextMessageId() {
   return `msg-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-function ChatLinkItem({
-  href,
-  label,
-  isUser,
-}: {
-  href: string;
-  label: string;
-  isUser: boolean;
-}) {
-  const className = cn(
-    "text-xs font-bold uppercase tracking-[0.06em] underline underline-offset-2",
-    isUser ? "text-primary-foreground/95" : "text-primary",
-  );
+function ChatLinkItem({ href, label }: { href: string; label: string }) {
+  const className =
+    "font-medium text-primary underline underline-offset-2 hover:text-primary/80";
 
   if (/^https?:\/\//i.test(href)) {
     return (
@@ -44,48 +48,132 @@ function ChatLinkItem({
   );
 }
 
-function ChatBubble({ message }: { message: UiChatMessage }) {
-  const isUser = message.role === "user";
+function MessageLinks({ links }: { links: ChatLink[] }) {
+  return (
+    <ul className="mt-3 flex flex-col gap-1.5 border-t border-border/60 pt-3">
+      {links.map((link) => (
+        <li key={link.href}>
+          <ChatLinkItem href={link.href} label={link.label} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function CosmoThinkingIndicator() {
+  const [index, setIndex] = useState(0);
+  const [prevIndex, setPrevIndex] = useState(0);
+  const [crossfading, setCrossfading] = useState(false);
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setIndex((current) => {
+        setPrevIndex(current);
+        setCrossfading(true);
+        return (current + 1) % THINKING_COSMO_IMAGES.length;
+      });
+    }, 720);
+    return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    if (!crossfading) return;
+    const id = window.setTimeout(() => setCrossfading(false), 380);
+    return () => window.clearTimeout(id);
+  }, [crossfading, index]);
+
+  const current = THINKING_COSMO_IMAGES[index];
+  const previous = THINKING_COSMO_IMAGES[prevIndex];
 
   return (
-    <div
-      className={cn(
-        "flex",
-        isUser ? "justify-end chat-bubble-enter-user" : "justify-start chat-bubble-enter-assistant",
-      )}
-    >
-      <div
-        className={cn(
-          "chat-bubble-body max-w-[88%] rounded-2xl px-3.5 py-2.5 font-heading text-sm leading-relaxed",
-          isUser
-            ? "rounded-br-md bg-primary text-primary-foreground"
-            : "rounded-bl-md border border-border bg-white text-foreground",
-        )}
-      >
-        <p>{message.content}</p>
-        {message.links && message.links.length > 0 ? (
-          <ul className="mt-2 space-y-1">
-            {message.links.map((link) => (
-              <li key={link.href}>
-                <ChatLinkItem href={link.href} label={link.label} isUser={isUser} />
-              </li>
-            ))}
-          </ul>
-        ) : null}
+    <div className="chat-thinking-row" role="status" aria-live="polite" aria-label="Assistant is thinking">
+      <div className="chat-thinking-orbit" aria-hidden>
+        <div className="chat-thinking-glow" />
+        <div className="chat-thinking-avatar">
+          <img
+            src={previous.src}
+            alt=""
+            className={cn("chat-thinking-img", crossfading && "chat-thinking-img--out")}
+          />
+          <img
+            src={current.src}
+            alt=""
+            className={cn("chat-thinking-img", crossfading ? "chat-thinking-img--in" : "chat-thinking-img--active")}
+          />
+        </div>
       </div>
+      <span className="chat-thinking-label">Thinking…</span>
     </div>
   );
 }
 
-function TypingBubble() {
+function StreamingAssistantMessage({
+  content,
+  links,
+  onComplete,
+  onProgress,
+}: {
+  content: string;
+  links?: ChatLink[];
+  onComplete: () => void;
+  onProgress: () => void;
+}) {
+  const [visible, setVisible] = useState("");
+  const [finished, setFinished] = useState(false);
+  const completedRef = useRef(false);
+
+  useEffect(() => {
+    completedRef.current = false;
+    setVisible("");
+    setFinished(false);
+
+    const tokens = content.match(/\S+\s*|\s+/g) ?? [content];
+    let tokenIndex = 0;
+    let cancelled = false;
+    let timeoutId = 0;
+
+    const tick = () => {
+      if (cancelled) return;
+      if (tokenIndex >= tokens.length) {
+        setVisible(content);
+        setFinished(true);
+        if (!completedRef.current) {
+          completedRef.current = true;
+          onComplete();
+        }
+        return;
+      }
+      tokenIndex += 1;
+      setVisible(tokens.slice(0, tokenIndex).join(""));
+      onProgress();
+      timeoutId = window.setTimeout(tick, STREAM_WORD_MS);
+    };
+
+    timeoutId = window.setTimeout(tick, 80);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, [content, onComplete, onProgress]);
+
   return (
-    <div className="flex justify-start chat-bubble-enter-assistant">
-      <div className="chat-bubble-body flex items-center gap-1 rounded-2xl rounded-bl-md border border-border bg-white px-4 py-3">
-        <span className="chat-typing-dot" />
-        <span className="chat-typing-dot chat-typing-dot--delay-1" />
-        <span className="chat-typing-dot chat-typing-dot--delay-2" />
+    <article className="chat-message chat-message--assistant">
+      <div className="chat-message__body">
+        <p className="chat-message__text whitespace-pre-wrap">
+          {visible}
+          {!finished ? <span className="chat-stream-cursor" aria-hidden /> : null}
+        </p>
+        {finished && links && links.length > 0 ? <MessageLinks links={links} /> : null}
       </div>
-    </div>
+    </article>
+  );
+}
+
+function UserMessage({ content }: { content: string }) {
+  return (
+    <article className="chat-message chat-message--user">
+      <p className="chat-message__text whitespace-pre-wrap">{content}</p>
+    </article>
   );
 }
 
@@ -94,8 +182,23 @@ export function SiteChatbot() {
   const [messages, setMessages] = useState<UiChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [streamingId, setStreamingId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useDialogA11y({
+    open,
+    onClose: () => setOpen(false),
+    returnFocusRef: toggleRef,
+  });
+
+  const scrollToBottom = useCallback(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, []);
+
+  const handleStreamComplete = useCallback(() => {
+    setStreamingId(null);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -106,12 +209,14 @@ export function SiteChatbot() {
   }, [open]);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, loading]);
+    scrollToBottom();
+  }, [messages, loading, streamingId, scrollToBottom]);
+
+  const busy = loading || streamingId !== null;
 
   const submitQuestion = async (question: string) => {
     const trimmed = question.trim();
-    if (!trimmed || loading) return;
+    if (!trimmed || busy) return;
 
     const userMessage: UiChatMessage = {
       id: nextMessageId(),
@@ -125,15 +230,17 @@ export function SiteChatbot() {
 
     try {
       const reply = await sendChatMessage(nextMessages);
+      const assistantId = nextMessageId();
       setMessages((prev) => [
         ...prev,
         {
-          id: nextMessageId(),
+          id: assistantId,
           role: "assistant",
           content: reply.content,
           links: reply.links,
         },
       ]);
+      setStreamingId(assistantId);
     } finally {
       setLoading(false);
     }
@@ -144,32 +251,43 @@ export function SiteChatbot() {
     void submitQuestion(input);
   };
 
-  const onInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const onInputKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       void submitQuestion(input);
     }
   };
 
+  const resizeComposer = () => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
+  };
+
+  useEffect(() => {
+    resizeComposer();
+  }, [input]);
+
   return (
     <div className="pointer-events-none fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
       {open ? (
         <div
-          className="chat-panel-enter pointer-events-auto flex w-[min(calc(100vw-2rem),24rem)] flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_12px_40px_-12px_rgba(15,23,42,0.25)]"
+          ref={dialogRef}
+          tabIndex={-1}
+          className="chat-panel-enter pointer-events-auto flex w-[min(calc(100vw-2rem),22rem)] flex-col overflow-hidden rounded-2xl border border-border/80 bg-white shadow-[0_16px_48px_-12px_rgba(15,23,42,0.22)] outline-none sm:w-[min(calc(100vw-2rem),28rem)]"
           role="dialog"
+          aria-modal="true"
           aria-label="Lay-n-Go chat assistant"
         >
-          <header className="flex items-center justify-between border-b border-border px-4 py-3">
+          <header className="flex shrink-0 items-center justify-between border-b border-border/70 px-4 py-3">
             <div>
-              <p className={cn(HEADING_CLASS, "text-sm leading-tight")}>Lay-n-Go Assistant</p>
-              <p className="mt-0.5 font-heading text-xs font-medium normal-case tracking-normal text-muted-foreground">
-                Products, shipping & returns
-              </p>
+              <p className={cn(HEADING_CLASS, "text-sm leading-tight sm:text-base")}>Lay-n-Go Assistant</p>
             </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               aria-label="Close chat"
             >
               <X className="h-4 w-4" />
@@ -178,50 +296,80 @@ export function SiteChatbot() {
 
           <div
             ref={scrollRef}
-            className="flex max-h-[min(22rem,45dvh)] min-h-[12rem] flex-col gap-3 overflow-y-auto overscroll-contain bg-white px-3 py-4"
+            className="chat-conversation flex min-h-[14rem] max-h-[min(28rem,52dvh)] flex-1 flex-col overflow-y-auto overscroll-contain px-4 py-5 sm:px-5"
           >
-            {messages.length === 0 ? (
-              <div className="flex flex-col gap-2">
-                {CHAT_SAMPLE_QUESTIONS.map((question, index) => (
+            {messages.length === 0 && !loading ? (
+              <div className="flex flex-1 flex-col justify-end gap-3 pb-2">
+                <p className="font-sans text-[0.9375rem] leading-relaxed text-muted-foreground sm:text-base">
+                  Ask about products, shipping, returns, or anything Lay-n-Go.
+                </p>
+                <div className="flex flex-col gap-2">
+                  {CHAT_SAMPLE_QUESTIONS.map((question, index) => (
                     <button
                       key={question}
                       type="button"
-                      disabled={loading}
+                      disabled={busy}
                       onClick={() => void submitQuestion(question)}
-                      style={{ animationDelay: `${index * 70}ms` }}
-                      className="chat-sample-enter rounded-xl border border-border bg-white px-3 py-2.5 text-left font-heading text-sm font-semibold normal-case tracking-normal text-foreground transition-colors hover:border-primary/30 hover:bg-primary/5 disabled:opacity-60"
+                      style={{ animationDelay: `${index * 60}ms` }}
+                      className="chat-sample-enter text-left font-sans text-[0.9375rem] font-medium leading-snug text-primary transition-opacity hover:opacity-80 disabled:opacity-50 sm:text-base"
                     >
                       {question}
                     </button>
                   ))}
+                </div>
               </div>
             ) : (
-              messages.map((message) => <ChatBubble key={message.id} message={message} />)
+              <div className="flex flex-col gap-5">
+                {messages.map((message) =>
+                  message.role === "user" ? (
+                    <UserMessage key={message.id} content={message.content} />
+                  ) : message.id === streamingId ? (
+                    <StreamingAssistantMessage
+                      key={message.id}
+                      content={message.content}
+                      links={message.links}
+                      onComplete={handleStreamComplete}
+                      onProgress={scrollToBottom}
+                    />
+                  ) : (
+                    <article key={message.id} className="chat-message chat-message--assistant">
+                      <div className="chat-message__body">
+                        <p className="chat-message__text whitespace-pre-wrap">{message.content}</p>
+                        {message.links && message.links.length > 0 ? (
+                          <MessageLinks links={message.links} />
+                        ) : null}
+                      </div>
+                    </article>
+                  ),
+                )}
+                {loading ? <CosmoThinkingIndicator /> : null}
+              </div>
             )}
-
-            {loading ? <TypingBubble /> : null}
           </div>
 
-          <form onSubmit={onSubmit} className="border-t border-border bg-white p-3">
-            <div className="flex items-center gap-2">
-              <input
+          <form onSubmit={onSubmit} className="chat-composer shrink-0 border-t border-border/70 px-3 py-3 sm:px-4">
+            <div className="chat-composer-inner">
+              <label htmlFor="chat-composer-input" className="sr-only">
+                Message Lay-n-Go assistant
+              </label>
+              <textarea
+                id="chat-composer-input"
                 ref={inputRef}
-                type="text"
+                rows={1}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={onInputKeyDown}
-                placeholder="Type your question…"
-                disabled={loading}
-                className="h-10 min-w-0 flex-1 rounded-full border border-border bg-white px-4 font-heading text-sm font-medium normal-case tracking-normal outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
-                aria-label="Chat message"
+                placeholder="Message Lay-n-Go…"
+                disabled={busy}
+                className="chat-composer-input"
               />
               <button
                 type="submit"
-                disabled={loading || !input.trim()}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-45"
+                disabled={busy || !input.trim()}
+                className="chat-composer-send"
                 aria-label="Send message"
               >
-                <SendHorizontal className="h-4 w-4" />
+                <ArrowUp className="h-4 w-4" strokeWidth={2.5} />
               </button>
             </div>
           </form>
@@ -229,6 +377,7 @@ export function SiteChatbot() {
       ) : null}
 
       <button
+        ref={toggleRef}
         type="button"
         onClick={() => setOpen((value) => !value)}
         className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-[1.03] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"

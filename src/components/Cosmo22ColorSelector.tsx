@@ -105,6 +105,11 @@ export function Cosmo22ColorSelector({ product, selectedVariantIdx, onVariantCha
                 aria-disabled={unavailable}
                 disabled={unavailable}
                 title={tooltip}
+                aria-label={
+                  unavailable
+                    ? `${tooltip ?? shopifyColor}, unavailable`
+                    : `${tooltip ?? shopifyColor}${isSelected ? ", selected" : ""}`
+                }
                 onClick={() => {
                   if (unavailable || variantIdx < 0) return;
                   onVariantChange(variantIdx);
