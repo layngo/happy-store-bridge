@@ -42,7 +42,7 @@ type StoryChapter = {
 
 const PLACEHOLDER = (seed: string) => `https://picsum.photos/seed/${seed}/1200/640`;
 
-const ABOUT_US_V2_ASSET_VER = "11";
+const ABOUT_US_V2_ASSET_VER = "12";
 const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_US_V2_ASSET_VER}`;
 
 const CHAPTERS: StoryChapter[] = [
@@ -120,7 +120,7 @@ const CHAPTERS: StoryChapter[] = [
           "The success of the Lay-n-Go design was a perfect fit for cosmetics and makeup. The COSMO was an instant hit and was launched at CosmoProf in Las Vegas. Soon the product could be found in Target, Costco, on QVC, and in thousands of independent retailers. The COSMO is the best selling product Lay-n-Go has ever launched.",
       },
       {
-        src: aboutUsV2Png("inc-5000-slide.png"),
+        src: aboutUsV2Png("inc-5000-block.png"),
         title: "Lay-n-Go named to the Inc 5000",
         alt: "Inc. 5000 America's Fastest-Growing Private Companies badge",
         imagePosition: "center",
