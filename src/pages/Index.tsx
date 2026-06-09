@@ -8,6 +8,7 @@ import { sortCollectionsForDisplay } from "@/lib/collectionOrder";
 import { testimonials } from "@/lib/siteNav";
 import { Loader2 } from "lucide-react";
 import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
+import { StarRating } from "@/components/StarRating";
 
 const HOME_HERO_VIMEO_ID = "1185281289";
 const OUR_STORY_IMAGES = [
@@ -216,16 +217,14 @@ const Index = () => {
             {testimonials.map((t) => (
               <li key={t.name}>
                 <article className="brand-review-card flex h-full flex-col px-5 py-6 sm:px-6 sm:py-7">
-                  <blockquote className="font-heading text-base font-black leading-snug tracking-tight text-foreground normal-case sm:text-lg">
+                  <blockquote className="font-heading text-base font-normal leading-relaxed tracking-normal text-foreground/90 normal-case sm:text-[1.0625rem]">
                     &ldquo;{t.quote}&rdquo;
                   </blockquote>
                   <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-foreground/10 pt-4">
-                    <span className="font-heading text-sm font-semibold text-foreground/70 normal-case">
+                    <span className="font-heading text-sm font-medium text-foreground/70 normal-case">
                       {t.name}
                     </span>
-                    <span className="text-sm text-foreground/45" aria-label="5 out of 5 stars">
-                      ★★★★★
-                    </span>
+                    <StarRating rating={5} size="sm" />
                   </div>
                 </article>
               </li>
