@@ -53,9 +53,9 @@ const PRESS_LOGOS = [
   },
   {
     name: "Red Tricycle",
-    src: "https://www.layngo.com/cdn/shop/files/image_160x160@2x.jpg?v=1613754527",
+    src: "/home/press-logos/red-tricycle-logo.png",
     href: "https://redtri.com/ways-to-organize-your-legos/?utm_source=FB&utm_medium=NATL&utm_campaign=FB-NATL#",
-    imageClass: "scale-150 mix-blend-darken contrast-125",
+    imageClass: "scale-150",
   },
   {
     name: "Gizmodo",
@@ -210,14 +210,14 @@ const Index = () => {
 
       {/* Last bag banner — image left, headline beside it */}
       <section className="w-full overflow-hidden border-t border-border bg-white py-6 sm:py-8 md:py-10">
-        <div className="flex w-full max-w-[100vw] flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8 md:gap-12 lg:gap-16">
+        <div className="flex w-full max-w-[100vw] flex-col items-center gap-6 sm:flex-row sm:items-center sm:gap-8 md:gap-12 lg:gap-16">
           <img
             src={LAST_BAG_BANNER}
             alt="Lay-n-Go Cosmo Deluxe bag with motion graphic"
             className="block h-auto max-h-[300px] w-auto max-w-[min(100%,63rem)] shrink-0 object-contain object-left sm:max-h-[390px] md:max-h-[450px] lg:max-h-[510px]"
             loading="lazy"
           />
-          <p className="font-heading min-w-0 flex-1 px-4 text-left text-[clamp(2.25rem,6.5vw,5.5rem)] font-extrabold uppercase leading-[1.08] tracking-[0.04em] text-foreground sm:px-0 sm:pr-6 md:pr-10 lg:pr-16">
+          <p className="font-heading flex min-w-0 flex-1 flex-col items-center px-4 text-center text-[clamp(2.25rem,6.5vw,5.5rem)] font-extrabold uppercase leading-[1.08] tracking-[0.04em] text-foreground sm:px-0 sm:pr-6 md:pr-10 lg:pr-16">
             <span className="block whitespace-nowrap">The last</span>
             <span className="block whitespace-nowrap">bag you&apos;ll</span>
             <span className="block whitespace-nowrap">ever need</span>
