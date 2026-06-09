@@ -71,6 +71,7 @@ const CHAPTERS: StoryChapter[] = [
         title: "It's official",
         alt: "Amy and Adam's wedding toast",
         imagePosition: "82% 42%",
+        layoutOverride: { text: "right" },
         downloadUrl: "/about-us-v2/they-meet-wedding-toast-wide.png",
         downloadFileName: "its-official-wedding-toast.png",
         storyText:
