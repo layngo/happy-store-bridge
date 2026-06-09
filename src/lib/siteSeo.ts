@@ -6,7 +6,7 @@ export const SITE_URL = (
 
 export const SITE_NAME = "Lay-n-Go";
 
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/layngo-logo-outlined.png`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
 export const SITE_TAGLINE = "Organizational Solutions for Life, Play, and Travel";
 
