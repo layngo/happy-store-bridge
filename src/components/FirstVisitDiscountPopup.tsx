@@ -16,7 +16,7 @@ import {
 } from "@/lib/discountPopupStorage";
 import { cn } from "@/lib/utils";
 
-/** Add `?showDiscount=1` to preview on any page. Opens on each Home nav click until signup is completed. */
+/** Shows on homepage visits and each Home nav click until signup completes on this device. */
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
 const HERO_WIDTH = 1024;
 const HERO_HEIGHT = 804;
@@ -77,12 +77,19 @@ export function FirstVisitDiscountPopup() {
       return;
     }
 
-    if (pendingHomePopupRef.current) {
-      pendingHomePopupRef.current = false;
-      const id = window.setTimeout(openPopup, 100);
-      return () => window.clearTimeout(id);
+    if (hasCompletedDiscountSignup()) {
+      setOpen(false);
+      return;
     }
-  }, [location.pathname, openPopup]);
+
+    const fromHomeButton = pendingHomePopupRef.current;
+    if (fromHomeButton) {
+      pendingHomePopupRef.current = false;
+    }
+
+    const id = window.setTimeout(openPopup, fromHomeButton ? 100 : 600);
+    return () => window.clearTimeout(id);
+  }, [location.pathname, location.key, openPopup]);
 
   const dismiss = () => {
     setOpen(false);
@@ -154,7 +161,7 @@ export function FirstVisitDiscountPopup() {
       return;
     }
 
-    markDiscountSignupComplete();
+    markDiscountSignupComplete(email.trim());
     setDiscountCode(result.discountCode ?? "");
     toast.success(result.message ?? "You're verified!");
     setStep("code");
@@ -187,7 +194,7 @@ export function FirstVisitDiscountPopup() {
   };
 
   const finish = () => {
-    markDiscountSignupComplete();
+    markDiscountSignupComplete(email.trim());
     setOpen(false);
   };
 
