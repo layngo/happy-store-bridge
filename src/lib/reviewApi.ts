@@ -1,13 +1,8 @@
 import type { CustomerReview } from "@/data/customerReviews";
 
-export type VerifyOrderResponse =
-  | { ok: true; orderName: string; verificationToken: string }
-  | { ok: false; error: string };
-
 export type SubmitReviewPayload = {
   productHandle: string;
   name: string;
-  verificationToken: string;
   rating: number;
   title?: string;
   text: string;
@@ -38,18 +33,6 @@ function reviewsListEndpoint(productHandle: string): string {
     (import.meta.env.VITE_REVIEWS_LIST_WEBHOOK_URL as string | undefined) ||
     DEFAULT_REVIEWS_LIST_WEBHOOK;
   return `${base}?${query}`;
-}
-
-export async function verifyOrderForReview(
-  orderNumber: string,
-  productHandle: string,
-): Promise<VerifyOrderResponse> {
-  const res = await fetch("/api/reviews/verify-order", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ orderNumber, productHandle }),
-  });
-  return res.json() as Promise<VerifyOrderResponse>;
 }
 
 export async function submitCustomerReview(

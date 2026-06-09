@@ -40,7 +40,6 @@ export async function listReviewsForProduct(productHandle: string): Promise<Stor
 export type SubmitReviewInput = {
   productHandle: string;
   name: string;
-  verificationToken: string;
   rating: number;
   title?: string;
   text: string;
@@ -50,10 +49,6 @@ export type SubmitReviewInput = {
 export async function submitReview(
   input: SubmitReviewInput,
 ): Promise<{ ok: true; review: StoredCustomerReview } | { ok: false; error: string }> {
-  const { consumeVerificationToken } = await import("./reviewSessions");
-  const session = consumeVerificationToken(input.verificationToken, input.productHandle);
-  if (!session.ok) return session;
-
   const name = input.name.trim();
   const text = input.text.trim();
   if (name.length < 2) return { ok: false, error: "Please enter your name." };
@@ -76,7 +71,7 @@ export async function submitReview(
     id: `submitted-${randomUUID()}`,
     productHandle: input.productHandle,
     name,
-    orderName: session.orderName,
+    orderName: "",
     rating,
     title: input.title?.trim() || undefined,
     text,

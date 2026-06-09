@@ -16,7 +16,7 @@ const REVIEWS_PAGE_SIZE = 7;
 
 type CustomerReviewsSectionProps = {
   reviews: CustomerReview[];
-  /** Required for order verification and saving new reviews */
+  /** Required for saving new reviews */
   productHandle: string;
   heading?: string;
   className?: string;

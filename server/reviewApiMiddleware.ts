@@ -62,32 +62,13 @@ export function createReviewApiMiddleware(env: Record<string, string>) {
         const body = await readBody(req);
         const json = body ? (JSON.parse(body) as Record<string, unknown>) : {};
 
-        if (pathname === "/api/reviews/verify-order") {
-          const { verifyShopifyOrder } = await import("./shopifyOrderVerify");
-          const result = await verifyShopifyOrder(
-            String(json.orderNumber ?? ""),
-            json.productHandle ? String(json.productHandle) : undefined,
-            env,
-          );
-          sendJson(res, result.ok ? 200 : 400, result);
-          return;
-        }
-
         if (pathname === "/api/reviews/submit") {
-          const { consumeVerificationToken } = await import("./reviewSessions");
           const productHandle = String(json.productHandle ?? "");
           const name = String(json.name ?? "").trim();
           const text = String(json.text ?? "").trim();
-          const verificationToken = String(json.verificationToken ?? "");
           const rating = Number(json.rating);
           const title = json.title ? String(json.title).trim() : undefined;
           const imageBase64 = json.imageBase64 ? String(json.imageBase64) : undefined;
-
-          const session = consumeVerificationToken(verificationToken, productHandle);
-          if (!session.ok) {
-            sendJson(res, 400, session);
-            return;
-          }
 
           if (name.length < 2) {
             sendJson(res, 400, { ok: false, error: "Please enter your name." });
@@ -121,7 +102,6 @@ export function createReviewApiMiddleware(env: Record<string, string>) {
             body: JSON.stringify({
               productHandle,
               name,
-              orderName: session.orderName,
               rating: normalizedRating,
               title,
               text,
