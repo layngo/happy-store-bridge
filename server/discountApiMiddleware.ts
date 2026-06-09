@@ -167,6 +167,7 @@ export function createDiscountApiMiddleware(env: Record<string, string>) {
             verified: true,
             discountCode: shopifyResult.code,
             shopifyCreated: true,
+            shopifyDiscountId: shopifyResult.shopifyId,
           });
 
           if (!upstream.ok) {
@@ -179,7 +180,7 @@ export function createDiscountApiMiddleware(env: Record<string, string>) {
 
           sendJson(res, 200, {
             ok: true,
-            message: data?.message ?? "You're verified! Use your code at checkout.",
+            message: data?.message ?? "You're verified! Your code lasts 10 days — use it at checkout.",
             discountCode: shopifyResult.code,
           });
           return;

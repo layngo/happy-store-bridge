@@ -113,7 +113,7 @@ export async function createPopupSignupDiscount(
       code,
       title: `Popup signup ${code}`,
       percentage: 0.15,
-      validDays: 30,
+      validDays: 10,
     },
     env,
   );
