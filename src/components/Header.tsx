@@ -38,8 +38,8 @@ function isContactPath(pathname: string) {
   return pathname.startsWith("/pages/contact") || pathname.startsWith("/pages/wholesale");
 }
 
-function NavSquiggle() {
-  return <span aria-hidden className="nav-item__squiggle" />;
+function NavIndicator() {
+  return <span aria-hidden className="nav-item__indicator" />;
 }
 
 function navItemClass(active: boolean, light: boolean) {
@@ -69,7 +69,7 @@ function NavItem({
   return (
     <Link className={cn(navItemClass(active, light), className)} {...props}>
       {children}
-      <NavSquiggle />
+      <NavIndicator />
     </Link>
   );
 }
@@ -87,7 +87,7 @@ function NavMenuTrigger({
     <DropdownMenuTrigger asChild>
       <button type="button" className={navItemClass(active, light)}>
         {children}
-        <NavSquiggle />
+        <NavIndicator />
       </button>
     </DropdownMenuTrigger>
   );

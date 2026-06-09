@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 const CHAT_THINKING_IMAGES = [
   { src: "/chat/thinking/cosmo-20-pink.png", label: 'Cosmo 20"' },
   { src: "/chat/thinking/cosmo-20-black.png", label: 'Cosmo 20"' },
+  { src: "/chat/thinking/cosmo-22-deluxe.png", label: 'Cosmo Deluxe 22"' },
   { src: "/chat/thinking/traveler-20.png", label: 'Traveler 20"' },
   { src: "/chat/thinking/large-60.png", label: 'Large 60"' },
   { src: "/chat/thinking/lite.png", label: "Lay-n-Go Lite" },
