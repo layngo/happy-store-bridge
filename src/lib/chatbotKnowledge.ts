@@ -1,8 +1,16 @@
 export type ChatLink = { label: string; href: string };
 
+export type ChatProduct = {
+  title: string;
+  subtitle?: string;
+  href: string;
+  image: string;
+};
+
 export type ChatAssistantReply = {
   content: string;
   links?: ChatLink[];
+  products?: ChatProduct[];
 };
 
 export type ChatRole = "user" | "assistant";
@@ -11,7 +19,48 @@ export type ChatMessage = {
   role: ChatRole;
   content: string;
   links?: ChatLink[];
+  products?: ChatProduct[];
 };
+
+/** Clickable product cards shown in chat (local images for fast load). */
+export const CHAT_PRODUCTS = {
+  cosmo20: {
+    title: 'Lay-n-Go Cosmo 20"',
+    subtitle: "Best seller · Cosmetic bag",
+    href: "/product/lay-n-go-cosmo-20",
+    image: "/cosmetic-bags-v2/cosmo-20.png",
+  },
+  cosmoDeluxe22: {
+    title: 'Lay-n-Go Cosmo Deluxe 22"',
+    subtitle: "Extra room · Cosmetic bag",
+    href: "/product/lay-n-go-cosmo-deluxe-22",
+    image: "/cosmetic-bags-v2/cosmo-22.png",
+  },
+  traveler20: {
+    title: 'Lay-n-Go Traveler 20"',
+    subtitle: "Tech & travel organizer",
+    href: "/product/lay-n-go-traveler-20",
+    image: "/products/lay-n-go-traveler-20/traveler-gallery-1.png",
+  },
+  nailspa18: {
+    title: 'Lay-n-Go Nailspa 18"',
+    subtitle: "Salon & at-home manicures",
+    href: "/product/lay-n-go-nailspa-18",
+    image: "/products/lay-n-go-nailspa-18/heroes/dot-calm.png",
+  },
+  dogBed44: {
+    title: 'Lay-n-Go Travel Dog Bed 44"',
+    subtitle: "Portable pet bed",
+    href: "/product/lay-n-go-travel-dog-bed-44",
+    image: "/products/lay-n-go-travel-dog-bed-44/gallery-1.png",
+  },
+} as const satisfies Record<string, ChatProduct>;
+
+const CHAT_BEST_SELLERS: ChatProduct[] = [
+  CHAT_PRODUCTS.cosmo20,
+  CHAT_PRODUCTS.cosmoDeluxe22,
+  CHAT_PRODUCTS.traveler20,
+];
 
 export const CHAT_SAMPLE_QUESTIONS = [
   "What are our best sellers?",
@@ -125,10 +174,8 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
     reply: {
       content:
         'Our #1 best seller is the Lay-n-Go Cosmo 20" — the patented cosmetic bag that opens flat so you can see everything, then cinches closed for travel. The Cosmo Deluxe 22" and Traveler 20" are also customer favorites.',
-      links: [
-        { label: "Shop Cosmo 20\"", href: "/product/lay-n-go-cosmo-20" },
-        { label: "All collections", href: "/collections" },
-      ],
+      products: CHAT_BEST_SELLERS,
+      links: [{ label: "Browse all collections", href: "/collections" }],
     },
   },
   {
@@ -136,11 +183,8 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
     reply: {
       content:
         'Cosmo is our signature cosmetic line. The Cosmo 20" is our best seller — opens flat like a mat, cinches into a bag. The Cosmo Deluxe 22" offers extra room. Both come in multiple colors and patterns.',
-      links: [
-        { label: "Cosmo 20\"", href: "/product/lay-n-go-cosmo-20" },
-        { label: "Cosmo Deluxe 22\"", href: "/product/lay-n-go-cosmo-deluxe-22" },
-        { label: "Cosmetic bags", href: "/collections/cosmetic-bags" },
-      ],
+      products: [CHAT_PRODUCTS.cosmo20, CHAT_PRODUCTS.cosmoDeluxe22],
+      links: [{ label: "Cosmetic bags collection", href: "/collections/cosmetic-bags" }],
     },
   },
   {
@@ -148,10 +192,8 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
     reply: {
       content:
         'The Lay-n-Go Traveler 20" is built for tech and travel — opens flat so you can see cables, chargers, and gadgets, then cinches closed. Great for work trips and everyday carry.',
-      links: [
-        { label: "Shop Traveler 20\"", href: "/product/lay-n-go-traveler-20" },
-        { label: "Tech & travel collection", href: "/collections/technology" },
-      ],
+      products: [CHAT_PRODUCTS.traveler20],
+      links: [{ label: "Tech & travel collection", href: "/collections/technology" }],
     },
   },
   {
@@ -167,10 +209,8 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
     reply: {
       content:
         'Pet Solutions include the Lay-n-Go Travel Dog Bed (44") — a portable bed that packs down for travel. Browse our pet collection for gear designed to go wherever your pet goes.',
-      links: [
-        { label: "Travel Dog Bed", href: "/product/lay-n-go-travel-dog-bed-44" },
-        { label: "Pet collection", href: "/collections/pet-solutions" },
-      ],
+      products: [CHAT_PRODUCTS.dogBed44],
+      links: [{ label: "Pet collection", href: "/collections/pet-solutions" }],
     },
   },
   {
@@ -178,7 +218,7 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
     reply: {
       content:
         'The Lay-n-Go Nailspa 18" is designed for nail techs and at-home manicures — opens flat for tools and polish, cinches closed for storage and travel between clients or appointments.',
-      links: [{ label: "Shop Nailspa", href: "/product/lay-n-go-nailspa-18" }],
+      products: [CHAT_PRODUCTS.nailspa18],
     },
   },
   {
@@ -316,10 +356,8 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
     reply: {
       content:
         "Prices vary by product and are shown on each product page. Select your color or size to see the current price at checkout. Browse collections to compare options.",
-      links: [
-        { label: "Shop collections", href: "/collections" },
-        { label: "Best seller — Cosmo 20\"", href: "/product/lay-n-go-cosmo-20" },
-      ],
+      products: [CHAT_PRODUCTS.cosmo20],
+      links: [{ label: "Shop collections", href: "/collections" }],
     },
   },
 ];

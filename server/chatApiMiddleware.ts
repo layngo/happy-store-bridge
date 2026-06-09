@@ -63,10 +63,13 @@ ${CHAT_KNOWLEDGE_TEXT}`;
   const content = data.choices?.[0]?.message?.content?.trim();
   if (!content) throw new Error("Empty OpenAI response");
 
-  const knowledgeFallback = answerFromKnowledge(messages[messages.length - 1]?.content ?? "");
+  const userMessage = messages[messages.length - 1]?.content ?? "";
+  const knowledgeMatch = findKnowledgeReply(userMessage);
+  const knowledgeFallback = answerFromKnowledge(userMessage);
   return {
     content,
-    links: knowledgeFallback.links,
+    links: knowledgeMatch?.links ?? knowledgeFallback.links,
+    products: knowledgeMatch?.products,
   };
 }
 

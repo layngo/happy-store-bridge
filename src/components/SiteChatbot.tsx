@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUp, MessageCircle, X } from "lucide-react";
 
 import { COSMO_20_SWATCHES } from "@/components/Cosmo20ColorSelector";
-import { CHAT_SAMPLE_QUESTIONS, type ChatLink, type ChatMessage } from "@/lib/chatbotKnowledge";
+import { CHAT_SAMPLE_QUESTIONS, type ChatLink, type ChatMessage, type ChatProduct } from "@/lib/chatbotKnowledge";
 import { sendChatMessage } from "@/lib/chatApi";
 import { useDialogA11y } from "@/hooks/useDialogA11y";
 import { cn } from "@/lib/utils";
@@ -25,8 +25,6 @@ const STREAM_WORD_MS = 28;
 const MIN_THINKING_MS = 3_600;
 /** Ms per Cosmo 20 color while thinking — longer = slower color scroll. */
 const THINKING_CYCLE_MS = 820;
-const HEADING_CLASS =
-  "font-heading font-extrabold uppercase tracking-[0.04em] text-foreground";
 
 type UiChatMessage = ChatMessage & { id: string };
 
@@ -35,8 +33,7 @@ function nextMessageId() {
 }
 
 function ChatLinkItem({ href, label }: { href: string; label: string }) {
-  const className =
-    "font-medium text-primary underline underline-offset-2 hover:text-primary/80";
+  const className = "font-medium text-primary underline-offset-2 hover:underline";
 
   if (/^https?:\/\//i.test(href)) {
     return (
@@ -55,13 +52,57 @@ function ChatLinkItem({ href, label }: { href: string; label: string }) {
 
 function MessageLinks({ links }: { links: ChatLink[] }) {
   return (
-    <ul className="mt-3 flex flex-col gap-1.5 border-t border-border/60 pt-3">
+    <ul className="chat-message-links mt-3 flex flex-col gap-2 pt-3">
       {links.map((link) => (
         <li key={link.href}>
           <ChatLinkItem href={link.href} label={link.label} />
         </li>
       ))}
     </ul>
+  );
+}
+
+function ChatProductCards({ products }: { products: ChatProduct[] }) {
+  return (
+    <div className="chat-product-cards" role="list" aria-label="Suggested products">
+      {products.map((product) => (
+        <Link
+          key={product.href}
+          to={product.href}
+          role="listitem"
+          className="chat-product-card group"
+        >
+          <span className="chat-product-card__media">
+            <img src={product.image} alt="" loading="lazy" className="chat-product-card__img" />
+          </span>
+          <span className="chat-product-card__info">
+            <span className="chat-product-card__title">{product.title}</span>
+            {product.subtitle ? (
+              <span className="chat-product-card__subtitle">{product.subtitle}</span>
+            ) : null}
+          </span>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+function AssistantExtras({
+  links,
+  products,
+}: {
+  links?: ChatLink[];
+  products?: ChatProduct[];
+}) {
+  const hasProducts = products && products.length > 0;
+  const hasLinks = links && links.length > 0;
+  if (!hasProducts && !hasLinks) return null;
+
+  return (
+    <div className={cn(hasProducts && hasLinks && "chat-message-extras")}>
+      {hasProducts ? <ChatProductCards products={products} /> : null}
+      {hasLinks ? <MessageLinks links={links} /> : null}
+    </div>
   );
 }
 
@@ -99,11 +140,13 @@ function CosmoThinkingIndicator() {
 function StreamingAssistantMessage({
   content,
   links,
+  products,
   onComplete,
   onProgress,
 }: {
   content: string;
   links?: ChatLink[];
+  products?: ChatProduct[];
   onComplete: () => void;
   onProgress: () => void;
 }) {
@@ -152,7 +195,7 @@ function StreamingAssistantMessage({
           {visible}
           {!finished ? <span className="chat-stream-cursor" aria-hidden /> : null}
         </p>
-        {finished && links && links.length > 0 ? <MessageLinks links={links} /> : null}
+        {finished ? <AssistantExtras links={links} products={products} /> : null}
       </div>
     </article>
   );
@@ -160,8 +203,8 @@ function StreamingAssistantMessage({
 
 function UserMessage({ content }: { content: string }) {
   return (
-    <article className="chat-message chat-message--user">
-      <p className="chat-message__text whitespace-pre-wrap">{content}</p>
+    <article className="chat-message chat-message--user flex justify-end">
+      <p className="chat-user-bubble whitespace-pre-wrap">{content}</p>
     </article>
   );
 }
@@ -233,6 +276,7 @@ export function SiteChatbot() {
           role: "assistant",
           content: reply.content,
           links: reply.links,
+          products: reply.products,
         },
       ]);
       setStreamingId(assistantId);
@@ -271,32 +315,33 @@ export function SiteChatbot() {
         <div
           ref={dialogRef}
           tabIndex={-1}
-          className="chat-panel-enter pointer-events-auto flex w-[min(calc(100vw-2rem),22rem)] flex-col overflow-hidden rounded-2xl border border-border/80 bg-white shadow-[0_16px_48px_-12px_rgba(15,23,42,0.22)] outline-none sm:w-[min(calc(100vw-2rem),28rem)]"
+          className="chat-panel chat-panel-enter pointer-events-auto flex w-[min(calc(100vw-2rem),22rem)] flex-col overflow-hidden outline-none sm:w-[min(calc(100vw-2rem),26rem)]"
           role="dialog"
           aria-modal="true"
           aria-label="Lay-n-Go chat assistant"
         >
-          <header className="flex shrink-0 items-center justify-between border-b border-border/70 px-4 py-3">
+          <header className="chat-header flex shrink-0 items-center justify-between px-4 py-3.5 sm:px-5">
             <div>
-              <p className={cn(HEADING_CLASS, "text-sm leading-tight sm:text-base")}>Lay-n-Go Assistant</p>
+              <p className="chat-header__title">Lay-n-Go Assistant</p>
+              <p className="chat-header__subtitle">Products, shipping & returns</p>
             </div>
             <button
               type="button"
               onClick={closeChat}
-              className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="chat-icon-btn"
               aria-label="Close chat"
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4" strokeWidth={2} />
             </button>
           </header>
 
           <div
             ref={scrollRef}
-            className="chat-conversation flex min-h-[14rem] max-h-[min(28rem,52dvh)] flex-1 flex-col overflow-y-auto overscroll-contain px-4 py-5 sm:px-5"
+            className="chat-conversation flex min-h-[14rem] max-h-[min(28rem,52dvh)] flex-1 flex-col overflow-y-auto overscroll-contain px-4 py-4 sm:px-5 sm:py-5"
           >
             {messages.length === 0 && !thinking ? (
-              <div className="flex flex-1 flex-col justify-end gap-3 pb-2">
-                <p className="font-sans text-[0.9375rem] leading-relaxed text-muted-foreground sm:text-base">
+              <div className="flex flex-1 flex-col justify-end gap-4 pb-1">
+                <p className="chat-empty-hint">
                   Ask about products, shipping, returns, or anything Lay-n-Go.
                 </p>
                 <div className="flex flex-col gap-2">
@@ -307,7 +352,7 @@ export function SiteChatbot() {
                       disabled={busy}
                       onClick={() => void submitQuestion(question)}
                       style={{ animationDelay: `${index * 60}ms` }}
-                      className="chat-sample-enter text-left font-sans text-[0.9375rem] font-medium leading-snug text-primary transition-opacity hover:opacity-80 disabled:opacity-50 sm:text-base"
+                      className="chat-chip chat-sample-enter text-left"
                     >
                       {question}
                     </button>
@@ -324,6 +369,7 @@ export function SiteChatbot() {
                       key={message.id}
                       content={message.content}
                       links={message.links}
+                      products={message.products}
                       onComplete={handleStreamComplete}
                       onProgress={scrollToBottom}
                     />
@@ -331,9 +377,7 @@ export function SiteChatbot() {
                     <article key={message.id} className="chat-message chat-message--assistant">
                       <div className="chat-message__body">
                         <p className="chat-message__text whitespace-pre-wrap">{message.content}</p>
-                        {message.links && message.links.length > 0 ? (
-                          <MessageLinks links={message.links} />
-                        ) : null}
+                        <AssistantExtras links={message.links} products={message.products} />
                       </div>
                     </article>
                   ),
@@ -343,7 +387,7 @@ export function SiteChatbot() {
             )}
           </div>
 
-          <form onSubmit={onSubmit} className="chat-composer shrink-0 border-t border-border/70 px-3 py-3 sm:px-4">
+          <form onSubmit={onSubmit} className="chat-composer shrink-0 px-3 pb-3 pt-1 sm:px-4 sm:pb-4">
             <div className="chat-composer-inner">
               <label htmlFor="chat-composer-input" className="sr-only">
                 Message Lay-n-Go assistant
@@ -376,11 +420,11 @@ export function SiteChatbot() {
         ref={toggleRef}
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-[1.03] hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        className={cn("chat-fab pointer-events-auto", open && "chat-fab--open")}
         aria-label={open ? "Close chat assistant" : "Open chat assistant"}
         aria-expanded={open}
       >
-        {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+        {open ? <X className="h-5 w-5" strokeWidth={2} /> : <MessageCircle className="h-5 w-5" strokeWidth={2} />}
       </button>
     </div>
   );

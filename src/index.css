@@ -166,8 +166,172 @@
   }
 
   .chat-panel-enter {
-    animation: chat-panel-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: chat-panel-in 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
     transform-origin: bottom right;
+  }
+
+  .chat-panel {
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    background: linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(250, 250, 252, 0.88) 100%
+    );
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.95) inset,
+      0 24px 64px -28px rgba(15, 23, 42, 0.35),
+      0 0 0 1px rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(24px) saturate(1.35);
+    -webkit-backdrop-filter: blur(24px) saturate(1.35);
+  }
+
+  .chat-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .chat-header__title {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    @apply text-[0.9375rem] font-semibold leading-tight tracking-[-0.01em] text-[#1d1d1f];
+  }
+
+  .chat-header__subtitle {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    @apply mt-0.5 text-xs font-normal leading-snug tracking-normal text-[#86868b];
+  }
+
+  .chat-icon-btn {
+    @apply flex h-8 w-8 items-center justify-center rounded-full text-[#86868b] transition-colors;
+  }
+
+  .chat-icon-btn:hover {
+    @apply bg-black/[0.05] text-[#1d1d1f];
+  }
+
+  .chat-icon-btn:focus-visible {
+    @apply outline-none ring-2 ring-[#0071e3]/40 ring-offset-2;
+  }
+
+  .chat-fab {
+    @apply flex h-[3.25rem] w-[3.25rem] items-center justify-center rounded-full text-white transition-all duration-300 ease-out;
+    background: linear-gradient(145deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.88) 100%);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.28) inset,
+      0 12px 28px -8px hsl(var(--primary) / 0.55),
+      0 4px 12px -4px rgba(15, 23, 42, 0.2);
+  }
+
+  .chat-fab:hover {
+    transform: scale(1.04);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.32) inset,
+      0 16px 36px -10px hsl(var(--primary) / 0.6),
+      0 6px 16px -4px rgba(15, 23, 42, 0.22);
+  }
+
+  .chat-fab--open {
+    @apply bg-[#f5f5f7] text-[#1d1d1f];
+    background: #f5f5f7;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.9) inset,
+      0 12px 28px -8px rgba(15, 23, 42, 0.18),
+      0 0 0 1px rgba(0, 0, 0, 0.06);
+  }
+
+  .chat-fab:focus-visible {
+    @apply outline-none ring-2 ring-[#0071e3]/45 ring-offset-2;
+  }
+
+  .chat-empty-hint {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    @apply text-[0.9375rem] font-normal leading-relaxed tracking-[-0.01em] text-[#86868b] sm:text-base;
+  }
+
+  .chat-chip {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    @apply rounded-2xl border border-black/[0.06] bg-[#f5f5f7]/90 px-3.5 py-2.5 text-[0.875rem] font-medium leading-snug tracking-[-0.01em] text-[#1d1d1f] transition-all;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  }
+
+  .chat-chip:hover:not(:disabled) {
+    @apply border-black/[0.08] bg-white;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      0 4px 14px -8px rgba(15, 23, 42, 0.2);
+  }
+
+  .chat-chip:disabled {
+    @apply opacity-45;
+  }
+
+  .chat-user-bubble {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    @apply max-w-[88%] rounded-[1.15rem] rounded-br-md bg-primary px-3.5 py-2.5 text-[0.9375rem] font-normal leading-[1.5] tracking-[-0.01em] text-white sm:text-base;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.2) inset,
+      0 4px 12px -6px hsl(var(--primary) / 0.5);
+  }
+
+  .chat-message-links {
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .chat-message-extras .chat-product-cards {
+    @apply mb-1;
+  }
+
+  .chat-message-extras .chat-message-links {
+    @apply mt-2;
+  }
+
+  .chat-product-cards {
+    @apply mt-3 flex flex-col gap-2;
+  }
+
+  .chat-product-card {
+    @apply flex items-center gap-3 rounded-2xl border border-black/[0.06] bg-white/70 px-2.5 py-2 transition-all;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      0 1px 2px rgba(15, 23, 42, 0.04);
+  }
+
+  .chat-product-card:hover {
+    @apply border-black/[0.1] bg-white;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      0 4px 14px -6px rgba(15, 23, 42, 0.12);
+    transform: translateY(-1px);
+  }
+
+  .chat-product-card:focus-visible {
+    @apply outline-none ring-2 ring-primary/30 ring-offset-2;
+  }
+
+  .chat-product-card__media {
+    @apply flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-black/[0.05] bg-[#f5f5f7];
+  }
+
+  .chat-product-card__img {
+    @apply h-full w-full object-contain p-1;
+    transition: transform 0.25s ease;
+  }
+
+  .chat-product-card:hover .chat-product-card__img {
+    transform: scale(1.04);
+  }
+
+  .chat-product-card__info {
+    @apply min-w-0 flex-1 text-left;
+  }
+
+  .chat-product-card__title {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    @apply block truncate text-[0.875rem] font-semibold tracking-[-0.02em] text-[#1d1d1f];
+  }
+
+  .chat-product-card__subtitle {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    @apply mt-0.5 block truncate text-xs font-normal text-[#86868b];
   }
 
   .chat-bubble-enter-user {
@@ -204,29 +368,26 @@
     animation-delay: 0.3s;
   }
 
-  /* Claude-style conversation UI */
+  /* Apple-style conversation UI */
   .chat-conversation {
-    @apply bg-white;
+    @apply bg-transparent;
   }
 
   .chat-message {
-    @apply w-full font-sans text-[0.9375rem] leading-[1.65] tracking-normal sm:text-base sm:leading-[1.7];
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    @apply w-full text-[0.9375rem] leading-[1.6] tracking-[-0.01em] sm:text-base sm:leading-[1.65];
   }
 
   .chat-message--user {
     @apply text-foreground;
   }
 
-  .chat-message--user .chat-message__text {
-    @apply font-medium text-foreground/90;
-  }
-
   .chat-message--assistant {
-    @apply text-foreground;
+    @apply text-[#1d1d1f];
   }
 
   .chat-message--assistant .chat-message__text {
-    @apply font-normal text-foreground;
+    @apply font-normal;
   }
 
   .chat-stream-cursor {
@@ -235,31 +396,34 @@
     height: 1.05em;
     margin-left: 1px;
     vertical-align: text-bottom;
-    background: hsl(var(--primary));
+    background: #86868b;
+    border-radius: 1px;
     animation: chat-cursor-blink 0.9s step-end infinite;
   }
 
   .chat-thinking-row {
-    @apply flex items-center gap-3 py-1;
+    @apply flex items-center gap-3 rounded-2xl border border-black/[0.05] bg-white/50 px-3 py-2.5;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
   }
 
   .chat-thinking-label {
-    @apply font-sans text-sm font-medium text-muted-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    @apply text-sm font-normal tracking-[-0.01em] text-[#86868b];
     animation: chat-thinking-pulse 1.8s ease-in-out infinite;
   }
 
   .chat-thinking-orbit {
     @apply relative flex h-11 w-11 shrink-0 items-center justify-center;
-    animation: chat-orbit-pulse 2.2s ease-in-out infinite;
   }
 
   .chat-thinking-glow {
-    @apply absolute inset-0 rounded-full opacity-60;
-    background: radial-gradient(circle at 30% 30%, hsl(var(--primary) / 0.35), transparent 70%);
+    @apply absolute inset-0 rounded-full opacity-50;
+    background: radial-gradient(circle at 30% 30%, rgba(0, 113, 227, 0.12), transparent 70%);
   }
 
   .chat-thinking-avatar {
-    @apply relative h-10 w-10 overflow-hidden rounded-full border border-border bg-neutral-100 shadow-sm;
+    @apply relative h-10 w-10 overflow-hidden rounded-full border border-black/[0.06] bg-[#f5f5f7];
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 
   .chat-thinking-img {
@@ -273,15 +437,38 @@
   }
 
   .chat-composer-inner {
-    @apply flex items-end gap-2 rounded-xl border border-border/80 bg-neutral-50/80 px-3 py-2 transition-colors focus-within:border-primary/40 focus-within:bg-white focus-within:ring-2 focus-within:ring-primary/15;
+    @apply flex items-end gap-2 rounded-[1.25rem] border border-black/[0.08] bg-white/80 px-3 py-2;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      0 1px 3px rgba(15, 23, 42, 0.04);
+    backdrop-filter: blur(12px);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .chat-composer-inner:focus-within {
+    @apply border-[#0071e3]/35 bg-white;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      0 0 0 3px rgba(0, 113, 227, 0.12),
+      0 2px 8px -4px rgba(15, 23, 42, 0.08);
   }
 
   .chat-composer-input {
-    @apply min-h-[1.5rem] max-h-[7.5rem] min-w-0 flex-1 resize-none border-0 bg-transparent py-1.5 font-sans text-base font-normal leading-snug text-foreground outline-none placeholder:text-muted-foreground disabled:opacity-50;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    @apply min-h-[1.5rem] max-h-[7.5rem] min-w-0 flex-1 resize-none border-0 bg-transparent py-1.5 text-base font-normal leading-snug tracking-[-0.01em] text-[#1d1d1f] outline-none placeholder:text-[#86868b] disabled:opacity-50;
   }
 
   .chat-composer-send {
-    @apply mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-35;
+    @apply mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-white transition-all disabled:cursor-not-allowed disabled:opacity-30;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.22) inset;
+  }
+
+  .chat-composer-send:not(:disabled):hover {
+    filter: brightness(1.05);
+    transform: scale(1.04);
   }
 
   .brand-review-body {
