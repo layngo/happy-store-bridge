@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
-import { Loader2, MessageCircle, SendHorizontal, X } from "lucide-react";
+import { MessageCircle, SendHorizontal, X } from "lucide-react";
 
 import { CHAT_SAMPLE_QUESTIONS, type ChatMessage } from "@/lib/chatbotKnowledge";
 import { sendChatMessage } from "@/lib/chatApi";
@@ -9,14 +9,54 @@ import { cn } from "@/lib/utils";
 const HEADING_CLASS =
   "font-heading font-extrabold uppercase tracking-[0.04em] text-foreground";
 
-function ChatBubble({ message }: { message: ChatMessage }) {
+type UiChatMessage = ChatMessage & { id: string };
+
+function nextMessageId() {
+  return `msg-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function ChatLinkItem({
+  href,
+  label,
+  isUser,
+}: {
+  href: string;
+  label: string;
+  isUser: boolean;
+}) {
+  const className = cn(
+    "text-xs font-bold uppercase tracking-[0.06em] underline underline-offset-2",
+    isUser ? "text-primary-foreground/95" : "text-primary",
+  );
+
+  if (/^https?:\/\//i.test(href)) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+        {label}
+      </a>
+    );
+  }
+
+  return (
+    <Link to={href} className={className}>
+      {label}
+    </Link>
+  );
+}
+
+function ChatBubble({ message }: { message: UiChatMessage }) {
   const isUser = message.role === "user";
 
   return (
-    <div className={cn("flex", isUser ? "justify-end" : "justify-start")}>
+    <div
+      className={cn(
+        "flex",
+        isUser ? "justify-end chat-bubble-enter-user" : "justify-start chat-bubble-enter-assistant",
+      )}
+    >
       <div
         className={cn(
-          "max-w-[88%] rounded-2xl px-3.5 py-2.5 font-heading text-sm leading-relaxed",
+          "chat-bubble-body max-w-[88%] rounded-2xl px-3.5 py-2.5 font-heading text-sm leading-relaxed",
           isUser
             ? "rounded-br-md bg-primary text-primary-foreground"
             : "rounded-bl-md border border-border bg-white text-foreground",
@@ -27,15 +67,7 @@ function ChatBubble({ message }: { message: ChatMessage }) {
           <ul className="mt-2 space-y-1">
             {message.links.map((link) => (
               <li key={link.href}>
-                <Link
-                  to={link.href}
-                  className={cn(
-                    "text-xs font-bold uppercase tracking-[0.06em] underline underline-offset-2",
-                    isUser ? "text-primary-foreground/95" : "text-primary",
-                  )}
-                >
-                  {link.label}
-                </Link>
+                <ChatLinkItem href={link.href} label={link.label} isUser={isUser} />
               </li>
             ))}
           </ul>
@@ -45,9 +77,21 @@ function ChatBubble({ message }: { message: ChatMessage }) {
   );
 }
 
+function TypingBubble() {
+  return (
+    <div className="flex justify-start chat-bubble-enter-assistant">
+      <div className="chat-bubble-body flex items-center gap-1 rounded-2xl rounded-bl-md border border-border bg-white px-4 py-3">
+        <span className="chat-typing-dot" />
+        <span className="chat-typing-dot chat-typing-dot--delay-1" />
+        <span className="chat-typing-dot chat-typing-dot--delay-2" />
+      </div>
+    </div>
+  );
+}
+
 export function SiteChatbot() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<UiChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -69,7 +113,11 @@ export function SiteChatbot() {
     const trimmed = question.trim();
     if (!trimmed || loading) return;
 
-    const userMessage: ChatMessage = { role: "user", content: trimmed };
+    const userMessage: UiChatMessage = {
+      id: nextMessageId(),
+      role: "user",
+      content: trimmed,
+    };
     const nextMessages = [...messages, userMessage];
     setMessages(nextMessages);
     setInput("");
@@ -79,7 +127,12 @@ export function SiteChatbot() {
       const reply = await sendChatMessage(nextMessages);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: reply.content, links: reply.links },
+        {
+          id: nextMessageId(),
+          role: "assistant",
+          content: reply.content,
+          links: reply.links,
+        },
       ]);
     } finally {
       setLoading(false);
@@ -102,7 +155,7 @@ export function SiteChatbot() {
     <div className="pointer-events-none fixed bottom-4 right-4 z-50 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
       {open ? (
         <div
-          className="pointer-events-auto flex w-[min(calc(100vw-2rem),24rem)] flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_12px_40px_-12px_rgba(15,23,42,0.25)]"
+          className="chat-panel-enter pointer-events-auto flex w-[min(calc(100vw-2rem),24rem)] flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_12px_40px_-12px_rgba(15,23,42,0.25)]"
           role="dialog"
           aria-label="Lay-n-Go chat assistant"
         >
@@ -129,17 +182,18 @@ export function SiteChatbot() {
           >
             {messages.length === 0 ? (
               <div className="space-y-3">
-                <p className="text-center font-heading text-sm font-medium normal-case tracking-normal text-muted-foreground">
-                  Ask about best sellers, returns, or shipping.
+                <p className="chat-bubble-enter-assistant text-center font-heading text-sm font-medium normal-case tracking-normal text-muted-foreground">
+                  Ask about products, shipping, returns, or our story.
                 </p>
                 <div className="flex flex-col gap-2">
-                  {CHAT_SAMPLE_QUESTIONS.map((question) => (
+                  {CHAT_SAMPLE_QUESTIONS.map((question, index) => (
                     <button
                       key={question}
                       type="button"
                       disabled={loading}
                       onClick={() => void submitQuestion(question)}
-                      className="rounded-xl border border-border bg-white px-3 py-2.5 text-left font-heading text-sm font-semibold normal-case tracking-normal text-foreground transition-colors hover:border-primary/30 hover:bg-primary/5 disabled:opacity-60"
+                      style={{ animationDelay: `${index * 70}ms` }}
+                      className="chat-sample-enter rounded-xl border border-border bg-white px-3 py-2.5 text-left font-heading text-sm font-semibold normal-case tracking-normal text-foreground transition-colors hover:border-primary/30 hover:bg-primary/5 disabled:opacity-60"
                     >
                       {question}
                     </button>
@@ -147,15 +201,10 @@ export function SiteChatbot() {
                 </div>
               </div>
             ) : (
-              messages.map((message, index) => <ChatBubble key={`${message.role}-${index}`} message={message} />)
+              messages.map((message) => <ChatBubble key={message.id} message={message} />)
             )}
 
-            {loading ? (
-              <div className="flex items-center gap-2 font-heading text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                Thinking…
-              </div>
-            ) : null}
+            {loading ? <TypingBubble /> : null}
           </div>
 
           <form onSubmit={onSubmit} className="border-t border-border bg-white p-3">

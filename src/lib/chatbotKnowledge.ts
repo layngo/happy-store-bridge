@@ -20,41 +20,164 @@ export const CHAT_SAMPLE_QUESTIONS = [
 ] as const;
 
 export const CHAT_KNOWLEDGE_TEXT = `
-Lay-n-Go sells patented drawstring organizational bags for cosmetics, travel, play, pets, and more.
+Lay-n-Go (layngo.com) — patented drawstring organizational solutions. Products open flat for full visibility, then cinch closed for storage and travel. Founded by Amy and Adam Fazackerley; 16+ years in business.
 
-Best sellers:
-- Lay-n-Go Cosmo 20" cosmetic bag (/product/lay-n-go-cosmo-20) — flagship makeup bag that opens flat
+BRAND PITCH: "Organizational Solutions for Life, Play, and Travel." Homepage tagline for Cosmo: "The last bag you'll ever need."
+
+CATEGORIES & COLLECTIONS:
+- Cosmetic Bags / COSMO: /collections/cosmetic-bags — makeup & beauty bags
+- Cosmetic Bags V2 shop page: /shop/cosmetic-bags-v2
+- Nail Solutions / NAILSPA: /product/lay-n-go-nailspa-18
+- Play (toy cleanup, play mats): /collections/play
+- Tech & Travel / TRAVELER: /product/lay-n-go-traveler-20
+- Pet Solutions: /product/lay-n-go-travel-dog-bed-44
+- Outdoor / Tactical / Military & First Responder: /collections/military-first-responder
+- All collections: /collections
+
+TOP PRODUCTS:
+- Lay-n-Go Cosmo 20" (/product/lay-n-go-cosmo-20) — flagship cosmetic bag, best seller
 - Lay-n-Go Cosmo Deluxe 22" (/product/lay-n-go-cosmo-deluxe-22)
-- Lay-n-Go Traveler 20" tech & travel bag (/product/lay-n-go-traveler-20)
+- Lay-n-Go Traveler 20" (/product/lay-n-go-traveler-20) — tech & travel
+- Lay-n-Go Nailspa 18" (/product/lay-n-go-nailspa-18)
+- Lay-n-Go Travel Dog Bed 44" (/product/lay-n-go-travel-dog-bed-44)
 
-Return policy:
-- Returns accepted within 14 days of delivery
-- Items must be unused with original packaging
-- Email info@layngo.com with your layngo.com order number for a Return Authorization (RA) number
-- Customer pays return shipping; original shipping is not refunded
-- Full policy: /pages/return-policy
+HOW IT WORKS: Patented drawstring mat design — lay flat to see and use everything, pull drawstrings to cinch into a bag. Utility patents include U.S. 9,084,459; 10,016,036; 10,561,213; 11,116,298. Patents page: /pages/lay-n-go-patents
 
-Shipping:
-- We ship to the United States and other regions available at checkout
-- Economy: 5–8 business days; Standard: 3–4 business days; Express: 1–2 business days (after order ships)
-- Orders before 1:00 p.m. cutoff ship same business day when possible
-- Tracking emailed when available; rates calculated at checkout
-- Full policy: /policies/shipping-policy
+ABOUT / OUR STORY: /pages/about-usV3 (latest), also /pages/about-us and /pages/about-usV2. Founders Amy & Adam. Started from solving everyday organization problems (toy cleanup, cosmetics, travel). 16+ years in business, 100k+ customers, 200+ wholesale partners.
 
-Contact: info@layngo.com or /pages/contact
-Shop all: /collections
+PRESS: Featured in BuzzFeed, Parents, People, Today Show, Lifehacker, Condé Nast Traveler, Oprah Daily, GMA, and more. Press page: /pages/press
+
+SHIPPING (/policies/shipping-policy):
+- Ships to U.S. and regions available at checkout
+- Economy 5–8 business days; Standard 3–4; Express 1–2 (after order ships)
+- Same-day processing for orders before 1:00 p.m. cutoff when inventory allows
+- Tracking emailed when carrier number available; rates at checkout
+
+RETURNS (/pages/return-policy):
+- 14 days from delivery; unused with original packaging
+- Email info@layngo.com with layngo.com order number for Return Authorization (RA)
+- Customer pays return shipping; original shipping not refunded
+
+CONTACT: info@layngo.com | Fax 703.995.4916 | /pages/contact
+WHOLESALE: Inquiries via contact form at /pages/contact#wholesale — 16+ years, 200+ wholesale partners
+
+SMS (/policies/sms-policy): Transactional, marketing, and service texts. Opt out anytime by replying STOP. Reply START to opt back in. HELP for support. Message/data rates may apply.
+
+TERMS & PRIVACY: /policies/terms-of-service (combined terms and privacy)
+
+ACCOUNT / ORDERS: Login at https://www.layngo.com/account/login for order history
+
+DISCOUNT: First-visit popup on homepage may offer signup discount with email/phone verification.
+
+SEARCH: /search to find products on site.
 `.trim();
 
 const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
   {
-    test: /best\s*seller|cosmo\s*20|top\s*sell|popular|bestseller/i,
+    test: /best\s*seller|top\s*sell|popular|bestseller|most\s*popular|what\s*should\s*i\s*buy/i,
     reply: {
       content:
-        'Our top seller is the Lay-n-Go Cosmo 20" — the patented cosmetic bag that opens flat so you can see everything, then cinches closed for travel. The Cosmo Deluxe 22" and Traveler 20" are customer favorites too.',
+        'Our #1 best seller is the Lay-n-Go Cosmo 20" — the patented cosmetic bag that opens flat so you can see everything, then cinches closed for travel. The Cosmo Deluxe 22" and Traveler 20" are also customer favorites.',
       links: [
         { label: "Shop Cosmo 20\"", href: "/product/lay-n-go-cosmo-20" },
-        { label: "View all collections", href: "/collections" },
+        { label: "All collections", href: "/collections" },
       ],
+    },
+  },
+  {
+    test: /cosmo|makeup\s*bag|cosmetic\s*bag|beauty\s*bag|make\s*up/i,
+    reply: {
+      content:
+        'Cosmo is our signature cosmetic line. The Cosmo 20" is our best seller — opens flat like a mat, cinches into a bag. The Cosmo Deluxe 22" offers extra room. Both come in multiple colors and patterns.',
+      links: [
+        { label: "Cosmo 20\"", href: "/product/lay-n-go-cosmo-20" },
+        { label: "Cosmo Deluxe 22\"", href: "/product/lay-n-go-cosmo-deluxe-22" },
+        { label: "Cosmetic bags", href: "/collections/cosmetic-bags" },
+      ],
+    },
+  },
+  {
+    test: /traveler|tech\s*(\+|and)\s*travel|tech\s*travel|laptop|charger|cable|electronic/i,
+    reply: {
+      content:
+        'The Lay-n-Go Traveler 20" is built for tech and travel — opens flat so you can see cables, chargers, and gadgets, then cinches closed. Great for work trips and everyday carry.',
+      links: [
+        { label: "Shop Traveler 20\"", href: "/product/lay-n-go-traveler-20" },
+        { label: "Tech & travel collection", href: "/collections/technology" },
+      ],
+    },
+  },
+  {
+    test: /play|toy|lego|cleanup|clean\s*up|kids/i,
+    reply: {
+      content:
+        'Our Play collection uses the same patented open-flat, cinch-closed design for toy cleanup — spread toys out on the mat, then pull the drawstring to gather everything in seconds. Perfect for LEGO and playroom organization.',
+      links: [{ label: "Shop Play", href: "/collections/play" }],
+    },
+  },
+  {
+    test: /pet|dog|cat|travel\s*bed|animal/i,
+    reply: {
+      content:
+        'Pet Solutions include the Lay-n-Go Travel Dog Bed (44") — a portable bed that packs down for travel. Browse our pet collection for gear designed to go wherever your pet goes.',
+      links: [
+        { label: "Travel Dog Bed", href: "/product/lay-n-go-travel-dog-bed-44" },
+        { label: "Pet collection", href: "/collections/pet-solutions" },
+      ],
+    },
+  },
+  {
+    test: /nail|nailspa|manicure|salon/i,
+    reply: {
+      content:
+        'The Lay-n-Go Nailspa 18" is designed for nail techs and at-home manicures — opens flat for tools and polish, cinches closed for storage and travel between clients or appointments.',
+      links: [{ label: "Shop Nailspa", href: "/product/lay-n-go-nailspa-18" }],
+    },
+  },
+  {
+    test: /tactical|military|first\s*responder|outdoor|defender|duty/i,
+    reply: {
+      content:
+        'Our Outdoor / Tactical line includes military and first-responder gear — organized storage that opens flat in the field and cinches for transport. See the full collection for Defender and tactical options.',
+      links: [{ label: "Outdoor / Tactical", href: "/collections/military-first-responder" }],
+    },
+  },
+  {
+    test: /how\s*(does|do)\s*(it|they)\s*work|drawstring|open\s*flat|patent|invention|what\s*is\s*lay.?n.?go/i,
+    reply: {
+      content:
+        'Lay-n-Go is a patented drawstring mat that opens flat so you can see and use everything, then cinches closed into a bag for storage or travel. It started with toy cleanup and now covers cosmetics, tech, travel, pets, nails, and tactical gear.',
+      links: [
+        { label: "Our story", href: "/pages/about-usV3" },
+        { label: "Patents", href: "/pages/lay-n-go-patents" },
+      ],
+    },
+  },
+  {
+    test: /about|story|founder|amy|adam|history|years\s*in\s*business|who\s*(are|is)\s*lay/i,
+    reply: {
+      content:
+        'Lay-n-Go was founded by Amy and Adam Fazackerley — 16+ years in business, 100k+ customers served. It started with a simple idea: "There has to be a better way to do this." Read the full founder story on our About page.',
+      links: [
+        { label: "Our story", href: "/pages/about-usV3" },
+        { label: "Contact", href: "/pages/contact" },
+      ],
+    },
+  },
+  {
+    test: /press|featured|magazine|media|buzzfeed|today\s*show|traveler\s*mag/i,
+    reply: {
+      content:
+        'Lay-n-Go has been featured in BuzzFeed, Parents, People, the Today Show, Lifehacker, Condé Nast Traveler, Oprah Daily, Good Morning America, and many more. Browse press highlights and articles on our Press page.',
+      links: [{ label: "Press & media", href: "/pages/press" }],
+    },
+  },
+  {
+    test: /wholesale|retail\s*partner|carry\s*lay|distributor|bulk|store\s*order/i,
+    reply: {
+      content:
+        'We work with 200+ wholesale partners. For wholesale inquiries, use our contact form and select the wholesale topic — include your company details and our team will follow up.',
+      links: [{ label: "Wholesale inquiry", href: "/pages/contact#wholesale" }],
     },
   },
   {
@@ -69,7 +192,7 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
     },
   },
   {
-    test: /ship|shipping|deliver|delivery|where\s*do\s*you/i,
+    test: /ship|shipping|deliver|delivery|how\s*long|when\s*will|track|tracking/i,
     reply: {
       content:
         "We ship to the United States and other regions shown at checkout. After your order ships: Economy is 5–8 business days, Standard is 3–4 business days, and Express is 1–2 business days. Orders placed before 1:00 p.m. are processed the same business day when inventory allows. You'll get tracking by email when your package ships.",
@@ -80,11 +203,76 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
     },
   },
   {
-    test: /contact|email|phone|help|support/i,
+    test: /sms|text\s*message|stop|start|opt.?out|subscribe.*text|phone\s*number/i,
     reply: {
       content:
-        "We're happy to help! Email info@layngo.com with your order number or question, or use our contact form and we'll get back to you.",
+        "We may send transactional texts (orders, shipping, OTP codes) and marketing texts if you opt in. Reply STOP anytime to unsubscribe — you'll get one confirmation message. Reply START to opt back in, or HELP for support. Message and data rates may apply.",
+      links: [{ label: "SMS policy", href: "/policies/sms-policy" }],
+    },
+  },
+  {
+    test: /discount|coupon|promo|code|sale|off\s*percent|first\s*visit|signup/i,
+    reply: {
+      content:
+        "We occasionally offer promotional discounts — including a first-visit signup offer on our homepage. Enter your email (and verify your phone when prompted) to receive a discount code. Promotions and free-shipping offers, when active, appear at checkout.",
+      links: [{ label: "Shop collections", href: "/collections" }],
+    },
+  },
+  {
+    test: /order|account|login|where\s*is\s*my|status/i,
+    reply: {
+      content:
+        "For order status and history, log in to your Lay-n-Go account. If you need help with a specific order, email info@layngo.com with your order number and we'll assist you.",
+      links: [
+        { label: "Account login", href: "https://www.layngo.com/account/login" },
+        { label: "Contact support", href: "/pages/contact" },
+      ],
+    },
+  },
+  {
+    test: /privacy|terms|personal\s*data|gdpr|cookie/i,
+    reply: {
+      content:
+        "Our combined Terms of Service and Privacy Policy explains how we handle your data, orders, and communications. You can read the full policy on our site.",
+      links: [{ label: "Terms & privacy", href: "/policies/terms-of-service" }],
+    },
+  },
+  {
+    test: /patent|license|intellectual/i,
+    reply: {
+      content:
+        "Lay-n-Go products are protected by U.S. utility patents including 9,084,459; 10,016,036; 10,561,213; and 11,116,298. For licensing inquiries, email info@layngo.com.",
+      links: [{ label: "Patents page", href: "/pages/lay-n-go-patents" }],
+    },
+  },
+  {
+    test: /collection|category|categories|shop|browse|product\s*line|what\s*do\s*you\s*sell/i,
+    reply: {
+      content:
+        "We organize solutions by category: Cosmetic Bags, Nail Solutions, Play, Tech & Travel, Pet Solutions, and Outdoor / Tactical. Each uses our patented open-flat, cinch-closed design for a different use case.",
+      links: [
+        { label: "Shop all collections", href: "/collections" },
+        { label: "Cosmetic bags", href: "/collections/cosmetic-bags" },
+      ],
+    },
+  },
+  {
+    test: /contact|email|phone|fax|help|support|reach|talk\s*to/i,
+    reply: {
+      content:
+        "Reach us at info@layngo.com or fax 703.995.4916. Use our contact form for orders, products, or wholesale inquiries — we typically respond as soon as possible.",
       links: [{ label: "Contact page", href: "/pages/contact" }],
+    },
+  },
+  {
+    test: /price|cost|how\s*much|expensive|afford/i,
+    reply: {
+      content:
+        "Prices vary by product and are shown on each product page. Select your color or size to see the current price at checkout. Browse collections to compare options.",
+      links: [
+        { label: "Shop collections", href: "/collections" },
+        { label: "Best seller — Cosmo 20\"", href: "/product/lay-n-go-cosmo-20" },
+      ],
     },
   },
 ];
@@ -93,7 +281,8 @@ export function answerFromKnowledge(userMessage: string): ChatAssistantReply {
   const trimmed = userMessage.trim();
   if (!trimmed) {
     return {
-      content: "Ask me about best sellers, returns, shipping, or anything else about Lay-n-Go.",
+      content:
+        "Ask me about products, collections, shipping, returns, our story, wholesale, or anything else about Lay-n-Go.",
     };
   }
 
@@ -103,7 +292,7 @@ export function answerFromKnowledge(userMessage: string): ChatAssistantReply {
 
   return {
     content:
-      "I'm not sure about that one. Try asking about our best sellers, return policy, or where we ship — or email info@layngo.com and our team can help.",
+      "I'm not sure about that one. Try asking about our best sellers, a product category (Cosmo, Play, Traveler, Pets), shipping, returns, or our story — or email info@layngo.com and our team can help.",
     links: [
       { label: "Contact us", href: "/pages/contact" },
       { label: "Shop collections", href: "/collections" },
