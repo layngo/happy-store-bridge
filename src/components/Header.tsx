@@ -109,7 +109,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
     <header
       className={cn(
         "sticky top-0 z-50 w-full border-b backdrop-blur-md",
-        light ? "border-border bg-background/95" : "border-border bg-background/90",
+        light ? "border-border bg-white/95" : "border-border bg-background/90",
       )}
     >
       <div className="container pt-3 pb-2">

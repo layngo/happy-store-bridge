@@ -33,7 +33,7 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
       <Link to={href} className="group mx-auto block w-[94%]">
         <article
           className={cn(
-            "relative aspect-square overflow-hidden border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5",
+            "relative aspect-square overflow-hidden border border-border bg-white transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5",
             COLLECTION_TILE_RADIUS,
           )}
         >
@@ -58,7 +58,7 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
               loading="lazy"
             />
           ) : (
-            <div className="absolute inset-0 bg-muted" aria-hidden />
+            <div className="absolute inset-0 bg-white" aria-hidden />
           )}
           {hoverImageSrc && hasVideo ? (
             <img

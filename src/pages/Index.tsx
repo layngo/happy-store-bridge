@@ -81,12 +81,12 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-dvh bg-background flex flex-col">
+    <div className="min-h-dvh bg-white flex flex-col">
       <Header variant="light" />
 
       <main id="main-content" className="flex-1">
       {/* Hero — ~20:9 frame reveals more of the 16:9 Vimeo crop; Cosmo brand film */}
-      <section className="relative w-full border-b border-border bg-black">
+      <section className="relative w-full border-b border-border bg-white">
         <div className="relative aspect-[20/9] w-full overflow-hidden">
           <div className="absolute left-0 right-0 top-1/2 z-[5] aspect-video w-full -translate-y-1/2">
             <PausableAutoplayEmbed
@@ -122,7 +122,7 @@ const Index = () => {
       </section>
 
       {/* Category grid */}
-      <section className="container py-16">
+      <section className="container bg-white py-16">
         <h2 className="font-heading text-2xl md:text-3xl font-medium uppercase tracking-[0.14em] text-foreground text-center mb-2">
           Shop by Category
         </h2>
@@ -143,12 +143,12 @@ const Index = () => {
       </section>
 
       {/* Press logos */}
-      <section className="pb-14">
+      <section className="bg-white pb-14">
         <div className="container">
           <p className="text-center text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground mb-6">
             Featured In
           </p>
-          <div className="overflow-hidden rounded-full border border-border bg-card/70 py-4">
+          <div className="overflow-hidden rounded-full border border-border bg-white py-4">
             <div className="press-carousel-track">
               {[...PRESS_LOGOS, ...PRESS_LOGOS].map((logo, i) => (
                 <a
@@ -172,11 +172,11 @@ const Index = () => {
       </section>
 
       {/* Our story */}
-      <section className="border-y border-border bg-muted/20">
+      <section className="border-y border-border bg-white">
         <div className="container py-16">
           <Link to="/pages/about-usV3" className="group block">
             <article className="relative overflow-hidden rounded-2xl border border-border/80 shadow-sm">
-              <div className="aspect-[16/8] md:aspect-[21/9] bg-muted">
+              <div className="aspect-[16/8] md:aspect-[21/9] bg-white">
                 <img
                   src={OUR_STORY_IMAGES[0]}
                   alt="Lay-n-Go founder story"
@@ -225,7 +225,7 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="border-t border-border bg-background py-16">
+      <section className="border-t border-border bg-white py-16">
         <div className="container max-w-6xl px-4">
           <p className="brand-eyebrow text-center">Reviews</p>
           <h2 className="brand-display mt-2 text-center text-[clamp(1.5rem,5vw,2.25rem)] text-foreground">
@@ -235,7 +235,7 @@ const Index = () => {
           <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((t) => (
               <li key={t.name}>
-                <article className="brand-review-card flex h-full flex-col px-5 py-6 sm:px-6 sm:py-7">
+                <article className="brand-review-card flex h-full flex-col bg-white px-5 py-6 sm:px-6 sm:py-7">
                   <blockquote className="font-heading text-base font-normal leading-relaxed tracking-normal text-foreground/90 normal-case sm:text-[1.0625rem]">
                     &ldquo;{t.quote}&rdquo;
                   </blockquote>
