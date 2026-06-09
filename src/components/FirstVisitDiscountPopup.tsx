@@ -19,8 +19,6 @@ import { cn } from "@/lib/utils";
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
 const HERO_WIDTH = 1024;
 const HERO_HEIGHT = 804;
-const DISCOUNT_CODE = "LAYNGO15";
-
 type Step = "intro" | "email" | "phone" | "verify" | "code";
 
 const redeemFieldClass =
@@ -37,6 +35,7 @@ export function FirstVisitDiscountPopup() {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [marketingConsent, setMarketingConsent] = useState(false);
+  const [discountCode, setDiscountCode] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -47,6 +46,7 @@ export function FirstVisitDiscountPopup() {
       setPhone("");
       setOtp("");
       setMarketingConsent(false);
+      setDiscountCode("");
       setOpen(true);
       return;
     }
@@ -66,6 +66,7 @@ export function FirstVisitDiscountPopup() {
     setPhone("");
     setOtp("");
     setMarketingConsent(false);
+    setDiscountCode("");
     const id = window.setTimeout(() => setOpen(true), 600);
     return () => window.clearTimeout(id);
   }, [location.pathname, location.key]);
@@ -141,6 +142,7 @@ export function FirstVisitDiscountPopup() {
     }
 
     markDiscountSignupComplete();
+    setDiscountCode(result.discountCode ?? "");
     toast.success(result.message ?? "You're verified!");
     setStep("code");
   };
@@ -162,8 +164,9 @@ export function FirstVisitDiscountPopup() {
   };
 
   const copyCode = async () => {
+    if (!discountCode) return;
     try {
-      await navigator.clipboard.writeText(DISCOUNT_CODE);
+      await navigator.clipboard.writeText(discountCode);
       toast.success("Code copied to clipboard");
     } catch {
       toast.error("Could not copy");
@@ -349,7 +352,7 @@ export function FirstVisitDiscountPopup() {
                     <p className="text-xs font-medium text-neutral-700 sm:text-sm">Your discount code</p>
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
                       <code className="w-full rounded-md border border-neutral-200 bg-white px-2 py-2 text-center font-mono text-base font-semibold tracking-wide text-foreground sm:flex-1 sm:text-lg sm:text-right">
-                        {DISCOUNT_CODE}
+                        {discountCode}
                       </code>
                       <Button type="button" variant="outline" size="sm" className="shrink-0" onClick={copyCode}>
                         Copy

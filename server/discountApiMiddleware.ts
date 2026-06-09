@@ -40,6 +40,7 @@ async function proxyToN8n(webhookUrl: string, payload: unknown) {
     ok?: boolean;
     message?: string;
     error?: string;
+    discountCode?: string;
   } | null;
 
   return { upstream, data };
@@ -157,7 +158,6 @@ export function createDiscountApiMiddleware(env: Record<string, string>) {
             phone: result.record.phone,
             marketingConsent: result.record.marketingConsent,
             verified: true,
-            discountCode: "LAYNGO15",
           });
 
           if (!upstream.ok) {
@@ -170,7 +170,8 @@ export function createDiscountApiMiddleware(env: Record<string, string>) {
 
           sendJson(res, 200, {
             ok: true,
-            message: data?.message ?? "You're verified! Use code LAYNGO15 at checkout.",
+            message: data?.message ?? "You're verified! Use your code at checkout.",
+            discountCode: data?.discountCode,
           });
           return;
         }
@@ -191,7 +192,8 @@ export function createDiscountApiMiddleware(env: Record<string, string>) {
 
         sendJson(res, 200, {
           ok: true,
-          message: data?.message ?? "You're verified! Use code LAYNGO15 at checkout.",
+          message: data?.message ?? "You're verified! Use your code at checkout.",
+          discountCode: data?.discountCode,
         });
       } catch (err) {
         console.error("[discount-api] verify-code", err);
