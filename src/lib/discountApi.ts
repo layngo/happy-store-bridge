@@ -52,7 +52,7 @@ async function postJson<T extends DiscountApiResponse>(
       return {
         ok: false,
         error:
-          (data && !data.ok && data.error) ||
+          (data && !data.ok && (data as { error: string }).error) ||
           "Something went wrong. Please try again.",
       } as T;
     }

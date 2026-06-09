@@ -56,7 +56,7 @@ const Contact = () => {
       });
 
       if (!result.ok) {
-        toast.error(result.error);
+        toast.error((result as { error: string }).error);
         return;
       }
 

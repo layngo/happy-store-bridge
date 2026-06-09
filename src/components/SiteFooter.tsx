@@ -29,7 +29,7 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
     setSubmitting(false);
 
     if (!result.ok) {
-      toast.error("Could not join", { description: result.error });
+      toast.error("Could not join", { description: (result as { error: string }).error });
       return;
     }
 
