@@ -181,12 +181,8 @@ export function SiteChatbot() {
             className="flex max-h-[min(22rem,45dvh)] min-h-[12rem] flex-col gap-3 overflow-y-auto overscroll-contain bg-white px-3 py-4"
           >
             {messages.length === 0 ? (
-              <div className="space-y-3">
-                <p className="chat-bubble-enter-assistant text-center font-heading text-sm font-medium normal-case tracking-normal text-muted-foreground">
-                  Ask about products, shipping, returns, or our story.
-                </p>
-                <div className="flex flex-col gap-2">
-                  {CHAT_SAMPLE_QUESTIONS.map((question, index) => (
+              <div className="flex flex-col gap-2">
+                {CHAT_SAMPLE_QUESTIONS.map((question, index) => (
                     <button
                       key={question}
                       type="button"
@@ -198,7 +194,6 @@ export function SiteChatbot() {
                       {question}
                     </button>
                   ))}
-                </div>
               </div>
             ) : (
               messages.map((message) => <ChatBubble key={message.id} message={message} />)

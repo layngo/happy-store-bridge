@@ -148,7 +148,7 @@ const Index = () => {
           <p className="text-center text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground mb-6">
             Featured In
           </p>
-          <div className="overflow-hidden rounded-full bg-white py-4">
+          <div className="overflow-hidden rounded-full border border-border bg-white py-4">
             <div className="press-carousel-track">
               {[...PRESS_LOGOS, ...PRESS_LOGOS].map((logo, i) => (
                 <a
