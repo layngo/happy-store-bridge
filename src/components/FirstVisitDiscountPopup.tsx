@@ -16,7 +16,7 @@ import {
 } from "@/lib/discountPopupStorage";
 import { cn } from "@/lib/utils";
 
-/** Shows on homepage visits and each Home nav click until signup completes on this device. */
+/** Shows on every homepage visit until signup is completed; never again after that (localStorage). */
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
 const HERO_WIDTH = 1024;
 const HERO_HEIGHT = 804;
