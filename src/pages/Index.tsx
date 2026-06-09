@@ -208,25 +208,20 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Last bag banner — left-aligned image, headline upper right */}
-      <section className="relative w-full overflow-hidden border-t border-border bg-white">
-        <div className="relative w-fit max-w-full">
+      {/* Last bag banner — image left, headline beside it */}
+      <section className="w-full overflow-hidden border-t border-border bg-white py-6 sm:py-8 md:py-10">
+        <div className="flex w-full max-w-[100vw] flex-col items-start gap-6 sm:flex-row sm:items-center sm:gap-8 md:gap-12 lg:gap-16">
           <img
             src={LAST_BAG_BANNER}
             alt="Lay-n-Go Cosmo Deluxe bag with motion graphic"
-            className="block h-auto max-h-[200px] w-auto max-w-[min(100%,42rem)] object-contain object-left sm:max-h-[260px] md:max-h-[300px] lg:max-h-[340px]"
+            className="block h-auto max-h-[300px] w-auto max-w-[min(100%,63rem)] shrink-0 object-contain object-left sm:max-h-[390px] md:max-h-[450px] lg:max-h-[510px]"
             loading="lazy"
           />
-          <div
-            className="pointer-events-none absolute inset-0 flex items-start justify-end pt-4 pr-4 sm:pt-6 sm:pr-6 md:pt-8 md:pr-10 lg:pt-10 lg:pr-14"
-            aria-hidden
-          >
-            <p className="font-heading text-right text-[clamp(1.1rem,3vw,2.5rem)] font-extrabold uppercase leading-[1.02] tracking-[0.05em] text-foreground">
-              <span className="block">The last</span>
-              <span className="block">bag you&apos;ll ever</span>
-              <span className="block">need</span>
-            </p>
-          </div>
+          <p className="font-heading px-4 text-left text-[clamp(1.35rem,3.5vw,3.25rem)] font-extrabold uppercase leading-[1.02] tracking-[0.05em] text-foreground sm:px-0 sm:pr-6 md:pr-10 lg:pr-16">
+            <span className="block">The last</span>
+            <span className="block">bag you&apos;ll ever</span>
+            <span className="block">need</span>
+          </p>
         </div>
       </section>
 
