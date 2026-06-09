@@ -108,8 +108,8 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full border-b backdrop-blur-md",
-        light ? "border-border bg-white/95" : "border-border bg-background/90",
+        "sticky top-0 z-50 w-full backdrop-blur-md",
+        light ? "bg-white/95" : "border-b border-border bg-background/90",
       )}
     >
       <div className="container pt-3 pb-2">
@@ -135,8 +135,8 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
 
         <nav
           className={cn(
-            "flex min-h-[2rem] w-full flex-wrap items-center justify-center gap-x-5 gap-y-2 px-2 pt-3 mt-2 border-t",
-            light ? "border-border/70" : "border-border/60",
+            "flex min-h-[2rem] w-full flex-wrap items-center justify-center gap-x-5 gap-y-2 px-2 pt-3 mt-2",
+            !light && "border-t border-border/60",
           )}
         >
           <NavItem

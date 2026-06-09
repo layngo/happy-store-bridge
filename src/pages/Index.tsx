@@ -86,7 +86,7 @@ const Index = () => {
 
       <main id="main-content" className="flex-1">
       {/* Hero — ~20:9 frame reveals more of the 16:9 Vimeo crop; Cosmo brand film */}
-      <section className="relative w-full border-b border-border bg-white">
+      <section className="relative w-full bg-white">
         <div className="relative aspect-[20/9] w-full overflow-hidden">
           <div className="absolute left-0 right-0 top-1/2 z-[5] aspect-video w-full -translate-y-1/2">
             <PausableAutoplayEmbed
@@ -148,7 +148,7 @@ const Index = () => {
           <p className="text-center text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground mb-6">
             Featured In
           </p>
-          <div className="overflow-hidden rounded-full border border-border bg-white py-4">
+          <div className="overflow-hidden rounded-full bg-white py-4">
             <div className="press-carousel-track">
               {[...PRESS_LOGOS, ...PRESS_LOGOS].map((logo, i) => (
                 <a
@@ -172,10 +172,10 @@ const Index = () => {
       </section>
 
       {/* Our story */}
-      <section className="border-y border-border bg-white">
+      <section className="bg-white">
         <div className="container py-16">
           <Link to="/pages/about-usV3" className="group block">
-            <article className="relative overflow-hidden rounded-2xl border border-border/80 shadow-sm">
+            <article className="relative overflow-hidden rounded-2xl shadow-sm">
               <div className="aspect-[16/8] md:aspect-[21/9] bg-white">
                 <img
                   src={OUR_STORY_IMAGES[0]}
@@ -209,7 +209,7 @@ const Index = () => {
       </section>
 
       {/* Last bag banner — image left, headline beside it */}
-      <section className="w-full overflow-hidden border-t border-border bg-white py-6 sm:py-8 md:py-10">
+      <section className="w-full overflow-hidden bg-white py-6 sm:py-8 md:py-10">
         <div className="flex w-full max-w-[100vw] flex-col items-center gap-6 sm:flex-row sm:items-center sm:gap-8 md:gap-12 lg:gap-16">
           <img
             src={LAST_BAG_BANNER}
@@ -217,15 +217,25 @@ const Index = () => {
             className="block h-auto max-h-[300px] w-auto max-w-[min(100%,63rem)] shrink-0 object-contain object-left sm:max-h-[390px] md:max-h-[450px] lg:max-h-[510px]"
             loading="lazy"
           />
-          <p className="font-heading flex min-w-0 flex-1 flex-col items-center px-4 text-center text-[clamp(2.25rem,6.5vw,5.5rem)] font-extrabold uppercase leading-[1.08] tracking-[0.04em] text-foreground sm:px-0 sm:pr-6 md:pr-10 lg:pr-16">
-            <span className="block whitespace-nowrap">The last</span>
-            <span className="block whitespace-nowrap">bag you&apos;ll</span>
-            <span className="block whitespace-nowrap">ever need</span>
-          </p>
+          <div className="font-heading flex min-w-0 flex-1 flex-col items-center gap-5 px-4 text-center sm:gap-6 sm:px-0 sm:pr-6 md:pr-10 lg:pr-16">
+            <p className="text-[clamp(2.25rem,6.5vw,5.5rem)] font-extrabold uppercase leading-[1.08] tracking-[0.04em] text-foreground">
+              <span className="block whitespace-nowrap">The last</span>
+              <span className="block whitespace-nowrap">bag you&apos;ll</span>
+              <span className="block whitespace-nowrap">ever need</span>
+            </p>
+            <Link to="/collections">
+              <button
+                type="button"
+                className="rounded-full bg-primary px-8 py-2.5 text-sm font-semibold tracking-wide text-primary-foreground shadow-lg transition-colors hover:bg-primary/90 md:px-9 md:py-3 md:text-base"
+              >
+                Shop Now
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      <section className="border-t border-border bg-white py-16">
+      <section className="bg-white py-16">
         <div className="container max-w-6xl px-4">
           <p className="brand-eyebrow text-center">Reviews</p>
           <h2 className="brand-display mt-2 text-center text-[clamp(1.5rem,5vw,2.25rem)] text-foreground">
