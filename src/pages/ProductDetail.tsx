@@ -1206,7 +1206,8 @@ const ProductDetail = () => {
       <div className="min-h-dvh bg-background flex flex-col">
         <Header />
         <main id="main-content" className="container py-20 text-center flex-1">
-          <p className="text-muted-foreground text-lg">Product not found</p>
+          <h1 className="font-heading text-2xl font-bold text-foreground">Product Not Found</h1>
+          <p className="text-muted-foreground text-lg mt-2">We couldn't find that product.</p>
           <Link to="/collections" className="text-primary hover:underline mt-4 inline-block">
             View collections
           </Link>
