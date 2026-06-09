@@ -9,17 +9,8 @@ export type StaticPageSeoEntry = {
 export const STATIC_PAGE_SEO: Record<string, StaticPageSeoEntry> = {
   "/pages/about-us": {
     description:
-      "Learn about Lay-n-Go founders Amy and Adam Fazackerley, 16+ years of patented drawstring organizers, and our mission to simplify cleanup and storage.",
-    keywords: "Lay-n-Go about us, founder story, family business, patented organizer",
-  },
-  "/pages/about-usV2": {
-    description:
-      "Lay-n-Go founder story — from toy cleanup to patented cosmetic, travel, play, and tactical organizers. 16+ years helping families and professionals stay organized.",
-  },
-  "/pages/about-usV3": {
-    description:
       "The Lay-n-Go story: Amy and Adam Fazackerley built patented open-flat, cinch-closed bags for cosmetics, travel, play, pets, and more. Read our full founder journey.",
-    keywords: "Lay-n-Go story, Amy Fazackerley, Adam Fazackerley, women-owned business",
+    keywords: "Lay-n-Go story, Amy Fazackerley, Adam Fazackerley, women-owned business, about us",
   },
   "/pages/contact": {
     description:

@@ -74,8 +74,7 @@ Lay-n-Go (layngo.com) — patented drawstring organizational solutions. Products
 BRAND PITCH: "Organizational Solutions for Life, Play, and Travel." Homepage tagline for Cosmo: "The last bag you'll ever need."
 
 CATEGORIES & COLLECTIONS:
-- Cosmetic Bags / COSMO: /collections/cosmetic-bags — makeup & beauty bags
-- Cosmetic Bags V2 shop page: /shop/cosmetic-bags-v2
+- Cosmetic Bags / COSMO: /shop/cosmetic-bags-v2 — makeup & beauty bags (Cosmo 16", 20", Deluxe 22")
 - Nail Solutions / NAILSPA: /product/lay-n-go-nailspa-18
 - Play (toy cleanup, play mats): /collections/play
 - Tech & Travel / TRAVELER: /product/lay-n-go-traveler-20
@@ -92,7 +91,7 @@ TOP PRODUCTS:
 
 HOW IT WORKS: Patented drawstring mat design — lay flat to see and use everything, pull drawstrings to cinch into a bag. Utility patents include U.S. 9,084,459; 10,016,036; 10,561,213; 11,116,298. Patents page: /pages/lay-n-go-patents
 
-ABOUT / OUR STORY: /pages/about-usV3 (latest), also /pages/about-us and /pages/about-usV2. Founders Amy & Adam. Started from solving everyday organization problems (toy cleanup, cosmetics, travel). 16+ years in business, 100k+ customers, 200+ wholesale partners.
+ABOUT / OUR STORY: /pages/about-us. Founders Amy & Adam. Started from solving everyday organization problems (toy cleanup, cosmetics, travel). 16+ years in business, 100k+ customers, 200+ wholesale partners.
 
 PRESS: Featured in BuzzFeed, Parents, People, Today Show, Lifehacker, Condé Nast Traveler, Oprah Daily, GMA, and more. Press page: /pages/press
 
@@ -184,7 +183,7 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
       content:
         'Cosmo is our signature cosmetic line. The Cosmo 20" is our best seller — opens flat like a mat, cinches into a bag. The Cosmo Deluxe 22" offers extra room. Both come in multiple colors and patterns.',
       products: [CHAT_PRODUCTS.cosmo20, CHAT_PRODUCTS.cosmoDeluxe22],
-      links: [{ label: "Cosmetic bags collection", href: "/collections/cosmetic-bags" }],
+      links: [{ label: "Cosmetic bags", href: "/shop/cosmetic-bags-v2" }],
     },
   },
   {
@@ -235,7 +234,7 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
       content:
         'Lay-n-Go is a patented drawstring mat that opens flat so you can see and use everything, then cinches closed into a bag for storage or travel. It started with toy cleanup and now covers cosmetics, tech, travel, pets, nails, and tactical gear.',
       links: [
-        { label: "Our story", href: "/pages/about-usV3" },
+        { label: "Our story", href: "/pages/about-us" },
         { label: "Patents", href: "/pages/lay-n-go-patents" },
       ],
     },
@@ -246,7 +245,7 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
       content:
         'Lay-n-Go was founded by Amy and Adam Fazackerley — 16+ years in business, 100k+ customers served. It started with a simple idea: "There has to be a better way to do this." Read the full founder story on our About page.',
       links: [
-        { label: "Our story", href: "/pages/about-usV3" },
+        { label: "Our story", href: "/pages/about-us" },
         { label: "Contact", href: "/pages/contact" },
       ],
     },
@@ -339,7 +338,7 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
         "We organize solutions by category: Cosmetic Bags, Nail Solutions, Play, Tech & Travel, Pet Solutions, and Outdoor / Tactical. Each uses our patented open-flat, cinch-closed design for a different use case.",
       links: [
         { label: "Shop all collections", href: "/collections" },
-        { label: "Cosmetic bags", href: "/collections/cosmetic-bags" },
+        { label: "Cosmetic bags", href: "/shop/cosmetic-bags-v2" },
       ],
     },
   },

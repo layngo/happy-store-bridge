@@ -98,7 +98,7 @@ const Index = () => {
           ),
           faqJsonLd([...HOME_FAQS]),
           itemListJsonLd("Shop by category", [
-            { name: "Cosmetic Bags", url: "/collections/cosmetic-bags" },
+            { name: "Cosmetic Bags", url: "/shop/cosmetic-bags-v2" },
             { name: "Nail Solutions", url: "/product/lay-n-go-nailspa-18" },
             { name: "Play", url: "/collections/play" },
             { name: "Tech & Travel", url: "/product/lay-n-go-traveler-20" },
@@ -110,7 +110,7 @@ const Index = () => {
             { name: "Collections", url: "/collections" },
             ...shopCollectionLinks.map((l) => ({ name: l.label, url: l.to })),
             { name: "Press", url: "/pages/press" },
-            { name: "About Us", url: "/pages/about-usV3" },
+            { name: "About Us", url: "/pages/about-us" },
             { name: "Contact", url: "/pages/contact" },
           ]),
         ]}
@@ -203,7 +203,7 @@ const Index = () => {
       {/* Our story */}
       <section className="bg-white">
         <div className="container py-16">
-          <Link to="/pages/about-usV3" className="group block">
+          <Link to="/pages/about-us" className="group block">
             <article className="relative overflow-hidden rounded-2xl shadow-sm">
               <div className="aspect-[16/8] md:aspect-[21/9] bg-white">
                 <img

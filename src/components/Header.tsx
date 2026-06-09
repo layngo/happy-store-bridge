@@ -176,26 +176,9 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
             Press
           </NavItem>
 
-          <DropdownMenu>
-            <NavMenuTrigger active={isAboutPath(pathname)} light={light}>
-              About Us
-              <ChevronDown className="hidden sm:block h-3 w-3 shrink-0 opacity-70" aria-hidden />
-            </NavMenuTrigger>
-            <DropdownMenuContent
-              align="center"
-              className="min-w-[14rem] rounded-xl border-slate-200 bg-white p-2 font-sans text-base font-medium tracking-normal shadow-lg"
-            >
-              <DropdownMenuItem className="rounded-lg px-4 py-3 text-slate-800 hover:text-slate-900" asChild>
-                <Link to="/pages/about-us">About Us</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="rounded-lg px-4 py-3 text-slate-800 hover:text-slate-900" asChild>
-                <Link to="/pages/about-usV2">About Us V2</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="rounded-lg px-4 py-3 text-slate-800 hover:text-slate-900" asChild>
-                <Link to="/pages/about-usV3">About Us V3</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <NavItem to="/pages/about-us" active={isAboutPath(pathname)} light={light}>
+            About Us
+          </NavItem>
 
           <NavItem to="/pages/contact" active={isContactPath(pathname)} light={light}>
             Contact

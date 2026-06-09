@@ -946,7 +946,7 @@ const ProductDetail = () => {
         ? `/collections/${collectionHandle}`
         : "/collections";
   const backLabel = fromCosmeticBagsV2
-    ? "Back to Cosmetic Bags V2"
+    ? "Back to Cosmetic Bags"
     : fromMilitaryFirstResponder
       ? "Back to Outdoor / Tactical"
       : collectionHandle
@@ -1686,7 +1686,7 @@ const ProductDetail = () => {
             <>
               <ChevronRight className="w-4 h-4 shrink-0" aria-hidden />
               <Link to={COSMETIC_BAGS_V2_PATH} className="hover:text-foreground transition-colors">
-                Cosmetic Bags V2
+                Cosmetic Bags
               </Link>
             </>
           ) : fromMilitaryFirstResponder ? (

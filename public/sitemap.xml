@@ -12,15 +12,9 @@
   <url><loc>https://www.layngo.com/shop/cosmetic-bags-v2</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority></url>
-  <url><loc>https://www.layngo.com/pages/about-usV3</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority></url>
   <url><loc>https://www.layngo.com/pages/about-us</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.6</priority></url>
-  <url><loc>https://www.layngo.com/pages/about-usV2</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.55</priority></url>
+    <priority>0.75</priority></url>
   <url><loc>https://www.layngo.com/pages/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority></url>

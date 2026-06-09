@@ -2,28 +2,27 @@ import { useCallback, useEffect, useRef, useState, type FormEvent, type Keyboard
 import { Link } from "react-router-dom";
 import { ArrowUp, MessageCircle, X } from "lucide-react";
 
-import { COSMO_20_SWATCHES } from "@/components/Cosmo20ColorSelector";
 import { CHAT_SAMPLE_QUESTIONS, type ChatLink, type ChatMessage, type ChatProduct } from "@/lib/chatbotKnowledge";
 import { sendChatMessage } from "@/lib/chatApi";
 import { useDialogA11y } from "@/hooks/useDialogA11y";
 import { cn } from "@/lib/utils";
 
-/** Closed Cosmo 20" — one hero per color, cycles while the assistant is thinking. */
-const THINKING_COSMO_20_IMAGES = (() => {
-  const seen = new Set<string>();
-  return COSMO_20_SWATCHES.filter((s) => !s.forceUnavailable)
-    .map((s) => ({ src: s.bagImageUrl, label: s.tooltip }))
-    .filter((item) => {
-      if (seen.has(item.src)) return false;
-      seen.add(item.src);
-      return true;
-    });
-})();
+/** Closed Lay-n-Go products — cycles while the assistant is thinking. */
+const CHAT_THINKING_IMAGES = [
+  { src: "/chat/thinking/cosmo-20-pink.png", label: 'Cosmo 20"' },
+  { src: "/chat/thinking/cosmo-20-black.png", label: 'Cosmo 20"' },
+  { src: "/chat/thinking/traveler-20.png", label: 'Traveler 20"' },
+  { src: "/chat/thinking/large-60.png", label: 'Large 60"' },
+  { src: "/chat/thinking/lite.png", label: "Lay-n-Go Lite" },
+  { src: "/chat/thinking/lifestyle.png", label: "Lay-n-Go Lifestyle" },
+  { src: "/chat/thinking/nailspa-18.png", label: 'Nailspa 18"' },
+  { src: "/chat/thinking/tactical.png", label: "Outdoor / Tactical" },
+] as const;
 
 const STREAM_WORD_MS = 28;
 /** Minimum time to show the thinking animation (also caps how fast FAQ replies appear). */
 const MIN_THINKING_MS = 3_600;
-/** Ms per Cosmo 20 color while thinking — longer = slower color scroll. */
+/** Ms per product image while thinking — longer = slower scroll. */
 const THINKING_CYCLE_MS = 820;
 
 type UiChatMessage = ChatMessage & { id: string };
@@ -111,7 +110,7 @@ function CosmoThinkingIndicator() {
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      setIndex((current) => (current + 1) % THINKING_COSMO_20_IMAGES.length);
+      setIndex((current) => (current + 1) % CHAT_THINKING_IMAGES.length);
     }, THINKING_CYCLE_MS);
     return () => window.clearInterval(id);
   }, []);
@@ -121,7 +120,7 @@ function CosmoThinkingIndicator() {
       <div className="chat-thinking-orbit" aria-hidden>
         <div className="chat-thinking-glow" />
         <div className="chat-thinking-avatar">
-          {THINKING_COSMO_20_IMAGES.map((item, i) => (
+          {CHAT_THINKING_IMAGES.map((item, i) => (
             <img
               key={item.src}
               src={item.src}

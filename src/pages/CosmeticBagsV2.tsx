@@ -245,7 +245,7 @@ const CosmeticBagsV2 = () => {
           </Link>
           <ChevronRight className="w-4 h-4 shrink-0" aria-hidden />
           <span className="text-foreground font-medium" aria-current="page">
-            Cosmetic Bags V2
+            Cosmetic Bags
           </span>
         </PageBreadcrumb>
 

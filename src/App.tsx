@@ -17,8 +17,6 @@ import ProductUrlRedirect from "./pages/ProductUrlRedirect.tsx";
 import Search from "./pages/Search.tsx";
 import PolicyBridge from "./pages/PolicyBridge.tsx";
 import AboutUs from "./pages/static/AboutUs.tsx";
-import AboutUsV2 from "./pages/static/AboutUsV2.tsx";
-import AboutUsV3 from "./pages/static/AboutUsV3.tsx";
 import BusinessLicense from "./pages/static/BusinessLicense.tsx";
 import Contact from "./pages/static/Contact.tsx";
 import LayNGoPatents from "./pages/static/LayNGoPatents.tsx";
@@ -76,8 +74,8 @@ const AppContent = () => {
         <Route path="/dev/cosmo-arrows" element={<CosmoArrowPlayground />} />
 
         <Route path="/pages/about-us" element={<AboutUs />} />
-        <Route path="/pages/about-usV2" element={<AboutUsV2 />} />
-        <Route path="/pages/about-usV3" element={<AboutUsV3 />} />
+        <Route path="/pages/about-usV2" element={<Navigate to="/pages/about-us" replace />} />
+        <Route path="/pages/about-usV3" element={<Navigate to="/pages/about-us" replace />} />
         <Route path="/pages/business-license-certification" element={<BusinessLicense />} />
         <Route path="/pages/contact" element={<Contact />} />
         <Route path="/pages/lay-n-go-patents" element={<LayNGoPatents />} />
