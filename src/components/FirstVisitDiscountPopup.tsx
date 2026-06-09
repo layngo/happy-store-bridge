@@ -132,7 +132,7 @@ export function FirstVisitDiscountPopup() {
     setBusy(false);
 
     if (!result.ok) {
-      toast.error(result.error);
+      toast.error((result as { error: string }).error);
       return;
     }
 
@@ -157,7 +157,7 @@ export function FirstVisitDiscountPopup() {
     setBusy(false);
 
     if (!result.ok) {
-      toast.error(result.error);
+      toast.error((result as { error: string }).error);
       return;
     }
 
@@ -177,7 +177,7 @@ export function FirstVisitDiscountPopup() {
     setBusy(false);
 
     if (!result.ok) {
-      toast.error(result.error);
+      toast.error((result as { error: string }).error);
       return;
     }
     toast.success("Check your email for the new code.");

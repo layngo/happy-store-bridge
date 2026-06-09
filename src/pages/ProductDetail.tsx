@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useParams, Link, useSearchParams, useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import {
   fetchProductByHandle,
   fetchRelatedProducts,
@@ -1206,7 +1207,8 @@ const ProductDetail = () => {
       <div className="min-h-dvh bg-background flex flex-col">
         <Header />
         <main id="main-content" className="container py-20 text-center flex-1">
-          <p className="text-muted-foreground text-lg">Product not found</p>
+          <h1 className="font-heading text-2xl font-bold text-foreground">Product Not Found</h1>
+          <p className="text-muted-foreground text-lg mt-2">We couldn't find that product.</p>
           <Link to="/collections" className="text-primary hover:underline mt-4 inline-block">
             View collections
           </Link>
@@ -1328,6 +1330,7 @@ const ProductDetail = () => {
               key={`${url}-${i}`}
               type="button"
               onClick={() => setCosmo22GalleryIndex(i)}
+              aria-label={`View ${product.title} variant photo ${i + 1} of ${cosmo22HeroUrls.length}`}
               className={cn(
                 "flex h-16 w-16 shrink-0 items-center justify-center bg-muted/15 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                 i === cosmo22GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
@@ -1345,6 +1348,7 @@ const ProductDetail = () => {
               key={`${url}-${i}`}
               type="button"
               onClick={() => setCosmo20GalleryIndex(i)}
+              aria-label={`View ${product.title} variant photo ${i + 1} of ${cosmo20HeroUrls.length}`}
               className={cn(
                 "flex h-16 w-16 shrink-0 items-center justify-center bg-muted/15 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white",
                 i === cosmo20GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
@@ -1362,6 +1366,7 @@ const ProductDetail = () => {
               key={`${url}-${i}`}
               type="button"
               onClick={() => setNailspa18GalleryIndex(i)}
+              aria-label={`View ${product.title} variant photo ${i + 1} of ${nailspa18HeroUrls.length}`}
               className={cn(
                 "flex h-16 w-16 shrink-0 items-center justify-center bg-background transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                 i === nailspa18GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-0",
@@ -1392,6 +1397,7 @@ const ProductDetail = () => {
               key={i}
               type="button"
               onClick={() => setSelectedImage(i)}
+              aria-label={img.node.altText || `View ${product.title} photo ${i + 1} of ${orderedImages.length}`}
               className={cn(
                 "flex h-16 w-16 shrink-0 items-center justify-center transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 isCosmoPdp
@@ -1631,6 +1637,37 @@ const ProductDetail = () => {
             : "bg-background",
       )}
     >
+      <Helmet>
+        <title>{`${product.title} — Lay-n-Go`}</title>
+        <meta
+          name="description"
+          content={(product.description?.replace(/<[^>]+>/g, "").trim().slice(0, 155)) || `Shop the ${product.title} from Lay-n-Go.`}
+        />
+        <link rel="canonical" href={`https://happy-store-bridge.lovable.app/product/${product.handle}`} />
+        <meta property="og:title" content={`${product.title} — Lay-n-Go`} />
+        <meta property="og:description" content={(product.description?.replace(/<[^>]+>/g, "").trim().slice(0, 200)) || product.title} />
+        <meta property="og:url" content={`https://happy-store-bridge.lovable.app/product/${product.handle}`} />
+        <meta property="og:type" content="product" />
+        {product.images?.edges?.[0]?.node?.url ? (
+          <meta property="og:image" content={product.images.edges[0].node.url} />
+        ) : null}
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: product.title,
+          description: product.description?.replace(/<[^>]+>/g, "").trim().slice(0, 500) || product.title,
+          image: product.images?.edges?.map((e) => e.node.url).filter(Boolean) ?? [],
+          brand: { "@type": "Brand", name: "Lay-n-Go" },
+          url: `https://happy-store-bridge.lovable.app/product/${product.handle}`,
+          offers: {
+            "@type": "Offer",
+            url: `https://happy-store-bridge.lovable.app/product/${product.handle}`,
+            price: priceDisplay,
+            priceCurrency: selectedVariant?.price.currencyCode || product.priceRange.minVariantPrice.currencyCode || "USD",
+            availability: selectedVariant?.availableForSale ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          },
+        })}</script>
+      </Helmet>
       <Header />
       <main id="main-content" className="container py-8 flex-1">
         <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6">
