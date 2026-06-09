@@ -206,52 +206,35 @@ const Index = () => {
       </section>
 
       <section className="border-t border-border bg-background py-16">
-        <div className="container max-w-xl px-4">
+        <div className="container max-w-6xl px-4">
           <p className="brand-eyebrow text-center">Reviews</p>
           <h2 className="brand-display mt-2 text-center text-[clamp(1.5rem,5vw,2.25rem)] text-foreground">
             Don&apos;t just take our word for it.
           </h2>
 
-          <div className="relative mx-auto mt-10">
-            <div
-              className="testimonial-conveyor-viewport relative overflow-hidden border-2 border-foreground bg-background"
-              style={{
-                height: "calc(5 * (5rem + 0.75rem) - 0.75rem)",
-              }}
-            >
-              <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-10 bg-gradient-to-b from-background to-transparent" />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-10 bg-gradient-to-t from-background to-transparent" />
-              <div className="testimonial-conveyor-track px-3 py-3">
-                {[...testimonials, ...testimonials].map((t, idx) => (
-                  <article
-                    key={`${t.name}-${idx}`}
-                    className="brand-review-card flex h-20 shrink-0 items-center gap-3 px-4 py-2.5"
+          <ul className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {testimonials.map((t) => (
+              <li key={t.name}>
+                <article className="brand-review-card flex h-full flex-col px-5 py-6 sm:px-6 sm:py-7">
+                  <div
+                    className="flex h-10 w-10 shrink-0 items-center justify-center border border-foreground/15 bg-foreground text-sm font-bold text-background"
+                    aria-hidden
                   >
-                    <div
-                      className="flex h-10 w-10 shrink-0 items-center justify-center border border-foreground/15 bg-foreground text-sm font-bold text-background"
-                      aria-hidden
-                    >
-                      {t.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="line-clamp-2 text-sm font-normal leading-snug text-foreground/85">
-                        &ldquo;{t.quote}&rdquo;
-                      </p>
-                      <div className="mt-1 flex flex-wrap items-center gap-2">
-                        <span className="brand-eyebrow text-foreground/60">{t.name}</span>
-                        <span
-                          className="brand-eyebrow text-foreground/45"
-                          aria-label="5 out of 5 stars"
-                        >
-                          ★★★★★
-                        </span>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
+                    {t.name.charAt(0).toUpperCase()}
+                  </div>
+                  <blockquote className="brand-review-body mt-4 flex-1">
+                    &ldquo;{t.quote}&rdquo;
+                  </blockquote>
+                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-foreground/10 pt-4">
+                    <span className="brand-eyebrow text-foreground/70">{t.name}</span>
+                    <span className="brand-eyebrow text-foreground/45" aria-label="5 out of 5 stars">
+                      ★★★★★
+                    </span>
+                  </div>
+                </article>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

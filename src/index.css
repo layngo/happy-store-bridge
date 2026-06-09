@@ -548,18 +548,6 @@
     will-change: transform;
   }
 
-  .testimonial-conveyor-viewport:hover .testimonial-conveyor-track {
-    animation-play-state: paused;
-  }
-
-  .testimonial-conveyor-track {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    animation: testimonial-conveyor-up 48s linear infinite;
-    will-change: transform;
-  }
-
   .our-story-slide {
     position: absolute;
     inset: 0;
@@ -712,21 +700,6 @@
     letter-spacing: 0.08em;
     line-height: 0.8;
     text-transform: uppercase;
-  }
-}
-
-@keyframes testimonial-conveyor-up {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-50%);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .testimonial-conveyor-track {
-    animation: none;
   }
 }
 
