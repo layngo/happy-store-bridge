@@ -4,6 +4,7 @@ import { createReviewApiMiddleware } from "../server/reviewApiMiddleware";
 import { createContactApiMiddleware } from "../server/contactApiMiddleware";
 import { createDiscountApiMiddleware } from "../server/discountApiMiddleware";
 import { createNewsletterApiMiddleware } from "../server/newsletterApiMiddleware";
+import { createChatApiMiddleware } from "../server/chatApiMiddleware";
 
 export function reviewApiPlugin(): Plugin {
   return {
@@ -14,6 +15,7 @@ export function reviewApiPlugin(): Plugin {
       server.middlewares.use(createNewsletterApiMiddleware(env));
       server.middlewares.use(createDiscountApiMiddleware(env));
       server.middlewares.use(createReviewApiMiddleware(env));
+      server.middlewares.use(createChatApiMiddleware(env));
     },
     configurePreviewServer(server) {
       const env = loadEnv(server.config.mode, process.cwd(), "");
@@ -21,6 +23,7 @@ export function reviewApiPlugin(): Plugin {
       server.middlewares.use(createNewsletterApiMiddleware(env));
       server.middlewares.use(createDiscountApiMiddleware(env));
       server.middlewares.use(createReviewApiMiddleware(env));
+      server.middlewares.use(createChatApiMiddleware(env));
     },
   };
 }
