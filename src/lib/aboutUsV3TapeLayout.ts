@@ -48,6 +48,10 @@ export const DEFAULT_ABOUT_US_V3_TAPE_LAYOUT: AboutUsV3TapeLayoutState = {
     near: { x: 7, y: 5.5, rotate: -46 },
     far: { x: 91, y: 91, rotate: -46 },
   },
+  "They have a family::Lay-n-Go named to the Inc 5000": {
+    near: { x: 91, y: 5.5, rotate: 46 },
+    far: { x: 7, y: 91, rotate: 46 },
+  },
   "They have a mess::Toys spread wall to wall": {
     near: { x: 7, y: 5.5, rotate: -46 },
     far: { x: 91, y: 91, rotate: -46 },
