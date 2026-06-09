@@ -124,7 +124,7 @@ const CHAPTERS: StoryChapter[] = [
         title: "Lay-n-Go named to the Inc 5000",
         alt: "Inc. 5000 America's Fastest-Growing Private Companies badge",
         imagePosition: "center",
-        imageScale: 1.15,
+        imageScale: 1.05,
         previewText: "As the company grew, some exciting accolades came our way...",
         storyText:
           "Starting a business is one thing. Growing a business is a much harder challenge. Doing this with your spouse adds a whole other complexity. That being said, we have loved our journey, our incredible customers, and the team around us. YOU have made this dream happen!",
