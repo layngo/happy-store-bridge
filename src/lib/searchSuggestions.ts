@@ -54,7 +54,7 @@ export const SEARCH_CATALOG: readonly SearchSuggestion[] = [
     title: 'Lay-n-Go Traveler 20"',
     subtitle: "Tech & travel organizer",
     href: "/product/lay-n-go-traveler-20",
-    image: "/products/lay-n-go-traveler-20/traveler-gallery-1.png",
+    image: "/chat/thinking/traveler-20.png",
     keywords: ["traveler", "travel", "tech", "technology", "laptop", "charger", "cable", "electronic", "20", "traveller"],
   },
   {
@@ -89,7 +89,7 @@ export const SEARCH_CATALOG: readonly SearchSuggestion[] = [
     title: 'Lay-n-Go Travel Dog Bed 44"',
     subtitle: "Portable pet mat & bed",
     href: "/product/lay-n-go-travel-dog-bed-44",
-    image: "/products/lay-n-go-travel-dog-bed-44/gallery-1.png",
+    image: "/products/lay-n-go-travel-dog-bed-44/story-mat-flat.png",
     keywords: ["pet", "pets", "dog", "dogs", "bed", "travel", "44", "puppy", "animal"],
   },
   {
@@ -104,11 +104,9 @@ export const SEARCH_CATALOG: readonly SearchSuggestion[] = [
 /** Shown when the field is focused with no query. */
 export const DEFAULT_SEARCH_SUGGESTIONS: readonly SearchSuggestion[] = [
   SEARCH_CATALOG[0],
-  SEARCH_CATALOG[2],
   SEARCH_CATALOG[3],
   SEARCH_CATALOG[6],
-  SEARCH_CATALOG[8],
-  SEARCH_CATALOG[9],
+  SEARCH_CATALOG[7],
 ];
 
 const MAX_SUGGESTIONS = 8;
