@@ -107,6 +107,7 @@ export const DEFAULT_SEARCH_SUGGESTIONS: readonly SearchSuggestion[] = [
   SEARCH_CATALOG[3],
   SEARCH_CATALOG[6],
   SEARCH_CATALOG[7],
+  SEARCH_CATALOG[11],
 ];
 
 const MAX_SUGGESTIONS = 8;
