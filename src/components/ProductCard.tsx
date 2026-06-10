@@ -268,6 +268,11 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
         ) : (
           <div className="flex h-full w-full items-center justify-center text-muted-foreground">No image</div>
         )}
+        {isBestSeller ? (
+          <span className="pointer-events-none absolute right-2 top-2 z-10 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground shadow-md sm:right-3 sm:top-3 sm:px-3 sm:text-xs">
+            Best Seller
+          </span>
+        ) : null}
       </Link>
 
       <div className="flex flex-1 flex-col gap-3 bg-background p-4">
