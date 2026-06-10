@@ -135,7 +135,7 @@ const Index = () => {
             aria-hidden
           />
           <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 px-5 text-center sm:gap-5 sm:px-8">
-            <h1 className="font-heading text-xl font-bold leading-tight tracking-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)] sm:text-2xl md:text-3xl lg:text-4xl">
+            <h1 className="font-heading text-2xl font-extrabold uppercase leading-[1.08] tracking-[0.04em] text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)] sm:text-3xl md:text-4xl lg:text-5xl">
               Organizational Solutions
               <br />
               for Life, Play, and Travel
