@@ -106,11 +106,9 @@ export const DEFAULT_SEARCH_SUGGESTIONS: readonly SearchSuggestion[] = [
   SEARCH_CATALOG[0],
   SEARCH_CATALOG[3],
   SEARCH_CATALOG[6],
-  SEARCH_CATALOG[7],
-  SEARCH_CATALOG[11],
 ];
 
-const MAX_SUGGESTIONS = 8;
+const MAX_SUGGESTIONS = 3;
 
 function normalize(text: string) {
   return text.toLowerCase().replace(/['"]/g, "").trim();
