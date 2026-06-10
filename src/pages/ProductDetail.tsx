@@ -982,7 +982,8 @@ const ProductDetail = () => {
     const v = product.variants.edges[selectedVariantIdx]?.node;
     const color = v?.selectedOptions.find((o) => /color|colour/i.test(o.name))?.value;
     if (!color) return [];
-    return getCosmo22HeroImageUrls(color, v);
+    const urls = getCosmo22HeroImageUrls(color, v);
+    return urls[0] ? [urls[0]] : [];
   }, [product, selectedVariantIdx]);
 
   const nailspa18HeroUrls = useMemo(() => {
@@ -1321,24 +1322,6 @@ const ProductDetail = () => {
 
   const heroThumbnails: ReactNode = (
     <>
-      {isCosmo22Product(product.handle) && cosmo22HeroUrls.length > 1 ? (
-        <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Variant photo gallery">
-          {cosmo22HeroUrls.map((url, i) => (
-            <button
-              key={`${url}-${i}`}
-              type="button"
-              onClick={() => setCosmo22GalleryIndex(i)}
-              aria-label={`View ${product.title} variant photo ${i + 1} of ${cosmo22HeroUrls.length}`}
-              className={cn(
-                "flex h-16 w-16 shrink-0 items-center justify-center bg-muted/15 transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-white",
-                i === cosmo22GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
-              )}
-            >
-              <img src={url} alt={`${product.title} — photo ${i + 1}`} className="max-h-full max-w-full object-contain" />
-            </button>
-          ))}
-        </div>
-      ) : null}
       {isCosmo20Product(product.handle) && cosmo20HeroUrls.length > 1 ? (
         <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Variant photo gallery">
           {cosmo20HeroUrls.map((url, i) => (
@@ -1906,7 +1889,9 @@ const ProductDetail = () => {
 
             {isNailspa18Product(product.handle) ? <NailspaPdpStory /> : null}
 
-            {isCosmoStoryPdp ? <CosmoPdpStory /> : null}
+            {isCosmoStoryPdp ? (
+              <CosmoPdpStory hideIntroImage={isCosmo22Product(product.handle)} />
+            ) : null}
 
             <section
               className="mt-14 sm:mt-16"

@@ -286,14 +286,15 @@ const CosmeticBagsV2 = () => {
                 aria-label={`${spec.shortName}, ${spec.inches} inch — ${product.title}. Opens product page.`}
               >
                 {spec.inches === 20 ? (
-                  <span className="pointer-events-none absolute right-1 top-1 z-10 rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary-foreground shadow-md sm:right-2 sm:top-2 sm:px-2.5 sm:py-1 sm:text-[10px]">
+                  <span className="mb-1 shrink-0 rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary-foreground shadow-md max-md:mx-auto md:pointer-events-none md:absolute md:right-2 md:top-2 md:mb-0 md:px-2.5 md:py-1 md:text-[10px]">
                     Best Seller
                   </span>
                 ) : null}
                 <p
                   className={cn(
                     "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] origin-center items-center justify-center px-0.5 text-pretty text-center max-md:leading-tight",
-                    "min-h-[3.25rem] md:mb-1.5 lg:min-h-[3.5rem]",
+                    spec.inches === 20 ? "min-h-[2.5rem] md:min-h-[3.25rem]" : "min-h-[3.25rem]",
+                    "md:mb-1.5 lg:min-h-[3.5rem]",
                     "font-heading font-black uppercase leading-[0.92] tracking-tight text-foreground",
                     "text-[clamp(0.8125rem,3.2cqw+0.5rem,1.1875rem)] sm:text-[clamp(0.9375rem,2.85cqw+0.55rem,1.4375rem)]",
                     "transition-transform duration-200 ease-out will-change-transform",
