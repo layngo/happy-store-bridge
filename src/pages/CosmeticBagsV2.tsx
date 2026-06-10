@@ -285,6 +285,11 @@ const CosmeticBagsV2 = () => {
                 }}
                 aria-label={`${spec.shortName}, ${spec.inches} inch — ${product.title}. Opens product page.`}
               >
+                {spec.inches === 20 ? (
+                  <span className="pointer-events-none absolute right-1 top-1 z-10 rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary-foreground shadow-md sm:right-2 sm:top-2 sm:px-2.5 sm:py-1 sm:text-[10px]">
+                    Best Seller
+                  </span>
+                ) : null}
                 <p
                   className={cn(
                     "pointer-events-none mb-0.5 flex min-h-0 w-full max-w-[min(100%,16rem)] origin-center items-center justify-center px-0.5 text-pretty text-center max-md:leading-tight",
