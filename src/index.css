@@ -428,7 +428,7 @@
   .chat-thinking-img {
     @apply absolute inset-0 h-full w-full object-cover object-center;
     opacity: 0;
-    transition: opacity 0.28s ease;
+    transition: opacity 0.18s ease;
   }
 
   .chat-thinking-img--visible {

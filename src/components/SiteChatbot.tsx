@@ -23,7 +23,7 @@ const STREAM_WORD_MS = 28;
 /** Minimum time to show the thinking animation (also caps how fast FAQ replies appear). */
 const MIN_THINKING_MS = 3_600;
 /** Ms per product image while thinking — lower = faster scroll. */
-const THINKING_CYCLE_MS = 420;
+const THINKING_CYCLE_MS = 240;
 
 type UiChatMessage = ChatMessage & { id: string };
 
