@@ -197,6 +197,11 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
   const visibleColors = colorValues.slice(0, 4);
   const remainingColors = Math.max(0, colorValues.length - visibleColors.length);
 
+  const isBestSeller = (() => {
+    const h = node.handle.toLowerCase();
+    return h === "lay-n-go-cosmo-20" || h === "lay-n-go-large-60";
+  })();
+
   if (variant === "imageOverlay") {
     return (
       <Link to={`/product/${node.handle}`} className="group block">
