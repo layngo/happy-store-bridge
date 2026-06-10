@@ -500,34 +500,37 @@ const AboutUs = () => {
   let panelIndex = 0;
 
   return (
-    <div className="flex min-h-dvh flex-col bg-background">
+    <div className="about-us-page flex min-h-dvh flex-col bg-background">
+      <div className="about-us-page__backdrop" aria-hidden />
       <PageSeo
         title="About Us"
         description={getStaticPageSeo("/pages/about-us").description}
         pathname="/pages/about-us"
         keywords={getStaticPageSeo("/pages/about-us").keywords}
       />
-      <Header />
-      <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 lg:px-8">
-        <div className="not-prose">
-          <AboutUsV3Intro />
-          {CHAPTERS.map((chapter) => {
-            const section = (
-              <StoryChapterSection
-                key={chapter.heading}
-                chapter={chapter}
-                startIndex={panelIndex}
-                editorMode={false}
-                tapeLayout={tapeLayout}
-                onTapeLayoutChange={() => {}}
-              />
-            );
-            panelIndex += chapter.panels.length;
-            return section;
-          })}
-        </div>
-      </main>
-      <SiteFooter />
+      <div className="relative z-10 flex min-h-dvh flex-col">
+        <Header />
+        <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 lg:px-8">
+          <div className="not-prose">
+            <AboutUsV3Intro />
+            {CHAPTERS.map((chapter) => {
+              const section = (
+                <StoryChapterSection
+                  key={chapter.heading}
+                  chapter={chapter}
+                  startIndex={panelIndex}
+                  editorMode={false}
+                  tapeLayout={tapeLayout}
+                  onTapeLayoutChange={() => {}}
+                />
+              );
+              panelIndex += chapter.panels.length;
+              return section;
+            })}
+          </div>
+        </main>
+        <SiteFooter />
+      </div>
     </div>
   );
 };

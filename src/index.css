@@ -1133,6 +1133,36 @@
   .cart-line__unit-price {
     @apply text-xs text-muted-foreground;
   }
+
+  /* About Us — whisper-thin Old Town Alexandria backdrop (Southside 815 painting) */
+  .about-us-page {
+    @apply relative isolate;
+  }
+
+  .about-us-page__backdrop {
+    @apply pointer-events-none fixed inset-0 z-0;
+    background-color: hsl(var(--background));
+  }
+
+  .about-us-page__backdrop::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("/about-us-v2/founders-southside-painting.png?v=12") center / cover no-repeat;
+    opacity: 0.06;
+  }
+
+  .about-us-page__backdrop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.78) 0%,
+      rgba(255, 255, 255, 0.62) 42%,
+      rgba(255, 255, 255, 0.78) 100%
+    );
+  }
 }
 
 @keyframes our-story-fade-a {
