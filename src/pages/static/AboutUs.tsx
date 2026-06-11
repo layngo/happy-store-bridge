@@ -104,9 +104,9 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("cosmo-launch-2013.png"),
         title: "The COSMO launches",
         alt: "Models lying in a circle around an open Lay-n-Go COSMO cosmetic bag",
-        previewText: "The success of the Lay-n-Go design was a perfect fit for cosmetics and makeup...",
+        previewText: "From LEGO to LIPSTICK, the success of the Lay-n-Go design was a perfect fit for cosmetics and makeup...",
         storyText:
-          "The success of the Lay-n-Go design was a perfect fit for cosmetics and makeup. The COSMO was an instant hit and was launched at CosmoProf in Las Vegas. Soon the product could be found in Target, Costco, on QVC, and in thousands of independent retailers. The COSMO is the best selling product Lay-n-Go has ever launched.",
+          "From LEGO to LIPSTICK, the success of the Lay-n-Go design was a perfect fit for cosmetics and makeup. The COSMO was an instant hit and was launched at CosmoProf in Las Vegas. Soon the product could be found in Target, Costco, on QVC, and in thousands of independent retailers. The COSMO is the best selling product Lay-n-Go has ever launched.",
       },
       {
         src: aboutUsV2Png("inc-5000-block.png"),
