@@ -312,8 +312,8 @@ function TravelerLeaderPair({
   );
 }
 
-const TRAVELER_MOBILE_HERO_CLASS = "w-full max-w-[min(96vw,36rem)] object-contain";
-const TRAVELER_DIAMETER_CLASS = "w-full max-w-[min(96vw,36rem)]";
+const TRAVELER_STAGE_CLASS = "mx-auto w-full max-w-[min(96vw,36rem)]";
+const TRAVELER_MOBILE_HERO_CLASS = "block w-full object-contain";
 
 const TRAVELER_CALLOUTS = [
   {
@@ -375,20 +375,22 @@ function TravelerDetailCalloutSection() {
     <section className="mx-auto mt-12 w-full max-w-6xl overflow-visible md:mt-14" aria-label="Traveler feature callouts">
       {/* Mobile — stacked hero, diameter, and callout thumbs (matches Large / Lifestyle diagrams) */}
       <div className="flex flex-col items-center gap-2 pb-8 md:hidden">
-        <img
-          src={TRAVELER_CALLOUT_MAIN}
-          alt="Lay-n-Go Traveler opened flat with travel essentials organized inside"
-          className={TRAVELER_MOBILE_HERO_CLASS}
-          width={vbW}
-          height={vbH}
-          loading="lazy"
-          decoding="async"
-        />
-        <LayNGoMatDiameterLine
-          inches={20}
-          variant="traveler-20"
-          className={cn(TRAVELER_DIAMETER_CLASS, "mt-1.5 shrink-0 pb-0")}
-        />
+        <div className={TRAVELER_STAGE_CLASS}>
+          <img
+            src={TRAVELER_CALLOUT_MAIN}
+            alt="Lay-n-Go Traveler opened flat with travel essentials organized inside"
+            className={TRAVELER_MOBILE_HERO_CLASS}
+            width={vbW}
+            height={vbH}
+            loading="lazy"
+            decoding="async"
+          />
+          <LayNGoMatDiameterLine
+            inches={20}
+            variant="traveler-20"
+            className="mt-1.5 w-full shrink-0 pb-1"
+          />
+        </div>
         <div className="flex w-full flex-col items-center gap-2">
           {TRAVELER_CALLOUTS.map((callout) => (
             <TravelerMobileCallout key={callout.label} {...callout} />
@@ -476,7 +478,7 @@ function TravelerDetailCalloutSection() {
         <LayNGoMatDiameterLine
           inches={20}
           variant="traveler-20"
-          className="relative z-20 w-full shrink-0 pb-2 pt-1"
+          className="relative z-20 mx-auto w-full max-w-full shrink-0 pb-2 pt-1"
         />
       </div>
     </section>

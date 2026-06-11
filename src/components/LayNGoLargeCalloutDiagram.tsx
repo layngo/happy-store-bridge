@@ -55,8 +55,14 @@ function defenderThumbClassName(key: string): string {
   return DEFENDER_THUMB_IMG_CLASS;
 }
 
-/** Defender Tactical hero callout stage — matches `hero-callout-main.png` (1024×1024). */
-const DEFENDER_TACTICAL_CALLOUT_VB = { w: 1024, h: 1024 } as const;
+/** Bracket width tuned to olive-fabric bbox on each hero PNG. */
+const DEFENDER_MINI_DIAMETER_BRACKET_CLASS =
+  "mx-auto w-[min(100%,58%)] sm:w-[min(100%,58%)] md:w-[min(100%,58%)]";
+const DEFENDER_TACTICAL_DIAMETER_BRACKET_CLASS =
+  "mx-auto w-[min(100%,86%)] sm:w-[min(100%,86%)] md:w-[min(100%,85%)] lg:w-[min(100%,85%)]";
+/** Traveler hero — black mat spans ~91% of PNG width (928/1024). */
+const TRAVELER_DIAMETER_BRACKET_CLASS =
+  "mx-auto w-[min(100%,90.625%)] sm:w-[min(100%,90.625%)] md:w-[min(100%,90.625%)]";
 const DEFENDER_TACTICAL_DOT_R = 6.5;
 const DEFENDER_TACTICAL_DOT_STROKE = 2.25;
 const DEFENDER_TACTICAL_LEADER_OUTER = (1.02 * 1024) / 100;
@@ -116,6 +122,8 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
 
 /** Defender Mini hero callout stage — matches `hero-callout-main.png` (1024×600). */
 const DEFENDER_MINI_CALLOUT_VB = { w: 1024, h: 600 } as const;
+/** Defender Tactical hero callout stage — matches `hero-callout-main.png` (1024×1024). */
+const DEFENDER_TACTICAL_CALLOUT_VB = { w: 1024, h: 1024 } as const;
 
 /** Shared callout stage width; Tactical inner stage scales to match Mini height. */
 const DEFENDER_CALLOUT_STAGE_MAX_W = "max-w-5xl";
@@ -451,7 +459,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 16,
       containerMinHClass: "min-h-[min(92vh,920px)]",
       heroWidthClass: "w-[min(94vw,920px)]",
-      /** Below hero — positive margin so 16″ bracket clears the mat/drawstring. */
+      /** Below hero — bracket tracks inset 16″ disc in hero PNG. */
       dimensionWrapClass:
         "relative z-20 mx-auto mt-5 w-full max-w-5xl pt-1 pb-4 sm:mt-6 sm:pb-5 md:mt-8 md:pb-6",
       mobileHeroMaxClass: "max-w-[min(96vw,36rem)]",
@@ -471,9 +479,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 20,
       containerMinHClass: "min-h-[min(92vh,920px)]",
       heroWidthClass: "w-[min(94vw,920px)]",
-      /** Below hero — same spacing as Defender Mini. */
+      /** Below hero — same width as desktop callout stage so bracket aligns with mat. */
       dimensionWrapClass:
-        "relative z-20 mx-auto mt-5 w-full max-w-5xl pt-1 pb-4 sm:mt-6 sm:pb-5 md:mt-8 md:pb-6",
+        "relative z-20 mx-auto mt-5 w-full max-w-5xl pt-1 pb-4 sm:mt-6 sm:pb-5 md:mt-8 md:w-[58.59375%] md:max-w-[calc(64rem*0.5859375)] md:pb-6",
       mobileHeroMaxClass: "max-w-[min(96vw,36rem)]",
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP,
@@ -551,18 +559,18 @@ function DiameterLine({
       ? /** Lite hero: mat fills the frame — bracket spans the green disc (centered under product). */
         "mx-auto w-[min(100%,94%)] sm:w-[min(100%,93%)] md:w-[min(100%,92%)]"
       : defenderMini16
-        ? /** Defender 16″ hero: mat nearly fills the frame — bracket tracks the olive disc. */
-          "mx-auto w-[min(100%,88%)] sm:w-[min(100%,86%)] md:w-[min(100%,84%)] lg:w-[min(100%,82%)]"
+        ? /** Defender 16″ hero — mat is inset in the PNG (~58% width). */
+          DEFENDER_MINI_DIAMETER_BRACKET_CLASS
         : defenderTactical20
-          ? /** Defender 20″ hero: mat nearly fills the frame — bracket tracks the olive disc. */
-            "mx-auto w-[min(100%,90%)] sm:w-[min(100%,88%)] md:w-[min(100%,86%)] lg:w-[min(100%,84%)]"
-    : traveler20
-      ? /** Traveler callout hero — black mat spans nearly the full PNG width */
-        "mx-auto w-[min(100%,97%)] sm:w-[min(100%,96%)] md:w-[min(100%,95%)] lg:w-[min(100%,94%)]"
-    : large60
-      ? /** Large hero: mat is inset in the PNG — bracket must match the blue disc, not the full image width */
-        "mx-auto w-[min(100%,58%)] sm:w-[min(100%,60%)] md:w-[min(100%,62%)] lg:w-[min(100%,61%)]"
-      : "w-full max-w-md sm:max-w-lg";
+          ? /** Defender 20″ hero — mat spans ~86% of PNG width. */
+            DEFENDER_TACTICAL_DIAMETER_BRACKET_CLASS
+          : traveler20
+            ? /** Traveler callout hero — black mat spans ~91% of PNG width. */
+              TRAVELER_DIAMETER_BRACKET_CLASS
+            : large60
+              ? /** Large hero: mat is inset in the PNG — bracket must match the blue disc, not the full image width */
+                "mx-auto w-[min(100%,58%)] sm:w-[min(100%,60%)] md:w-[min(100%,62%)] lg:w-[min(100%,61%)]"
+              : "w-full max-w-md sm:max-w-lg";
 
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
@@ -592,9 +600,11 @@ function DiameterLine({
             !lite18 &&
             !defenderMini16 &&
             !defenderTactical20 &&
+            !traveler20 &&
             "mt-2 text-xl sm:text-2xl",
           lite18 && "mt-5 text-2xl sm:mt-6 sm:text-[1.65rem]",
           (defenderMini16 || defenderTactical20) && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
+          traveler20 && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
           !lifestyleChrome && "mt-1 text-lg sm:text-xl",
         )}
       >
@@ -615,8 +625,8 @@ export function LayNGoMatDiameterLine({
   variant?: LayNGoMatDiameterVariant;
 }) {
   return (
-    <div aria-label={`${inches} inch diameter when laid flat`}>
-      <DiameterLine inches={inches} className={className} variant={variant} />
+    <div aria-label={`${inches} inch diameter when laid flat`} className={className}>
+      <DiameterLine inches={inches} className="w-full" variant={variant} />
     </div>
   );
 }

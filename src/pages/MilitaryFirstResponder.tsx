@@ -22,10 +22,10 @@ const IMG_20 = `/military-first-responder-v2/defender-tactical-20.png?v=${DEFEND
 /** Largest disk (20″); 16″ derives from 16:20 — same cap pattern as Cosmo V2 (2 columns). */
 const DEFENDER_CIRCLE_BASE_REM = 19.75;
 
-/** Open-mat width ÷ image width (alpha bbox on trimmed transparent PNGs). */
+/** Open-mat width ÷ image width (olive-fabric bbox on collection PNGs). */
 const DEFENDER_MAT_WIDTH_FRACTION: Record<16 | 20, number> = {
-  16: 562 / 578,
-  20: 461 / 477,
+  16: 545 / 578,
+  20: 443 / 477,
 };
 
 /** 20″ mat width — target mat scales as (inches / 20) × this. */
