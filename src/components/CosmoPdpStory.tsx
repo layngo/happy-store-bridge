@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils";
 const COSMO_STORY_HEADLINE = "Forget everything you knew about a makeup bag.";
 const MOBILE_EVERYTHING_ARROW_PATH =
   "M 40.2 10.4 C 77.2 6.5, 86.1 17.7, 73.9 27.4 Q 59.8 33.2, 58.2 43.7";
+/** Tail starts after “seconds.” on narrow layouts (desktop path begins mid-word). */
+const MOBILE_PACKUP_ARROW_PATH = "M 58 11.2 Q 50 0.5, 72 4.3";
 
 /** Dotted arrow; `pathD` is SVG path in 0–100 viewBox (see `src/data/cosmoPdpStoryArrows.ts`). */
 function ArrowOverlay({ pathD, markerId }: { pathD: string; markerId: string }) {
@@ -128,6 +130,7 @@ export function CosmoPdpStory({ hideIntroImage = false }: { hideIntroImage?: boo
   const isMobile = useIsMobile();
   const arrowPaths = useCosmoStoryArrowPaths();
   const everythingArrowPath = isMobile ? MOBILE_EVERYTHING_ARROW_PATH : arrowPaths.everything;
+  const packupArrowPath = isMobile ? MOBILE_PACKUP_ARROW_PATH : arrowPaths.packup;
 
   const rawId = useId().replace(/:/g, "");
   const markerEverything = `cosmo-arr-ev-${rawId}`;
@@ -242,7 +245,7 @@ export function CosmoPdpStory({ hideIntroImage = false }: { hideIntroImage?: boo
                 loading="lazy"
                 scale={7}
               />
-              <ArrowOverlay pathD={arrowPaths.packup} markerId={markerPackup} />
+              <ArrowOverlay pathD={packupArrowPath} markerId={markerPackup} />
             </div>
           </div>
         </article>

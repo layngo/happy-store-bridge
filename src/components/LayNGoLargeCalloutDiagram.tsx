@@ -511,7 +511,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
     heroWidthClass: "w-[min(94vw,920px)]",
     dimensionWrapClass:
       "relative z-20 mx-auto -mt-[9.5rem] w-[min(94vw,920px)] pt-0 sm:-mt-40 md:-mt-48 lg:-mt-52",
-    mobileHeroMaxClass: "max-w-lg",
+    mobileHeroMaxClass: "max-w-[min(100vw,40rem)]",
     meshCalloutSrc: CALLOUT_MESH,
     lipCalloutSrc: CALLOUT_LIP,
     cordCalloutSrc: CALLOUT_CORD,
@@ -845,6 +845,43 @@ function DefenderArrowEditorOverlay({
       })}
     </div>
   );
+}
+
+function DefenderMobileCallout({
+  thumbSrc,
+  thumbAlt,
+  thumbClassName,
+  label,
+}: {
+  thumbSrc: string;
+  thumbAlt: string;
+  thumbClassName: string;
+  label: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-2 px-2">
+      <div className={cn("aspect-square h-32 w-32 shrink-0", CALLOUT_THUMB_SHADOW)}>
+        <div className={CALLOUT_THUMB_INNER_CLIP}>
+          <img
+            src={thumbSrc}
+            alt={thumbAlt}
+            className={cn("h-full w-full", thumbClassName)}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+      <p className="max-w-xs text-center font-heading text-xs font-bold uppercase leading-snug text-neutral-900">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+function defenderCalloutsForVariant(
+  variant: "defender-mini-16" | "defender-tactical-20",
+): readonly DefenderHeroCalloutItem[] {
+  return variant === "defender-mini-16" ? DEFENDER_MINI_CALLOUTS : DEFENDER_TACTICAL_CALLOUTS;
 }
 
 function EditableDefenderCalloutStage({
@@ -1436,20 +1473,50 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       }
     >
       {isDefenderVariant ? (
-        <div className="relative px-1 pb-8 sm:px-2 md:pb-10">
-          <EditableDefenderCalloutStage
-            variant={defenderVariant}
-            heroSrc={config.heroSrc}
-            heroAlt={config.heroAlt}
-            layout={defenderLayout}
-            onLayoutChange={setDefenderLayout}
-            editorMode={editorMode}
-            activeLeaderKey={defenderEditKey}
-          />
-          <div className={config.dimensionWrapClass}>
-            <DiameterLine inches={config.diameterInches} variant={variant} />
+        <>
+          {/* Mobile — stacked hero, diameter, and callout thumbs (matches Large / Traveler diagrams) */}
+          <div className="flex flex-col items-center gap-3 pb-6 md:hidden">
+            <img
+              src={config.heroSrc}
+              alt={config.heroAlt}
+              className={cn("w-full object-contain mix-blend-multiply", config.mobileHeroMaxClass)}
+              loading="lazy"
+              decoding="async"
+            />
+            <DiameterLine
+              inches={config.diameterInches}
+              variant={variant}
+              className={cn("w-full shrink-0 pb-0", config.mobileHeroMaxClass, "mt-1.5")}
+            />
+            <div className="flex w-full flex-col items-center gap-2">
+              {defenderCalloutsForVariant(defenderVariant).map((callout) => (
+                <DefenderMobileCallout
+                  key={callout.key}
+                  thumbSrc={callout.thumbSrc}
+                  thumbAlt={callout.thumbAlt}
+                  thumbClassName={callout.thumbClassName}
+                  label={callout.label}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+
+          {/* Desktop — hero with leader lines and positioned callout thumbs */}
+          <div className="relative hidden px-1 pb-8 sm:px-2 md:block md:pb-10">
+            <EditableDefenderCalloutStage
+              variant={defenderVariant}
+              heroSrc={config.heroSrc}
+              heroAlt={config.heroAlt}
+              layout={defenderLayout}
+              onLayoutChange={setDefenderLayout}
+              editorMode={editorMode}
+              activeLeaderKey={defenderEditKey}
+            />
+            <div className={config.dimensionWrapClass}>
+              <DiameterLine inches={config.diameterInches} variant={variant} />
+            </div>
+          </div>
+        </>
       ) : null}
 
       {/* Mobile */}
@@ -1492,6 +1559,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             "w-full object-contain",
             config.mobileHeroMaxClass,
             matProductImgClass(variant),
+            variant === "large-60" &&
+              "-mx-4 w-[calc(100%+2rem)] max-w-[min(100vw,40rem)] sm:-mx-6 sm:w-[calc(100%+3rem)]",
             variant === "lite-18" && "mt-6 sm:mt-10",
               diagramUsesLifestyleChrome(variant) &&
                 variant !== "lite-18" &&
@@ -1508,7 +1577,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             variant === "lite-18"
               ? "relative z-30 mx-auto w-full max-w-[min(90vw,25.5rem)]"
               : cn("w-full", config.mobileHeroMaxClass),
-            variant === "large-60" && "-mt-2 shrink-0 pb-0",
+            variant === "large-60" &&
+              cn(
+                "-mt-2 shrink-0 pb-0",
+                "-mx-4 w-[calc(100%+2rem)] max-w-[min(100vw,40rem)] sm:-mx-6 sm:w-[calc(100%+3rem)]",
+              ),
             variant === "lifestyle-44" && "mt-4 shrink-0 pb-2 sm:mt-5 sm:pb-3",
             variant === "lite-18" && "mt-10 shrink-0 pb-2 sm:mt-12 sm:pb-3",
           )}

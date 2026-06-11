@@ -9,17 +9,47 @@ type Patent = {
   number: string;
   label?: string;
   issued?: string;
+  href: string;
 };
 
 const PATENTS: Patent[] = [
-  { number: "9,084,459" },
-  { number: "10,016,036" },
-  { number: "10,561,213" },
-  { number: "11,116,298" },
-  { number: "11,375,783", label: "Convertible" },
-  { number: "11,910,900", issued: "February 27, 2024" },
-  { number: "12,458,120", label: "Convertible", issued: "November 4, 2025" },
-  { number: "12,593,903", issued: "April 7, 2026" },
+  {
+    number: "9,084,459",
+    href: "https://patents.google.com/patent/US9084459B2/en",
+  },
+  {
+    number: "10,016,036",
+    href: "https://patents.google.com/patent/US10016036B2/en",
+  },
+  {
+    number: "10,561,213",
+    href: "https://patents.google.com/patent/US10561213B2/en",
+  },
+  {
+    number: "11,116,298",
+    href: "https://patents.google.com/patent/US11116298B2/en?oq=11116298",
+  },
+  {
+    number: "11,375,783",
+    label: "Convertible",
+    href: "https://patents.google.com/patent/US11375783B2/en?oq=11375783",
+  },
+  {
+    number: "11,910,900",
+    issued: "February 27, 2024",
+    href: "https://patents.google.com/patent/US11910900B2/en?oq=11%2c910%2c900",
+  },
+  {
+    number: "12,458,120",
+    label: "Convertible",
+    issued: "November 4, 2025",
+    href: "https://patents.google.com/patent/US12458120B2/en?oq=12%2c458%2c120",
+  },
+  {
+    number: "12,593,903",
+    issued: "April 7, 2026",
+    href: "https://patents.google.com/patent/US12593903B2/en?oq=12593903",
+  },
 ];
 
 const PATENT_SUMMARY =
@@ -48,10 +78,9 @@ const LayNGoPatents = () => {
             <h1 className="font-heading text-4xl font-semibold tracking-tight text-slate-900 md:text-6xl">
               Lay-n-Go Patents
             </h1>
-            <div className="mt-10 grid grid-cols-3 gap-4 max-w-xl mx-auto">
+            <div className="mt-10 grid grid-cols-2 gap-4 max-w-md mx-auto">
               {[
                 { value: "8", label: "U.S. Utility Patents" },
-                { value: "16+", label: "Years Protected" },
                 { value: "2026", label: "Most Recent" },
               ].map((s) => (
                 <div
@@ -79,13 +108,17 @@ const LayNGoPatents = () => {
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {PATENTS.map((p, i) => (
-                <div
+                <a
                   key={p.number}
-                  className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-b from-white to-slate-50 p-6 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_18px_40px_-24px_rgba(15,23,42,0.25)]"
+                  href={p.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`U.S. Patent ${p.number} — view on Google Patents (opens in new tab)`}
+                  className="group relative block overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-b from-white to-slate-50 p-6 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_18px_40px_-24px_rgba(15,23,42,0.25)] transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_24px_48px_-24px_rgba(15,23,42,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
                   <div
                     aria-hidden
-                    className="pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full bg-gradient-to-br from-primary/15 to-transparent blur-2xl"
+                    className="pointer-events-none absolute -top-24 -right-24 h-48 w-48 rounded-full bg-gradient-to-br from-primary/15 to-transparent blur-2xl transition-opacity group-hover:opacity-100"
                   />
                   <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-900/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white">
                     <BadgeCheck className="h-3 w-3" aria-hidden />
@@ -95,7 +128,7 @@ const LayNGoPatents = () => {
                     <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                       U.S. Patent No.
                     </div>
-                    <div className="mt-1 font-heading text-3xl font-semibold tracking-tight text-slate-900">
+                    <div className="mt-1 font-heading text-3xl font-semibold tracking-tight text-slate-900 group-hover:text-primary">
                       {p.number}
                     </div>
                     {p.label ? (
@@ -104,8 +137,11 @@ const LayNGoPatents = () => {
                       </span>
                     ) : null}
                     {p.issued ? <div className="mt-3 text-xs text-slate-500">Issued {p.issued}</div> : null}
+                    <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary/80 group-hover:text-primary">
+                      View on Google Patents
+                    </p>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
 
