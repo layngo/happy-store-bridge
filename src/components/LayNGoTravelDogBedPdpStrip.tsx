@@ -63,7 +63,7 @@ function DogBedMobileStoryStep({
     <figure className="relative mx-auto w-full max-w-[min(100%,42rem)]">
       <img src={src} alt={alt} className={cn("block w-full object-contain", imgClassName)} loading="lazy" decoding="async" />
       <figcaption className="mt-2 px-2 sm:px-3">
-        <p className="text-center font-heading text-[0.62rem] font-bold uppercase leading-tight tracking-wide text-neutral-900 sm:text-xs">
+        <p className="mx-auto max-w-[min(100%,24rem)] text-center font-heading text-[0.8125rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-sm">
           {label}
         </p>
       </figcaption>

@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 import { PageBreadcrumb } from "@/components/PageBreadcrumb";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { ChevronRight, Home } from "lucide-react";
-import { DefenderHeroVideo } from "@/components/DefenderHeroVideo";
 
 export const MILITARY_FIRST_RESPONDER_PATH = "/collections/military-first-responder";
 
@@ -225,8 +224,6 @@ const MilitaryFirstResponder = () => {
             </p>
           </div>
         </div>
-
-        <DefenderHeroVideo className="mb-10 sm:mb-12" />
 
         <section
           className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-2 pb-5 pt-3 sm:px-6 sm:pb-7 sm:pt-4"

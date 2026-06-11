@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { DefenderHeroVideo } from "@/components/DefenderHeroVideo";
 import { LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS } from "@/lib/layNGoPlayMat";
 import {
   CALLOUT_THUMB_INNER_CLIP,
@@ -312,6 +313,7 @@ function TravelerLeaderPair({
 }
 
 const TRAVELER_MOBILE_HERO_CLASS = "w-full max-w-[min(96vw,36rem)] object-contain";
+const TRAVELER_DIAMETER_CLASS = "w-full max-w-[min(96vw,36rem)]";
 
 const TRAVELER_CALLOUTS = [
   {
@@ -385,7 +387,7 @@ function TravelerDetailCalloutSection() {
         <LayNGoMatDiameterLine
           inches={20}
           variant="traveler-20"
-          className={cn(TRAVELER_MOBILE_HERO_CLASS, "-mt-2 shrink-0 pb-0")}
+          className={cn(TRAVELER_DIAMETER_CLASS, "mt-1.5 shrink-0 pb-0")}
         />
         <div className="flex w-full flex-col items-center gap-2">
           {TRAVELER_CALLOUTS.map((callout) => (
@@ -395,86 +397,88 @@ function TravelerDetailCalloutSection() {
       </div>
 
       {/* Desktop — hero with leader lines and positioned callout thumbs */}
-      <div className="relative mx-auto hidden w-full max-w-4xl overflow-visible md:block">
-        <img
-          src={TRAVELER_CALLOUT_MAIN}
-          alt="Lay-n-Go Traveler opened flat with travel essentials organized inside"
-          className="block h-auto w-full object-contain"
-          width={vbW}
-          height={vbH}
-          loading="lazy"
-          decoding="async"
+      <div className="mx-auto hidden w-full max-w-4xl md:block">
+        <div className="relative overflow-visible">
+          <img
+            src={TRAVELER_CALLOUT_MAIN}
+            alt="Lay-n-Go Traveler opened flat with travel essentials organized inside"
+            className="block h-auto w-full object-contain"
+            width={vbW}
+            height={vbH}
+            loading="lazy"
+            decoding="async"
+          />
+
+          <svg
+            className="pointer-events-none absolute inset-0 z-10 h-full w-full"
+            viewBox={`0 0 ${vbW} ${vbH}`}
+            preserveAspectRatio="xMidYMid meet"
+            aria-hidden
+          >
+            {/* Zipper: bottom-center of top-left thumb → zipper pull (y1 follows thumb; label sits above thumb) */}
+            <TravelerLeaderPair x1={78} y1={150} x2={334} y2={450} />
+            <circle
+              cx="334"
+              cy="450"
+              r={TRAVELER_DOT_MAT_R}
+              fill="#ffffff"
+              stroke="#0a0a0a"
+              strokeWidth={TRAVELER_DOT_MAT_STROKE}
+              vectorEffect="non-scaling-stroke"
+            />
+
+            {/* Lip: bottom-center of top-right thumb → raised rim on outer edge (x1 tracks thumb; x2,y2 on bag perimeter) */}
+            <TravelerLeaderPair x1={1012} y1={122} x2={812} y2={158} />
+            <circle
+              cx="812"
+              cy="158"
+              r={TRAVELER_DOT_MAT_R}
+              fill="#ffffff"
+              stroke="#0a0a0a"
+              strokeWidth={TRAVELER_DOT_MAT_STROKE}
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
+
+          <div className="absolute left-[2.5%] top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[3%] sm:top-[3%] sm:max-w-[13rem]">
+            <p className="mb-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
+              Zipper Pocket
+            </p>
+            <TravelerCalloutThumb
+              src={TRAVELER_CALLOUT_ZIPPER}
+              alt="Zipper pocket closeup"
+              imageClassName="origin-center scale-[1.22] object-cover object-[center_34%] sm:scale-[1.2] sm:object-[center_36%]"
+            />
+          </div>
+
+          <div className="absolute left-[-2.75rem] top-[62%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[-3.5rem] sm:max-w-[13rem] md:left-[-4.25rem] lg:left-[-5rem]">
+            <TravelerCalloutThumb
+              src={TRAVELER_CALLOUT_CORD}
+              alt="Cord lock and handle closeup"
+              imageClassName="origin-center scale-[1.52] object-cover object-bottom sm:scale-[1.48]"
+            />
+            <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
+              Cord Lock/Pocket + Handle
+            </p>
+          </div>
+
+          <div className="absolute right-[-2rem] top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:right-[-2.75rem] sm:top-[3%] sm:max-w-[13rem] md:right-[-3.5rem] lg:right-[-4.25rem]">
+            <TravelerCalloutThumb
+              src={TRAVELER_CALLOUT_LIP}
+              alt="Containment lip closeup"
+              imageClassName="origin-center scale-[1.38] object-cover object-[14%_center] sm:scale-[1.34] sm:object-[12%_center]"
+            />
+            <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
+              Convenient containment lip
+            </p>
+          </div>
+        </div>
+        <LayNGoMatDiameterLine
+          inches={20}
+          variant="traveler-20"
+          className="relative z-20 w-full shrink-0 pb-2 pt-1"
         />
-
-        <svg
-          className="pointer-events-none absolute inset-0 z-10 h-full w-full"
-          viewBox={`0 0 ${vbW} ${vbH}`}
-          preserveAspectRatio="xMidYMid meet"
-          aria-hidden
-        >
-          {/* Zipper: bottom-center of top-left thumb → zipper pull (y1 follows thumb; label sits above thumb) */}
-          <TravelerLeaderPair x1={78} y1={150} x2={334} y2={450} />
-          <circle
-            cx="334"
-            cy="450"
-            r={TRAVELER_DOT_MAT_R}
-            fill="#ffffff"
-            stroke="#0a0a0a"
-            strokeWidth={TRAVELER_DOT_MAT_STROKE}
-            vectorEffect="non-scaling-stroke"
-          />
-
-          {/* Lip: bottom-center of top-right thumb → raised rim on outer edge (x1 tracks thumb; x2,y2 on bag perimeter) */}
-          <TravelerLeaderPair x1={1012} y1={122} x2={812} y2={158} />
-          <circle
-            cx="812"
-            cy="158"
-            r={TRAVELER_DOT_MAT_R}
-            fill="#ffffff"
-            stroke="#0a0a0a"
-            strokeWidth={TRAVELER_DOT_MAT_STROKE}
-            vectorEffect="non-scaling-stroke"
-          />
-        </svg>
-
-        <div className="absolute left-[2.5%] top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[3%] sm:top-[3%] sm:max-w-[13rem]">
-          <p className="mb-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
-            Zipper Pocket
-          </p>
-          <TravelerCalloutThumb
-            src={TRAVELER_CALLOUT_ZIPPER}
-            alt="Zipper pocket closeup"
-            imageClassName="origin-center scale-[1.22] object-cover object-[center_34%] sm:scale-[1.2] sm:object-[center_36%]"
-          />
-        </div>
-
-        <div className="absolute left-[-2.75rem] top-[62%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:left-[-3.5rem] sm:max-w-[13rem] md:left-[-4.25rem] lg:left-[-5rem]">
-          <TravelerCalloutThumb
-            src={TRAVELER_CALLOUT_CORD}
-            alt="Cord lock and handle closeup"
-            imageClassName="origin-center scale-[1.52] object-cover object-bottom sm:scale-[1.48]"
-          />
-          <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
-            Cord Lock/Pocket + Handle
-          </p>
-        </div>
-
-        <div className="absolute right-[-2rem] top-[2.5%] z-20 flex max-w-[11rem] flex-col items-center text-center sm:right-[-2.75rem] sm:top-[3%] sm:max-w-[13rem] md:right-[-3.5rem] lg:right-[-4.25rem]">
-          <TravelerCalloutThumb
-            src={TRAVELER_CALLOUT_LIP}
-            alt="Containment lip closeup"
-            imageClassName="origin-center scale-[1.38] object-cover object-[14%_center] sm:scale-[1.34] sm:object-[12%_center]"
-          />
-          <p className="mt-2 font-heading text-[0.62rem] font-bold uppercase leading-snug tracking-wide text-neutral-900 sm:text-[0.72rem] md:text-xs">
-            Convenient containment lip
-          </p>
-        </div>
       </div>
-      <LayNGoMatDiameterLine
-        inches={20}
-        variant="traveler-20"
-        className="mx-auto mt-4 hidden w-full max-w-4xl md:block"
-      />
     </section>
   );
 }
@@ -507,12 +511,14 @@ function LifestyleMobileStoryImage({
   label,
   imgClassName,
   productImageClass = LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS,
+  labelClassName,
 }: {
   src: string;
   alt: string;
   label: string;
   imgClassName: string;
   productImageClass?: string;
+  labelClassName?: string;
 }) {
   return (
     <figure className="relative mx-auto w-full max-w-[min(100%,42rem)]">
@@ -524,7 +530,12 @@ function LifestyleMobileStoryImage({
         decoding="async"
       />
       <figcaption className="mt-2 px-2 sm:px-3">
-        <p className="text-center font-heading text-[0.62rem] font-bold uppercase leading-tight tracking-wide text-neutral-900 sm:text-xs">
+        <p
+          className={cn(
+            "text-center font-heading font-bold uppercase leading-tight tracking-wide text-neutral-900",
+            labelClassName ?? "text-[0.62rem] sm:text-xs",
+          )}
+        >
           {label}
         </p>
       </figcaption>
@@ -645,6 +656,13 @@ export function LayNGoLargePdpPlayStrip({
     threeStepImageClassName,
     "max-h-[min(42vh,280px)] sm:max-h-[min(50vh,380px)]",
   );
+  /** Large carry step — taller on mobile so strap + headline read clearly. */
+  const large60MobileCarryImg = cn(
+    threeStepImageClassName,
+    "max-h-[min(58vh,400px)] sm:max-h-[min(64vh,480px)]",
+  );
+  const large60MobileCarryLabelClass =
+    "max-w-[min(100%,24rem)] text-[0.8125rem] leading-snug sm:text-sm md:text-xs";
 
   const isLifestyleStrip = calloutVariant === "lifestyle-44";
   const threeStepFeatures = isLifestyleStrip
@@ -685,7 +703,8 @@ export function LayNGoLargePdpPlayStrip({
           src: FEATURE_CARRY,
           alt: "Carrying the closed Lay-n-Go Large bag with the wide shoulder strap",
           label: "Wide strap for easy travel and storage",
-          mobileImgClassName: large60MobileBaseImg,
+          mobileImgClassName: large60MobileCarryImg,
+          mobileLabelClassName: large60MobileCarryLabelClass,
         },
       ];
 
@@ -705,11 +724,18 @@ export function LayNGoLargePdpPlayStrip({
       )}
       aria-labelledby="lay-n-go-large-play-strip-heading"
     >
+      {isDefenderCalloutVariant ? <DefenderHeroVideo className="mb-6 sm:mb-8" /> : null}
       <h2
         id="lay-n-go-large-play-strip-heading"
         className={cn(
-          "mx-auto max-w-5xl px-2 text-center font-heading text-[clamp(1.85rem,7.5vw,3.65rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground sm:px-4",
-          forceHeadlineSingleLine && "max-w-none whitespace-nowrap text-[clamp(1rem,4.8vw,3.65rem)]",
+          "mx-auto max-w-5xl px-2 text-center font-heading font-black uppercase leading-[0.92] tracking-tight text-foreground sm:px-4",
+          isDefenderCalloutVariant
+            ? "text-[clamp(1.45rem,7.2vw,3.65rem)] sm:text-[clamp(1.85rem,7.5vw,3.65rem)]"
+            : "text-[clamp(1.85rem,7.5vw,3.65rem)]",
+          forceHeadlineSingleLine &&
+            !isDefenderCalloutVariant &&
+            "max-w-none whitespace-nowrap text-[clamp(1rem,4.8vw,3.65rem)]",
+          forceHeadlineSingleLine && isDefenderCalloutVariant && "max-w-none whitespace-nowrap",
         )}
       >
         {headline}
@@ -787,6 +813,7 @@ export function LayNGoLargePdpPlayStrip({
                         label={step.label}
                         imgClassName={step.mobileImgClassName}
                         productImageClass={isLifestyleStrip ? LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS : undefined}
+                        labelClassName={"mobileLabelClassName" in step ? step.mobileLabelClassName : undefined}
                       />
                     </div>
                   ))}

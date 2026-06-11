@@ -42,7 +42,6 @@ import {
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 import { LayNGoLargePdpHeroVideo } from "@/components/LayNGoLargePdpHeroVideo";
 import { NailspaPdpHeroVideo } from "@/components/NailspaPdpHeroVideo";
-import { DefenderHeroVideo } from "@/components/DefenderHeroVideo";
 import { LayNGoPlayAwardsSection } from "@/components/LayNGoPlayAwardsSection";
 import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
@@ -1716,8 +1715,6 @@ const ProductDetail = () => {
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm">{backLabel}</span>
         </Link>
-
-        {isLayNGoDefender ? <DefenderHeroVideo className="mb-8 sm:mb-10" /> : null}
 
         {isCosmoPdp ? (
           <>

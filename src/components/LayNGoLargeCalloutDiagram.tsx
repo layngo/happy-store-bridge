@@ -557,8 +557,8 @@ function DiameterLine({
           ? /** Defender 20″ hero: mat nearly fills the frame — bracket tracks the olive disc. */
             "mx-auto w-[min(100%,90%)] sm:w-[min(100%,88%)] md:w-[min(100%,86%)] lg:w-[min(100%,84%)]"
     : traveler20
-      ? /** Traveler callout hero — mat nearly full width; mobile vs md+ tuned separately */
-        "mx-auto w-[min(100%,93%)] sm:w-[min(100%,91%)] md:w-[min(100%,88%)] lg:w-[min(100%,85%)]"
+      ? /** Traveler callout hero — black mat spans nearly the full PNG width */
+        "mx-auto w-[min(100%,97%)] sm:w-[min(100%,96%)] md:w-[min(100%,95%)] lg:w-[min(100%,94%)]"
     : large60
       ? /** Large hero: mat is inset in the PNG — bracket must match the blue disc, not the full image width */
         "mx-auto w-[min(100%,58%)] sm:w-[min(100%,60%)] md:w-[min(100%,62%)] lg:w-[min(100%,61%)]"
