@@ -1,7 +1,7 @@
 export const SHOP_ACCOUNT_URL = "https://www.layngo.com/account/login";
 
 export const shopCollectionLinks = [
-  { to: "/shop/cosmetic-bags-v2", label: "Cosmetic Bags" },
+  { to: "/shop/cosmetic-bags", label: "Cosmetic Bags" },
   { to: "/product/lay-n-go-nailspa-18", label: "Nail Solutions" },
   { to: "/collections/play", label: "Play" },
   { to: "/product/lay-n-go-traveler-20", label: "Tech & Travel" },
@@ -30,7 +30,7 @@ export const socialLinks = [
 
 /** Homepage category tiles (COSMO, PLAY, etc.) — link to filtered collection views when applicable */
 export const heroCategories = [
-  { label: "COSMO", hint: "Cosmetics & beauty", to: "/shop/cosmetic-bags-v2" },
+  { label: "COSMO", hint: "Cosmetics & beauty", to: "/shop/cosmetic-bags" },
   { label: "PLAY", hint: "Toy cleanup & play mats", to: "/collections/play" },
   { label: "TRAVELER", hint: "Tech on the go", to: "/product/lay-n-go-traveler-20" },
   { label: "PET", hint: "Pet travel & beds", to: "/product/lay-n-go-travel-dog-bed-44" },

@@ -98,7 +98,7 @@ const Index = () => {
           ),
           faqJsonLd([...HOME_FAQS]),
           itemListJsonLd("Shop by category", [
-            { name: "Cosmetic Bags", url: "/shop/cosmetic-bags-v2" },
+            { name: "Cosmetic Bags", url: "/shop/cosmetic-bags" },
             { name: "Nail Solutions", url: "/product/lay-n-go-nailspa-18" },
             { name: "Play", url: "/collections/play" },
             { name: "Tech & Travel", url: "/product/lay-n-go-traveler-20" },

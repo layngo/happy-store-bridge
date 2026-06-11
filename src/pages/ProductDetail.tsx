@@ -75,7 +75,7 @@ import {
 } from "@/lib/layNGoPlayMat";
 import { MILITARY_FIRST_RESPONDER_PATH } from "@/pages/MilitaryFirstResponder";
 
-const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags-v2";
+const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags";
 
 type ProductLocationState = {
   fromCosmeticBagsV2?: boolean;

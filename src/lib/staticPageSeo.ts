@@ -69,7 +69,7 @@ export const STATIC_PAGE_SEO: Record<string, StaticPageSeoEntry> = {
       "Become a Lay-n-Go wholesale partner. 16+ years in business, 200+ retail partners, 100k+ customers. Submit a wholesale inquiry on our contact page.",
     keywords: "Lay-n-Go wholesale, retail partner, distributor",
   },
-  "/shop/cosmetic-bags-v2": {
+  "/shop/cosmetic-bags": {
     description:
       "Shop Lay-n-Go Cosmo cosmetic bags — patented open-flat makeup organizers that cinch closed for travel. Compare Cosmo 20\" and Deluxe 22\" sizes and colors.",
     keywords: "Cosmo cosmetic bag, makeup organizer, Lay-n-Go Cosmo",

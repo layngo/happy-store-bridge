@@ -89,7 +89,7 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
 
   const defaultHref =
     collection.handle === "cosmetic-bags"
-      ? "/shop/cosmetic-bags-v2"
+      ? "/shop/cosmetic-bags"
       : collection.handle === "nail-solutions"
       ? "/product/lay-n-go-nailspa-18"
       : collection.handle === "technology"
