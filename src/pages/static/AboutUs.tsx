@@ -155,7 +155,7 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("next-generation-founders.png"),
         title: "THE NEXT GENERATION OF FOUNDERS",
         alt: "Amy and Adam with Syracuse University student entrepreneurs celebrating with Lay-n-Go bags in a classroom",
-        layoutOverride: { text: "left", vertical: "top", offsetX: 28, offsetY: -36 },
+        layoutOverride: { text: "left", vertical: "top", offsetX: 48, offsetY: 30 },
         previewText: "Mentoring the next generation has been an incredible journey...",
         storyText:
           "Over the last decade, Amy and Adam have had the privilege of mentoring an incredible new generation of entrepreneurs, working alongside brilliant young founders. Their involvement with the Syracuse University LaunchPad in Bird Library ultimately led to an invitation to serve on the Syracuse Libraries Board, where they now proudly serve as Co-Chairs.",
