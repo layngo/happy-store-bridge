@@ -48,6 +48,10 @@ export const DEFAULT_ABOUT_US_V3_TAPE_LAYOUT: AboutUsV3TapeLayoutState = {
     near: { x: 98.921316515061, y: 3.329846932137248, rotate: 46 },
     far: { x: 1.936364184597088, y: 94.83811667849918, rotate: 46 },
   },
+  "They have a family::FIERCE ADVOCATES FOR SMALL BUSINESS": {
+    near: { x: 91, y: 5.5, rotate: 46 },
+    far: { x: 7, y: 91, rotate: 46 },
+  },
 };
 
 export function defaultPanelTapeLayout(textRight: boolean): PanelTapeLayout {

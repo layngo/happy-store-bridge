@@ -39,7 +39,7 @@ type StoryChapter = {
   panels: StoryPanel[];
 };
 
-const ABOUT_US_V2_ASSET_VER = "12";
+const ABOUT_US_V2_ASSET_VER = "13";
 const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_US_V2_ASSET_VER}`;
 
 const CHAPTERS: StoryChapter[] = [
@@ -116,6 +116,15 @@ const CHAPTERS: StoryChapter[] = [
         previewText: "As the company grew, some exciting accolades came our way...",
         storyText:
           "Starting a business is one thing. Growing a business is a much harder challenge. Doing this with your spouse adds a whole other complexity. That being said, we have loved our journey, our incredible customers, and the team around us. YOU have made this dream happen!",
+      },
+      {
+        src: aboutUsV2Png("capitol-hill-advocacy.png"),
+        title: "FIERCE ADVOCATES FOR SMALL BUSINESS",
+        alt: "Adam Lay-n-Go founder speaking at a press conference in front of the U.S. Capitol building",
+        previewText:
+          "Small business is the engine that powers our country. Our elected officials need to know how their policies can either help or hurt founders...",
+        storyText:
+          "Never imagining they would become such dedicated advocates for US Small Business, Adam and Amy's extensive experience spanning manufacturing, design, trade, transportation, warehousing, and retail ultimately positioned them to clearly educate Senators and Representatives on critical industry realities. Their deep expertise earned them an invitation to join the prestigious US Chamber of Commerce Small Business Council. Now, after actively participating in hundreds of meetings on Capitol Hill, they have realized firsthand that even individual voices can make a monumental difference in shaping national policy.",
       },
     ],
   },
