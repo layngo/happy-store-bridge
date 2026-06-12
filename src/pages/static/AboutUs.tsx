@@ -35,6 +35,10 @@ type StoryPanel = {
     text: "left" | "right";
     /** When "top", title and preview sit toward the top of the image instead of the bottom. */
     vertical?: "top" | "bottom";
+    /** Nudge the text block horizontally in px (positive moves right). */
+    offsetX?: number;
+    /** Nudge the text block vertically in px (negative moves up). */
+    offsetY?: number;
   };
   downloadUrl?: string;
   downloadFileName?: string;
@@ -151,7 +155,7 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("next-generation-founders.png"),
         title: "THE NEXT GENERATION OF FOUNDERS",
         alt: "Amy and Adam with Syracuse University student entrepreneurs celebrating with Lay-n-Go bags in a classroom",
-        layoutOverride: { text: "left", vertical: "top" },
+        layoutOverride: { text: "left", vertical: "top", offsetX: 28, offsetY: -36 },
         previewText: "Mentoring the next generation has been an incredible journey...",
         storyText:
           "Over the last decade, Amy and Adam have had the privilege of mentoring an incredible new generation of entrepreneurs, working alongside brilliant young founders. Their involvement with the Syracuse University LaunchPad in Bird Library ultimately led to an invitation to serve on the Syracuse Libraries Board, where they now proudly serve as Co-Chairs.",
@@ -470,15 +474,23 @@ function StoryFadePanel({
 
           <div
             className={cn(
-              "absolute inset-y-0 z-10 flex w-full max-w-xl flex-col px-6 sm:px-10 md:max-w-2xl md:px-12",
-              textTop ? "justify-start pb-10 pt-8 sm:pt-10" : "justify-end pb-8 pt-16 sm:pb-10",
+              "absolute inset-y-0 z-10 flex max-w-xl flex-col px-6 sm:px-10 md:max-w-2xl md:px-12",
+              textTop ? "justify-start pb-10 pt-4 sm:pt-5" : "justify-end pb-8 pt-16 sm:pb-10",
               textRight ? "right-0 items-end text-right" : "left-0 items-start text-left",
             )}
+            style={
+              panel.layoutOverride?.offsetX != null || panel.layoutOverride?.offsetY != null
+                ? {
+                    transform: `translate(${panel.layoutOverride.offsetX ?? 0}px, ${panel.layoutOverride.offsetY ?? 0}px)`,
+                  }
+                : undefined
+            }
           >
             <h3
               className={cn(
                 "font-heading text-[clamp(2.25rem,8.5vw,4.75rem)] font-black uppercase leading-[0.9] tracking-tight text-white",
                 PANEL_TEXT_SHADOW,
+                textRight && panel.titleLines && "w-full text-right",
               )}
             >
               {panel.titleLines ? (
