@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchCollectionByHandle, type ShopifyCollectionDetail } from "@/lib/shopify";
+import { DefenderHeroVideo } from "@/components/DefenderHeroVideo";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PageSeo } from "@/components/PageSeo";
@@ -227,6 +228,8 @@ const MilitaryFirstResponder = () => {
             </p>
           </div>
         </div>
+
+        <DefenderHeroVideo className="mb-10 sm:mb-12" />
 
         <section
           className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-2 pb-5 pt-3 sm:px-6 sm:pb-7 sm:pt-4"

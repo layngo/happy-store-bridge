@@ -15,6 +15,8 @@ export type CustomerReview = {
   title?: string;
   /** Optional customer photos (paths under /public) */
   images?: string[];
+  /** Keep editorial order even when photos would normally sort this review to the top */
+  deferImagesFirst?: boolean;
 };
 
 export function averageReviewRating(reviews: CustomerReview[]): number {
@@ -634,6 +636,7 @@ export const DEFENDER_CUSTOMER_REVIEWS: CustomerReview[] = [
     title: "Good Utility bag but bulky",
     text: "Very good bag but kind of large if you are looking for a small organizer to fit in your day bag. I'm using this as a lunch and utilities bag. It's great when you're in a hurry—dump your stuff on the bag and cinch it closed. I regularly pack lunch, toothpaste, toothbrush, earplugs, charger and cable in the zipper pocket, plus a tourniquet and gauze. For an organizer it is a bit bulky but fits an impressive volume. Good for expendable items or collecting things you may not have a specific bag for. When done I use a carabiner to secure it to my belt. Disappointed with how large it is for packing, but I may keep it and buy a smaller one for my pack permanently.",
     images: [...DEFENDER_UTILITY_PHOTOS],
+    deferImagesFirst: true,
   },
   {
     id: "amazing-how-much",

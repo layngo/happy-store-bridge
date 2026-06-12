@@ -24,8 +24,8 @@ type CustomerReviewsSectionProps = {
 
 function reviewsWithImagesFirst(reviews: CustomerReview[]): CustomerReview[] {
   return [...reviews].sort((a, b) => {
-    const aHasImages = Boolean(a.images?.length);
-    const bHasImages = Boolean(b.images?.length);
+    const aHasImages = Boolean(a.images?.length) && !a.deferImagesFirst;
+    const bHasImages = Boolean(b.images?.length) && !b.deferImagesFirst;
     if (aHasImages === bHasImages) return 0;
     return aHasImages ? -1 : 1;
   });
