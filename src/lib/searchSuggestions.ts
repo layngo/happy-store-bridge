@@ -79,8 +79,8 @@ export const SEARCH_CATALOG: readonly SearchSuggestion[] = [
     keywords: ["tactical", "defender", "20", "military", "outdoor", "duty", "first responder", "edc", "army", "patch", "flag"],
   },
   {
-    title: "Outdoor / Tactical",
-    subtitle: "Military & first responder collection",
+    title: "Outdoor and Tactical",
+    subtitle: "Defender tactical organizers",
     href: "/collections/military-first-responder",
     image: "/military-first-responder-v2/defender-tactical-20.png",
     keywords: ["tactical", "defender", "military", "outdoor", "first responder", "duty", "army", "edc", "collection"],

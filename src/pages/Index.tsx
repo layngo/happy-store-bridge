@@ -103,7 +103,7 @@ const Index = () => {
             { name: "Play", url: "/collections/play" },
             { name: "Tech & Travel", url: "/product/lay-n-go-traveler-20" },
             { name: "Pet Solutions", url: "/product/lay-n-go-travel-dog-bed-44" },
-            { name: "Outdoor / Tactical", url: "/collections/military-first-responder" },
+            { name: "Outdoor and Tactical", url: "/collections/military-first-responder" },
           ]),
           siteNavigationJsonLd([
             { name: "Home", url: "/" },
