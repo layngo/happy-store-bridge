@@ -68,7 +68,7 @@ const CHAPTERS: StoryChapter[] = [
         previewText:
           "On February 1, 1999, Amy walked into Southside 815 in Alexandria, Virginia, and caught Adam's eye immediately....",
         storyText:
-          "Four hours of conversation went by like it was 20 minutes. Adam walked Amy home that evening — meeting her two golden retrievers, Maggie & Molson.\n\n22 years later, for Amy's 50th birthday, Adam had Alexandria painter Judy Heiser, memorialize the moment before both of their lives changed forever.",
+          "Four hours of conversation went by like it was 20 minutes. Adam walked Amy home that evening and met her two golden retrievers, Maggie & Molson.\n\n22 years later, for Amy's 50th birthday, Adam had Alexandria artist Judy Heiser paint a picture of the moment just before both of their lives changed forever.",
       },
       {
         src: aboutUsV2Png("they-meet-world-travelers-maggie-molson.png"),
