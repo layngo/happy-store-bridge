@@ -76,6 +76,8 @@ const CHAPTERS: StoryChapter[] = [
         alt: "Maggie and Molson greeting the founders after a trip",
         imagePosition: "22% 16%",
         layoutOverride: { text: "right" },
+        previewText:
+          "Before starting a family, the Lay-n-Go founders were avid travelers, with their dogs faithfully waiting to welcome them back...",
         storyText:
           "Those adventures became invaluable field research, inspiring new product lines designed to make life easier at home and on the go!",
       },
