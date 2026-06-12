@@ -45,7 +45,7 @@ type StoryChapter = {
   panels: StoryPanel[];
 };
 
-const ABOUT_US_V2_ASSET_VER = "13";
+const ABOUT_US_V2_ASSET_VER = "14";
 const aboutUsV2Png = (filename: string) => `/about-us-v2/${filename}?v=${ABOUT_US_V2_ASSET_VER}`;
 
 const CHAPTERS: StoryChapter[] = [
@@ -132,6 +132,14 @@ const CHAPTERS: StoryChapter[] = [
           "Small business is the engine that powers our country. Our elected officials need to know how their policies can either help us or hurt us...",
         storyText:
           "Never imagining they would become dedicated advocates for US Small Business, Adam and Amy's extensive experience in manufacturing, design, trade, transportation, warehousing, and retail ultimately positioned them to clearly educate Senators and Representatives on critical industry realities. In 2017, they were invited to join the US Chamber of Commerce, Small Business Council. Now, after actively participating in hundreds of meetings on Capitol Hill, they have realized firsthand that even individual voices can make a difference in shaping national policy.",
+      },
+      {
+        src: aboutUsV2Png("next-generation-founders.png"),
+        title: "THE NEXT GENERATION OF FOUNDERS",
+        alt: "Amy and Adam with Syracuse University student entrepreneurs celebrating with Lay-n-Go bags in a classroom",
+        previewText: "Mentoring the next generation has been an incredible journey...",
+        storyText:
+          "Over the last decade, Amy and Adam have had the privilege of mentoring an incredible new generation of entrepreneurs, working alongside brilliant young founders. Their involvement with the Syracuse University LaunchPad in Bird Library ultimately led to an invitation to serve on the Syracuse Libraries Board, where they now proudly serve as Co-Chairs.",
       },
     ],
   },
