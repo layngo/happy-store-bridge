@@ -39,6 +39,8 @@ type StoryPanel = {
     offsetX?: number;
     /** Nudge the text block vertically in px (negative moves up). */
     offsetY?: number;
+    /** When set, left padding in px (e.g. to match top inset). */
+    insetLeft?: number;
   };
   downloadUrl?: string;
   downloadFileName?: string;
@@ -155,7 +157,7 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("next-generation-founders.png"),
         title: "THE NEXT GENERATION OF FOUNDERS",
         alt: "Amy and Adam with Syracuse University student entrepreneurs celebrating with Lay-n-Go bags in a classroom",
-        layoutOverride: { text: "left", vertical: "top", offsetX: 48, offsetY: 30 },
+        layoutOverride: { text: "left", vertical: "top", offsetY: 30, offsetX: 0, insetLeft: 46 },
         previewText: "Mentoring the next generation has been an incredible journey...",
         storyText:
           "Over the last decade, Amy and Adam have had the privilege of mentoring an incredible new generation of entrepreneurs, working alongside brilliant young founders. Their involvement with the Syracuse University LaunchPad in Bird Library ultimately led to an invitation to serve on the Syracuse Libraries Board, where they now proudly serve as Co-Chairs.",
@@ -478,13 +480,16 @@ function StoryFadePanel({
               textTop ? "justify-start pb-10 pt-4 sm:pt-5" : "justify-end pb-8 pt-16 sm:pb-10",
               textRight ? "right-0 items-end text-right" : "left-0 items-start text-left",
             )}
-            style={
-              panel.layoutOverride?.offsetX != null || panel.layoutOverride?.offsetY != null
+            style={{
+              ...(panel.layoutOverride?.insetLeft != null
+                ? { paddingLeft: panel.layoutOverride.insetLeft }
+                : {}),
+              ...(panel.layoutOverride?.offsetX != null || panel.layoutOverride?.offsetY != null
                 ? {
                     transform: `translate(${panel.layoutOverride.offsetX ?? 0}px, ${panel.layoutOverride.offsetY ?? 0}px)`,
                   }
-                : undefined
-            }
+                : {}),
+            }}
           >
             <h3
               className={cn(
