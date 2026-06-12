@@ -103,7 +103,7 @@ const CHAPTERS: StoryChapter[] = [
         alt: "A playroom floor covered in LEGO bricks and overflowing storage bins",
         previewText: "Lego, Lego everywhere and not a solution in sight...",
         storyText:
-          "LEGO, LEGO everywhere and not a solution in sight. Amy loved organization and Adam loved buying the kids more and more LEGO. The bins, baskets, sheets, and everything else on the market just did not support creative play that also allowed parents to keep their sanity. Bins of small pieces became our morning alarm clock. The challenge to design something better was a task we were both up to!",
+          "LEGO, LEGO everywhere and not a solution in sight. Amy loved organization and Adam loved buying the kids more and more LEGO. The bins, baskets, sheets, and everything else on the market just did not support creative play that also allowed parents to keep their sanity. Dumped out bins of small pieces became our morning alarm clock. The challenge to design something better was a task we were both up to!",
       },
       {
         src: aboutUsV2Png("our-first-prototype.png"),
