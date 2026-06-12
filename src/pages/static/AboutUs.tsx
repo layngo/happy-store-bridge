@@ -545,8 +545,8 @@ function AboutUsV3Intro() {
       <h1 className="mx-auto max-w-4xl font-heading text-[clamp(1.35rem,4.25vw,3rem)] font-extrabold uppercase leading-[1.12] tracking-[0.04em] text-foreground">
         <span className="block">Let&apos;s face it, who reads</span>
         <span className="block">an About Us page?</span>
-        <span className="mt-2 block sm:mt-3">Lay-n-Go always keeps it fun</span>
-        <span className="block">and saves you time!</span>
+        <span className="mt-2 block sm:mt-3">Lay-n-Go always keeps it</span>
+        <span className="block">fun and saves you time!</span>
       </h1>
     </header>
   );
