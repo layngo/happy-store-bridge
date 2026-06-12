@@ -33,6 +33,8 @@ type StoryPanel = {
   imageScale?: number;
   layoutOverride?: {
     text: "left" | "right";
+    /** When "top", title and preview sit toward the top of the image instead of the bottom. */
+    vertical?: "top" | "bottom";
   };
   downloadUrl?: string;
   downloadFileName?: string;
@@ -101,6 +103,7 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("they-have-a-mess-lego.png"),
         title: "They have a mess",
         alt: "A playroom floor covered in LEGO bricks and overflowing storage bins",
+        layoutOverride: { text: "right" },
         previewText: "Lego, Lego everywhere and not a solution in sight...",
         storyText:
           "LEGO, LEGO everywhere and not a solution in sight. Amy loved organization and Adam loved buying the kids more and more LEGO. The bins, baskets, sheets, and everything else on the market just did not support creative play that also allowed parents to keep their sanity. Dumped out bins of small pieces became our morning alarm clock. The challenge to design something better was a task we were both up to!",
@@ -109,6 +112,7 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("our-first-prototype.png"),
         title: "Our first prototype",
         alt: "Amy and her three sons on the first Lay-n-Go play mat surrounded by LEGO bricks",
+        layoutOverride: { text: "left" },
         previewText:
           "After one year developing their idea, Adam and Amy applied for a patent and took their idea to the open market...",
         storyText:
@@ -118,6 +122,7 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("cosmo-launch-2013.png"),
         title: "The COSMO launches",
         alt: "Models lying in a circle around an open Lay-n-Go COSMO cosmetic bag",
+        layoutOverride: { text: "right" },
         previewText: "From LEGO to LIPSTICK, the success of the Lay-n-Go design was a perfect fit for cosmetics and makeup...",
         storyText:
           "From LEGO to LIPSTICK, the success of the Lay-n-Go design was a perfect fit for cosmetics and makeup. The COSMO was an instant hit and was launched at CosmoProf in Las Vegas. Soon the product could be found in Target, Costco, on QVC, and in thousands of independent retailers. The COSMO is the best selling product Lay-n-Go has ever launched.",
@@ -136,6 +141,7 @@ const CHAPTERS: StoryChapter[] = [
         title: "FIERCE ADVOCATES FOR SMALL BUSINESS",
         titleLines: ["FIERCE", "ADVOCATES", "FOR SMALL", "BUSINESS"],
         alt: "Adam Lay-n-Go founder speaking at a press conference in front of the U.S. Capitol building",
+        layoutOverride: { text: "right" },
         previewText:
           "Small business is the engine that powers our country. Our elected officials need to know how their policies can either help us or hurt us...",
         storyText:
@@ -145,6 +151,7 @@ const CHAPTERS: StoryChapter[] = [
         src: aboutUsV2Png("next-generation-founders.png"),
         title: "THE NEXT GENERATION OF FOUNDERS",
         alt: "Amy and Adam with Syracuse University student entrepreneurs celebrating with Lay-n-Go bags in a classroom",
+        layoutOverride: { text: "left", vertical: "top" },
         previewText: "Mentoring the next generation has been an incredible journey...",
         storyText:
           "Over the last decade, Amy and Adam have had the privilege of mentoring an incredible new generation of entrepreneurs, working alongside brilliant young founders. Their involvement with the Syracuse University LaunchPad in Bird Library ultimately led to an invitation to serve on the Syracuse Libraries Board, where they now proudly serve as Co-Chairs.",
@@ -413,6 +420,7 @@ function StoryFadePanel({
   const [open, setOpen] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const textRight = panel.layoutOverride?.text ? panel.layoutOverride.text === "right" : index % 2 === 1;
+  const textTop = panel.layoutOverride?.vertical === "top";
 
   const verticalEdgeMask =
     "linear-gradient(to bottom, transparent 0%, black 2.5%, black 97.5%, transparent 100%)";
@@ -462,7 +470,8 @@ function StoryFadePanel({
 
           <div
             className={cn(
-              "absolute inset-y-0 z-10 flex w-full max-w-xl flex-col justify-end px-6 pb-8 pt-16 sm:px-10 sm:pb-10 md:max-w-2xl md:px-12",
+              "absolute inset-y-0 z-10 flex w-full max-w-xl flex-col px-6 sm:px-10 md:max-w-2xl md:px-12",
+              textTop ? "justify-start pb-10 pt-8 sm:pt-10" : "justify-end pb-8 pt-16 sm:pb-10",
               textRight ? "right-0 items-end text-right" : "left-0 items-start text-left",
             )}
           >
