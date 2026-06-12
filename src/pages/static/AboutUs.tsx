@@ -22,6 +22,8 @@ import {
 type StoryPanel = {
   src: string;
   title: string;
+  /** When set, each entry renders on its own line instead of `title`. */
+  titleLines?: string[];
   alt: string;
   storyText: string;
   /** Short tape preview; defaults to truncated `storyText` when omitted. */
@@ -124,6 +126,7 @@ const CHAPTERS: StoryChapter[] = [
       {
         src: aboutUsV2Png("capitol-hill-advocacy.png"),
         title: "FIERCE ADVOCATES FOR SMALL BUSINESS",
+        titleLines: ["FIERCE", "ADVOCATES", "FOR SMALL", "BUSINESS"],
         alt: "Adam Lay-n-Go founder speaking at a press conference in front of the U.S. Capitol building",
         previewText:
           "Small business is the engine that powers our country. Our elected officials need to know how their policies can either help or hurt founders...",
@@ -453,7 +456,15 @@ function StoryFadePanel({
                 PANEL_TEXT_SHADOW,
               )}
             >
-              {panel.title}
+              {panel.titleLines ? (
+                panel.titleLines.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))
+              ) : (
+                panel.title
+              )}
             </h3>
             <StoryTeaser
               text={panel.previewText ?? panel.storyText}
@@ -490,8 +501,10 @@ function AboutUsV3Intro() {
   return (
     <header className="py-12 text-center sm:py-14 md:py-16 lg:py-20">
       <h1 className="mx-auto max-w-4xl font-heading text-[clamp(1.35rem,4.25vw,3rem)] font-extrabold uppercase leading-[1.12] tracking-[0.04em] text-foreground">
-        <span className="block">Let&apos;s face it, who reads an About Us page?</span>
-        <span className="mt-2 block sm:mt-3">Lay-n-Go always keeps it fun and saves you time!</span>
+        <span className="block">Let&apos;s face it, who reads</span>
+        <span className="block">an About Us page?</span>
+        <span className="mt-2 block sm:mt-3">Lay-n-Go always keeps it fun</span>
+        <span className="block">and saves you time!</span>
       </h1>
     </header>
   );
@@ -549,10 +562,36 @@ function StoryChapterSection({
 }
 
 const AboutUs = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const editorMode = searchParams.get("editTapes") === "1" || searchParams.get("editTapes") === "true";
+
   const panelTapeMeta = useMemo(() => buildPanelTapeMeta(), []);
-  const [tapeLayout] = useState<AboutUsV3TapeLayoutState>(() =>
+  const [tapeLayout, setTapeLayout] = useState<AboutUsV3TapeLayoutState>(() =>
     loadAboutUsV3TapeLayout(panelTapeMeta.keys, panelTapeMeta.textRightByKey),
   );
+  const tapeLayoutRef = useRef(tapeLayout);
+  tapeLayoutRef.current = tapeLayout;
+
+  useEffect(() => {
+    const sync = () => setTapeLayout(loadAboutUsV3TapeLayout(panelTapeMeta.keys, panelTapeMeta.textRightByKey));
+    sync();
+    window.addEventListener(ABOUT_US_V3_TAPE_LAYOUT_SYNC_EVENT, sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(ABOUT_US_V3_TAPE_LAYOUT_SYNC_EVENT, sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, [panelTapeMeta]);
+
+  const toggleEditor = () => {
+    const params = new URLSearchParams(location.search);
+    if (editorMode) params.delete("editTapes");
+    else params.set("editTapes", "1");
+    const search = params.toString();
+    navigate({ pathname: location.pathname, search: search ? `?${search}` : "" }, { replace: true });
+  };
 
   let panelIndex = 0;
 
@@ -567,18 +606,34 @@ const AboutUs = () => {
       />
       <div className="relative z-10 flex min-h-dvh flex-col">
         <Header />
-        <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 lg:px-8">
+        <main
+          id="main-content"
+          className={cn(
+            "mx-auto w-full max-w-6xl flex-1 px-4 sm:px-6 lg:px-8",
+            editorMode && "pb-28",
+          )}
+        >
           <div className="not-prose">
             <AboutUsV3Intro />
+            <div className="mb-6 flex justify-end">
+              <Button type="button" size="sm" variant="outline" onClick={toggleEditor}>
+                {editorMode ? "Stop editing tapes" : "Edit corner tapes"}
+              </Button>
+            </div>
             {CHAPTERS.map((chapter) => {
               const section = (
                 <StoryChapterSection
                   key={chapter.heading}
                   chapter={chapter}
                   startIndex={panelIndex}
-                  editorMode={false}
+                  editorMode={editorMode}
                   tapeLayout={tapeLayout}
-                  onTapeLayoutChange={() => {}}
+                  onTapeLayoutChange={(panelKey, next) =>
+                    setTapeLayout((prev) => ({
+                      ...prev,
+                      [panelKey]: next,
+                    }))
+                  }
                 />
               );
               panelIndex += chapter.panels.length;
@@ -588,6 +643,9 @@ const AboutUs = () => {
         </main>
         <SiteFooter />
       </div>
+      {editorMode ? (
+        <TapeEditorToolbar getLayout={() => tapeLayoutRef.current} onDone={toggleEditor} />
+      ) : null}
     </div>
   );
 };
