@@ -6,7 +6,7 @@ export const shopCollectionLinks = [
   { to: "/collections/play", label: "Play" },
   { to: "/product/lay-n-go-traveler-20", label: "Tech & Travel" },
   { to: "/product/lay-n-go-travel-dog-bed-44", label: "Pet Solutions" },
-  { to: "/collections/military-first-responder", label: "Outdoor / Tactical" },
+  { to: "/collections/military-first-responder", label: "Outdoor and Tactical" },
 ] as const;
 
 export const footerCatalogLinks = shopCollectionLinks;

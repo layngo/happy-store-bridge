@@ -12,6 +12,7 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { ChevronRight, Home } from "lucide-react";
 
 export const MILITARY_FIRST_RESPONDER_PATH = "/collections/military-first-responder";
+export const OUTDOOR_TACTICAL_COLLECTION_TITLE = "Outdoor and Tactical";
 
 const COLLECTION_HANDLE = "military-first-responder";
 
@@ -194,7 +195,7 @@ const MilitaryFirstResponder = () => {
   return (
     <div className="min-h-dvh bg-background flex flex-col">
       <PageSeo
-        title="Outdoor / Tactical"
+        title={OUTDOOR_TACTICAL_COLLECTION_TITLE}
         description={getStaticPageSeo("/collections/military-first-responder").description}
         pathname="/collections/military-first-responder"
         keywords={getStaticPageSeo("/collections/military-first-responder").keywords}
@@ -212,13 +213,15 @@ const MilitaryFirstResponder = () => {
           </Link>
           <ChevronRight className="w-4 h-4 shrink-0" aria-hidden />
           <span className="text-foreground font-medium" aria-current="page">
-            {collection.title}
+            {OUTDOOR_TACTICAL_COLLECTION_TITLE}
           </span>
         </PageBreadcrumb>
 
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8">
           <div>
-            <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground">{collection.title}</h1>
+            <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground">
+              {OUTDOOR_TACTICAL_COLLECTION_TITLE}
+            </h1>
             <p className="mt-2 max-w-2xl text-sm font-medium text-primary sm:text-base">
               Select a size
             </p>

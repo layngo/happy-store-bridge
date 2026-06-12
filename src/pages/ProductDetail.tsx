@@ -73,7 +73,7 @@ import {
   LAY_NGO_LIFESTYLE_SHOPIFY_HERO_IMAGE_CLASS,
   layNGoPlayMatSwatchStyle,
 } from "@/lib/layNGoPlayMat";
-import { MILITARY_FIRST_RESPONDER_PATH } from "@/pages/MilitaryFirstResponder";
+import { MILITARY_FIRST_RESPONDER_PATH, OUTDOOR_TACTICAL_COLLECTION_TITLE } from "@/pages/MilitaryFirstResponder";
 
 const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags";
 
@@ -947,7 +947,7 @@ const ProductDetail = () => {
   const backLabel = fromCosmeticBagsV2
     ? "Back to Cosmetic Bags"
     : fromMilitaryFirstResponder
-      ? "Back to Outdoor / Tactical"
+      ? `Back to ${OUTDOOR_TACTICAL_COLLECTION_TITLE}`
       : collectionHandle
         ? "Back to collection"
         : "Back to collections";
@@ -1693,7 +1693,7 @@ const ProductDetail = () => {
             <>
               <ChevronRight className="w-4 h-4 shrink-0" aria-hidden />
               <Link to={MILITARY_FIRST_RESPONDER_PATH} className="hover:text-foreground transition-colors">
-                Outdoor / Tactical
+                {OUTDOOR_TACTICAL_COLLECTION_TITLE}
               </Link>
             </>
           ) : collectionHandle ? (

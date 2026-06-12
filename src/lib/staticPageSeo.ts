@@ -76,8 +76,8 @@ export const STATIC_PAGE_SEO: Record<string, StaticPageSeoEntry> = {
   },
   "/collections/military-first-responder": {
     description:
-      "Lay-n-Go Outdoor / Tactical and military first responder gear — patented drawstring organizers for duty, field, and outdoor use.",
-    keywords: "tactical bag, military gear, first responder, Lay-n-Go Defender",
+      "Lay-n-Go Outdoor and Tactical gear — patented drawstring organizers for duty, field, and outdoor use.",
+    keywords: "tactical bag, military gear, first responder, Lay-n-Go Defender, outdoor tactical",
   },
 };
 

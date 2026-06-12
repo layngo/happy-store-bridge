@@ -656,7 +656,7 @@ const AboutUs = () => {
           )}
         >
           <div className="not-prose">
-            <AboutUsV3Intro />
+            
             <div className="mb-6 flex justify-end">
               <Button type="button" size="sm" variant="outline" onClick={toggleEditor}>
                 {editorMode ? "Stop editing tapes" : "Edit corner tapes"}
