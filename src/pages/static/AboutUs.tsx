@@ -98,6 +98,14 @@ const CHAPTERS: StoryChapter[] = [
           "Five years later, the family grew to five and the toys kept getting smaller and smaller each year.",
       },
       {
+        src: aboutUsV2Png("they-have-a-mess-lego.png"),
+        title: "They have a mess",
+        alt: "A playroom floor covered in LEGO bricks and overflowing storage bins",
+        previewText: "Lego, Lego everywhere and not a solution in sight...",
+        storyText:
+          "LEGO, LEGO everywhere and not a solution in sight. Amy loved organization and Adam loved buying the kids more and more LEGO. The bins, baskets, sheets, and everything else on the market just did not support creative play that also allowed parents to keep their sanity. Bins of small pieces became our morning alarm clock. The challenge to design something better was a task we were both up to!",
+      },
+      {
         src: aboutUsV2Png("our-first-prototype.png"),
         title: "Our first prototype",
         alt: "Amy and her three sons on the first Lay-n-Go play mat surrounded by LEGO bricks",
