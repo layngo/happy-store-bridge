@@ -149,7 +149,7 @@ const CHAPTERS: StoryChapter[] = [
         alt: "Adam Lay-n-Go founder speaking at a press conference in front of the U.S. Capitol building",
         layoutOverride: { text: "right" },
         previewText:
-          "Small business is the engine that powers our country. Our elected officials need to know how their policies can either help us or hurt us...",
+          "Small business is the engine that powers our country. Our elected officials need to know how their policies can help us or hurt us...",
         storyText:
           "Never imagining they would become dedicated advocates for US Small Business, Adam and Amy's extensive experience in manufacturing, design, trade, transportation, warehousing, and retail ultimately positioned them to clearly educate Senators and Representatives on critical industry realities. In 2017, they were invited to join the US Chamber of Commerce, Small Business Council. Now, after actively participating in hundreds of meetings on Capitol Hill, they have realized firsthand that even individual voices can make a difference in shaping national policy.",
       },
