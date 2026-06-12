@@ -326,6 +326,142 @@ const LAY_N_GO_TRAVEL_DOG_BED_44_BULLETS = [
 ] as const;
 
 const COSMO_AUTOPLAY_YOUTUBE_ID = "G3E80xl9lSM";
+
+const HOW_IT_WORKS_FAQ_ANSWER =
+  "It's a patented drawstring organizer that opens flat so you can see and reach every item, then cinches closed into a compact bag for travel or storage — one pull of the cord packs it up.";
+const RETURN_POLICY_FAQ_ANSWER =
+  "Returns are accepted within 14 days of delivery. Items must be unused with original packaging. Email info@layngo.com with your order number for a Return Authorization before shipping items back.";
+const SHIPPING_FAQ_ANSWER =
+  "Economy shipping is 5–8 business days, Standard 3–4 days, and Express 1–2 business days after the order ships. U.S. and international options are available at checkout.";
+const PATENT_FAQ_ANSWER =
+  "Yes. The open-flat, cinch-closed drawstring design is protected by U.S. utility patents. See layngo.com/pages/lay-n-go-patents for details.";
+
+type ProductFaqItem = { question: string; answer: string };
+
+function getGenericProductFaqItems(productTitle: string): ProductFaqItem[] {
+  return [
+    { question: `How does the ${productTitle} work?`, answer: HOW_IT_WORKS_FAQ_ANSWER },
+    { question: `What is the return policy for the ${productTitle}?`, answer: RETURN_POLICY_FAQ_ANSWER },
+    { question: "How long does shipping take?", answer: SHIPPING_FAQ_ANSWER },
+    { question: "Is the Lay-n-Go design patented?", answer: PATENT_FAQ_ANSWER },
+  ];
+}
+
+/** Append return/shipping/patent FAQs without duplicating product-specific questions. */
+function mergeProductFaqItems(
+  productItems: readonly ProductFaqItem[],
+  productTitle: string,
+): ProductFaqItem[] {
+  const extras = getGenericProductFaqItems(productTitle);
+  const merged = [...productItems];
+  const seen = new Set(productItems.map((item) => item.question.toLowerCase()));
+
+  for (const item of extras) {
+    const key = item.question.toLowerCase();
+    if (seen.has(key)) continue;
+    if (key.includes("patent") && productItems.some((p) => p.question.toLowerCase().includes("patent"))) continue;
+    if (key.startsWith("how does") && productItems.some((p) => p.question.toLowerCase().includes("how does"))) continue;
+    merged.push(item);
+    seen.add(key);
+  }
+
+  return merged;
+}
+
+type ProductFaqSectionConfig = {
+  heading: string;
+  ariaLabel: string;
+  items: ProductFaqItem[];
+  idPrefix: string;
+};
+
+function resolveProductFaqSection(
+  handle: string,
+  productTitle: string,
+): ProductFaqSectionConfig {
+  const h = handle.toLowerCase();
+
+  if (h === "lay-n-go-nailspa-18") {
+    return {
+      heading: "Nailspa FAQ",
+      ariaLabel: "Nailspa FAQ",
+      items: mergeProductFaqItems(NAILSPA_FAQ_ITEMS, productTitle),
+      idPrefix: "nailspa-faq",
+    };
+  }
+  if (isCosmo20Product(handle) || isCosmo22Product(handle) || isCosmoMini16Product(handle, productTitle)) {
+    return {
+      heading: "Cosmo FAQ",
+      ariaLabel: "Cosmo FAQ",
+      items: mergeProductFaqItems(COSMO_FAQ_ITEMS, productTitle),
+      idPrefix: "cosmo-faq",
+    };
+  }
+  if (h === "lay-n-go-defender-mini-16") {
+    return {
+      heading: "Defender mini FAQ",
+      ariaLabel: "Defender mini FAQ",
+      items: mergeProductFaqItems(DEFENDER_MINI_FAQ_ITEMS, productTitle),
+      idPrefix: "defender-mini-faq",
+    };
+  }
+  if (h === "lay-n-go-tactical-bag-20") {
+    return {
+      heading: "Defender Tactical FAQ",
+      ariaLabel: "Defender Tactical FAQ",
+      items: mergeProductFaqItems(DEFENDER_TACTICAL_FAQ_ITEMS, productTitle),
+      idPrefix: "defender-tactical-faq",
+    };
+  }
+  if (h === "lay-n-go-travel-dog-bed-44") {
+    return {
+      heading: "DogBed FAQ",
+      ariaLabel: "DogBed FAQ",
+      items: mergeProductFaqItems(DOG_BED_44_FAQ_ITEMS, productTitle),
+      idPrefix: "dog-bed-44-faq",
+    };
+  }
+  if (h === "lay-n-go-traveler-20") {
+    return {
+      heading: "Traveler FAQ",
+      ariaLabel: "Traveler FAQ",
+      items: mergeProductFaqItems(TRAVELER_20_FAQ_ITEMS, productTitle),
+      idPrefix: "traveler-20-faq",
+    };
+  }
+  if (h === "lay-n-go-lite-18") {
+    return {
+      heading: "Lite FAQ",
+      ariaLabel: "Lite FAQ",
+      items: mergeProductFaqItems(LITE_18_FAQ_ITEMS, productTitle),
+      idPrefix: "lite-18-faq",
+    };
+  }
+  if (h === "lay-n-go-lifestyle-44") {
+    return {
+      heading: "Lifestyle FAQ",
+      ariaLabel: "Lifestyle FAQ",
+      items: mergeProductFaqItems(LIFESTYLE_44_FAQ_ITEMS, productTitle),
+      idPrefix: "lifestyle-44-faq",
+    };
+  }
+  if (h === "lay-n-go-large-60") {
+    return {
+      heading: "Large FAQ",
+      ariaLabel: "Large FAQ",
+      items: mergeProductFaqItems(LARGE_60_FAQ_ITEMS, productTitle),
+      idPrefix: "large-60-faq",
+    };
+  }
+
+  return {
+    heading: "Frequently asked questions",
+    ariaLabel: "Product FAQ",
+    items: getGenericProductFaqItems(productTitle),
+    idPrefix: "product-faq",
+  };
+}
+
 const COSMO_FAQ_ITEMS = [
   {
     question: "What sizes does the Cosmo come in?",
@@ -1014,8 +1150,6 @@ const ProductDetail = () => {
   );
 
   const isNailspaPdp = Boolean(product && isNailspa18Product(product.handle));
-  /** Bottom gallery, FAQ, ratings summary, sticky cart — Cosmo story PDPs and NAILSPA. */
-  const showCosmoStyleBottomExtras = isCosmoStoryPdp || isNailspaPdp;
 
   const showCosmoDescriptionBelowHero = Boolean(
     product &&
@@ -1063,11 +1197,8 @@ const ProductDetail = () => {
 
   const layNGoHandle = product?.handle.toLowerCase() ?? "";
   const isLayNGoLarge60 = layNGoHandle === "lay-n-go-large-60";
-  const showLarge60Faq = isLayNGoLarge60;
   const isLayNGoLifestyle44 = layNGoHandle === "lay-n-go-lifestyle-44";
-  const showLifestyle44Faq = isLayNGoLifestyle44;
   const isLayNGoLite18 = layNGoHandle === "lay-n-go-lite-18";
-  const showLite18Faq = isLayNGoLite18;
   const isLayNGoDefenderMini16 = layNGoHandle === "lay-n-go-defender-mini-16";
   const isLayNGoDefenderTactical20 = layNGoHandle === "lay-n-go-tactical-bag-20";
   const isLayNGoDefender = isLayNGoDefenderMini16 || isLayNGoDefenderTactical20;
@@ -1084,11 +1215,11 @@ const ProductDetail = () => {
     layNGoHandle.includes("traveler") ||
     layNGoHandle.includes("tech");
   const isLayNGoTraveler20 = layNGoHandle === "lay-n-go-traveler-20";
-  const showTraveler20Faq = isLayNGoTraveler20;
   const isLayNGoTravelDogBed44 = layNGoHandle === "lay-n-go-travel-dog-bed-44";
-  const showDogBed44Faq = isLayNGoTravelDogBed44;
-  const showDefenderMiniFaq = isLayNGoDefenderMini16;
-  const showDefenderTacticalFaq = isLayNGoDefenderTactical20;
+  const productFaqSection = useMemo(
+    () => (product ? resolveProductFaqSection(product.handle, product.title) : null),
+    [product],
+  );
   const isLayNGoNailspa18 = layNGoHandle === "lay-n-go-nailspa-18";
   const colorOptionName = useMemo(() => {
     if (!product) return null;
@@ -1647,28 +1778,7 @@ const ProductDetail = () => {
             { name: "Collections", path: "/collections" },
             { name: product.title, path: `/product/${product.handle}` },
           ]),
-          faqJsonLd([
-            {
-              question: `How does the ${product.title} work?`,
-              answer:
-                "It's a patented drawstring organizer that opens flat so you can see and reach every item, then cinches closed into a compact bag for travel or storage — one pull of the cord packs it up.",
-            },
-            {
-              question: `What is the return policy for the ${product.title}?`,
-              answer:
-                "Returns are accepted within 14 days of delivery. Items must be unused with original packaging. Email info@layngo.com with your order number for a Return Authorization before shipping items back.",
-            },
-            {
-              question: "How long does shipping take?",
-              answer:
-                "Economy shipping is 5–8 business days, Standard 3–4 days, and Express 1–2 business days after the order ships. U.S. and international options are available at checkout.",
-            },
-            {
-              question: "Is the Lay-n-Go design patented?",
-              answer:
-                "Yes. The open-flat, cinch-closed drawstring design is protected by U.S. utility patents. See layngo.com/pages/lay-n-go-patents for details.",
-            },
-          ]),
+          faqJsonLd(resolveProductFaqSection(product.handle, product.title).items),
         ]}
       />
       <Header />
@@ -1964,193 +2074,6 @@ const ProductDetail = () => {
 
             {isCosmoStoryPdp ? <CosmoPdpVideoGallery /> : null}
 
-            {showCosmoStyleBottomExtras ? (
-              <section
-                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
-                aria-label={isNailspaPdp ? "Nailspa FAQ" : "Cosmo FAQ"}
-              >
-                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  {isNailspaPdp ? "Nailspa FAQ" : "Cosmo FAQ"}
-                </h2>
-                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
-                  {(isNailspaPdp ? NAILSPA_FAQ_ITEMS : COSMO_FAQ_ITEMS).map((item, idx) => (
-                    <AccordionItem
-                      key={item.question}
-                      value={isNailspaPdp ? `nailspa-faq-${idx}` : `cosmo-faq-${idx}`}
-                    >
-                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
-                        {item.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
-                        {item.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </section>
-            ) : null}
-
-            {showDefenderMiniFaq ? (
-              <section
-                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
-                aria-label="Defender mini FAQ"
-              >
-                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  Defender mini FAQ
-                </h2>
-                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
-                  {DEFENDER_MINI_FAQ_ITEMS.map((item, idx) => (
-                    <AccordionItem key={item.question} value={`defender-mini-faq-${idx}`}>
-                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
-                        {item.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
-                        {item.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </section>
-            ) : null}
-
-            {showDefenderTacticalFaq ? (
-              <section
-                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
-                aria-label="Defender Tactical FAQ"
-              >
-                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  Defender Tactical FAQ
-                </h2>
-                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
-                  {DEFENDER_TACTICAL_FAQ_ITEMS.map((item, idx) => (
-                    <AccordionItem key={item.question} value={`defender-tactical-faq-${idx}`}>
-                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
-                        {item.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
-                        {item.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </section>
-            ) : null}
-
-            {showDogBed44Faq ? (
-              <section
-                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
-                aria-label="DogBed FAQ"
-              >
-                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  DogBed FAQ
-                </h2>
-                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
-                  {DOG_BED_44_FAQ_ITEMS.map((item, idx) => (
-                    <AccordionItem key={item.question} value={`dog-bed-44-faq-${idx}`}>
-                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
-                        {item.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
-                        {item.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </section>
-            ) : null}
-
-            {showTraveler20Faq ? (
-              <section
-                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
-                aria-label="Traveler FAQ"
-              >
-                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  Traveler FAQ
-                </h2>
-                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
-                  {TRAVELER_20_FAQ_ITEMS.map((item, idx) => (
-                    <AccordionItem key={item.question} value={`traveler-20-faq-${idx}`}>
-                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
-                        {item.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
-                        {item.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </section>
-            ) : null}
-
-            {showLite18Faq ? (
-              <section
-                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
-                aria-label="Lite FAQ"
-              >
-                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  Lite FAQ
-                </h2>
-                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-background px-4 sm:px-6">
-                  {LITE_18_FAQ_ITEMS.map((item, idx) => (
-                    <AccordionItem key={item.question} value={`lite-18-faq-${idx}`}>
-                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
-                        {item.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
-                        {item.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </section>
-            ) : null}
-
-            {showLifestyle44Faq ? (
-              <section
-                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
-                aria-label="Lifestyle FAQ"
-              >
-                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  Lifestyle FAQ
-                </h2>
-                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
-                  {LIFESTYLE_44_FAQ_ITEMS.map((item, idx) => (
-                    <AccordionItem key={item.question} value={`lifestyle-44-faq-${idx}`}>
-                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
-                        {item.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
-                        {item.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </section>
-            ) : null}
-
-            {showLarge60Faq ? (
-              <section
-                className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
-                aria-label="Large FAQ"
-              >
-                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  Large FAQ
-                </h2>
-                <Accordion type="single" collapsible className="mt-5 rounded-2xl border border-border bg-white px-4 sm:px-6">
-                  {LARGE_60_FAQ_ITEMS.map((item, idx) => (
-                    <AccordionItem key={item.question} value={`large-60-faq-${idx}`}>
-                      <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
-                        {item.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
-                        {item.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </section>
-            ) : null}
-
           </>
         ) : (
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
@@ -2188,6 +2111,42 @@ const ProductDetail = () => {
           </div>
         )}
 
+        {productFaqSection ? (
+          <section
+            className="mx-auto mt-14 w-full max-w-4xl sm:mt-16"
+            aria-label={productFaqSection.ariaLabel}
+          >
+            <h2
+              id="product-faq-heading"
+              className="font-heading text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+            >
+              {productFaqSection.heading}
+            </h2>
+            <Accordion
+              type="single"
+              collapsible
+              className={cn(
+                "mt-5 rounded-2xl border border-border px-4 sm:px-6",
+                isLayNGoLite18 ? "bg-background" : "bg-white",
+              )}
+            >
+              {productFaqSection.items.map((item, idx) => (
+                <AccordionItem
+                  key={item.question}
+                  value={`${productFaqSection.idPrefix}-${idx}`}
+                >
+                  <AccordionTrigger className="text-left text-[0.95rem] font-semibold text-foreground hover:no-underline">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-[0.95rem]">
+                    {item.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </section>
+        ) : null}
+
         {related.length > 0 ? (
           <section className={cn("border-t border-border pt-12", isCosmoPdp ? "mt-20 sm:mt-24" : "mt-20")}>
             <h2 className="font-heading text-2xl font-bold text-foreground mb-8">Related products</h2>
@@ -2210,42 +2169,6 @@ const ProductDetail = () => {
           />
         ) : null}
 
-        <section
-          aria-labelledby="product-faq-heading"
-          className="mt-20 border-t border-border pt-12"
-        >
-          <h2
-            id="product-faq-heading"
-            className="font-heading text-2xl font-bold text-foreground mb-6"
-          >
-            Frequently asked questions
-          </h2>
-          <dl className="space-y-6 max-w-3xl">
-            {[
-              {
-                q: `How does the ${product.title} work?`,
-                a: "It's a patented drawstring organizer that opens flat so you can see and reach every item, then cinches closed into a compact bag for travel or storage — one pull of the cord packs it up.",
-              },
-              {
-                q: `What is the return policy for the ${product.title}?`,
-                a: "Returns are accepted within 14 days of delivery. Items must be unused with original packaging. Email info@layngo.com with your order number for a Return Authorization before shipping items back.",
-              },
-              {
-                q: "How long does shipping take?",
-                a: "Economy shipping is 5–8 business days, Standard 3–4 days, and Express 1–2 business days after the order ships. U.S. and international options are available at checkout.",
-              },
-              {
-                q: "Is the Lay-n-Go design patented?",
-                a: "Yes. The open-flat, cinch-closed drawstring design is protected by U.S. utility patents.",
-              },
-            ].map((item) => (
-              <div key={item.q}>
-                <dt className="font-semibold text-foreground mb-1">{item.q}</dt>
-                <dd className="text-muted-foreground leading-relaxed">{item.a}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
       </main>
 
       {showStickyAddToCart ? (

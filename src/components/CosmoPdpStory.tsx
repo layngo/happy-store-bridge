@@ -11,17 +11,27 @@ import { cn } from "@/lib/utils";
 const COSMO_STORY_HEADLINE = "Forget everything you knew about a makeup bag.";
 const MOBILE_EVERYTHING_ARROW_PATH =
   "M 40.2 10.4 C 77.2 6.5, 86.1 17.7, 73.9 27.4 Q 59.8 33.2, 58.2 43.7";
-/** Tail starts after “seconds.” — desktop (left) vs mobile (narrow image box) need different anchors. */
-const DESKTOP_PACKUP_ARROW_PATH = "M 28 11.2 Q 36 0.5, 58 4.3";
-const MOBILE_PACKUP_ARROW_PATH = "M 58 11.2 Q 50 0.5, 72 4.3";
 
 /** Dotted arrow; `pathD` is SVG path in 0–100 viewBox (see `src/data/cosmoPdpStoryArrows.ts`). */
-function ArrowOverlay({ pathD, markerId }: { pathD: string; markerId: string }) {
+function ArrowOverlay({
+  pathD,
+  markerId,
+  className,
+  preserveAspectRatio = "none",
+}: {
+  pathD: string;
+  markerId: string;
+  className?: string;
+  preserveAspectRatio?: `${string} ${string}` | "none";
+}) {
   return (
     <svg
-      className="pointer-events-none absolute inset-0 z-[5] h-full w-full text-foreground"
+      className={cn(
+        "pointer-events-none absolute inset-0 z-[5] h-full w-full text-foreground",
+        className,
+      )}
       viewBox="0 0 100 100"
-      preserveAspectRatio="none"
+      preserveAspectRatio={preserveAspectRatio}
       aria-hidden
     >
       <defs>
@@ -49,6 +59,17 @@ function ArrowOverlay({ pathD, markerId }: { pathD: string; markerId: string }) 
         markerEnd={`url(#${markerId})`}
       />
     </svg>
+  );
+}
+
+/** Packup photo is 589×1024; size overlay like object-contain + bottom-right so 0–100 coords = image %. */
+function PackupArrowOverlay({ pathD, markerId }: { pathD: string; markerId: string }) {
+  return (
+    <ArrowOverlay
+      pathD={pathD}
+      markerId={markerId}
+      className="inset-auto bottom-0 right-0 h-[min(100cqh,calc(100cqw*1024/589))] w-[min(100cqw,calc(100cqh*589/1024))]"
+    />
   );
 }
 
@@ -131,7 +152,7 @@ export function CosmoPdpStory({ hideIntroImage = false }: { hideIntroImage?: boo
   const isMobile = useIsMobile();
   const arrowPaths = useCosmoStoryArrowPaths();
   const everythingArrowPath = isMobile ? MOBILE_EVERYTHING_ARROW_PATH : arrowPaths.everything;
-  const packupArrowPath = isMobile ? MOBILE_PACKUP_ARROW_PATH : DESKTOP_PACKUP_ARROW_PATH;
+  const packupArrowPath = arrowPaths.packup;
 
   const rawId = useId().replace(/:/g, "");
   const markerEverything = `cosmo-arr-ev-${rawId}`;
@@ -238,7 +259,7 @@ export function CosmoPdpStory({ hideIntroImage = false }: { hideIntroImage?: boo
             </p>
           </div>
           <div className="flex w-full justify-end self-end pr-0">
-            <div className="relative ml-auto mr-0 w-full max-md:max-w-[min(76vw,340px)] md:max-w-[min(62vw,520px)] lg:max-w-[560px]">
+            <div className="relative mx-auto mr-0 w-full max-md:max-w-[min(76vw,340px)] [container-type:size] md:max-w-[min(62vw,520px)] lg:max-w-[560px]">
               <RippleLipImage
                 src="/cosmo-pdp/story/image3.png"
                 alt="Lay-n-Go Cosmo bag cinched closed and ready for travel"
@@ -246,7 +267,7 @@ export function CosmoPdpStory({ hideIntroImage = false }: { hideIntroImage?: boo
                 loading="lazy"
                 scale={7}
               />
-              <ArrowOverlay pathD={packupArrowPath} markerId={markerPackup} />
+              <PackupArrowOverlay pathD={packupArrowPath} markerId={markerPackup} />
             </div>
           </div>
         </article>
