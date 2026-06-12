@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 import { PageBreadcrumb } from "@/components/PageBreadcrumb";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { ChevronRight, Home } from "lucide-react";
-import { DefenderHeroVideo } from "@/components/DefenderHeroVideo";
 
 export const MILITARY_FIRST_RESPONDER_PATH = "/collections/military-first-responder";
 
@@ -23,10 +22,10 @@ const IMG_20 = `/military-first-responder-v2/defender-tactical-20.png?v=${DEFEND
 /** Largest disk (20″); 16″ derives from 16:20 — same cap pattern as Cosmo V2 (2 columns). */
 const DEFENDER_CIRCLE_BASE_REM = 19.75;
 
-/** Open-mat width ÷ image width (alpha bbox on trimmed transparent PNGs). */
+/** Open-mat width ÷ image width (olive-fabric bbox on collection PNGs). */
 const DEFENDER_MAT_WIDTH_FRACTION: Record<16 | 20, number> = {
-  16: 562 / 578,
-  20: 461 / 477,
+  16: 545 / 578,
+  20: 443 / 477,
 };
 
 /** 20″ mat width — target mat scales as (inches / 20) × this. */
@@ -225,8 +224,6 @@ const MilitaryFirstResponder = () => {
             </p>
           </div>
         </div>
-
-        <DefenderHeroVideo className="mb-10 sm:mb-12" />
 
         <section
           className="mb-12 rounded-2xl border border-border/80 bg-muted/20 px-2 pb-5 pt-3 sm:px-6 sm:pb-7 sm:pt-4"

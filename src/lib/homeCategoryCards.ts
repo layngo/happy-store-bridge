@@ -23,7 +23,7 @@ export const HOME_CATEGORY_FONT_CLASS: Record<HomeCategoryFont, string> = {
 const NAILSPA_PRODUCT_PATH = "/product/lay-n-go-nailspa-18";
 const TRAVELER_PRODUCT_PATH = "/product/lay-n-go-traveler-20";
 const TRAVEL_DOG_BED_PRODUCT_PATH = "/product/lay-n-go-travel-dog-bed-44";
-const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags-v2";
+const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags";
 
 export const HOME_CATEGORY_BY_HANDLE: Record<string, HomeCategoryCardConfig> = {
   "cosmetic-bags": {

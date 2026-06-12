@@ -66,7 +66,8 @@ const AppContent = () => {
         <Route path="/collections/:handle" element={<Collection />} />
         <Route path="/collections" element={<CollectionsIndex />} />
 
-        <Route path="/shop/cosmetic-bags-v2" element={<CosmeticBagsV2 />} />
+        <Route path="/shop/cosmetic-bags" element={<CosmeticBagsV2 />} />
+        <Route path="/shop/cosmetic-bags-v2" element={<Navigate to="/shop/cosmetic-bags" replace />} />
 
         <Route path="/product/:handle" element={<ProductDetail />} />
         <Route path="/products/:handle" element={<ProductUrlRedirect />} />

@@ -25,8 +25,8 @@ export const DEFAULT_EVERYTHING_PTS: EverythingPts = (() => {
 })();
 
 export const DEFAULT_PACKUP_PTS: PackupPts = {
-  m: { x: 40, y: 11.2 },
-  q: { x: 45, y: 0.5 },
+  m: { x: 28, y: 11.2 },
+  q: { x: 36, y: 0.5 },
   end: { x: 58, y: 4.3 },
 };
 

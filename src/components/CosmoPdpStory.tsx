@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from "react";
 import { readCosmoStoryArrowPath } from "@/data/cosmoPdpStoryArrows";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 /**
  * Editorial strip below Cosmo PDP hero — flush edges, white field matching photo backs,
@@ -10,6 +11,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const COSMO_STORY_HEADLINE = "Forget everything you knew about a makeup bag.";
 const MOBILE_EVERYTHING_ARROW_PATH =
   "M 40.2 10.4 C 77.2 6.5, 86.1 17.7, 73.9 27.4 Q 59.8 33.2, 58.2 43.7";
+/** Tail starts after “seconds.” — desktop (left) vs mobile (narrow image box) need different anchors. */
+const DESKTOP_PACKUP_ARROW_PATH = "M 28 11.2 Q 36 0.5, 58 4.3";
+const MOBILE_PACKUP_ARROW_PATH = "M 58 11.2 Q 50 0.5, 72 4.3";
 
 /** Dotted arrow; `pathD` is SVG path in 0–100 viewBox (see `src/data/cosmoPdpStoryArrows.ts`). */
 function ArrowOverlay({ pathD, markerId }: { pathD: string; markerId: string }) {
@@ -123,10 +127,11 @@ function RippleLipImage({
   );
 }
 
-export function CosmoPdpStory() {
+export function CosmoPdpStory({ hideIntroImage = false }: { hideIntroImage?: boolean }) {
   const isMobile = useIsMobile();
   const arrowPaths = useCosmoStoryArrowPaths();
   const everythingArrowPath = isMobile ? MOBILE_EVERYTHING_ARROW_PATH : arrowPaths.everything;
+  const packupArrowPath = isMobile ? MOBILE_PACKUP_ARROW_PATH : DESKTOP_PACKUP_ARROW_PATH;
 
   const rawId = useId().replace(/:/g, "");
   const markerEverything = `cosmo-arr-ev-${rawId}`;
@@ -149,17 +154,24 @@ export function CosmoPdpStory() {
           {COSMO_STORY_HEADLINE}
         </p>
 
-        <div className="mt-6 flex flex-row flex-nowrap items-center gap-4 px-4 sm:gap-6 md:mt-0 md:flex-1 md:gap-9 md:px-0 lg:gap-10">
-          <div className="w-[clamp(132px,38vw,220px)] shrink-0 md:w-[clamp(148px,34vw,340px)]">
-            <RippleLipImage
-              src="/cosmo-pdp/story/image1.png"
-              alt="Lay-n-Go Cosmo cosmetic bag opened flat with makeup and brushes visible"
-              className="block h-auto w-full max-w-none"
-              loading="lazy"
-              scale={5}
-            />
-          </div>
-          <div className="min-w-0 flex-1 md:pr-8">
+        <div
+          className={cn(
+            "mt-6 flex flex-row flex-nowrap items-center gap-4 pr-4 sm:gap-6 md:mt-0 md:flex-1 md:gap-9 md:pr-0 lg:gap-10",
+            hideIntroImage && "px-4 md:px-8",
+          )}
+        >
+          {!hideIntroImage ? (
+            <div className="w-[clamp(145px,41.8vw,242px)] shrink-0 md:w-[clamp(163px,37.4vw,374px)]">
+              <RippleLipImage
+                src="/cosmo-pdp/story/image1.png"
+                alt="Lay-n-Go Cosmo cosmetic bag opened flat with makeup and brushes visible"
+                className="block h-auto w-full max-w-none object-left"
+                loading="lazy"
+                scale={5}
+              />
+            </div>
+          ) : null}
+          <div className={cn("min-w-0 flex-1", !hideIntroImage && "md:pr-8")}>
             <p
               className="hidden font-heading text-[clamp(1.35rem,5.8vw,4rem)] font-black uppercase leading-[0.92] tracking-tight text-foreground lg:text-[clamp(1.75rem,5vw,4.75rem)] lg:leading-[0.9] md:block"
               aria-hidden
@@ -234,7 +246,7 @@ export function CosmoPdpStory() {
                 loading="lazy"
                 scale={7}
               />
-              <ArrowOverlay pathD={arrowPaths.packup} markerId={markerPackup} />
+              <ArrowOverlay pathD={packupArrowPath} markerId={markerPackup} />
             </div>
           </div>
         </article>

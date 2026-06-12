@@ -74,7 +74,7 @@ Lay-n-Go (layngo.com) — patented drawstring organizational solutions. Products
 BRAND PITCH: "Organizational Solutions for Life, Play, and Travel." Homepage tagline for Cosmo: "The last bag you'll ever need."
 
 CATEGORIES & COLLECTIONS:
-- Cosmetic Bags / COSMO: /shop/cosmetic-bags-v2 — makeup & beauty bags (Cosmo 16", 20", Deluxe 22")
+- Cosmetic Bags / COSMO: /shop/cosmetic-bags — makeup & beauty bags (Cosmo 16", 20", Deluxe 22")
 - Nail Solutions / NAILSPA: /product/lay-n-go-nailspa-18
 - Play (toy cleanup, play mats): /collections/play
 - Tech & Travel / TRAVELER: /product/lay-n-go-traveler-20
@@ -183,7 +183,7 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
       content:
         'Cosmo is our signature cosmetic line. The Cosmo 20" is our best seller — opens flat like a mat, cinches into a bag. The Cosmo Deluxe 22" offers extra room. Both come in multiple colors and patterns.',
       products: [CHAT_PRODUCTS.cosmo20, CHAT_PRODUCTS.cosmoDeluxe22],
-      links: [{ label: "Cosmetic bags", href: "/shop/cosmetic-bags-v2" }],
+      links: [{ label: "Cosmetic bags", href: "/shop/cosmetic-bags" }],
     },
   },
   {
@@ -338,7 +338,7 @@ const TOPIC_MATCHERS: { test: RegExp; reply: ChatAssistantReply }[] = [
         "We organize solutions by category: Cosmetic Bags, Nail Solutions, Play, Tech & Travel, Pet Solutions, and Outdoor / Tactical. Each uses our patented open-flat, cinch-closed design for a different use case.",
       links: [
         { label: "Shop all collections", href: "/collections" },
-        { label: "Cosmetic bags", href: "/shop/cosmetic-bags-v2" },
+        { label: "Cosmetic bags", href: "/shop/cosmetic-bags" },
       ],
     },
   },

@@ -224,9 +224,9 @@ const CosmeticBagsV2 = () => {
     <div className="min-h-dvh bg-background flex flex-col">
       <PageSeo
         title="Cosmetic Bags"
-        description={getStaticPageSeo("/shop/cosmetic-bags-v2").description}
-        pathname="/shop/cosmetic-bags-v2"
-        keywords={getStaticPageSeo("/shop/cosmetic-bags-v2").keywords}
+        description={getStaticPageSeo("/shop/cosmetic-bags").description}
+        pathname="/shop/cosmetic-bags"
+        keywords={getStaticPageSeo("/shop/cosmetic-bags").keywords}
       />
       <Header />
       <main id="main-content" className="container py-8 flex-1">
@@ -286,7 +286,7 @@ const CosmeticBagsV2 = () => {
                 aria-label={`${spec.shortName}, ${spec.inches} inch — ${product.title}. Opens product page.`}
               >
                 {spec.inches === 20 ? (
-                  <span className="pointer-events-none absolute right-1 top-1 z-10 rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary-foreground shadow-md sm:right-2 sm:top-2 sm:px-2.5 sm:py-1 sm:text-[10px]">
+                  <span className="pointer-events-none absolute right-2 top-2 hidden shrink-0 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground shadow-md md:block">
                     Best Seller
                   </span>
                 ) : null}
@@ -366,6 +366,11 @@ const CosmeticBagsV2 = () => {
                     <span className="text-xs font-medium text-primary">+{preview.remaining} more</span>
                   ) : null}
                 </div>
+                {spec.inches === 20 ? (
+                  <span className="mt-1.5 shrink-0 rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-primary-foreground shadow-md md:hidden">
+                    Best Seller
+                  </span>
+                ) : null}
               </Link>
             ))}
           </div>

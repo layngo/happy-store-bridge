@@ -55,8 +55,14 @@ function defenderThumbClassName(key: string): string {
   return DEFENDER_THUMB_IMG_CLASS;
 }
 
-/** Defender Tactical hero callout stage — matches `hero-callout-main.png` (1024×1024). */
-const DEFENDER_TACTICAL_CALLOUT_VB = { w: 1024, h: 1024 } as const;
+/** Bracket width tuned to olive-fabric bbox on each hero PNG. */
+const DEFENDER_MINI_DIAMETER_BRACKET_CLASS =
+  "mx-auto w-[min(100%,58%)] sm:w-[min(100%,58%)] md:w-[min(100%,58%)]";
+const DEFENDER_TACTICAL_DIAMETER_BRACKET_CLASS =
+  "mx-auto w-[min(100%,86%)] sm:w-[min(100%,86%)] md:w-[min(100%,85%)] lg:w-[min(100%,85%)]";
+/** Traveler hero — black mat spans ~91% of PNG width (928/1024). */
+const TRAVELER_DIAMETER_BRACKET_CLASS =
+  "mx-auto w-[min(100%,90.625%)] sm:w-[min(100%,90.625%)] md:w-[min(100%,90.625%)]";
 const DEFENDER_TACTICAL_DOT_R = 6.5;
 const DEFENDER_TACTICAL_DOT_STROKE = 2.25;
 const DEFENDER_TACTICAL_LEADER_OUTER = (1.02 * 1024) / 100;
@@ -116,6 +122,8 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
 
 /** Defender Mini hero callout stage — matches `hero-callout-main.png` (1024×600). */
 const DEFENDER_MINI_CALLOUT_VB = { w: 1024, h: 600 } as const;
+/** Defender Tactical hero callout stage — matches `hero-callout-main.png` (1024×1024). */
+const DEFENDER_TACTICAL_CALLOUT_VB = { w: 1024, h: 1024 } as const;
 
 /** Shared callout stage width; Tactical inner stage scales to match Mini height. */
 const DEFENDER_CALLOUT_STAGE_MAX_W = "max-w-5xl";
@@ -451,7 +459,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 16,
       containerMinHClass: "min-h-[min(92vh,920px)]",
       heroWidthClass: "w-[min(94vw,920px)]",
-      /** Below hero — positive margin so 16″ bracket clears the mat/drawstring. */
+      /** Below hero — bracket tracks inset 16″ disc in hero PNG. */
       dimensionWrapClass:
         "relative z-20 mx-auto mt-5 w-full max-w-5xl pt-1 pb-4 sm:mt-6 sm:pb-5 md:mt-8 md:pb-6",
       mobileHeroMaxClass: "max-w-[min(96vw,36rem)]",
@@ -471,9 +479,9 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 20,
       containerMinHClass: "min-h-[min(92vh,920px)]",
       heroWidthClass: "w-[min(94vw,920px)]",
-      /** Below hero — same spacing as Defender Mini. */
+      /** Below hero — same width as desktop callout stage so bracket aligns with mat. */
       dimensionWrapClass:
-        "relative z-20 mx-auto mt-5 w-full max-w-5xl pt-1 pb-4 sm:mt-6 sm:pb-5 md:mt-8 md:pb-6",
+        "relative z-20 mx-auto mt-5 w-full max-w-5xl pt-1 pb-4 sm:mt-6 sm:pb-5 md:mt-8 md:w-[58.59375%] md:max-w-[calc(64rem*0.5859375)] md:pb-6",
       mobileHeroMaxClass: "max-w-[min(96vw,36rem)]",
       meshCalloutSrc: CALLOUT_MESH,
       lipCalloutSrc: CALLOUT_LIP,
@@ -511,7 +519,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
     heroWidthClass: "w-[min(94vw,920px)]",
     dimensionWrapClass:
       "relative z-20 mx-auto -mt-[9.5rem] w-[min(94vw,920px)] pt-0 sm:-mt-40 md:-mt-48 lg:-mt-52",
-    mobileHeroMaxClass: "max-w-lg",
+    mobileHeroMaxClass: "max-w-[min(100vw,40rem)]",
     meshCalloutSrc: CALLOUT_MESH,
     lipCalloutSrc: CALLOUT_LIP,
     cordCalloutSrc: CALLOUT_CORD,
@@ -551,18 +559,18 @@ function DiameterLine({
       ? /** Lite hero: mat fills the frame — bracket spans the green disc (centered under product). */
         "mx-auto w-[min(100%,94%)] sm:w-[min(100%,93%)] md:w-[min(100%,92%)]"
       : defenderMini16
-        ? /** Defender 16″ hero: mat nearly fills the frame — bracket tracks the olive disc. */
-          "mx-auto w-[min(100%,88%)] sm:w-[min(100%,86%)] md:w-[min(100%,84%)] lg:w-[min(100%,82%)]"
+        ? /** Defender 16″ hero — mat is inset in the PNG (~58% width). */
+          DEFENDER_MINI_DIAMETER_BRACKET_CLASS
         : defenderTactical20
-          ? /** Defender 20″ hero: mat nearly fills the frame — bracket tracks the olive disc. */
-            "mx-auto w-[min(100%,90%)] sm:w-[min(100%,88%)] md:w-[min(100%,86%)] lg:w-[min(100%,84%)]"
-    : traveler20
-      ? /** Traveler callout hero — mat nearly full width; mobile vs md+ tuned separately */
-        "mx-auto w-[min(100%,93%)] sm:w-[min(100%,91%)] md:w-[min(100%,88%)] lg:w-[min(100%,85%)]"
-    : large60
-      ? /** Large hero: mat is inset in the PNG — bracket must match the blue disc, not the full image width */
-        "mx-auto w-[min(100%,58%)] sm:w-[min(100%,60%)] md:w-[min(100%,62%)] lg:w-[min(100%,61%)]"
-      : "w-full max-w-md sm:max-w-lg";
+          ? /** Defender 20″ hero — mat spans ~86% of PNG width. */
+            DEFENDER_TACTICAL_DIAMETER_BRACKET_CLASS
+          : traveler20
+            ? /** Traveler callout hero — black mat spans ~91% of PNG width. */
+              TRAVELER_DIAMETER_BRACKET_CLASS
+            : large60
+              ? /** Large hero: mat is inset in the PNG — bracket must match the blue disc, not the full image width */
+                "mx-auto w-[min(100%,58%)] sm:w-[min(100%,60%)] md:w-[min(100%,62%)] lg:w-[min(100%,61%)]"
+              : "w-full max-w-md sm:max-w-lg";
 
   return (
     <div className={cn("flex w-full flex-col items-center px-2", className)}>
@@ -592,9 +600,11 @@ function DiameterLine({
             !lite18 &&
             !defenderMini16 &&
             !defenderTactical20 &&
+            !traveler20 &&
             "mt-2 text-xl sm:text-2xl",
           lite18 && "mt-5 text-2xl sm:mt-6 sm:text-[1.65rem]",
           (defenderMini16 || defenderTactical20) && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
+          traveler20 && "mt-1.5 text-xl sm:mt-2 sm:text-2xl",
           !lifestyleChrome && "mt-1 text-lg sm:text-xl",
         )}
       >
@@ -615,8 +625,8 @@ export function LayNGoMatDiameterLine({
   variant?: LayNGoMatDiameterVariant;
 }) {
   return (
-    <div aria-label={`${inches} inch diameter when laid flat`}>
-      <DiameterLine inches={inches} className={className} variant={variant} />
+    <div aria-label={`${inches} inch diameter when laid flat`} className={className}>
+      <DiameterLine inches={inches} className="w-full" variant={variant} />
     </div>
   );
 }
@@ -845,6 +855,43 @@ function DefenderArrowEditorOverlay({
       })}
     </div>
   );
+}
+
+function DefenderMobileCallout({
+  thumbSrc,
+  thumbAlt,
+  thumbClassName,
+  label,
+}: {
+  thumbSrc: string;
+  thumbAlt: string;
+  thumbClassName: string;
+  label: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-2 px-2">
+      <div className={cn("aspect-square h-32 w-32 shrink-0", CALLOUT_THUMB_SHADOW)}>
+        <div className={CALLOUT_THUMB_INNER_CLIP}>
+          <img
+            src={thumbSrc}
+            alt={thumbAlt}
+            className={cn("h-full w-full", thumbClassName)}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </div>
+      <p className="max-w-xs text-center font-heading text-xs font-bold uppercase leading-snug text-neutral-900">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+function defenderCalloutsForVariant(
+  variant: "defender-mini-16" | "defender-tactical-20",
+): readonly DefenderHeroCalloutItem[] {
+  return variant === "defender-mini-16" ? DEFENDER_MINI_CALLOUTS : DEFENDER_TACTICAL_CALLOUTS;
 }
 
 function EditableDefenderCalloutStage({
@@ -1436,20 +1483,50 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
       }
     >
       {isDefenderVariant ? (
-        <div className="relative px-1 pb-8 sm:px-2 md:pb-10">
-          <EditableDefenderCalloutStage
-            variant={defenderVariant}
-            heroSrc={config.heroSrc}
-            heroAlt={config.heroAlt}
-            layout={defenderLayout}
-            onLayoutChange={setDefenderLayout}
-            editorMode={editorMode}
-            activeLeaderKey={defenderEditKey}
-          />
-          <div className={config.dimensionWrapClass}>
-            <DiameterLine inches={config.diameterInches} variant={variant} />
+        <>
+          {/* Mobile — stacked hero, diameter, and callout thumbs (matches Large / Traveler diagrams) */}
+          <div className="flex flex-col items-center gap-3 pb-6 md:hidden">
+            <img
+              src={config.heroSrc}
+              alt={config.heroAlt}
+              className={cn("w-full object-contain mix-blend-multiply", config.mobileHeroMaxClass)}
+              loading="lazy"
+              decoding="async"
+            />
+            <DiameterLine
+              inches={config.diameterInches}
+              variant={variant}
+              className={cn("w-full shrink-0 pb-0", config.mobileHeroMaxClass, "mt-1.5")}
+            />
+            <div className="flex w-full flex-col items-center gap-2">
+              {defenderCalloutsForVariant(defenderVariant).map((callout) => (
+                <DefenderMobileCallout
+                  key={callout.key}
+                  thumbSrc={callout.thumbSrc}
+                  thumbAlt={callout.thumbAlt}
+                  thumbClassName={callout.thumbClassName}
+                  label={callout.label}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+
+          {/* Desktop — hero with leader lines and positioned callout thumbs */}
+          <div className="relative hidden px-1 pb-8 sm:px-2 md:block md:pb-10">
+            <EditableDefenderCalloutStage
+              variant={defenderVariant}
+              heroSrc={config.heroSrc}
+              heroAlt={config.heroAlt}
+              layout={defenderLayout}
+              onLayoutChange={setDefenderLayout}
+              editorMode={editorMode}
+              activeLeaderKey={defenderEditKey}
+            />
+            <div className={config.dimensionWrapClass}>
+              <DiameterLine inches={config.diameterInches} variant={variant} />
+            </div>
+          </div>
+        </>
       ) : null}
 
       {/* Mobile */}
@@ -1492,6 +1569,8 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             "w-full object-contain",
             config.mobileHeroMaxClass,
             matProductImgClass(variant),
+            variant === "large-60" &&
+              "-mx-4 w-[calc(100%+2rem)] max-w-[min(100vw,40rem)] sm:-mx-6 sm:w-[calc(100%+3rem)]",
             variant === "lite-18" && "mt-6 sm:mt-10",
               diagramUsesLifestyleChrome(variant) &&
                 variant !== "lite-18" &&
@@ -1508,7 +1587,11 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             variant === "lite-18"
               ? "relative z-30 mx-auto w-full max-w-[min(90vw,25.5rem)]"
               : cn("w-full", config.mobileHeroMaxClass),
-            variant === "large-60" && "-mt-2 shrink-0 pb-0",
+            variant === "large-60" &&
+              cn(
+                "-mt-2 shrink-0 pb-0",
+                "-mx-4 w-[calc(100%+2rem)] max-w-[min(100vw,40rem)] sm:-mx-6 sm:w-[calc(100%+3rem)]",
+              ),
             variant === "lifestyle-44" && "mt-4 shrink-0 pb-2 sm:mt-5 sm:pb-3",
             variant === "lite-18" && "mt-10 shrink-0 pb-2 sm:mt-12 sm:pb-3",
           )}

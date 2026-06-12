@@ -25,7 +25,7 @@ export const SEARCH_CATALOG: readonly SearchSuggestion[] = [
   {
     title: "Cosmetic Bags",
     subtitle: "Compare Cosmo 16\", 20\" & Deluxe 22\"",
-    href: "/shop/cosmetic-bags-v2",
+    href: "/shop/cosmetic-bags",
     image: "/cosmetic-bags-v2/cosmo-20.png",
     keywords: ["cosmetic", "cosmetics", "cosmo", "makeup", "beauty", "bags", "shop"],
   },

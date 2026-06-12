@@ -19,7 +19,7 @@ const STATIC_ROUTES = [
   { path: "/", priority: "1.0", changefreq: "weekly" },
   { path: "/collections", priority: "0.9", changefreq: "weekly" },
   { path: "/search", priority: "0.5", changefreq: "monthly" },
-  { path: "/shop/cosmetic-bags-v2", priority: "0.85", changefreq: "weekly" },
+  { path: "/shop/cosmetic-bags", priority: "0.85", changefreq: "weekly" },
   { path: "/pages/about-us", priority: "0.75", changefreq: "monthly" },
   { path: "/pages/contact", priority: "0.7", changefreq: "monthly" },
   { path: "/pages/press", priority: "0.65", changefreq: "monthly" },
