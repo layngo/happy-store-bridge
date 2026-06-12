@@ -160,7 +160,7 @@ const CHAPTERS: StoryChapter[] = [
         layoutOverride: { text: "left", vertical: "top", offsetY: 30, offsetX: 0, insetLeft: 46 },
         previewText: "Mentoring the next generation has been an incredible journey...",
         storyText:
-          "Over the last decade, Amy and Adam have had the privilege of mentoring an incredible new generation of entrepreneurs, working alongside brilliant young founders. Their involvement with the Syracuse University LaunchPad in Bird Library ultimately led to an invitation to serve on the Syracuse Libraries Board, where they now proudly serve as Co-Chairs.",
+          "Over the last decade, Amy and Adam have had the privilege of mentoring a dynamic new generation of entrepreneurs, working alongside brilliant young minds driven by visionary ideas. Their deep commitment to the Syracuse University LaunchPad in Bird Library, and the university's broader entrepreneurial ecosystem, ultimately led to an invitation to join the Syracuse Libraries Board, where they now serve as Co-Chairs.",
       },
     ],
   },
