@@ -13,6 +13,7 @@ import {
 import { ShoppingBag, Minus, Plus, Trash2, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useCartStore, type CartItem } from "@/stores/cartStore";
+import { navigateToCheckout } from "@/lib/navigateToCheckout";
 import { cn } from "@/lib/utils";
 
 function formatOptions(item: CartItem) {
@@ -123,7 +124,7 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
     const checkoutUrl = getCheckoutUrl();
     if (checkoutUrl) {
       setIsOpen(false);
-      window.location.assign(checkoutUrl);
+      navigateToCheckout(checkoutUrl);
       return;
     }
     toast.error("Checkout unavailable", {

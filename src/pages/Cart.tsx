@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
 import { PageSeo } from "@/components/PageSeo";
 import { useCartStore, type CartItem } from "@/stores/cartStore";
+import { navigateToCheckout } from "@/lib/navigateToCheckout";
 
 const formatOptions = (item: CartItem) => {
   const label = item.selectedOptions
@@ -42,7 +43,7 @@ const CartPage = () => {
     await syncCart();
     const checkoutUrl = getCheckoutUrl();
     if (checkoutUrl) {
-      window.location.assign(checkoutUrl);
+      navigateToCheckout(checkoutUrl);
       return;
     }
     toast.error("Checkout unavailable", {
