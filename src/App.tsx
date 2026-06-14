@@ -33,6 +33,7 @@ import Wholesale from "./pages/static/Wholesale.tsx";
 import CosmoArrowPlayground from "./pages/CosmoArrowPlayground.tsx";
 import CosmeticBagsV2 from "./pages/CosmeticBagsV2.tsx";
 import MilitaryFirstResponder from "./pages/MilitaryFirstResponder.tsx";
+import Cart from "./pages/Cart.tsx";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/cart" element={<Cart />} />
 
         <Route path="/collections/:collectionHandle/products/:productHandle" element={<ProductDetail />} />
         <Route
