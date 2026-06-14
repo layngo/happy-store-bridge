@@ -7,9 +7,12 @@ import { Button } from "@/components/ui/button";
 import { PageSeo } from "@/components/PageSeo";
 import { useCartStore, type CartItem } from "@/stores/cartStore";
 
-const optionsLabel = (item: CartItem) => {
-  const opts = item.product?.options?.map((o) => o.value).filter(Boolean);
-  return opts && opts.length ? opts.join(" · ") : null;
+const formatOptions = (item: CartItem) => {
+  const label = item.selectedOptions
+    .filter((o) => o.value && o.value !== "Default Title")
+    .map((o) => o.value)
+    .join(" · ");
+  return label || null;
 };
 
 const CartPage = () => {
@@ -68,11 +71,11 @@ const CartPage = () => {
             <div className="mt-8 grid gap-8 lg:grid-cols-[2fr,1fr]">
               <ul className="space-y-3">
                 {items.map((item) => {
-                  const node = item.product;
+                  const { node } = item.product;
                   const image = node?.images?.edges?.[0]?.node;
                   const unitPrice = parseFloat(item.price.amount);
                   const lineTotal = unitPrice * item.quantity;
-                  const opts = optionsLabel(item);
+                  const opts = formatOptions(item);
                   return (
                     <li
                       key={item.variantId}
