@@ -50,10 +50,11 @@
       (function () {
         var path = window.location.pathname;
         if (path.indexOf("/cart/c/") !== 0 && path.indexOf("/checkouts/") !== 0) return;
-        var checkoutHost = "checkout.layngo.com";
-        if (window.location.hostname === checkoutHost) return;
+        var host = window.location.hostname;
+        if (host === "layngo-new.myshopify.com") return;
+        if (host !== "layngo.com" && host !== "www.layngo.com") return;
         var target = new URL(window.location.href);
-        target.hostname = checkoutHost;
+        target.hostname = "layngo-new.myshopify.com";
         target.protocol = "https:";
         window.location.replace(target.toString());
       })();

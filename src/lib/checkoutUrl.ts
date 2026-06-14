@@ -1,14 +1,7 @@
-/** Shopify permanent `.myshopify.com` domain (Storefront API). */
+/** Shopify permanent `.myshopify.com` domain (Storefront API + hosted checkout). */
 export const SHOPIFY_STORE_PERMANENT_DOMAIN = "layngo-new.myshopify.com";
 
-/**
- * Hostname that serves Shopify checkout (not the headless storefront).
- * Set `VITE_SHOPIFY_CHECKOUT_HOST` after adding this subdomain in Shopify Admin → Domains.
- */
-export const SHOPIFY_CHECKOUT_HOST =
-  import.meta.env.VITE_SHOPIFY_CHECKOUT_HOST?.trim() || "checkout.layngo.com";
-
-const STOREFRONT_HOSTS = new Set(["layngo.com", "www.layngo.com"]);
+const HEADLESS_STOREFRONT_HOSTS = new Set(["layngo.com", "www.layngo.com"]);
 
 /** True when the URL is a Shopify web-checkout entry path. */
 export function isShopifyCheckoutPath(pathname: string): boolean {
@@ -16,8 +9,8 @@ export function isShopifyCheckoutPath(pathname: string): boolean {
 }
 
 /**
- * Shopify returns checkout on the store primary domain (`www.layngo.com/cart/c/...`).
- * The headless site owns `layngo.com`, so those paths 404 — send checkout to `checkout.layngo.com`.
+ * Shopify returns checkout on the store primary domain (often www.layngo.com/cart/c/…).
+ * This site owns layngo.com, so those paths 404 — send checkout to Shopify's hosted domain.
  */
 export function formatCheckoutUrl(raw: string | null | undefined): string | null {
   if (!raw?.trim()) return null;
@@ -25,11 +18,8 @@ export function formatCheckoutUrl(raw: string | null | undefined): string | null
   try {
     const url = new URL(raw.trim());
 
-    if (
-      isShopifyCheckoutPath(url.pathname) &&
-      (STOREFRONT_HOSTS.has(url.hostname) || url.hostname === SHOPIFY_STORE_PERMANENT_DOMAIN)
-    ) {
-      url.hostname = SHOPIFY_CHECKOUT_HOST;
+    if (isShopifyCheckoutPath(url.pathname)) {
+      url.hostname = SHOPIFY_STORE_PERMANENT_DOMAIN;
     }
 
     url.protocol = "https:";
@@ -40,14 +30,14 @@ export function formatCheckoutUrl(raw: string | null | undefined): string | null
   }
 }
 
-/** Redirect legacy checkout links that land on the headless host before React boots. */
+/** If a checkout link lands on the headless host, bounce to Shopify checkout. */
 export function redirectHeadlessCheckoutEntry(): void {
   if (typeof window === "undefined") return;
-  if (window.location.hostname === SHOPIFY_CHECKOUT_HOST) return;
+  if (window.location.hostname === SHOPIFY_STORE_PERMANENT_DOMAIN) return;
   if (!isShopifyCheckoutPath(window.location.pathname)) return;
 
   const target = new URL(window.location.href);
-  target.hostname = SHOPIFY_CHECKOUT_HOST;
+  target.hostname = SHOPIFY_STORE_PERMANENT_DOMAIN;
   target.protocol = "https:";
   window.location.replace(target.toString());
 }
