@@ -11,6 +11,20 @@ import {
   type ShopifyProduct,
 } from '@/lib/shopify';
 
+function rewriteCheckoutUrl(checkoutUrl: string | null | undefined): string | null {
+  if (!checkoutUrl) return null;
+  try {
+    const url = new URL(checkoutUrl);
+    if (url.hostname === 'layngo-new.myshopify.com') {
+      url.hostname = 'layngo.com';
+    }
+    url.searchParams.set('channel', 'online_store');
+    return url.toString();
+  } catch {
+    return checkoutUrl;
+  }
+}
+
 export type { CartItem };
 export type { ShopifyProduct };
 
@@ -108,6 +122,9 @@ export const useCartStore = create<CartStore>()(
           if (!data) return;
           const cart = data?.data?.cart;
           if (!cart || cart.totalQuantity === 0) clearCart();
+          else if (cart.checkoutUrl) {
+            set({ checkoutUrl: rewriteCheckoutUrl(cart.checkoutUrl) });
+          }
         } catch (error) { console.error('Failed to sync cart:', error); }
         finally { set({ isSyncing: false }); }
       },
