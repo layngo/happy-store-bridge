@@ -383,6 +383,9 @@ const CART_LINES_REMOVE_MUTATION = `
 function formatCheckoutUrl(checkoutUrl: string): string {
   try {
     const url = new URL(checkoutUrl);
+    if (url.hostname === SHOPIFY_STORE_PERMANENT_DOMAIN) {
+      url.hostname = 'layngo.com';
+    }
     url.searchParams.set('channel', 'online_store');
     return url.toString();
   } catch {
