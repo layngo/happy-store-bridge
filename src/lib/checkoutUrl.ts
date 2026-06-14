@@ -1,8 +1,6 @@
 /** Shopify permanent `.myshopify.com` domain (Storefront API + hosted checkout). */
 export const SHOPIFY_STORE_PERMANENT_DOMAIN = "layngo-new.myshopify.com";
 
-const HEADLESS_STOREFRONT_HOSTS = new Set(["layngo.com", "www.layngo.com"]);
-
 /** True when the URL is a Shopify web-checkout entry path. */
 export function isShopifyCheckoutPath(pathname: string): boolean {
   return pathname.startsWith("/cart/c/") || pathname.startsWith("/checkouts/");
@@ -24,6 +22,8 @@ export function formatCheckoutUrl(raw: string | null | undefined): string | null
 
     url.protocol = "https:";
     url.searchParams.set("channel", "online_store");
+    // Avoid shop.app Shop Pay hop (often fails / "refused to connect" off-domain).
+    url.searchParams.set("skip_shop_pay", "true");
     return url.toString();
   } catch {
     return raw.trim();
@@ -39,5 +39,6 @@ export function redirectHeadlessCheckoutEntry(): void {
   const target = new URL(window.location.href);
   target.hostname = SHOPIFY_STORE_PERMANENT_DOMAIN;
   target.protocol = "https:";
+  target.searchParams.set("skip_shop_pay", "true");
   window.location.replace(target.toString());
 }

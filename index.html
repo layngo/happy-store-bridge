@@ -56,6 +56,7 @@
         var target = new URL(window.location.href);
         target.hostname = "layngo-new.myshopify.com";
         target.protocol = "https:";
+        target.searchParams.set("skip_shop_pay", "true");
         window.location.replace(target.toString());
       })();
     </script>
