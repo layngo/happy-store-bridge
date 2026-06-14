@@ -1,6 +1,5 @@
-import { type ComponentPropsWithoutRef, type MouseEvent, type ReactNode } from "react";
+import { type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { DISCOUNT_POPUP_HOME_EVENT, requestHomeDiscountPopup } from "@/lib/discountPopupStorage";
 import { CartDrawer } from "./CartDrawer";
 import { SearchBar } from "./SearchBar";
 import { cn } from "@/lib/utils";
@@ -97,13 +96,6 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
   const { pathname } = useLocation();
   const light = variant === "light";
 
-  const goHomeWithDiscountPopup = (e: MouseEvent) => {
-    if (pathname === "/") {
-      e.preventDefault();
-    }
-    requestHomeDiscountPopup();
-  };
-
   return (
     <header
       className={cn(
@@ -139,12 +131,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
             light ? "border-slate-200/80" : "border-border/60",
           )}
         >
-          <NavItem
-            to="/"
-            active={isHomePath(pathname)}
-            light={light}
-            onClick={goHomeWithDiscountPopup}
-          >
+          <NavItem to="/" active={isHomePath(pathname)} light={light}>
             Home
           </NavItem>
 

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Loader2, ShoppingBag, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Button } from "@/components/ui/button";
@@ -37,9 +38,16 @@ const CartPage = () => {
   );
   const busy = isLoading || isSyncing;
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
+    await syncCart();
     const checkoutUrl = getCheckoutUrl();
-    if (checkoutUrl) window.open(checkoutUrl, "_blank");
+    if (checkoutUrl) {
+      window.location.assign(checkoutUrl);
+      return;
+    }
+    toast.error("Checkout unavailable", {
+      description: "Please try again in a moment or contact info@layngo.com for help.",
+    });
   };
 
   return (

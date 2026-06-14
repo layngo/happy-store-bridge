@@ -11,6 +11,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ShoppingBag, Minus, Plus, Trash2, ArrowRight, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { useCartStore, type CartItem } from "@/stores/cartStore";
 import { cn } from "@/lib/utils";
 
@@ -117,12 +118,17 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
     if (isOpen) syncCart();
   }, [isOpen, syncCart]);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
+    await syncCart();
     const checkoutUrl = getCheckoutUrl();
     if (checkoutUrl) {
-      window.open(checkoutUrl, "_blank");
       setIsOpen(false);
+      window.location.assign(checkoutUrl);
+      return;
     }
+    toast.error("Checkout unavailable", {
+      description: "Please try again in a moment or contact info@layngo.com for help.",
+    });
   };
 
   return (

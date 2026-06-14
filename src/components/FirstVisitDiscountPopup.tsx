@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 import { toast } from "sonner";
@@ -10,13 +10,14 @@ import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { sendDiscountVerificationCode, verifyDiscountCode } from "@/lib/discountApi";
 import {
-  DISCOUNT_POPUP_HOME_EVENT,
   hasCompletedDiscountSignup,
+  markDiscountPopupSeenThisSession,
   markDiscountSignupComplete,
+  shouldShowDiscountPopup,
 } from "@/lib/discountPopupStorage";
 import { cn } from "@/lib/utils";
 
-/** Shows on every homepage visit until signup is completed; never again after that (localStorage). */
+/** Once per fresh browser session on `/`; never again after signup (localStorage). */
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
 const HERO_WIDTH = 1024;
 const HERO_HEIGHT = 804;
@@ -38,10 +39,10 @@ export function FirstVisitDiscountPopup() {
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
   const [busy, setBusy] = useState(false);
-  const pendingHomePopupRef = useRef(false);
 
   const openPopup = useCallback(() => {
     if (hasCompletedDiscountSignup()) return;
+    markDiscountPopupSeenThisSession();
     setStep("intro");
     setEmail("");
     setPhone("");
@@ -52,46 +53,21 @@ export function FirstVisitDiscountPopup() {
   }, []);
 
   useEffect(() => {
-    const onHomeButton = () => {
-      if (hasCompletedDiscountSignup()) return;
-      if (location.pathname !== "/") {
-        pendingHomePopupRef.current = true;
-        return;
-      }
-      openPopup();
-    };
-
-    window.addEventListener(DISCOUNT_POPUP_HOME_EVENT, onHomeButton);
-    return () => window.removeEventListener(DISCOUNT_POPUP_HOME_EVENT, onHomeButton);
-  }, [location.pathname, openPopup]);
-
-  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("showDiscount") === "1") {
       openPopup();
       return;
     }
 
-    if (location.pathname !== "/") {
-      setOpen(false);
-      return;
-    }
+    if (location.pathname !== "/") return;
+    if (!shouldShowDiscountPopup()) return;
 
-    if (hasCompletedDiscountSignup()) {
-      setOpen(false);
-      return;
-    }
-
-    const fromHomeButton = pendingHomePopupRef.current;
-    if (fromHomeButton) {
-      pendingHomePopupRef.current = false;
-    }
-
-    const id = window.setTimeout(openPopup, fromHomeButton ? 100 : 600);
+    const id = window.setTimeout(openPopup, 600);
     return () => window.clearTimeout(id);
-  }, [location.pathname, location.key, openPopup]);
+  }, [location.pathname, openPopup]);
 
   const dismiss = () => {
+    markDiscountPopupSeenThisSession();
     setOpen(false);
   };
 

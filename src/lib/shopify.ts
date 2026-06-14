@@ -1,7 +1,7 @@
 import { toast } from "sonner";
+import { formatCheckoutUrl, SHOPIFY_STORE_PERMANENT_DOMAIN } from "@/lib/checkoutUrl";
 
 const SHOPIFY_API_VERSION = '2025-07';
-const SHOPIFY_STORE_PERMANENT_DOMAIN = 'layngo-new.myshopify.com';
 const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
 const SHOPIFY_STOREFRONT_TOKEN = '2c8a6550838731f6030da2127100d9c9';
 
@@ -380,17 +380,8 @@ const CART_LINES_REMOVE_MUTATION = `
   }
 `;
 
-function formatCheckoutUrl(checkoutUrl: string): string {
-  try {
-    const url = new URL(checkoutUrl);
-    if (url.hostname === SHOPIFY_STORE_PERMANENT_DOMAIN) {
-      url.hostname = 'layngo.com';
-    }
-    url.searchParams.set('channel', 'online_store');
-    return url.toString();
-  } catch {
-    return checkoutUrl;
-  }
+function formatCheckoutUrlForCart(checkoutUrl: string): string {
+  return formatCheckoutUrl(checkoutUrl) ?? checkoutUrl;
 }
 
 function isCartNotFoundError(userErrors: Array<{ field: string[] | null; message: string }>): boolean {
@@ -416,7 +407,7 @@ export async function createShopifyCart(item: CartItem): Promise<{ cartId: strin
   if (!cart?.checkoutUrl) return null;
   const lineId = cart.lines.edges[0]?.node?.id;
   if (!lineId) return null;
-  return { cartId: cart.id, checkoutUrl: formatCheckoutUrl(cart.checkoutUrl), lineId };
+  return { cartId: cart.id, checkoutUrl: formatCheckoutUrlForCart(cart.checkoutUrl), lineId };
 }
 
 export async function addLineToShopifyCart(cartId: string, item: CartItem): Promise<{ success: boolean; lineId?: string; cartNotFound?: boolean }> {
