@@ -1,3 +1,7 @@
+import { STOREFRONT_HOME_URL } from "@/lib/siteSeo";
+
+export { STOREFRONT_HOME_URL };
+
 /** Shopify permanent `.myshopify.com` domain (Storefront API + hosted checkout). */
 export const SHOPIFY_STORE_PERMANENT_DOMAIN = "layngo-new.myshopify.com";
 

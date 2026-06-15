@@ -4,6 +4,12 @@ export const SITE_URL = (
   "https://www.layngo.com"
 ).replace(/\/$/, "");
 
+/** Headless storefront home — used for logo / “back to shop” from cart & checkout flows. */
+export const STOREFRONT_HOME_URL = (
+  (import.meta.env.VITE_STOREFRONT_HOME_URL as string | undefined)?.replace(/\/$/, "") ||
+  SITE_URL
+).replace(/\/$/, "");
+
 export const SITE_NAME = "Lay-n-Go";
 
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;

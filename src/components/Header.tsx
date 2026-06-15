@@ -2,6 +2,7 @@ import { type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CartDrawer } from "./CartDrawer";
 import { SearchBar } from "./SearchBar";
+import { StorefrontHomeLink } from "./StorefrontHomeLink";
 import { cn } from "@/lib/utils";
 import { shopCollectionLinks } from "@/lib/siteNav";
 import { ChevronDown } from "lucide-react";
@@ -110,13 +111,13 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           </div>
 
           <div className="flex justify-center">
-            <Link to="/" className="flex flex-col items-center" aria-label="Lay-n-Go home">
+            <StorefrontHomeLink className="flex flex-col items-center" aria-label="Lay-n-Go home">
               <img
                 src="/layngo-logo-outlined.png"
                 alt="Lay-n-Go"
                 className="h-[49px] sm:h-[57px] w-auto object-contain mix-blend-multiply scale-[1.55] sm:scale-[1.65]"
               />
-            </Link>
+            </StorefrontHomeLink>
           </div>
 
           <div className="flex justify-end items-center gap-2">

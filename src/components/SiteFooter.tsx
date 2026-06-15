@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { StorefrontHomeLink } from "@/components/StorefrontHomeLink";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Facebook, Globe, Instagram } from "lucide-react";
@@ -67,13 +67,13 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-6 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-6">
           {/* Brand */}
           <div className="flex flex-col items-center gap-3 text-center sm:items-start sm:text-left">
-            <Link to="/" aria-label="Lay-n-Go home" className="inline-block shrink-0">
+            <StorefrontHomeLink aria-label="Lay-n-Go home" className="inline-block shrink-0">
               <img
                 src="/layngo-logo-outlined.png"
                 alt="Lay-n-Go"
                 className="h-10 w-auto object-contain mix-blend-multiply scale-[1.32] sm:h-11 sm:scale-[1.4]"
               />
-            </Link>
+            </StorefrontHomeLink>
             <p className="text-sm leading-snug text-muted-foreground max-w-[260px] sm:max-w-none">
               Patented drawstring mat for cleanup and storage, built for everyday use.
             </p>
