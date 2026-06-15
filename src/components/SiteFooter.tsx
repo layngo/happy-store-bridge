@@ -8,6 +8,7 @@ import { subscribeToNewsletter } from "@/lib/newsletterApi";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ButtonSpinner } from "@/components/LoadingSpinner";
+import { Button } from "@/components/ui/button";
 
 interface SiteFooterProps {
   variant?: "light" | "dark";
