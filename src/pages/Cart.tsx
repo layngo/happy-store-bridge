@@ -38,12 +38,15 @@ const CartPage = () => {
     0,
   );
   const busy = isLoading || isSyncing;
+  const checkoutUrl = getCheckoutUrl();
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (busy || items.length === 0) return;
     await syncCart();
-    const checkoutUrl = getCheckoutUrl();
-    if (checkoutUrl) {
-      navigateToCheckout(checkoutUrl);
+    const url = getCheckoutUrl();
+    if (url) {
+      navigateToCheckout(url);
       return;
     }
     toast.error("Checkout unavailable", {
@@ -174,19 +177,26 @@ const CartPage = () => {
                   Shipping and taxes calculated at checkout.
                 </p>
                 <Button
-                  onClick={handleCheckout}
+                  asChild
                   className="mt-5 h-12 w-full rounded-full text-base font-semibold"
                   size="lg"
                   disabled={items.length === 0 || busy}
                 >
-                  {busy ? (
-                    <Loader2 className="h-5 w-5 animate-spin" aria-label="Updating cart" />
-                  ) : (
-                    <>
-                      Checkout
-                      <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
-                    </>
-                  )}
+                  <a
+                    href={checkoutUrl ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={handleCheckout}
+                  >
+                    {busy ? (
+                      <Loader2 className="h-5 w-5 animate-spin" aria-label="Updating cart" />
+                    ) : (
+                      <>
+                        Checkout
+                        <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+                      </>
+                    )}
+                  </a>
                 </Button>
                 <Button asChild variant="ghost" className="mt-3 w-full rounded-full">
                   <Link to="/collections">Continue shopping</Link>

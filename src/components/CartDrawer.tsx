@@ -114,17 +114,20 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + parseFloat(item.price.amount) * item.quantity, 0);
   const busy = isLoading || isSyncing;
+  const checkoutUrl = getCheckoutUrl();
 
   useEffect(() => {
     if (isOpen) syncCart();
   }, [isOpen, syncCart]);
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (busy || items.length === 0) return;
     await syncCart();
-    const checkoutUrl = getCheckoutUrl();
-    if (checkoutUrl) {
+    const url = getCheckoutUrl();
+    if (url) {
       setIsOpen(false);
-      navigateToCheckout(checkoutUrl);
+      navigateToCheckout(url);
       return;
     }
     toast.error("Checkout unavailable", {
@@ -204,20 +207,22 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
                 <p className="mb-4 text-xs leading-relaxed text-muted-foreground">
                   Shipping and taxes calculated at checkout.
                 </p>
-                <Button
-                  onClick={handleCheckout}
-                  className="h-12 w-full rounded-full text-base font-semibold"
-                  size="lg"
-                  disabled={items.length === 0 || busy}
-                >
-                  {busy ? (
-                    <Loader2 className="h-5 w-5 animate-spin" aria-label="Updating cart" />
-                  ) : (
-                    <>
-                      Checkout
-                      <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
-                    </>
-                  )}
+                <Button asChild className="h-12 w-full rounded-full text-base font-semibold" size="lg" disabled={items.length === 0 || busy}>
+                  <a
+                    href={checkoutUrl ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={handleCheckout}
+                  >
+                    {busy ? (
+                      <Loader2 className="h-5 w-5 animate-spin" aria-label="Updating cart" />
+                    ) : (
+                      <>
+                        Checkout
+                        <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+                      </>
+                    )}
+                  </a>
                 </Button>
               </div>
             </>

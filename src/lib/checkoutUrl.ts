@@ -2,8 +2,18 @@ import { STOREFRONT_HOME_URL } from "@/lib/siteSeo";
 
 export { STOREFRONT_HOME_URL };
 
-/** Shopify permanent `.myshopify.com` domain (Storefront API + hosted checkout). */
+/**
+ * Headless architecture:
+ * - layngo.com (this app) = storefront, cart UI, product pages
+ * - layngo-new.myshopify.com = Shopify primary + hosted checkout only
+ *
+ * Storefront API `cart.checkoutUrl` may reference www.layngo.com or the primary
+ * domain. Always rewrite to the permanent .myshopify.com host before sending
+ * customers to checkout.
+ */
 export const SHOPIFY_STORE_PERMANENT_DOMAIN = "layngo-new.myshopify.com";
+
+const HOSTED_CHECKOUT_ORIGIN = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}`;
 
 /** True when the URL is a Shopify web-checkout entry path. */
 export function isShopifyCheckoutPath(pathname: string): boolean {
@@ -11,8 +21,8 @@ export function isShopifyCheckoutPath(pathname: string): boolean {
 }
 
 /**
- * Shopify returns checkout on the store primary domain (often www.layngo.com/cart/c/…).
- * This site owns layngo.com, so those paths 404 — send checkout to Shopify's hosted domain.
+ * Normalize a Storefront API checkout URL to hosted Shopify checkout on
+ * `layngo-new.myshopify.com` (e.g. `/cart/c/…` or `/checkouts/…`).
  */
 export function formatCheckoutUrl(raw: string | null | undefined): string | null {
   if (!raw?.trim()) return null;
@@ -20,21 +30,35 @@ export function formatCheckoutUrl(raw: string | null | undefined): string | null
   try {
     const url = new URL(raw.trim());
 
-    if (isShopifyCheckoutPath(url.pathname)) {
-      url.hostname = SHOPIFY_STORE_PERMANENT_DOMAIN;
-    }
-
+    // Always send checkout to Shopify's hosted domain — never layngo.com.
     url.protocol = "https:";
+    url.hostname = SHOPIFY_STORE_PERMANENT_DOMAIN;
     url.searchParams.set("channel", "online_store");
     // Avoid shop.app Shop Pay hop (often fails / "refused to connect" off-domain).
     url.searchParams.set("skip_shop_pay", "true");
     return url.toString();
   } catch {
-    return raw.trim();
+    return null;
   }
 }
 
-/** If a checkout link lands on the headless host, bounce to Shopify checkout. */
+/** True when a URL is already pointed at hosted Shopify checkout. */
+export function isHostedCheckoutUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return (
+      parsed.hostname === SHOPIFY_STORE_PERMANENT_DOMAIN &&
+      isShopifyCheckoutPath(parsed.pathname)
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Safety net: if a stale checkout link lands on layngo.com, bounce to myshopify.com.
+ * Checkout should never be opened on the headless host.
+ */
 export function redirectHeadlessCheckoutEntry(): void {
   if (typeof window === "undefined") return;
   if (window.location.hostname === SHOPIFY_STORE_PERMANENT_DOMAIN) return;
@@ -46,3 +70,5 @@ export function redirectHeadlessCheckoutEntry(): void {
   target.searchParams.set("skip_shop_pay", "true");
   window.location.replace(target.toString());
 }
+
+export { HOSTED_CHECKOUT_ORIGIN };
