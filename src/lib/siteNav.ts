@@ -23,8 +23,8 @@ export const footerInfoLinks = [
 ] as const;
 
 export const socialLinks = [
-  { href: "https://www.facebook.com/layngo", label: "Facebook", icon: "facebook" as const },
-  { href: "https://www.instagram.com/layngo", label: "Instagram", icon: "instagram" as const },
+  { href: "https://www.facebook.com/layandgo/", label: "Facebook", icon: "facebook" as const },
+  { href: "https://www.instagram.com/lay.n.go/", label: "Instagram", icon: "instagram" as const },
   { href: "https://www.pinterest.com/layngo", label: "Pinterest", icon: "pinterest" as const },
 ];
 
