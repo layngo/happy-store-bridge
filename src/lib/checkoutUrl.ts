@@ -20,9 +20,9 @@ export function formatCheckoutUrl(raw: string | null | undefined): string | null
   try {
     const url = new URL(raw.trim());
 
-    if (isShopifyCheckoutPath(url.pathname)) {
-      url.hostname = SHOPIFY_STORE_PERMANENT_DOMAIN;
-    }
+    // Always route checkout through Shopify's hosted domain. The headless host
+    // (layngo.com) does not serve /cart/* or /checkouts/* and would 404.
+    url.hostname = SHOPIFY_STORE_PERMANENT_DOMAIN;
 
     url.protocol = "https:";
     url.searchParams.set("channel", "online_store");
@@ -43,6 +43,7 @@ export function redirectHeadlessCheckoutEntry(): void {
   const target = new URL(window.location.href);
   target.hostname = SHOPIFY_STORE_PERMANENT_DOMAIN;
   target.protocol = "https:";
+  target.searchParams.set("channel", "online_store");
   target.searchParams.set("skip_shop_pay", "true");
   window.location.replace(target.toString());
 }
