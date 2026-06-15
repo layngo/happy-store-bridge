@@ -1,71 +1,43 @@
-## What I found
+## Goal
 
-Audited the whole codebase against WCAG 2.1 AA / ADA. The site already does a lot right (shadcn primitives, most images have alt, headings are mostly clean, forms use `Label`+`Input`), but there are real gaps to close.
+Move the checkout URL from `layngo-new.myshopify.com/checkouts/...` to `checkout.layngo.com/checkouts/...` so buyers stay on the layngo.com brand end-to-end. Shopify still hosts and processes checkout (PCI, Shop Pay, Apple/Google Pay, taxes, shipping, discounts all keep working).
 
-### Critical (must fix)
-1. **Missing `<main>` landmark on most pages.** Only `Search`, `AboutUsV2`, `CosmoArrowPlayground`, and `StaticPageLayout` wrap content in `<main>`. The Home page, Product Detail (PDP), Collection, Collections Index, Cosmetic Bags V2, Military/First Responder, NotFound, and PolicyBridge all render their primary content in a `<div>`. Screen reader / keyboard users can't jump to main content.
-2. **Icon-only buttons without accessible names.**
-   - `CartDrawer` — remove (trash), qty –, qty + buttons have no `aria-label`.
-   - `ProductDetail` quantity stepper – / + (3 instances) have no `aria-label`.
-3. **`index.html` metadata is the Lovable default** — title is "Lovable App", description is "Lovable Generated Project", OG image points at lovable.dev. Screen readers announce the title; search/social cards are broken. Needs real Lay-n-Go title/description/OG image.
+## Step 1 — Configure the custom checkout domain in Shopify (you do this)
 
-### Warning (degraded experience)
-4. **`min-h-screen` everywhere** (~15 pages). On mobile this causes layout jumps when the URL bar shows/hides. Replace with `min-h-dvh` for the root layout wrappers.
-5. **Low-contrast text on light backgrounds.** `SearchBar` uses `text-slate-400` / `placeholder:text-slate-400` over `bg-white/80` (PDP "light" mode). That's roughly 3:1 — fails AA for body text. Swap to design tokens (`text-muted-foreground` on the appropriate surface, or a darker slate).
-6. **`tabIndex={-1}` on a hero anchor in `Index.tsx` line 106.** Need to verify it isn't removing a normally-focusable element from the tab order. If it's on a visible `<a>` / `<button>`, remove it.
-7. **PDP gallery uses two parallel sets of prev/next buttons** (desktop hidden md:inline-flex, mobile only md:hidden). Both are labeled "Show previous photo" — duplicating the same a11y name in the DOM is harmless but the live region announcing "Photo X of Y" should be inside a single region, not duplicated. (Minor — verify on PDP.)
+In Shopify Admin:
 
-### Info / nice-to-have
-8. Add a **"Skip to main content"** link as the first focusable element so keyboard users can bypass the header/nav.
-9. **Decorative images** (`alt=""` already used in a few places — `CosmoPdpStory`, gallery arrows) — extend the audit to any remaining purely-decorative imagery and ensure they're `alt=""` not missing.
-10. Confirm focus-visible rings render on all custom-styled buttons (a few PDP "light" buttons override `border-*` without an explicit `focus-visible:ring-*`).
+1. Settings → Domains → click **Connect existing domain**, enter `checkout.layngo.com`.
+2. Shopify will show DNS records to add. They'll be a **CNAME** for `checkout` pointing to `shops.myshopify.com` (Shopify provides the exact target — use whatever they show).
+3. Add that CNAME at the DNS provider where `layngo.com` is managed (Lovable's DNS manager if the domain was bought through Lovable: Project Settings → Domains → ⋯ → Configure → Manage DNS records; otherwise your registrar).
+4. Wait for verification + SSL provisioning (usually 15 min – a few hours).
+5. Once verified, in Shopify: Settings → Checkout → **Checkout domain** → select `checkout.layngo.com`.
 
-## What I will change
+After this, `cartCreate` from the Storefront API will return checkout URLs on `checkout.layngo.com` automatically. No app code change is required for new carts.
 
-### 1. Page landmark structure
-Add `<main id="main-content">` wrappers to every top-level page that's currently using a `<div>`:
-- `Index.tsx`, `ProductDetail.tsx`, `Collection.tsx`, `CollectionsIndex.tsx`, `CosmeticBagsV2.tsx`, `MilitaryFirstResponder.tsx`, `NotFound.tsx`, `PolicyBridge.tsx`.
-- Keep the existing flex column wrapper; just change the inner content container from `<div>` → `<main>`. Exactly one `<main>` per route.
+## Step 2 — Code changes in this repo
 
-### 2. Skip link
-Add a `SkipToMain` component rendered once at the top of `AppContent`:
-```tsx
-<a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded focus:bg-foreground focus:px-3 focus:py-2 focus:text-background">
-  Skip to main content
-</a>
-```
+Small, defensive updates so old persisted carts and any hard-coded references migrate cleanly:
 
-### 3. Icon-button labels
-- `CartDrawer`: add `aria-label="Remove {product title}"`, `aria-label="Decrease quantity"`, `aria-label="Increase quantity"`.
-- `ProductDetail` quantity stepper(s): same `aria-label`s on – / +. Also wrap the qty number in `aria-live="polite"` so screen readers hear the new value.
+1. **`src/lib/checkoutUrl.ts`**
+   - Add a constant `SHOPIFY_CHECKOUT_DOMAIN = 'checkout.layngo.com'`.
+   - Change `formatCheckoutUrl` so it rewrites `url.hostname` to `SHOPIFY_CHECKOUT_DOMAIN` instead of `SHOPIFY_STORE_PERMANENT_DOMAIN`. Keep `channel=online_store` and `skip_shop_pay=true` query params.
+   - Update `redirectHeadlessCheckoutEntry` so any visitor who lands on `layngo.com/cart/c/...` or `/checkouts/...` (e.g. from an old email link) is bounced to `checkout.layngo.com` with the same path + params, instead of to `layngo-new.myshopify.com`.
 
-### 4. `index.html` metadata
-Replace placeholders with:
-- `<title>Lay-n-Go — Organizational Solutions for Life, Play &amp; Travel</title>`
-- Real meta description (~150 chars about Lay-n-Go's patented activity mat & carryall system).
-- Real OG/Twitter title, description, image (use an existing hero asset from `/public`).
-- Add `<meta name="theme-color" content="..."/>` and a canonical link tag.
+2. **`src/stores/cartStore.ts`** — no change needed; the existing `onRehydrateStorage` already runs persisted URLs through `formatCheckoutUrl`, so old `layngo-new.myshopify.com` URLs in buyers' localStorage will be auto-corrected to `checkout.layngo.com` on next page load.
 
-### 5. Viewport height
-Project-wide find/replace `min-h-screen` → `min-h-dvh` on the page root wrappers (keep `min-h-screen` only inside shadcn `ui/*` primitives we don't touch).
+3. **`src/lib/shopify.ts`** — sanity scan for any other hard-coded `myshopify.com` checkout references; rewrite to the new domain if found.
 
-### 6. Contrast fixes
-- `SearchBar` (light variant): change `text-slate-400` / `placeholder:text-slate-400` → `text-slate-600` / `placeholder:text-slate-500` (≥4.5:1 on white).
-- Sweep for `text-neutral-{300,400}` / `text-gray-{300,400}` over light surfaces and bump to the next darker step where they're body text.
+## Step 3 — Verify
 
-### 7. Verify `tabIndex={-1}` in `Index.tsx`
-Open the file at line 106; if it's on a normally-interactive element with no manual focus-management reason, remove it. If it's a wrapper a `<Carousel>` programmatically focuses, leave it and document why.
+After DNS + Shopify config is live and code is deployed:
 
-### 8. Smoke test
-After edits: open `/`, `/collections`, `/collections/cosmetic-bags`, a couple of PDPs, and `/pages/contact` in the preview, tab through with the keyboard, and confirm:
-- Skip link appears on first Tab.
-- Header / nav / "Add to cart" / quantity stepper / cart drawer are all reachable and labeled.
-- Focus ring is visible everywhere.
+1. Add an item to cart on layngo.com → click Checkout → confirm new tab opens at `https://checkout.layngo.com/checkouts/...?channel=online_store&skip_shop_pay=true`.
+2. Confirm Shop Pay, Apple Pay, Google Pay buttons still appear.
+3. Place a test order to confirm payment + order confirmation email work.
+4. Customize logo/colors/favicon in Shopify Admin → Settings → Checkout → Branding so the checkout matches layngo.com.
 
-## Out of scope (call out, don't fix here)
-- Full color audit of every PDP marketing section's typography (Cosmo story, large callouts) — those use lots of arbitrary `text-neutral-*` over imagery. Worth a separate dedicated pass.
-- Video components (`VimeoLoopFadeEmbed`) — autoplay/muted is fine; captions are a Vimeo-side setting.
-- A proper ADA legal accessibility statement page (recommend adding `/pages/accessibility` later linking to a public contact for accommodations).
+## Notes
 
-## Estimated work
-~9 files touched. No dependencies added. No behavior changes — purely additive a11y + metadata + token-based contrast fixes.
+- The custom checkout domain only affects the checkout flow. Order status pages and customer account pages will also serve from `checkout.layngo.com` automatically.
+- DNS for `checkout.layngo.com` must be a **CNAME**, not an A record. If `layngo.com` is proxied through Cloudflare, set the CNAME to **DNS-only** (gray cloud) — Shopify manages SSL on its end.
+- This change does not affect the rest of `layngo.com` (Lovable hosting) — only the `checkout` subdomain is delegated to Shopify.
