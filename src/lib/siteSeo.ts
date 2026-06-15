@@ -71,8 +71,8 @@ export function organizationJsonLd() {
       "tactical gear bags",
     ],
     sameAs: [
-      "https://www.facebook.com/layngo",
-      "https://www.instagram.com/layngo",
+      "https://www.facebook.com/layandgo/",
+      "https://www.instagram.com/lay.n.go/",
       "https://www.pinterest.com/layngo",
     ],
     contactPoint: {

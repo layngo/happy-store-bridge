@@ -1,6 +1,9 @@
-Add Google Tag Manager (container `GTM-W9K4XNHR`) to `index.html`:
+Update the Facebook and Instagram links to the correct accounts in both the footer nav and the SEO schema.
 
-1. Insert the GTM `<script>` snippet high in `<head>`, right after the charset/viewport meta tags and before other scripts so it loads first.
-2. Insert the GTM `<noscript><iframe>` snippet immediately after the opening `<body>` tag (per Lovable's rule, noscript pixels go in `<body>`, not `<head>`).
+### Changes
+- `src/lib/siteNav.ts`
+  - Facebook: `https://www.facebook.com/layngo` → `https://www.facebook.com/layandgo/`
+  - Instagram: `https://www.instagram.com/layngo` → `https://www.instagram.com/lay.n.go/`
+- `src/lib/siteSeo.ts` (`sameAs` array) — same two URL updates so structured data matches.
 
-No other files change. Container ID will be exactly `GTM-W9K4XNHR` as provided. Tags/triggers/variables are managed inside the GTM dashboard, not in code.
+No other changes.
