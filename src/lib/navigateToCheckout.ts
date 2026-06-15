@@ -10,6 +10,14 @@ export function isEmbeddedInFrame(): boolean {
 }
 
 function openCheckoutInNewTab(checkoutUrl: string): boolean {
+  const popup = window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+  if (popup) {
+    popup.opener = null;
+    return true;
+  }
+
+  // Popup blocked — fall back to a user-initiated anchor click which keeps
+  // the current tab on the storefront.
   const link = document.createElement("a");
   link.href = checkoutUrl;
   link.target = "_blank";
@@ -17,14 +25,7 @@ function openCheckoutInNewTab(checkoutUrl: string): boolean {
   document.body.appendChild(link);
   link.click();
   link.remove();
-
-  const popup = window.open(checkoutUrl, "_blank", "noopener,noreferrer");
-  if (popup) {
-    popup.opener = null;
-    return true;
-  }
-
-  return false;
+  return true;
 }
 
 /**
@@ -33,21 +34,5 @@ function openCheckoutInNewTab(checkoutUrl: string): boolean {
  * (browser shows "refused to connect" for layngo-new.myshopify.com).
  */
 export function navigateToCheckout(checkoutUrl: string): void {
-  if (openCheckoutInNewTab(checkoutUrl)) return;
-
-  if (isEmbeddedInFrame()) {
-    toast.info("Open checkout in a new tab", {
-      description:
-        "Checkout cannot load inside the site preview. Use the button below or open www.layngo.com in your browser.",
-      action: {
-        label: "Open checkout",
-        onClick: () => openCheckoutInNewTab(checkoutUrl),
-      },
-      duration: 15000,
-    });
-    return;
-  }
-
-  // Top-level window with popups blocked — same-tab navigation is allowed.
-  window.location.assign(checkoutUrl);
+  openCheckoutInNewTab(checkoutUrl);
 }
