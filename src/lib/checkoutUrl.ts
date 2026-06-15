@@ -29,8 +29,24 @@ export function formatCheckoutUrl(raw: string | null | undefined): string | null
   try {
     const url = new URL(raw.trim());
 
-    // Always route checkout through the Shopify-hosted custom checkout domain.
-    url.hostname = SHOPIFY_CHECKOUT_DOMAIN;
+    // If Shopify returned a hostname that points at the headless storefront
+    // (layngo.com / www.layngo.com), rewrite to the Shopify-hosted permanent
+    // domain so checkout actually loads. The custom checkout subdomain
+    // (checkout.layngo.com) is only used if it's already on the URL.
+    const host = url.hostname.toLowerCase();
+    const isHeadlessHost =
+      host === "layngo.com" ||
+      host === "www.layngo.com" ||
+      host.endsWith(".lovable.app") ||
+      host.endsWith(".lovableproject.com");
+    const isShopifyHost =
+      host === SHOPIFY_STORE_PERMANENT_DOMAIN ||
+      host === SHOPIFY_CHECKOUT_DOMAIN ||
+      host.endsWith(".myshopify.com") ||
+      host.endsWith(".shopify.com");
+    if (isHeadlessHost || !isShopifyHost) {
+      url.hostname = SHOPIFY_STORE_PERMANENT_DOMAIN;
+    }
 
     url.protocol = "https:";
     url.searchParams.set("channel", "online_store");
@@ -50,7 +66,7 @@ export function redirectHeadlessCheckoutEntry(): void {
   if (!isShopifyCheckoutPath(window.location.pathname)) return;
 
   const target = new URL(window.location.href);
-  target.hostname = SHOPIFY_CHECKOUT_DOMAIN;
+  target.hostname = SHOPIFY_STORE_PERMANENT_DOMAIN;
   target.protocol = "https:";
   target.searchParams.set("channel", "online_store");
   target.searchParams.set("skip_shop_pay", "true");
