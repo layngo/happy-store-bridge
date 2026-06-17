@@ -46,7 +46,7 @@ const CartPage = () => {
     await syncCart();
     const url = getCheckoutUrl();
     if (url) {
-      navigateToCheckout(url);
+      await navigateToCheckout(url);
       return;
     }
     toast.error("Checkout unavailable", {

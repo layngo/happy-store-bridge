@@ -127,7 +127,7 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
     const url = getCheckoutUrl();
     if (url) {
       setIsOpen(false);
-      navigateToCheckout(url);
+      await navigateToCheckout(url);
       return;
     }
     toast.error("Checkout unavailable", {

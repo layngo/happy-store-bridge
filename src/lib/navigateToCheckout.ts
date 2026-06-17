@@ -1,3 +1,4 @@
+import { decorateCheckoutUrlWithGaLinker } from "@/lib/gaLinker";
 import { toast } from "sonner";
 
 /** True when this page is inside another site's iframe (e.g. Lovable preview). */
@@ -32,7 +33,10 @@ function openCheckoutInNewTab(checkoutUrl: string): boolean {
  * Send the buyer to Shopify hosted checkout in a new top-level tab.
  * Never navigates the current frame when embedded — Shopify blocks iframes
  * (browser shows "refused to connect" for layngo-new.myshopify.com).
+ *
+ * Appends GA4 cross-domain `_gl` linker params before opening the tab.
  */
-export function navigateToCheckout(checkoutUrl: string): void {
-  openCheckoutInNewTab(checkoutUrl);
+export async function navigateToCheckout(checkoutUrl: string): Promise<void> {
+  const linkedUrl = await decorateCheckoutUrlWithGaLinker(checkoutUrl);
+  openCheckoutInNewTab(linkedUrl);
 }
