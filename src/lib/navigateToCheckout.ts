@@ -1,5 +1,4 @@
 import { decorateCheckoutUrlWithGaLinker } from "@/lib/gaLinker";
-import { toast } from "sonner";
 
 /** True when this page is inside another site's iframe (e.g. Lovable preview). */
 export function isEmbeddedInFrame(): boolean {

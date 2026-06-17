@@ -1,91 +1,95 @@
-import { SHOPIFY_STORE_PERMANENT_DOMAIN } from "@/lib/checkoutUrl";
+import { getGtagField } from "@/lib/gaAnalytics";
 
-export const GA_MEASUREMENT_ID = "G-5157VW2ENR";
+function appendGlParam(url: URL, glValue: string): string {
+  const normalized = glValue.startsWith("_gl=") ? glValue.slice(4) : glValue;
+  if (normalized) {
+    url.searchParams.set("_gl", normalized);
+  }
+  return url.toString();
+}
 
-const GTAG_GET_TIMEOUT_MS = 2000;
+/** Build `_gl` from GA4 client/session IDs when the linker decorator is unavailable. */
+function buildGlFromClientSession(clientId: string, sessionId: string | null): string {
+  const normalize = (value: string) => value.replace(/\./g, "_");
+  let gl = `1*${normalize(clientId)}`;
+  if (sessionId) {
+    gl += `*_${normalize(sessionId)}`;
+  }
+  return gl;
+}
 
-type GtagGetField = "linker_param" | "client_id" | "session_id";
-
-function getGtagValue(field: GtagGetField): Promise<string | null> {
+/**
+ * Ask gtag to decorate a hidden form action (uses `linker.domains` from gtag config).
+ * Returns the `_gl` input value when decoration succeeds.
+ */
+function getLinkerParamViaFormDecoration(targetUrl: string): Promise<string | null> {
   return new Promise((resolve) => {
-    if (typeof window.gtag !== "function") {
+    if (typeof document === "undefined") {
       resolve(null);
       return;
     }
 
-    let settled = false;
-    const timer = window.setTimeout(() => {
-      if (!settled) {
-        settled = true;
-        resolve(null);
-      }
-    }, GTAG_GET_TIMEOUT_MS);
+    const form = document.createElement("form");
+    form.action = targetUrl;
+    form.method = "get";
+    form.style.cssText = "position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;";
+    form.addEventListener("submit", (event) => event.preventDefault());
 
-    window.gtag!("get", GA_MEASUREMENT_ID, field, (value: unknown) => {
-      if (settled) return;
-      settled = true;
-      window.clearTimeout(timer);
-      resolve(typeof value === "string" && value.trim() ? value.trim() : null);
+    const button = document.createElement("button");
+    button.type = "submit";
+    form.append(button);
+    document.body.append(form);
+
+    window.requestAnimationFrame(() => {
+      button.click();
+      const glInput = form.querySelector('input[name="_gl"]');
+      const glValue =
+        glInput instanceof HTMLInputElement && glInput.value.trim()
+          ? glInput.value.trim()
+          : null;
+      form.remove();
+      resolve(glValue);
     });
   });
 }
 
-/** Apply GA linker output (`_gl=…` or raw value) onto a checkout URL. */
-function applyLinkerParamToUrl(checkoutUrl: string, linkerParam: string): string {
-  const url = new URL(checkoutUrl);
-
-  if (linkerParam.startsWith("_gl=")) {
-    url.searchParams.set("_gl", linkerParam.slice(4));
-    return url.toString();
-  }
-
-  if (linkerParam.includes("=")) {
-    const query = linkerParam.startsWith("?") ? linkerParam.slice(1) : linkerParam;
-    for (const [key, value] of new URLSearchParams(query)) {
-      url.searchParams.set(key, value);
-    }
-    return url.toString();
-  }
-
-  url.searchParams.set("_gl", linkerParam);
-  return url.toString();
-}
-
-/** Manual _gl when linker_param is unavailable (client + session IDs from gtag). */
-function buildManualGlParam(clientId: string, sessionId: string | null): string {
-  if (sessionId) {
-    return `1*${clientId}*${sessionId}*`;
-  }
-  return `1*${clientId}*`;
-}
-
 /**
- * Append GA4 cross-domain linker data to a Shopify checkout URL so the
- * myshopify.com session can be tied back to layngo.com analytics.
+ * Append GA4 cross-domain `_gl` linker params to a Shopify checkout URL.
+ *
+ * Tries, in order:
+ * 1. `gtag('get', …, 'linker_param')` when supported
+ * 2. Hidden form decoration (gtag auto-linker on linked domains)
+ * 3. Manual `_gl` from `client_id` + `session_id`
  */
 export async function decorateCheckoutUrlWithGaLinker(checkoutUrl: string): Promise<string> {
+  let url: URL;
   try {
-    const parsed = new URL(checkoutUrl);
-    if (parsed.hostname !== SHOPIFY_STORE_PERMANENT_DOMAIN) {
-      return checkoutUrl;
-    }
-
-    const linkerParam = await getGtagValue("linker_param");
-    if (linkerParam) {
-      return applyLinkerParamToUrl(checkoutUrl, linkerParam);
-    }
-
-    const [clientId, sessionId] = await Promise.all([
-      getGtagValue("client_id"),
-      getGtagValue("session_id"),
-    ]);
-
-    if (clientId) {
-      parsed.searchParams.set("_gl", buildManualGlParam(clientId, sessionId));
-      return parsed.toString();
-    }
+    url = new URL(checkoutUrl);
   } catch {
-    // Fall through to the unmodified URL.
+    return checkoutUrl;
+  }
+
+  if (url.searchParams.has("_gl")) {
+    return url.toString();
+  }
+
+  const linkerParam = await getGtagField("linker_param");
+  if (linkerParam) {
+    return appendGlParam(url, linkerParam);
+  }
+
+  const formGl = await getLinkerParamViaFormDecoration(url.toString());
+  if (formGl) {
+    return appendGlParam(new URL(checkoutUrl), formGl);
+  }
+
+  const [clientId, sessionId] = await Promise.all([
+    getGtagField("client_id"),
+    getGtagField("session_id"),
+  ]);
+
+  if (clientId) {
+    return appendGlParam(url, buildGlFromClientSession(clientId, sessionId));
   }
 
   return checkoutUrl;

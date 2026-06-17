@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-
-const GA_MEASUREMENT_ID = "G-5157VW2ENR";
+import { GA_MEASUREMENT_ID } from "@/lib/gaAnalytics";
 
 function trackPageView(path: string) {
   if (typeof window.gtag !== "function") return;
