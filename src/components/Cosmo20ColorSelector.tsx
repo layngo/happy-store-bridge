@@ -2,6 +2,7 @@ import { useMemo, type CSSProperties } from "react";
 import type { ShopifyProduct } from "@/lib/shopify";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 import { cn } from "@/lib/utils";
+import quiltedLavenderAsset from "@/assets/cosmo-20-quilted-lavender.png.asset.json";
 
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
 
@@ -253,8 +254,7 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     shopifyColor: "Quilted Lavender",
     selectedLabel: "Quilted Lavender",
     tooltip: "Quilted Lavender",
-    bagImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/COS20QLAV7709-OPENANDCLOSED-SquareOverlayVersion_1.jpg?v=1730750845",
+    bagImageUrl: quiltedLavenderAsset.url,
     swatchImageUrl: "https://m.media-amazon.com/images/I/21JH7De0Y-L._SS64_.jpg",
   },
 ];
