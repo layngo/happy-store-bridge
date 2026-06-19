@@ -1416,7 +1416,11 @@ const ProductDetail = () => {
       quantity,
       selectedOptions: selectedVariant.selectedOptions || [],
     });
-    toast.success("Added to cart", { description: `${product.title} × ${quantity}`, position: "top-center" });
+    toast.success("Added to cart", {
+      description: `${product.title} × ${quantity}`,
+      position: "top-center",
+      className: "added-to-cart-toast",
+    });
   };
 
   const handleVariantSelection = (variantIdx: number) => {
