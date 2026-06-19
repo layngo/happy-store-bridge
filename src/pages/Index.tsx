@@ -75,8 +75,29 @@ const Index = () => {
   });
 
   useEffect(() => {
+    // Stale-while-revalidate: render cached collections immediately, then refresh.
+    const CACHE_KEY = "layngo:home-collections:v1";
+    try {
+      const cached = sessionStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached) as ShopifyCollectionSummary[];
+        if (Array.isArray(parsed) && parsed.length) {
+          setCollections(sortCollectionsForDisplay(parsed));
+          setCollectionsLoading(false);
+        }
+      }
+    } catch {
+      // ignore cache read errors
+    }
     fetchCollections(50)
-      .then((raw) => setCollections(sortCollectionsForDisplay(raw)))
+      .then((raw) => {
+        setCollections(sortCollectionsForDisplay(raw));
+        try {
+          sessionStorage.setItem(CACHE_KEY, JSON.stringify(raw));
+        } catch {
+          // ignore cache write errors (quota, private mode)
+        }
+      })
       .catch(console.error)
       .finally(() => setCollectionsLoading(false));
   }, []);
