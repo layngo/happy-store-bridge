@@ -1124,7 +1124,7 @@
   }
 
   .cart-line__img {
-    @apply h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03];
+    @apply h-full w-full object-contain p-1 transition-transform duration-300 group-hover:scale-[1.03];
   }
 
   .cart-line__img-placeholder {
