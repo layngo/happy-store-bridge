@@ -16,13 +16,12 @@ import {
   shouldShowDiscountPopup,
 } from "@/lib/discountPopupStorage";
 import { cn } from "@/lib/utils";
-import mobileHeroAsset from "@/assets/first-visit-mobile-hero.png.asset.json";
 
 /** Once per fresh browser session on `/`; never again after signup (localStorage). */
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
 const HERO_WIDTH = 1024;
 const HERO_HEIGHT = 804;
-const MOBILE_HERO_IMAGE = mobileHeroAsset.url;
+const MOBILE_HERO_IMAGE = "/promo/first-visit-mobile-hero.png";
 const MOBILE_HERO_WIDTH = 595;
 const MOBILE_HERO_HEIGHT = 1280;
 type Step = "intro" | "email" | "phone" | "verify" | "code";
