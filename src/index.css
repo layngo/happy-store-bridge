@@ -86,6 +86,51 @@
     line-height: 0.92;
   }
 
+  /* Added-to-cart toast: editorial display look + accent pulse border */
+  .added-to-cart-toast {
+    font-family: var(--font-heading) !important;
+    padding: 1.25rem 1.5rem !important;
+    min-width: 22rem !important;
+    border-width: 2px !important;
+    border-color: hsl(var(--primary) / 0.6) !important;
+    border-radius: 0.75rem !important;
+    animation: added-to-cart-pulse 1.6s ease-in-out infinite;
+  }
+  .added-to-cart-toast [data-title] {
+    font-family: var(--font-heading) !important;
+    font-weight: 900 !important;
+    font-size: 1.3125rem !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.05 !important;
+    text-transform: uppercase;
+  }
+  .added-to-cart-toast [data-description] {
+    font-family: var(--font-heading) !important;
+    font-weight: 500 !important;
+    font-size: 1.0625rem !important;
+    letter-spacing: -0.01em !important;
+    line-height: 1.25 !important;
+    margin-top: 0.25rem;
+  }
+  .added-to-cart-toast [data-icon] {
+    transform: scale(1.4);
+    margin-right: 0.5rem;
+  }
+  @keyframes added-to-cart-pulse {
+    0%, 100% {
+      box-shadow:
+        0 0 0 0 hsl(var(--primary) / 0.55),
+        0 10px 30px -10px hsl(var(--primary) / 0.25);
+      border-color: hsl(var(--primary) / 0.55);
+    }
+    50% {
+      box-shadow:
+        0 0 0 8px hsl(var(--primary) / 0),
+        0 14px 40px -10px hsl(var(--primary) / 0.45);
+      border-color: hsl(var(--primary));
+    }
+  }
+
   .brand-eyebrow {
     font-family: var(--font-heading);
     font-size: 0.6875rem;
