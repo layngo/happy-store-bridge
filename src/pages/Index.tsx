@@ -24,35 +24,33 @@ const LAST_BAG_BANNER = "/home/last-bag-banner.png";
 const PRESS_LOGOS = [
   {
     name: "BuzzFeed",
-    src: "/press/logos/buzzfeed.png",
+    src: "/press/logos/buzzfeed.png?v=2",
     href: "https://www.buzzfeed.com/jessicaprobus/store-it-good#.bma95m3qjl",
-    imageClass: "scale-150",
   },
   {
     name: "Parents",
-    src: "/press/logos/parents.png",
+    src: "/press/logos/parents.png?v=2",
     href: "https://www.parents.com/parenting/work/entrepreneurial-moms/#page=2",
   },
   {
     name: "People",
-    src: "/press/logos/people.png",
+    src: "/press/logos/people.png?v=2",
     href: "https://people.com/style/youve-never-seen-a-makeup-bag-that-keeps-your-products-this-organized/",
   },
   {
     name: "Today Show",
-    src: "/press/logos/today.png",
+    src: "/press/logos/today.png?v=2",
     href: "https://www.today.com/style/bobbies-buzz-3-great-gifts-girlfriends-2D11638370",
   },
   {
     name: "Lifehacker",
-    src: "/press/logos/lifehacker.png",
+    src: "/press/logos/lifehacker.png?v=2",
     href: "https://lifehacker.com/lay-n-go-traveler-makes-finding-small-items-in-your-bag-1496408342",
   },
   {
     name: "Elvis Duran",
-    src: "/press/logos/iheart.png",
+    src: "/press/logos/iheart.png?v=2",
     href: "https://elvisduran.iheart.com/articles/whats-trending-461825/whats-trending-december-11th-13055859/",
-    imageClass: "scale-125",
   },
   {
     name: "Red Tricycle",
@@ -62,7 +60,7 @@ const PRESS_LOGOS = [
   },
   {
     name: "Gizmodo",
-    src: "/press/logos/gizmodo-au.png",
+    src: "/press/logos/gizmodo-au.png?v=2",
     href: "https://www.gizmodo.com.au/2013/12/the-perfect-toiletry-bag-for-those-morally-opposed-to-organization/",
   },
 ];
