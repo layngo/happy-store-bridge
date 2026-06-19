@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 const featuredTextBlockClass =
   "space-y-1.5 font-heading text-sm font-bold uppercase leading-snug tracking-[0.05em] text-foreground sm:text-[0.95rem] md:text-base";
 
-/** Mobile banner titles — readable on busy photos (first 3 featured). */
+/** Mobile banner titles: readable on busy photos (first 3 featured). */
 const mobileBannerTitlePanelClass =
   "w-full max-w-[min(100%,22rem)] rounded-lg bg-white px-4 py-2.5 text-center shadow-[0_2px_12px_rgba(0,0,0,0.08)] ring-1 ring-black/10";
 

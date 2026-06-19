@@ -43,7 +43,7 @@ export const PressCategoryHero = ({
         decoding="async"
       />
 
-      {/* Vignette — darker edges, clearer center for headline */}
+      {/* Vignette: darker edges, clearer center for headline */}
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_95%_at_50%_50%,transparent_0%,transparent_42%,rgba(0,0,0,0.35)_72%,rgba(0,0,0,0.72)_100%)]"
         aria-hidden

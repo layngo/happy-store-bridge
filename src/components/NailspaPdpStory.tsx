@@ -1,5 +1,5 @@
 /**
- * Editorial strip below NAILSPA PDP hero — full-bleed on `bg-background` to match the site.
+ * Editorial strip below NAILSPA PDP hero: full-bleed on `bg-background` to match the site.
  */
 
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -10,7 +10,7 @@ const IMG_MAIN = "/nailspa-pdp/story/image1.png?v=2";
 const IMG_BOTTOM = "/nailspa-pdp/story/bottom-hero.png?v=4";
 const IMG_BOTTOM_HOOK = "/nailspa-pdp/story/bottom-hook.png?v=4";
 
-/** Transparent cutouts — soft shadow follows the product silhouette, not the image box. */
+/** Transparent cutouts: soft shadow follows the product silhouette, not the image box. */
 const BOTTOM_STORY_IMG_SHADOW =
   "drop-shadow-[0_12px_28px_rgba(0,0,0,0.08)] drop-shadow-[0_3px_10px_rgba(0,0,0,0.05)]";
 
@@ -28,7 +28,7 @@ function NailspaDiagramEdgeVignette() {
 
 const CALLOUT_PANEL = "rounded-md bg-white/[0.82] px-3 py-2.5 shadow-md shadow-black/[0.04] backdrop-blur-md sm:px-4 sm:py-3";
 
-/** Large workspace — must fit dragged joints; old saves used points outside -80..160. */
+/** Large workspace: must fit dragged joints; old saves used points outside -80..160. */
 const MAIN_ARROW_WORKSPACE = "-170 -85 380 210";
 const LEGACY_MAIN_ARROW_WORKSPACE_OLD = "-80 -30 240 110";
 const DEFAULT_ARROW_STROKE = 1.25;
@@ -40,17 +40,17 @@ const MAX_HEAD_SCALE = 2.5;
 const MIN_ARROW_ROTATION = -45;
 const MAX_ARROW_ROTATION = 45;
 
-/** Lip + handle callout — wide panel so title/body wrap on fewer lines. */
+/** Lip + handle callout: wide panel so title/body wrap on fewer lines. */
 const LIP_HANDLE_CALLOUT_PANEL =
   "w-[min(92vw,28rem)] min-w-[min(72%,18rem)] max-w-none shrink-0 rounded-md bg-white/[0.82] px-3 py-2.5 shadow-md shadow-black/[0.04] backdrop-blur-md sm:w-[26rem] sm:px-4 sm:py-3 md:w-[30rem]";
 
-/** Tools + wash — compact; drag point is the right edge of the text (end anchor). */
+/** Tools + wash: compact; drag point is the right edge of the text (end anchor). */
 const COMPACT_EDGE_CALLOUT_PANEL =
   "w-max max-w-[min(46vw,12rem)] shrink-0 rounded-md bg-white/[0.82] px-2.5 py-2 text-right shadow-md shadow-black/[0.04] backdrop-blur-md sm:max-w-[13rem] sm:px-3 sm:py-2.5";
 
 const COMPACT_EDGE_CALLOUT_WRAPPER = "w-max max-w-[min(54%,280px)]";
 
-/** “Room for every tool” — 20% larger than compact edge callouts. */
+/** “Room for every tool”: 20% larger than compact edge callouts. */
 const TOOLS_CALLOUT_PANEL =
   "w-max max-w-[min(46vw,14.4rem)] shrink-0 rounded-md bg-white/[0.82] px-3 py-2.5 text-right shadow-md shadow-black/[0.04] backdrop-blur-md sm:max-w-[15.6rem] sm:px-3.5 sm:py-3";
 
@@ -199,7 +199,7 @@ function normalizeArrowMap(map: ArrowMap): ArrowMap {
   return next;
 }
 
-// Shipped defaults — editor-saved layout (May 2026).
+// Shipped defaults: editor-saved layout (May 2026).
 const ARROWS: ArrowMap = normalizeArrowMap({
   mesh: {
     viewBox: MAIN_ARROW_WORKSPACE,
@@ -468,7 +468,7 @@ function DraggableMainCallout({
       onPointerCancel={() => setDragging(false)}
     >
       {editorMode ? (
-        <p className="mb-1 self-stretch text-[10px] font-semibold text-neutral-700">Drag box — {boxKey}</p>
+        <p className="mb-1 self-stretch text-[10px] font-semibold text-neutral-700">Drag box: {boxKey}</p>
       ) : null}
       {children}
     </div>
@@ -547,7 +547,7 @@ function RenderArrow({
   );
 }
 
-/** Draggable joint — same stage % drag model as callout text boxes. */
+/** Draggable joint: same stage % drag model as callout text boxes. */
 function DraggableArrowJoint({
   jointKey,
   jointLabel,
@@ -693,7 +693,7 @@ function ArrowEditorHandles({
     >
       {label ? (
         <span className="pointer-events-none absolute left-2 top-2 z-50 rounded bg-amber-100 px-2 py-1 text-[10px] font-bold text-amber-950 shadow-sm ring-1 ring-amber-300">
-          Editing: {label} — drag joints 1–3
+          Editing: {label}: drag joints 1–3
         </span>
       ) : null}
       {joints.map(({ key, jointLabel, dotClass }) => (
@@ -871,7 +871,7 @@ function MainImageCallouts({
         </div>
       </DraggableMainCallout>
 
-      {/* Containment lip + carrying handle — compact box, two arrows (lip rim + handle) */}
+      {/* Containment lip + carrying handle: compact box, two arrows (lip rim + handle) */}
       <DraggableMainCallout
         boxKey="lipHandle"
         pos={mainCalloutBoxes.lipHandle}
@@ -933,12 +933,12 @@ function MainImageCallouts({
             Washable application surface
           </h2>
           <p className="mt-0.5 text-[10px] leading-snug text-neutral-700 sm:text-[11px]">
-            Mess-free manicures on a wipeable surface—spills clean up in seconds.
+            Mess-free manicures on a wipeable surface: spills clean up in seconds.
           </p>
         </div>
       </DraggableMainCallout>
 
-      {/* Cord lock — lower right */}
+      {/* Cord lock: lower right */}
       <div
         className="absolute z-10 flex max-w-[min(54%,260px)] cursor-move touch-none flex-col items-end sm:max-w-[280px] md:max-w-[300px]"
         style={{ bottom: `${cordBoxPos.bottom}%`, right: `${cordBoxPos.right}%` }}
@@ -1036,7 +1036,7 @@ export function NailspaPdpStory() {
         </p>
       </div>
 
-      {/* Main hero — image 1 + callouts */}
+      {/* Main hero: image 1 + callouts */}
       <div className="relative mt-6 px-4 pb-6 sm:mt-8 sm:px-6 sm:pb-10 md:mt-10 md:px-10 md:pb-16 lg:mt-12 lg:px-14">
         <div className="relative mx-auto max-w-[min(100%,1120px)] overflow-visible bg-background">
           <div className="relative">
@@ -1079,7 +1079,7 @@ export function NailspaPdpStory() {
           <div className={CALLOUT_PANEL}>
             <h2 className="font-heading text-base font-bold tracking-tight text-foreground">Washable application surface</h2>
             <p className="mt-1 text-xs leading-snug text-neutral-700">
-              Mess-free manicures on a wipeable surface—spills clean up in seconds.
+              Mess-free manicures on a wipeable surface: spills clean up in seconds.
             </p>
           </div>
           <div className={CALLOUT_PANEL}>
@@ -1093,10 +1093,10 @@ export function NailspaPdpStory() {
         </div>
       </div>
 
-      {/* Mobile: tiny spacer — bottom hero + cards sit closer to cord callouts */}
+      {/* Mobile: tiny spacer: bottom hero + cards sit closer to cord callouts */}
       <div className="pointer-events-none h-1 w-full shrink-0 bg-background md:hidden" aria-hidden />
 
-      {/* Bottom — closed bag photo, full-bleed left (hand at page edge) */}
+      {/* Bottom: closed bag photo, full-bleed left (hand at page edge) */}
       <div className="relative w-full pb-14 pt-0 sm:pb-16 sm:pt-6 md:pt-10">
         <BottomProductImage className="max-md:-mt-3" />
       </div>

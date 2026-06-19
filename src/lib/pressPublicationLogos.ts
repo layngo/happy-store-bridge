@@ -29,9 +29,9 @@ export const PRESS_PUBLICATION_LOGOS: Record<string, PressPublicationLogo> = {
     src: "/press/logos/women-owned.png",
     alt: "Women Who Own It",
   },
-  "U.S. Chamber of Commerce / CO—": {
+  "U.S. Chamber of Commerce / CO: ": {
     src: "/press/logos/us-chamber-co.png?v=2",
-    alt: "CO— by U.S. Chamber of Commerce",
+    alt: "CO:  by U.S. Chamber of Commerce",
   },
   "Good Morning America": {
     src: "/press/logos/gma.png",
@@ -130,7 +130,7 @@ export function resolvePressPublicationLogo(
   };
 }
 
-/** Real calendar dates only — hides legacy “Various” / “People.com” placeholders. */
+/** Real calendar dates only: hides legacy “Various” / “People.com” placeholders. */
 export function formatPressArticleDate(date: string): string | null {
   const trimmed = date.trim();
   if (!trimmed || PLACEHOLDER_DATE_PATTERN.test(trimmed)) return null;

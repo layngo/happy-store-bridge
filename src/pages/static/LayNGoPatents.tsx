@@ -113,7 +113,7 @@ const LayNGoPatents = () => {
                   href={p.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`U.S. Patent ${p.number} — view on Google Patents (opens in new tab)`}
+                  aria-label={`U.S. Patent ${p.number}: view on Google Patents (opens in new tab)`}
                   className="group relative block overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-b from-white to-slate-50 p-6 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_18px_40px_-24px_rgba(15,23,42,0.25)] transition-[border-color,box-shadow,transform] hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_24px_48px_-24px_rgba(15,23,42,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 >
                   <div

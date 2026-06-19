@@ -37,12 +37,12 @@ export const STATIC_PAGE_SEO: Record<string, StaticPageSeoEntry> = {
   },
   "/policies/terms-of-service": {
     description:
-      "Lay-n-Go terms of service and privacy policy — how we handle orders, personal data, cookies, SMS consent, and your rights as a customer.",
+      "Lay-n-Go terms of service and privacy policy: how we handle orders, personal data, cookies, SMS consent, and your rights as a customer.",
     keywords: "Lay-n-Go terms, privacy policy",
   },
   "/policies/privacy-policy": {
     description:
-      "Lay-n-Go privacy policy — how we collect, use, and protect personal information when you shop at layngo.com.",
+      "Lay-n-Go privacy policy: how we collect, use, and protect personal information when you shop at layngo.com.",
   },
   "/policies/sms-policy": {
     description:
@@ -71,12 +71,12 @@ export const STATIC_PAGE_SEO: Record<string, StaticPageSeoEntry> = {
   },
   "/shop/cosmetic-bags": {
     description:
-      "Shop Lay-n-Go Cosmo cosmetic bags — patented open-flat makeup organizers that cinch closed for travel. Compare Cosmo 20\" and Deluxe 22\" sizes and colors.",
+      "Shop Lay-n-Go Cosmo cosmetic bags: patented open-flat makeup organizers that cinch closed for travel. Compare Cosmo 20\" and Deluxe 22\" sizes and colors.",
     keywords: "Cosmo cosmetic bag, makeup organizer, Lay-n-Go Cosmo",
   },
   "/collections/military-first-responder": {
     description:
-      "Lay-n-Go Outdoor and Tactical gear — patented drawstring organizers for duty, field, and outdoor use.",
+      "Lay-n-Go Outdoor and Tactical gear: patented drawstring organizers for duty, field, and outdoor use.",
     keywords: "tactical bag, military gear, first responder, Lay-n-Go Defender, outdoor tactical",
   },
 };
@@ -96,11 +96,11 @@ export function getStaticPageSeo(pathname: string): StaticPageSeoEntry {
 
   if (pathname.startsWith("/pages/press/")) {
     return {
-      description: "Browse Lay-n-Go press mentions and media coverage by year — reviews, features, and editorial highlights.",
+      description: "Browse Lay-n-Go press mentions and media coverage by year: reviews, features, and editorial highlights.",
     };
   }
 
   return {
-    description: `${SITE_NAME} — patented drawstring organizers for cosmetics, travel, play, pets, and tactical use. Open flat, cinch closed, go.`,
+    description: `${SITE_NAME}: patented drawstring organizers for cosmetics, travel, play, pets, and tactical use. Open flat, cinch closed, go.`,
   };
 }

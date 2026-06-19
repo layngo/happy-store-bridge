@@ -39,7 +39,7 @@ export async function sendChatMessage(messages: ChatMessage[]): Promise<ChatAssi
       if (data.ok && data.reply) return data.reply;
     }
   } catch {
-    // Static hosting or offline — fall back to local message.
+    // Static hosting or offline: fall back to local message.
   }
 
   return answerFromKnowledge(question);

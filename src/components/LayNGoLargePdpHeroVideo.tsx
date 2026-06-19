@@ -7,7 +7,7 @@ type LayNGoLargePdpHeroVideoProps = {
   className?: string;
 };
 
-/** 16:9 Vimeo embed with pause control — matches Nailspa / home hero pattern. */
+/** 16:9 Vimeo embed with pause control: matches Nailspa / home hero pattern. */
 export function LayNGoLargePdpHeroVideo({ className }: LayNGoLargePdpHeroVideoProps) {
   return (
     <div

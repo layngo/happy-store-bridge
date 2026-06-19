@@ -87,13 +87,13 @@ const Index = () => {
     <div className="min-h-dvh bg-white flex flex-col">
       <PageSeo
         title={`${SITE_TAGLINE}`}
-        description="Shop Lay-n-Go patented drawstring organizers — Cosmo cosmetic bags, Play toy mats, Traveler tech bags, pet beds, and tactical gear. Open flat, cinch closed in seconds."
+        description="Shop Lay-n-Go patented drawstring organizers: Cosmo cosmetic bags, Play toy mats, Traveler tech bags, pet beds, and tactical gear. Open flat, cinch closed in seconds."
         pathname="/"
         keywords="Lay-n-Go, Cosmo makeup bag, drawstring organizer, toy cleanup mat, travel toiletry bag, patented cosmetic bag"
         jsonLd={[
           webPageJsonLd(
             SITE_TAGLINE,
-            "Shop Lay-n-Go patented drawstring organizers — Cosmo cosmetic bags, Play toy mats, Traveler tech bags, pet beds, and tactical gear.",
+            "Shop Lay-n-Go patented drawstring organizers: Cosmo cosmetic bags, Play toy mats, Traveler tech bags, pet beds, and tactical gear.",
             "/",
           ),
           faqJsonLd([...HOME_FAQS]),
@@ -118,7 +118,7 @@ const Index = () => {
       <Header variant="light" />
 
       <main id="main-content" className="flex-1">
-      {/* Hero — ~20:9 frame reveals more of the 16:9 Vimeo crop; Cosmo brand film */}
+      {/* Hero: ~20:9 frame reveals more of the 16:9 Vimeo crop; Cosmo brand film */}
       <section className="relative w-full bg-white">
         <div className="relative aspect-[20/9] w-full overflow-hidden">
           <div className="absolute left-0 right-0 top-1/2 z-[5] aspect-video w-full -translate-y-1/2">
@@ -241,7 +241,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Last bag banner — image left, headline beside it */}
+      {/* Last bag banner: image left, headline beside it */}
       <section className="w-full overflow-hidden bg-white py-6 sm:py-8 md:py-10">
         <div className="flex w-full max-w-[100vw] flex-col items-center gap-6 sm:flex-row sm:items-center sm:gap-8 md:gap-12 lg:gap-16">
           <div className="relative inline-block max-w-[min(100%,63rem)] shrink-0">

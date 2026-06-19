@@ -4,7 +4,7 @@ import { ProductCard } from "./ProductCard";
 import { Loader2 } from "lucide-react";
 
 interface ProductGridProps {
-  /** When set, grid does not fetch — uses this list (e.g. collection page after one query). */
+  /** When set, grid does not fetch: uses this list (e.g. collection page after one query). */
   prefetchedProducts?: ShopifyProduct[];
   /** Load products belonging to this collection handle (Storefront API). */
   collectionHandle?: string;

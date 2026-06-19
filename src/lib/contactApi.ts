@@ -50,7 +50,7 @@ export async function submitContactForm(payload: ContactFormPayload): Promise<Co
 
     return {
       ok: true,
-      message: data?.message ?? "Thanks — we received your message and will get back to you soon.",
+      message: data?.message ?? "Thanks: we received your message and will get back to you soon.",
     };
   } catch {
     return {

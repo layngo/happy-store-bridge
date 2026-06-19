@@ -4,7 +4,7 @@ export const SITE_URL = (
   "https://www.layngo.com"
 ).replace(/\/$/, "");
 
-/** Headless storefront home — used for logo / “back to shop” from cart & checkout flows. */
+/** Headless storefront home: used for logo / “back to shop” from cart & checkout flows. */
 export const STOREFRONT_HOME_URL = (
   (import.meta.env.VITE_STOREFRONT_HOME_URL as string | undefined)?.replace(/\/$/, "") ||
   SITE_URL
@@ -39,7 +39,7 @@ export function truncateText(text: string, maxLength: number): string {
 
 export function pageTitle(title: string): string {
   if (/lay-n-go/i.test(title)) return title;
-  return `${title} — ${SITE_NAME}`;
+  return `${title}: ${SITE_NAME}`;
 }
 
 export function organizationJsonLd() {
@@ -215,7 +215,7 @@ export const HOME_FAQS = [
   {
     question: "What are Lay-n-Go best sellers?",
     answer:
-      'The Lay-n-Go Cosmo 20" cosmetic bag is the top seller — a patented makeup bag that opens flat and cinches closed. The Cosmo Deluxe 22" and Traveler 20" tech bag are also popular.',
+      'The Lay-n-Go Cosmo 20" cosmetic bag is the top seller: a patented makeup bag that opens flat and cinches closed. The Cosmo Deluxe 22" and Traveler 20" tech bag are also popular.',
   },
   {
     question: "What is Lay-n-Go's return policy?",
@@ -230,6 +230,6 @@ export const HOME_FAQS = [
   {
     question: "How does Lay-n-Go work?",
     answer:
-      "Lay-n-Go is a patented drawstring mat that opens flat so you can see and use everything, then cinches closed into a bag for storage and travel — one pull of the cord packs it up.",
+      "Lay-n-Go is a patented drawstring mat that opens flat so you can see and use everything, then cinches closed into a bag for storage and travel: one pull of the cord packs it up.",
   },
 ] as const;

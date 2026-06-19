@@ -17,8 +17,8 @@ const TermsAndPrivacy = () => (
 
     <h3>Copyright and trademark notice</h3>
     <p>
-      Unless otherwise specified, all materials on this site — including text, site design, logos, graphics, icons,
-      and images, as well as their selection and arrangement — are the sole property of Lay-n-Go. You may use site
+      Unless otherwise specified, all materials on this site: including text, site design, logos, graphics, icons,
+      and images, as well as their selection and arrangement: are the sole property of Lay-n-Go. You may use site
       content only to shop on this site or place an order. No materials may be copied, reproduced, modified,
       republished, uploaded, posted, transmitted, or distributed without our prior written permission.
     </p>
@@ -104,21 +104,21 @@ const TermsAndPrivacy = () => (
     <h3>Information we collect</h3>
     <ul>
       <li>
-        <strong>Contact &amp; order details</strong> — name, email address, phone number, shipping and billing
+        <strong>Contact &amp; order details</strong>: name, email address, phone number, shipping and billing
         address, and order history when you shop with us.
       </li>
       <li>
-        <strong>Account information</strong> — login credentials and preferences if you create a customer account.
+        <strong>Account information</strong>: login credentials and preferences if you create a customer account.
       </li>
       <li>
-        <strong>Communications</strong> — messages you send through our contact form, email, or customer support
+        <strong>Communications</strong>: messages you send through our contact form, email, or customer support
         channels.
       </li>
       <li>
-        <strong>Marketing preferences</strong> — newsletter sign-ups and SMS opt-in choices.
+        <strong>Marketing preferences</strong>: newsletter sign-ups and SMS opt-in choices.
       </li>
       <li>
-        <strong>Device &amp; usage data</strong> — browser type, pages visited, and similar analytics collected
+        <strong>Device &amp; usage data</strong>: browser type, pages visited, and similar analytics collected
         through cookies and similar technologies.
       </li>
     </ul>
@@ -151,8 +151,8 @@ const TermsAndPrivacy = () => (
     <h3>How we share information</h3>
     <p>
       We do not sell your personal information. We may share data with service providers who help us operate our
-      business — for example, Shopify (e-commerce platform), payment processors, shipping carriers, email providers,
-      and SMS delivery partners such as Twilio — solely to perform services on our behalf.
+      business: for example, Shopify (e-commerce platform), payment processors, shipping carriers, email providers,
+      and SMS delivery partners such as Twilio: solely to perform services on our behalf.
     </p>
 
     <h3>Cookies</h3>

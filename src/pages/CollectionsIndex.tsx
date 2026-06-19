@@ -34,13 +34,13 @@ const CollectionsIndex = () => {
     <div className="min-h-dvh bg-background flex flex-col">
       <PageSeo
         title="Shop Collections"
-        description="Browse all Lay-n-Go collections — Cosmo cosmetic bags, Play toy mats, Tech & Travel, Nail Solutions, Pet gear, and Outdoor / Tactical organizers."
+        description="Browse all Lay-n-Go collections: Cosmo cosmetic bags, Play toy mats, Tech & Travel, Nail Solutions, Pet gear, and Outdoor / Tactical organizers."
         pathname="/collections"
         keywords="Lay-n-Go collections, shop cosmetic bags, play mats, travel organizers"
         jsonLd={[
           webPageJsonLd(
             "Shop Collections",
-            "Browse all Lay-n-Go collections — Cosmo cosmetic bags, Play toy mats, Tech & Travel, Nail Solutions, Pet gear, and Outdoor / Tactical organizers.",
+            "Browse all Lay-n-Go collections: Cosmo cosmetic bags, Play toy mats, Tech & Travel, Nail Solutions, Pet gear, and Outdoor / Tactical organizers.",
             "/collections",
           ),
           itemListJsonLd(

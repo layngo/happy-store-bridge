@@ -17,7 +17,7 @@ export interface Cosmo22SwatchDef {
 }
 
 /**
- * COSMO Deluxe (22") — curated colors with hero + swatch assets.
+ * COSMO Deluxe (22"): curated colors with hero + swatch assets.
  * PDP/collection show these even if Shopify lists additional variants.
  */
 export const COSMO_22_SWATCHES: Cosmo22SwatchDef[] = [
@@ -152,7 +152,7 @@ export function Cosmo22ColorSelector({ product, selectedVariantIdx, onVariantCha
   );
 }
 
-/** Only curated SS64 fabric circles — never variant hero photos (those read as “bag” in a tiny circle). */
+/** Only curated SS64 fabric circles: never variant hero photos (those read as “bag” in a tiny circle). */
 export function getCosmo22SwatchStyle(def: Cosmo22SwatchDef | undefined, shopifyColor: string): CSSProperties {
   if (def?.swatchImageUrl) {
     return {

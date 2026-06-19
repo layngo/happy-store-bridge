@@ -15,7 +15,7 @@ export interface Nailspa18SwatchDef {
   galleryImageUrls?: string[];
 }
 
-/** Transparent PNG heroes on `bg-background` — no white product mat. */
+/** Transparent PNG heroes on `bg-background`: no white product mat. */
 const NAILSPA_18_HERO_BASE = "/products/lay-n-go-nailspa-18/heroes";
 
 /** Curated heroes + swatches for Lay-n-Go NAILSPA (18″). */
@@ -51,7 +51,7 @@ export const NAILSPA_18_SWATCHES: Nailspa18SwatchDef[] = [
     swatchHex: "#E6007E",
   },
   {
-    /** Often OOS in storefront — still needs a proper circle swatch when disabled. */
+    /** Often OOS in storefront: still needs a proper circle swatch when disabled. */
     shopifyColor: "Pretty in Paisley",
     selectedLabel: "Pretty in Paisley",
     tooltip: "Pretty in Paisley",
@@ -60,7 +60,7 @@ export const NAILSPA_18_SWATCHES: Nailspa18SwatchDef[] = [
   },
 ];
 
-/** PDP / card product shot — transparent PNG on `bg-background`, no shadow halo. */
+/** PDP / card product shot: transparent PNG on `bg-background`, no shadow halo. */
 export const NAILSPA_PRODUCT_IMAGE_CLASS =
   "max-h-full max-w-full object-contain object-center";
 

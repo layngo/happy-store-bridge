@@ -72,7 +72,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
       "max-md:origin-left max-md:scale-[0.86] max-md:object-left max-md:translate-x-[10%]",
   },
   {
-    publication: "CO— by U.S. Chamber of Commerce",
+    publication: "CO:  by U.S. Chamber of Commerce",
     headline: "'Product is King'",
     href: "https://www.uschamber.com/co/good-company/growth-studio/business-advice-lay-n-go",
     linkLabel: "FULL ARTICLE",
@@ -83,7 +83,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageSrcSet:
       "/press/featured-co-product-is-king-banner.png?v=2 2048w, /press/featured-co-product-is-king-banner@2x.png?v=2 4096w",
     imageAlt:
-      "Adam Fazackerley of Lay-n-Go interviewed on CO— by U.S. Chamber of Commerce with Gregg Greenberg",
+      "Adam Fazackerley of Lay-n-Go interviewed on CO:  by U.S. Chamber of Commerce with Gregg Greenberg",
     imageAspect: "2048/768",
     bannerMobileImageSrc: "/press/featured-co-product-is-king-banner-mobile.png?v=1",
     bannerMobileImageSrcSet:
@@ -100,7 +100,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     productName:
       "The Most Successful Companies in America--and What They Reveal About the Future of Business",
     imageSrc: "/press/featured-inc-5000.png?v=1",
-    imageAlt: "Inc. 5000 — America's fastest-growing private companies",
+    imageAlt: "Inc. 5000: America's fastest-growing private companies",
     cardBackgroundSrc: "/press/featured-inc-5000-bg.png?v=1",
     cardLogoSize: "large",
   },

@@ -347,7 +347,7 @@ export function FirstVisitDiscountPopup() {
                   <div className="space-y-2.5 rounded-xl border border-neutral-200/90 bg-white/90 p-3 text-right shadow-md backdrop-blur-sm sm:p-4">
                     <p className="text-xs font-medium text-neutral-700 sm:text-sm">Your discount code</p>
                     <p className="text-[0.65rem] text-neutral-600 sm:text-xs">
-                      Valid for 10 days — use it at checkout before it expires.
+                      Valid for 10 days: use it at checkout before it expires.
                     </p>
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
                       <code className="w-full rounded-md border border-neutral-200 bg-white px-2 py-2 text-center font-mono text-base font-semibold tracking-wide text-foreground sm:flex-1 sm:text-lg sm:text-right">

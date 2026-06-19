@@ -8,7 +8,7 @@ type VideoPauseButtonProps = {
   className?: string;
 };
 
-/** WCAG 2.2.2 — pause control for autoplaying muted video embeds. */
+/** WCAG 2.2.2: pause control for autoplaying muted video embeds. */
 export function VideoPauseButton({ isPaused, onToggle, label, className }: VideoPauseButtonProps) {
   return (
     <button
