@@ -1380,7 +1380,34 @@ const ProductDetail = () => {
   ).toFixed(2);
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
-    const shopifyProduct: ShopifyProduct = { node: product };
+    // Use the hero image currently displayed on the PDP for this color/variant,
+    // not Shopify's default first image (which is often the color-selector composite).
+    const currentHeroUrl: string | null =
+      cosmoMiniHeroUrl ||
+      (isCosmo22Product(product.handle) && cosmo22HeroUrls.length > 0
+        ? cosmo22HeroUrls[Math.min(cosmo22GalleryIndex, cosmo22HeroUrls.length - 1)]
+        : null) ||
+      (isCosmo20Product(product.handle) && cosmo20HeroUrls.length > 0
+        ? cosmo20HeroUrls[Math.min(cosmo20GalleryIndex, cosmo20HeroUrls.length - 1)]
+        : null) ||
+      (isNailspa18Product(product.handle) && nailspa18HeroUrls.length > 0
+        ? nailspa18HeroUrls[0]
+        : null) ||
+      orderedImages[selectedImage]?.node?.url ||
+      null;
+    const productWithHero = currentHeroUrl
+      ? {
+          ...product,
+          images: {
+            ...product.images,
+            edges: [
+              { node: { url: currentHeroUrl, altText: product.title } },
+              ...(product.images?.edges ?? []),
+            ],
+          },
+        }
+      : product;
+    const shopifyProduct: ShopifyProduct = { node: productWithHero };
     await addItem({
       product: shopifyProduct,
       variantId: selectedVariant.id,
