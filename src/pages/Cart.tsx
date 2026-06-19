@@ -65,7 +65,7 @@ const CartPage = () => {
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {totalItems === 0
-              ? "Nothing here yet — add something you love."
+              ? "Nothing here yet: add something you love."
               : `${totalItems} item${totalItems !== 1 ? "s" : ""}`}
           </p>
 

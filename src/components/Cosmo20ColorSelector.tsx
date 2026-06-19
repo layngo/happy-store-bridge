@@ -8,7 +8,7 @@ import floralFunAsset from "@/assets/cosmo-20-floral-fun.jpg.asset.json";
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
 
 export interface Cosmo20SwatchDef {
-  /** Canonical catalog key; Shopify may use a shorter alias — see {@link COSMO_20_SHOPIFY_ALIASES} */
+  /** Canonical catalog key; Shopify may use a shorter alias: see {@link COSMO_20_SHOPIFY_ALIASES} */
   shopifyColor: string;
   /** Label under the grid when this swatch is selected */
   selectedLabel: string;

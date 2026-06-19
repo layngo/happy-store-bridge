@@ -231,7 +231,7 @@ const Contact = () => {
               placeholder={
                 topic === "wholesale"
                   ? "What you sell, where you're located, and which lines you're interested in."
-                  : "What's going on — we'll get back to you."
+                  : "What's going on: we'll get back to you."
               }
             />
           </div>
@@ -257,7 +257,7 @@ const Contact = () => {
         <AccordionItem value="origin">
           <AccordionTrigger>Where are products made and shipped from?</AccordionTrigger>
           <AccordionContent className="text-muted-foreground">
-            We&apos;re based in Alexandria, Virginia. Sourcing and fulfillment vary by product — check the product page
+            We&apos;re based in Alexandria, Virginia. Sourcing and fulfillment vary by product: check the product page
             or ask us if you need specifics.
           </AccordionContent>
         </AccordionItem>
@@ -265,7 +265,7 @@ const Contact = () => {
           <AccordionTrigger>Are your products waterproof?</AccordionTrigger>
           <AccordionContent className="text-muted-foreground">
             All Lay-n-Go products are wipeable and machine washable per the care tag on each item. Our products are
-            water-resistant—not waterproof.
+            water-resistant: not waterproof.
           </AccordionContent>
         </AccordionItem>
       </Accordion>

@@ -23,7 +23,7 @@ const MOTION_SEQUENCE = [0, 1, 2, 3, 2, 1, 0] as const;
 
 const FRAME_MS = 550;
 
-/** Shared stage — both colorways must match pixel-for-pixel in layout. */
+/** Shared stage: both colorways must match pixel-for-pixel in layout. */
 const STOP_MOTION_STAGE_CLASS =
   "relative mx-auto aspect-square w-full max-w-[min(100%,20rem)] origin-bottom sm:max-w-xs md:max-w-sm";
 

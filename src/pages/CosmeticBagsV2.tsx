@@ -29,11 +29,11 @@ const COSMO_MAT_WIDTH_FRACTION: Record<16 | 20 | 22, number> = {
   22: 955 / 1024,
 };
 
-/** 22″ mat width — target mat scales as (inches / 22) × this. */
+/** 22″ mat width: target mat scales as (inches / 22) × this. */
 const COSMO_MAT_REF_FRACTION = COSMO_MAT_WIDTH_FRACTION[22];
 
 /**
- * Nudge vs literal inches/22 — 20″ photo has extra canvas padding; keep 20″ nearer 22″ than 16″.
+ * Nudge vs literal inches/22: 20″ photo has extra canvas padding; keep 20″ nearer 22″ than 16″.
  */
 const COSMO_DISPLAY_SCALE: Record<16 | 20 | 22, number> = {
   16: 1.1,
@@ -55,7 +55,7 @@ function cosmoStageWidthRatio(inches: 16 | 20 | 22): number {
 }
 
 /**
- * 20″ stage was >100% column width, so every image clamped to full column — mats looked the same size.
+ * 20″ stage was >100% column width, so every image clamped to full column: mats looked the same size.
  * Scale all stages down uniformly so the largest fits the column; mat ratios stay correct.
  */
 const COSMO_MAX_STAGE_WIDTH_RATIO = Math.max(
@@ -77,7 +77,7 @@ const COSMO_MAX_BAND_HEIGHT_RATIO = Math.max(
 
 type SizeSpec = {
   inches: 16 | 20 | 22;
-  /** Upper overlay on the circle — matches Cosmo PDP story headline typography. */
+  /** Upper overlay on the circle: matches Cosmo PDP story headline typography. */
   shortName: string;
   imageSrc: string;
   imageAlt: string;
@@ -283,7 +283,7 @@ const CosmeticBagsV2 = () => {
                   ["--cosmo-stage-w" as string]: stageWidth,
                   ["--cosmo-diameter-w" as string]: diameterWidth,
                 }}
-                aria-label={`${spec.shortName}, ${spec.inches} inch — ${product.title}. Opens product page.`}
+                aria-label={`${spec.shortName}, ${spec.inches} inch: ${product.title}. Opens product page.`}
               >
                 {spec.inches === 20 ? (
                   <span className="pointer-events-none absolute right-2 top-2 hidden shrink-0 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground shadow-md md:block">

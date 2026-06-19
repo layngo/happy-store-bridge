@@ -30,8 +30,8 @@ const Search = () => {
         title={query ? `Search: ${query}` : "Search Products"}
         description={
           query
-            ? `Search results for "${query}" on Lay-n-Go — patented drawstring cosmetic bags, play mats, travel organizers, and more.`
-            : "Search Lay-n-Go products — Cosmo makeup bags, Play mats, Traveler tech bags, pet beds, and tactical gear."
+            ? `Search results for "${query}" on Lay-n-Go: patented drawstring cosmetic bags, play mats, travel organizers, and more.`
+            : "Search Lay-n-Go products: Cosmo makeup bags, Play mats, Traveler tech bags, pet beds, and tactical gear."
         }
         pathname={query ? `/search?q=${encodeURIComponent(query)}` : "/search"}
         noindex={Boolean(query)}

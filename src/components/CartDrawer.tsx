@@ -160,7 +160,7 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
           </SheetTitle>
           <SheetDescription className="text-sm text-muted-foreground">
             {totalItems === 0
-              ? "Nothing here yet — add something you love."
+              ? "Nothing here yet: add something you love."
               : `${totalItems} item${totalItems !== 1 ? "s" : ""}`}
           </SheetDescription>
         </SheetHeader>

@@ -17,7 +17,7 @@ type PageSeoProps = {
   description: string;
   /** Path for canonical + og:url, e.g. `/collections/play` */
   pathname?: string;
-  /** og:type — product pages should pass `product`. */
+  /** og:type: product pages should pass `product`. */
   type?: "website" | "product" | "article";
   image?: string;
   imageAlt?: string;

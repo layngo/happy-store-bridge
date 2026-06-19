@@ -5,7 +5,7 @@ const SmallBusinesses = () => (
   <StaticPageLayout title="Small Business & Future Leaders">
     <p>
       Lay-n-Go is proud to be women-owned and to have grown through programs like Goldman Sachs 10,000 Small Businesses.
-      We believe small businesses strengthen communities — and we pay it forward by mentoring, partnering with local
+      We believe small businesses strengthen communities: and we pay it forward by mentoring, partnering with local
       retailers, and sharing what we&apos;ve learned about product development, sourcing, and scaling responsibly.
     </p>
     <h2>How we support entrepreneurs</h2>

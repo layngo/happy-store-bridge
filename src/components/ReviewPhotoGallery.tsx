@@ -45,7 +45,7 @@ export function ReviewPhotoGallery({ images, photoLabel = "Customer", className 
       <Dialog open={enlargedSrc !== null} onOpenChange={(open) => !open && setEnlargedSrc(null)}>
         <DialogContent className="max-w-[min(92vw,48rem)] gap-0 border-foreground p-2 sm:p-3">
           <DialogTitle className="sr-only">
-            {photoLabel} — review photo
+            {photoLabel}: review photo
           </DialogTitle>
           {enlargedSrc ? (
             <img

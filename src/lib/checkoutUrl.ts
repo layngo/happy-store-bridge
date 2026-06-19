@@ -30,7 +30,7 @@ export function formatCheckoutUrl(raw: string | null | undefined): string | null
   try {
     const url = new URL(raw.trim());
 
-    // Always send checkout to Shopify's hosted domain — never layngo.com.
+    // Always send checkout to Shopify's hosted domain: never layngo.com.
     url.protocol = "https:";
     url.hostname = SHOPIFY_STORE_PERMANENT_DOMAIN;
     url.searchParams.set("channel", "online_store");

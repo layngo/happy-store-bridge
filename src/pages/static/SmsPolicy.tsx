@@ -15,14 +15,14 @@ const SmsPolicy = () => (
     <p>We may send the following types of SMS communications:</p>
     <ul>
       <li>
-        <strong>Transactional messages</strong> — Order confirmations, shipping updates, delivery notifications, and
+        <strong>Transactional messages</strong>: Order confirmations, shipping updates, delivery notifications, and
         one-time verification/passcodes (OTP) related to your account or purchases.
       </li>
       <li>
-        <strong>Marketing messages</strong> — Promotional offers, discount codes, and abandoned cart reminders.
+        <strong>Marketing messages</strong>: Promotional offers, discount codes, and abandoned cart reminders.
       </li>
       <li>
-        <strong>Service messages</strong> — Customer support follow-ups and post-purchase review requests.
+        <strong>Service messages</strong>: Customer support follow-ups and post-purchase review requests.
       </li>
     </ul>
 

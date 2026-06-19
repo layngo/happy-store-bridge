@@ -70,11 +70,11 @@ const Collection = () => {
         title={collection.title}
         description={
           truncateText(stripHtml(collection.description || ""), 160) ||
-          `Shop the ${collection.title} collection from Lay-n-Go — patented drawstring mats and organizers that open flat and cinch closed.`
+          `Shop the ${collection.title} collection from Lay-n-Go: patented drawstring mats and organizers that open flat and cinch closed.`
         }
         pathname={`/collections/${handle}`}
         image={collection.image?.url}
-        imageAlt={collection.image?.altText || `${collection.title} collection — Lay-n-Go`}
+        imageAlt={collection.image?.altText || `${collection.title} collection: Lay-n-Go`}
         keywords={`${collection.title}, Lay-n-Go collection, drawstring organizer`}
         jsonLd={[
           webPageJsonLd(

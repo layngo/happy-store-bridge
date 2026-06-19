@@ -3,7 +3,7 @@ export type SearchSuggestion = {
   subtitle: string;
   href: string;
   image: string;
-  /** Extra terms for matching — product names, categories, nicknames, etc. */
+  /** Extra terms for matching: product names, categories, nicknames, etc. */
   keywords: readonly string[];
 };
 

@@ -44,7 +44,7 @@ const ReturnPolicy = () => (
       <Link to="/pages/contact" className="text-primary hover:underline">
         Contact us
       </Link>{" "}
-      — we&apos;re happy to help.
+     : we&apos;re happy to help.
     </p>
   </StaticPageLayout>
 );

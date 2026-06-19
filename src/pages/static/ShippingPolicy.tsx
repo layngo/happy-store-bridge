@@ -12,13 +12,13 @@ const ShippingPolicy = () => (
     <h2>Shipping methods</h2>
     <ul>
       <li>
-        <strong>Economy</strong> — 5 to 8 business days
+        <strong>Economy</strong>: 5 to 8 business days
       </li>
       <li>
-        <strong>Standard</strong> — 3 to 4 business days
+        <strong>Standard</strong>: 3 to 4 business days
       </li>
       <li>
-        <strong>Express</strong> — 1 to 2 business days
+        <strong>Express</strong>: 1 to 2 business days
       </li>
     </ul>
 

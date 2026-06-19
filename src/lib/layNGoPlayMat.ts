@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 
-/** PDP product shot on `bg-background` — transparent PNG, no drop shadow (avoids halo on #fafafa). */
+/** PDP product shot on `bg-background`: transparent PNG, no drop shadow (avoids halo on #fafafa). */
 export const LAY_NGO_PDP_PRODUCT_IMAGE_CLASS =
   "max-h-full max-w-full object-contain object-center";
 
@@ -8,15 +8,15 @@ export const LAY_NGO_PDP_PRODUCT_IMAGE_CLASS =
 export const LAY_NGO_LITE_PRODUCT_IMAGE_CLASS =
   "max-h-full max-w-full object-contain object-center";
 
-/** Lite Shopify variant heroes — white studio mats blend into `bg-background`. */
+/** Lite Shopify variant heroes: white studio mats blend into `bg-background`. */
 export const LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS =
   "max-h-full max-w-full object-contain object-center mix-blend-multiply";
 
-/** Lifestyle 44″ Shopify heroes — same mat treatment as Lite. */
+/** Lifestyle 44″ Shopify heroes: same mat treatment as Lite. */
 export const LAY_NGO_LIFESTYLE_SHOPIFY_HERO_IMAGE_CLASS =
   "max-h-full max-w-full object-contain object-center mix-blend-multiply";
 
-/** Defender Shopify heroes — white studio mats blend into `bg-background`. */
+/** Defender Shopify heroes: white studio mats blend into `bg-background`. */
 export const LAY_NGO_DEFENDER_SHOPIFY_HERO_IMAGE_CLASS =
   "max-h-full max-w-full object-contain object-center mix-blend-multiply";
 
@@ -28,7 +28,7 @@ export function isLayNGoLite18Product(handle: string): boolean {
   return handle.toLowerCase() === "lay-n-go-lite-18";
 }
 
-/** Lay-n-Go play mat trim / nylon — tuned to read like the real Blue & Green accents. */
+/** Lay-n-Go play mat trim / nylon: tuned to read like the real Blue & Green accents. */
 const PLAY_MAT_BLUE = "#0b6ec9";
 const PLAY_MAT_GREEN = "#2a8f3a";
 
@@ -43,7 +43,7 @@ export function isLayNGoPlayMatProduct(handle: string): boolean {
   );
 }
 
-/** Solid circles only — matches “Blue”, “Blue Accent”, “Green Accent”, etc. */
+/** Solid circles only: matches “Blue”, “Blue Accent”, “Green Accent”, etc. */
 export function layNGoPlayMatSwatchStyle(optionValue: string): CSSProperties {
   const key = optionValue.trim().toLowerCase();
   if (key.includes("blue")) return { backgroundColor: PLAY_MAT_BLUE };
