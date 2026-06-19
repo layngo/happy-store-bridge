@@ -264,8 +264,8 @@ const Contact = () => {
         <AccordionItem value="water">
           <AccordionTrigger>Are your products waterproof?</AccordionTrigger>
           <AccordionContent className="text-muted-foreground">
-            Most mats are wipeable and machine washable per the care tag on that SKU. Waterproof isn&apos;t one-size-fits-all
-            here — tell us which product you mean and we&apos;ll answer straight.
+            All Lay-n-Go products are wipeable and machine washable per the care tag on each item. Our products are
+            water-resistant—not waterproof.
           </AccordionContent>
         </AccordionItem>
       </Accordion>

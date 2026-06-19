@@ -295,7 +295,7 @@ const LAY_N_GO_DEFENDER_MINI_16_BULLETS = [
   "Patented design lays completely flat with a raised edge to contain all contents",
   "Built-in interior pockets keep personal essentials organized and easy to access",
   "Clean, dry work surface lets you see and reach all items at once",
-  "External drawstring pocket with Velcro® patch ready",
+  "External drawstring pocket with Velcro® strip ready",
   "Cord lock closure and carrying handle for secure, easy transport",
   "Washable and durable textiles designed for heavy duty activity",
   "Designed specifically to support Warfighters packing personal essentials for deployment",
@@ -306,7 +306,7 @@ const LAY_N_GO_DEFENDER_TACTICAL_20_BULLETS = [
   "Patented design lays completely flat with a raised edge to contain all contents",
   "Built-in interior pockets keep personal essentials organized and easy to access",
   "Clean, dry work surface lets you see and reach all items at once",
-  "External drawstring pocket with Velcro® patch ready",
+  "External drawstring pocket with Velcro® strip ready",
   "Cord lock closure and carrying handle for secure, easy transport",
   "Washable and durable textiles designed for heavy duty activity",
   "Designed specifically to support Warfighters packing personal essentials for deployment",
@@ -328,11 +328,11 @@ const LAY_N_GO_TRAVEL_DOG_BED_44_BULLETS = [
 const COSMO_AUTOPLAY_YOUTUBE_ID = "G3E80xl9lSM";
 
 const HOW_IT_WORKS_FAQ_ANSWER =
-  "It's a patented drawstring organizer that opens flat so you can see and reach every item, then cinches closed into a compact bag for travel or storage — one pull of the cord packs it up.";
+  "It's a patented drawstring organizer that opens flat so you can see and reach every item. When you're finished, one pull of the drawstring cinches it closed into a compact bag for travel or storage.";
 const RETURN_POLICY_FAQ_ANSWER =
   "Returns are accepted within 14 days of delivery. Items must be unused with original packaging. Email info@layngo.com with your order number for a Return Authorization before shipping items back.";
 const SHIPPING_FAQ_ANSWER =
-  "Economy shipping is 5–8 business days, Standard 3–4 days, and Express 1–2 business days after the order ships. U.S. and international options are available at checkout.";
+  "Economy shipping is 5–8 business days and Standard is 3–4 business days after the order ships. We ship within the United States.";
 const PATENT_FAQ_ANSWER =
   "Yes. The open-flat, cinch-closed drawstring design is protected by U.S. utility patents. See layngo.com/pages/lay-n-go-patents for details.";
 
@@ -471,7 +471,7 @@ const COSMO_FAQ_ITEMS = [
   {
     question: "How does it work?",
     answer:
-      "Simply pull the drawstring cord and the bag lays completely flat, giving you full access to everything inside. When you're done, pull the cord again and it cinches shut in seconds.",
+      "Open the bag flat to see and reach everything inside. When you're done, pull the drawstring cord to cinch it closed in seconds—no dumping, no rummaging, no mess.",
   },
   {
     question: "What can fit inside?",
@@ -481,12 +481,12 @@ const COSMO_FAQ_ITEMS = [
   {
     question: "Is it actually machine washable?",
     answer:
-      "Yes - just toss it in the washing machine. It's also made from water-resistant polyester that wipes clean easily for quick cleanups between washes.",
+      "Yes—just toss it in the washing machine. It's also made from water-resistant fabric that wipes clean easily for quick cleanups between washes.",
   },
   {
     question: "Is it water resistant?",
     answer:
-      "Yes, the Cosmo is made from durable water-resistant polyester fabric that stands up to everyday spills, smudges, and makeup messes.",
+      "Yes, the Cosmo is made from durable water-resistant fabric that stands up to everyday spills, smudges, and makeup messes.",
   },
   {
     question: "Does it have any pockets?",
@@ -547,7 +547,7 @@ const DEFENDER_MINI_FAQ_ITEMS = [
   {
     question: "What is the Lay-n-Go DEFENDER mini?",
     answer:
-      'The DEFENDER mini is a 16" patented mat-to-bag system designed for Warfighters and military personnel to organize and pack personal essentials for deployments. It opens flat as a containment mat and cinches closed into a fully sealed bag in seconds.',
+      'The DEFENDER mini is a 16" patented mat-to-bag system that opens flat as a containment mat and cinches closed into a fully sealed bag in seconds—ideal for organizing personal essentials at home, at work, or on the go.',
   },
   {
     question: "How does it work?",
@@ -557,12 +557,12 @@ const DEFENDER_MINI_FAQ_ITEMS = [
   {
     question: "What can I store in it?",
     answer:
-      "It's designed to hold personal mission essentials — tools, first aid items, snacks, batteries, lights, knives, and more. The interior storage pockets keep smaller items organized and accessible.",
+      "It's designed to hold personal mission essentials — tools, first aid items, snacks, batteries, lights, knives, and more.",
   },
   {
     question: "What pockets does it include?",
     answer:
-      "The DEFENDER mini includes interior storage pockets and an external drawstring pocket with a Velcro® patch for unit ID display (patch not included).",
+      "The DEFENDER mini includes an external drawstring pocket with a Velcro® strip for attaching your own patch (patch not included).",
   },
   {
     question: "Is it washable?",
@@ -570,9 +570,9 @@ const DEFENDER_MINI_FAQ_ITEMS = [
       "Yes. The DEFENDER mini is made with washable, durable textiles built to withstand the demands of repeated use and deployment conditions.",
   },
   {
-    question: "Does it come with a unit ID patch?",
+    question: "Does it come with a patch?",
     answer:
-      "No. The Velcro® patch is included but the unit ID patch is not. You can attach your own unit patch to the designated Velcro® area.",
+      "No. A Velcro® strip is included on the external pocket for attaching your own patch (patch not included).",
   },
   {
     question: "Is the design patented?",
@@ -600,7 +600,7 @@ const DEFENDER_TACTICAL_FAQ_ITEMS = [
   {
     question: "What is the Lay-n-Go DEFENDER Tactical?",
     answer:
-      "The DEFENDER Tactical is a patented utility bag designed in direct response to feedback from active duty and retired service members. Built to address real mission-related challenges, it helps Warfighters organize and pack personal essentials for deployments.",
+      "The DEFENDER Tactical is a patented utility bag developed with input from active duty and retired service members. It opens flat as a containment mat and cinches closed into a fully sealed bag in seconds—built for anyone who needs fast, organized pack-and-go storage.",
   },
   {
     question: "How does it work?",
@@ -615,7 +615,7 @@ const DEFENDER_TACTICAL_FAQ_ITEMS = [
   {
     question: "What pockets does it include?",
     answer:
-      "The DEFENDER Tactical includes two large interior mesh pockets for visible, easy-access storage, a zippered storage pocket for securing smaller items, and an external drawstring pocket with a Velcro® patch for unit ID display (patch not included).",
+      "The DEFENDER Tactical includes two large interior mesh pockets for visible, easy-access storage, a zippered storage pocket for securing smaller items, and an external drawstring pocket with a Velcro® strip for attaching your own patch (patch not included).",
   },
   {
     question: "What can I store in it?",
@@ -628,9 +628,9 @@ const DEFENDER_TACTICAL_FAQ_ITEMS = [
       "Yes. The DEFENDER Tactical is made with washable, durable textiles built to handle the demands of deployment and repeated use.",
   },
   {
-    question: "Does it come with a unit ID patch?",
+    question: "Does it come with a patch?",
     answer:
-      "No. The Velcro® patch is included but the unit ID patch is not. You can attach your own unit patch to the designated Velcro® area.",
+      "No. A Velcro® strip is included on the external pocket for attaching your own patch (patch not included).",
   },
   {
     question: "Is the design patented?",
@@ -860,9 +860,9 @@ const LIFESTYLE_44_FAQ_ITEMS = [
       "Yes. Convenient backpack straps make it easy to carry once cinched closed, plus an extra handle between the straps for hanging or carrying.",
   },
   {
-    question: "What is the purple inner liner?",
+    question: "What is the inner liner?",
     answer:
-      "The LIFESTYLE includes an additional purple inner rip-stop liner for added durability.",
+      "The LIFESTYLE includes an additional inner rip-stop liner for added durability.",
   },
   {
     question: "Is it machine washable?",

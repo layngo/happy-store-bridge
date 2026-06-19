@@ -17,22 +17,31 @@ export interface Cosmo22SwatchDef {
 }
 
 /**
- * COSMO Deluxe (22") — only colors with user-supplied Amazon hero + `_SS64_` assets.
- * PDP/collection show **these three only** even if Shopify lists other variants.
+ * COSMO Deluxe (22") — curated colors with hero + swatch assets.
+ * PDP/collection show these even if Shopify lists additional variants.
  */
 export const COSMO_22_SWATCHES: Cosmo22SwatchDef[] = [
   {
     shopifyColor: "Black",
     selectedLabel: "Black",
     tooltip: "Black",
-    bagImageUrl: "https://m.media-amazon.com/images/I/81Xfs+biBCL._AC_SX679_.jpg",
+    bagImageUrl:
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/lay-n-go-cosmo-deluxe-22cosmo-deluxe-22lay-n-golayngo-new-28937671.jpg?v=1626119416",
     swatchImageUrl: "https://m.media-amazon.com/images/I/41z6K5qgpcL._SS64_.jpg",
     galleryImageUrls: [
-      "https://m.media-amazon.com/images/I/81Xfs+biBCL._AC_SX679_.jpg",
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/lay-n-go-cosmo-deluxe-22cosmo-deluxe-22lay-n-golayngo-new-28937671.jpg?v=1626119416",
       "https://m.media-amazon.com/images/I/51NDY1iywwL._AC_SX679_.jpg",
       "https://m.media-amazon.com/images/I/61PBvX-NQeL._AC_SX679_.jpg",
       "https://m.media-amazon.com/images/I/51KciV3PddL._AC_SX679_.jpg",
     ],
+  },
+  {
+    shopifyColor: "Leopard",
+    selectedLabel: "Leopard",
+    tooltip: "Leopard",
+    bagImageUrl:
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/products/lay-n-go-cosmo-deluxe-22cosmo-deluxe-22lay-n-golayngo-new-28937668.jpg?v=1626119416",
+    swatchImageUrl: "https://m.media-amazon.com/images/I/41Q6W7FwObL._SS64_.jpg",
   },
   {
     shopifyColor: "Paisley",
@@ -183,7 +192,11 @@ export function getCosmo22InitialSelection(product: ShopifyProduct["node"]): { v
 /** Hero/gallery URLs: curated Amazon set when present, else variant featured image from Shopify. */
 export function getCosmo22HeroImageUrls(shopifyColor: string, variant?: VariantNode): string[] {
   const def = COSMO_22_SWATCHES.find((s) => s.shopifyColor === shopifyColor);
-  if (def) return def.galleryImageUrls?.length ? def.galleryImageUrls : [def.bagImageUrl];
-  const u = variant?.image?.url;
-  return u ? [u] : [];
+  const variantUrl = variant?.image?.url;
+  if (def) {
+    if (def.galleryImageUrls?.length) return def.galleryImageUrls;
+    if (variantUrl) return [variantUrl];
+    return [def.bagImageUrl];
+  }
+  return variantUrl ? [variantUrl] : [];
 }

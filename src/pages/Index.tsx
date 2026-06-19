@@ -24,33 +24,33 @@ const LAST_BAG_BANNER = "/home/last-bag-banner.png";
 const PRESS_LOGOS = [
   {
     name: "BuzzFeed",
-    src: "https://www.layngo.com/cdn/shop/files/BuzzFeed-Logo_160x160@2x.png?v=1613754525",
+    src: "/press/logos/buzzfeed.png",
     href: "https://www.buzzfeed.com/jessicaprobus/store-it-good#.bma95m3qjl",
     imageClass: "scale-150",
   },
   {
     name: "Parents",
-    src: "https://www.layngo.com/cdn/shop/files/parents-logo_160x160@2x.png?v=1613754525",
+    src: "/press/logos/parents.png",
     href: "https://www.parents.com/parenting/work/entrepreneurial-moms/#page=2",
   },
   {
     name: "People",
-    src: "https://www.layngo.com/cdn/shop/files/58481955cef1014c0b5e49b7_160x160@2x.png?v=1613754525",
+    src: "/press/logos/people.png",
     href: "https://people.com/style/youve-never-seen-a-makeup-bag-that-keeps-your-products-this-organized/",
   },
   {
     name: "Today Show",
-    src: "https://www.layngo.com/cdn/shop/files/Today_show__2009-13__logo_160x160@2x.png?v=1613754527",
+    src: "/press/logos/today.png",
     href: "https://www.today.com/style/bobbies-buzz-3-great-gifts-girlfriends-2D11638370",
   },
   {
     name: "Lifehacker",
-    src: "https://www.layngo.com/cdn/shop/files/Lifehacker.svg_05a1286a-376a-431d-9637-56c119ec882b_160x160@2x.png?v=1613754526",
+    src: "/press/logos/lifehacker.png",
     href: "https://lifehacker.com/lay-n-go-traveler-makes-finding-small-items-in-your-bag-1496408342",
   },
   {
     name: "Elvis Duran",
-    src: "https://www.layngo.com/cdn/shop/files/5936f3c13b94cd5f41653cb8_160x160@2x.png?v=1613754526",
+    src: "/press/logos/iheart.png",
     href: "https://elvisduran.iheart.com/articles/whats-trending-461825/whats-trending-december-11th-13055859/",
     imageClass: "scale-125",
   },
@@ -62,7 +62,7 @@ const PRESS_LOGOS = [
   },
   {
     name: "Gizmodo",
-    src: "https://www.layngo.com/cdn/shop/files/5847f9a4cef1014c0b5e48c3_160x160@2x.png?v=1613754527",
+    src: "/press/logos/gizmodo-au.png",
     href: "https://www.gizmodo.com.au/2013/12/the-perfect-toiletry-bag-for-those-morally-opposed-to-organization/",
   },
 ];

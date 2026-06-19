@@ -66,7 +66,7 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     selectedLabel: "Butterfly",
     tooltip: "Butterfly",
     bagImageUrl:
-      "https://www.layngo.com/cdn/shop/files/COS20BFLY7693-OPEN-AND-CLOSED--Square-Overlay-Version_1_2000x.jpg?v=1730750330",
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/COS20BFLY7693-OPEN-AND-CLOSED--Square-Overlay-Version_1.jpg?v=1730750330",
     swatchImageUrl: "/swatches/cosmo-20-butterfly.jpg",
   },
   {
@@ -239,7 +239,7 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     selectedLabel: "Floral Fun",
     tooltip: "Floral Fun",
     bagImageUrl:
-      "https://www.layngo.com/cdn/shop/files/COS20FLBG7679-OPENANDCLOSED-SquareOverlayVersion_1_2000x.jpg?v=1730750646",
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/COS20FLBG7679-OPENANDCLOSED-SquareOverlayVersion_1.jpg?v=1730750646",
     swatchImageUrl: "https://m.media-amazon.com/images/I/51PEb9KgQ-L._SS64_.jpg",
   },
   {
@@ -254,7 +254,7 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     selectedLabel: "Quilted Lavender",
     tooltip: "Quilted Lavender",
     bagImageUrl:
-      "https://www.layngo.com/cdn/shop/files/COS20QLAV7709-OPENANDCLOSED-SquareOverlayVersion_1_2000x.jpg?v=1730750845",
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/COS20QLAV7709-OPENANDCLOSED-SquareOverlayVersion_1.jpg?v=1730750845",
     swatchImageUrl: "https://m.media-amazon.com/images/I/21JH7De0Y-L._SS64_.jpg",
   },
 ];
@@ -458,7 +458,11 @@ export function getCosmo20InitialSelection(product: ShopifyProduct["node"]): { v
 /** Hero/gallery URLs: curated Amazon set when present, else variant featured image from Shopify. */
 export function getCosmo20HeroImageUrls(shopifyColor: string, variant?: VariantNode): string[] {
   const def = resolveCosmo20SwatchDef(shopifyColor);
-  if (def) return def.galleryImageUrls?.length ? def.galleryImageUrls : [def.bagImageUrl];
-  const u = variant?.image?.url;
-  return u ? [u] : [];
+  const variantUrl = variant?.image?.url;
+  if (def) {
+    if (def.galleryImageUrls?.length) return def.galleryImageUrls;
+    if (variantUrl) return [variantUrl];
+    return [def.bagImageUrl];
+  }
+  return variantUrl ? [variantUrl] : [];
 }
