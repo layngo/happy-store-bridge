@@ -3,6 +3,7 @@ import type { ShopifyProduct } from "@/lib/shopify";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 import { cn } from "@/lib/utils";
 import quiltedLavenderAsset from "@/assets/cosmo-20-quilted-lavender.png.asset.json";
+import floralFunAsset from "@/assets/cosmo-20-floral-fun.jpg.asset.json";
 
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
 
@@ -239,9 +240,8 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     shopifyColor: "Floral Fun",
     selectedLabel: "Floral Fun",
     tooltip: "Floral Fun",
-    bagImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/COS20FLBG7679-OPENANDCLOSED-SquareOverlayVersion_1.jpg?v=1730750646",
-    swatchImageUrl: "https://m.media-amazon.com/images/I/51PEb9KgQ-L._SS64_.jpg",
+    bagImageUrl: floralFunAsset.url,
+    swatchImageUrl: floralFunAsset.url,
   },
   {
     shopifyColor: "Lips (Black Inside)",
