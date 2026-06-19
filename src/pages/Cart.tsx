@@ -8,11 +8,12 @@ import { Button } from "@/components/ui/button";
 import { PageSeo } from "@/components/PageSeo";
 import { useCartStore, type CartItem } from "@/stores/cartStore";
 import { navigateToCheckout } from "@/lib/navigateToCheckout";
+import { normalizeOptionValueLabel } from "@/lib/displayOptionValue";
 
 const formatOptions = (item: CartItem) => {
   const label = item.selectedOptions
     .filter((o) => o.value && o.value !== "Default Title")
-    .map((o) => o.value)
+    .map((o) => normalizeOptionValueLabel(o.value))
     .join(" · ");
   return label || null;
 };
