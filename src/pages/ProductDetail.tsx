@@ -2032,7 +2032,7 @@ const ProductDetail = () => {
             ) : null}
 
             <section
-              className="mt-14 sm:mt-16"
+              className="mt-20 sm:mt-24"
               aria-label={
                 layNGoLifestyleGallery
                   ? isLayNGoLarge60
@@ -2075,7 +2075,7 @@ const ProductDetail = () => {
                 ) : (
                   <div
                     className={cn(
-                      "relative w-full overflow-hidden rounded-2xl border border-border bg-white shadow-inner aspect-video",
+                      "relative mx-auto w-full max-w-full overflow-hidden rounded-2xl border border-border bg-white shadow-inner aspect-video md:w-[80%]",
                       !cosmoYoutubeId && "bg-muted/40",
                     )}
                   >
