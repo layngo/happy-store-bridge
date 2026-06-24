@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { StaticPageLayout } from "@/components/StaticPageLayout";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,6 +29,7 @@ const Contact = () => {
   const [orderNumber, setOrderNumber] = useState("");
   const [company, setCompany] = useState("");
   const [message, setMessage] = useState("");
+  const [communicationsConsent, setCommunicationsConsent] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const submitInFlight = useRef(false);
 
@@ -45,6 +47,13 @@ const Contact = () => {
     e.preventDefault();
     if (submitInFlight.current) return;
 
+    if (!communicationsConsent) {
+      toast.error("Consent required", {
+        description: "Please agree to receive communications before sending your message.",
+      });
+      return;
+    }
+
     submitInFlight.current = true;
     setSubmitting(true);
     try {
@@ -57,6 +66,7 @@ const Contact = () => {
         orderNumber: topic === "general" ? orderNumber.trim() || undefined : undefined,
         company: topic === "wholesale" ? company.trim() || undefined : undefined,
         message: message.trim(),
+        communicationsConsent: true,
       });
 
       if (!result.ok) {
@@ -241,7 +251,32 @@ const Contact = () => {
             />
           </div>
 
-          <button type="submit" className="brand-btn-editorial w-full sm:w-auto" disabled={submitting}>
+          <div className="flex items-start gap-3 rounded-md border border-border/80 bg-muted/30 px-4 py-3">
+            <Checkbox
+              id="contact-communications-consent"
+              checked={communicationsConsent}
+              onCheckedChange={(checked) => setCommunicationsConsent(checked === true)}
+              className="mt-0.5"
+            />
+            <Label
+              htmlFor="contact-communications-consent"
+              className="cursor-pointer text-sm font-normal leading-relaxed text-muted-foreground"
+            >
+              By sending this message, I agree that Lay-n-Go may contact me about this inquiry and send replies,
+              updates, and marketing messages by email or text at the information I provided. Consent is not required to
+              purchase. I can unsubscribe from marketing emails or reply STOP to opt out of texts at any time. See our{" "}
+              <Link to="/policies/privacy-policy" className="text-primary hover:underline">
+                Privacy Policy
+              </Link>
+              .
+            </Label>
+          </div>
+
+          <button
+            type="submit"
+            className="brand-btn-editorial w-full sm:w-auto"
+            disabled={submitting || !communicationsConsent}
+          >
             {submitting ? "Sending…" : "Send message"}
           </button>
         </form>
