@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Facebook, Globe, Instagram } from "lucide-react";
 import { footerCatalogLinks, footerInfoLinks, socialLinks } from "@/lib/siteNav";
 import { subscribeToNewsletter } from "@/lib/newsletterApi";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { ButtonSpinner } from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
@@ -20,23 +20,29 @@ const sectionHeading =
 export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const submitInFlight = useRef(false);
 
   const onNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim();
-    if (!trimmed || submitting) return;
+    if (!trimmed || submitting || submitInFlight.current) return;
 
+    submitInFlight.current = true;
     setSubmitting(true);
-    const result = await subscribeToNewsletter({ email: trimmed });
-    setSubmitting(false);
+    try {
+      const result = await subscribeToNewsletter({ email: trimmed });
 
-    if (!result.ok) {
-      toast.error("Could not join", { description: (result as { error: string }).error });
-      return;
+      if (!result.ok) {
+        toast.error("Could not join", { description: (result as { error: string }).error });
+        return;
+      }
+
+      toast.success("You are on the list!", { description: result.message });
+      setEmail("");
+    } finally {
+      submitInFlight.current = false;
+      setSubmitting(false);
     }
-
-    toast.success("You are on the list!", { description: result.message });
-    setEmail("");
   };
 
   const socialRow = (

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import { StaticPageLayout } from "@/components/StaticPageLayout";
@@ -29,6 +29,7 @@ const Contact = () => {
   const [company, setCompany] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const submitInFlight = useRef(false);
 
   useEffect(() => {
     if (location.hash !== "#wholesale") return;
@@ -42,6 +43,9 @@ const Contact = () => {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitInFlight.current) return;
+
+    submitInFlight.current = true;
     setSubmitting(true);
     try {
       const result = await submitContactForm({
@@ -69,6 +73,7 @@ const Contact = () => {
       setCompany("");
       setMessage("");
     } finally {
+      submitInFlight.current = false;
       setSubmitting(false);
     }
   };
