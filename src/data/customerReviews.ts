@@ -440,7 +440,6 @@ export const TRAVELER_CUSTOMER_REVIEWS: CustomerReview[] = [
 ];
 
 const PLAY_HOT_WHEELS_PHOTO = "/products/lay-n-go-large-60/reviews/hot-wheels.jpg";
-const PLAY_LEGO_BOUNDARY_PHOTO = "/products/lay-n-go-large-60/reviews/lego-boundary.jpg";
 const PLAY_DUPLO_STORAGE_PHOTO = "/products/lay-n-go-large-60/reviews/duplo-storage.jpg";
 const PLAY_LEGO_CLEANUP_PHOTO = "/products/lay-n-go-large-60/reviews/lego-cleanup.jpg";
 
@@ -467,14 +466,6 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     rating: 5,
     title: "Great travel bag for Lego lovers",
     text: "I bought this mat for an international flight with my 6-year-old and filled it with several Lego Mixel sets. There was more than enough space in the cinched bag. I pre-opened the packages and sorted sets into zip-top bags for the flight. We opened the Lay-n-Go slightly in his lap and he happily built away with no issues. Capacity-wise, you could carry the equivalent of a very large grapefruit: easily four to six smaller Lego sets. Hot Wheels, Polly Pockets, and puzzles work well too. Light but sturdy, with a velcro pocket inside. Where it has really shined is as a playmat on hotel beds, at Grandma's, the doctor's office, or a restaurant table. Easy to cinch back up when playtime is done. Highly recommend!",
-  },
-  {
-    id: "overpriced-boundary",
-    name: "Nathan",
-    rating: 4,
-    title: "Overpriced but serves its purpose like nothing else",
-    text: "This product creates an illusion of a boundary like nothing else, magically resulting in most of the LEGO staying within its circumference. For that alone, 4 stars. In terms of value, the item could easily be sold at half the price: it's basically a ripstop nylon circle with a cord. In terms of size, it is barely 60\" to the rim and will barely hold one large tote of LEGO (30 lbs or so). We use it as a designated play area and dump the LEGO back into a tote when we're done. For storing LEGO it only works for a small collection, but it keeps blocks in a designated area and makes cleanup easier.",
-    images: [PLAY_LEGO_BOUNDARY_PHOTO],
   },
   {
     id: "best-product-ever",
