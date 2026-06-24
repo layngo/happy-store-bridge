@@ -17,6 +17,8 @@ export type CustomerReview = {
   images?: string[];
   /** Keep editorial order even when photos would normally sort this review to the top */
   deferImagesFirst?: boolean;
+  /** Pin to the top of the list regardless of photo sorting */
+  featuredFirst?: boolean;
 };
 
 export function averageReviewRating(reviews: CustomerReview[]): number {
@@ -450,6 +452,7 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "VictoriaSteele",
     rating: 5,
     title: "Best product ever!",
+    featuredFirst: true,
     text: "Best. Buy. Ever. We have a ton of Lego: and I've tried every storage solution possible. Separating by type was a complete failure; one enormous tub was too hard to search and too heavy to lift. I finally ordered the Lay-n-Go and since I tipped our enormous collection onto it, I have not looked back! It's big enough for a mountain of Lego and plenty of kids and adults at once. Packing away takes literally seconds. Best of all, my kids are actually playing with their Lego again. Massive win!",
   },
   {
@@ -503,6 +506,7 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     title: "One of my favorite Amazon purchases!",
     text: "Absolutely LOVE this Lego storage bag! We were gifted a large box of Lego Duplos from cousins. Storing them in cardboard meant they got dumped everywhere and the kids barely played with them twice a year. I bought the biggest size: we LOVE IT! Cleanup is a breeze, pieces are accessible, and we've played with our Legos at least 25 times in the last 3 months! Happy kids. Happy mom. Our large grocery-store apple box of Duplos fits with room to spare.",
     images: [PLAY_DUPLO_STORAGE_PHOTO],
+    deferImagesFirst: true,
   },
   {
     id: "executive-functioning",
@@ -525,6 +529,7 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     title: "Handy helper with one caveat",
     text: "My five-year-old recently got into Legos: the tiny ones: and they were everywhere! We tried bins and baggies but cleanup was a real pain. The Lay-n-Go thought proved worth it. We keep it in a toy chest; my son pulls it out to play. He needs help opening it, but cleanup is so much easier. When done we throw strays on the mat. He tries to close it by pulling the string (which doesn't lock it), so an adult usually helps. There is a hole in the opening when closed: small Legos can fall through if it isn't kept upright. Even with that, it's still good value for us.",
     images: [PLAY_LEGO_CLEANUP_PHOTO],
+    deferImagesFirst: true,
   },
   {
     id: "great-lightweight-bag",

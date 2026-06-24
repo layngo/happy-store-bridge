@@ -22,13 +22,21 @@ type CustomerReviewsSectionProps = {
   className?: string;
 };
 
-function reviewsWithImagesFirst(reviews: CustomerReview[]): CustomerReview[] {
-  return [...reviews].sort((a, b) => {
-    const aHasImages = Boolean(a.images?.length) && !a.deferImagesFirst;
-    const bHasImages = Boolean(b.images?.length) && !b.deferImagesFirst;
-    if (aHasImages === bHasImages) return 0;
-    return aHasImages ? -1 : 1;
-  });
+function orderCustomerReviews(reviews: CustomerReview[]): CustomerReview[] {
+  return reviews
+    .map((review, index) => ({ review, index }))
+    .sort((a, b) => {
+      const aFeatured = Boolean(a.review.featuredFirst);
+      const bFeatured = Boolean(b.review.featuredFirst);
+      if (aFeatured !== bFeatured) return aFeatured ? -1 : 1;
+      if (aFeatured && bFeatured) return a.index - b.index;
+
+      const aHasImages = Boolean(a.review.images?.length) && !a.review.deferImagesFirst;
+      const bHasImages = Boolean(b.review.images?.length) && !b.review.deferImagesFirst;
+      if (aHasImages !== bHasImages) return aHasImages ? -1 : 1;
+      return a.index - b.index;
+    })
+    .map(({ review }) => review);
 }
 
 function ReviewCard({ review }: { review: CustomerReview }) {
@@ -71,7 +79,7 @@ export function CustomerReviewsSection({
   }, [productHandle]);
 
   const reviews = useMemo(
-    () => reviewsWithImagesFirst([...staticReviews, ...submittedReviews]),
+    () => orderCustomerReviews([...staticReviews, ...submittedReviews]),
     [staticReviews, submittedReviews],
   );
 
