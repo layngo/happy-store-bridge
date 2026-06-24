@@ -466,6 +466,7 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     title: "Perfect for hot wheels",
     text: "I got the large size: I think I would have liked the medium better but my son has a lot of cars and the large is working out GREAT! Perfect for hot wheels and easy clean up. Didn't want to buy any storage container or toy bin. I am very, very happy with this purchase.",
     images: [PLAY_HOT_WHEELS_PHOTO],
+    deferImagesFirst: true,
   },
   {
     id: "lego-travel-flight",
