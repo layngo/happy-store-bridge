@@ -13,7 +13,8 @@ const DEFAULT_NEWSLETTER_WEBHOOK_URL =
   "https://layngo.app.n8n.cloud/webhook/layngo-newsletter-signup";
 
 function newsletterEndpoint(): string {
-  if (import.meta.env.DEV || isTurnstileConfigured()) {
+  // Local dev uses Vite middleware; production posts to n8n (Turnstile verified there).
+  if (import.meta.env.DEV) {
     return "/api/newsletter";
   }
 

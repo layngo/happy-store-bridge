@@ -1,0 +1,6 @@
+# Cloudflare Pages — static site (dist/) + functions/ (e.g. /api/newsletter).
+# Connect this repo in Workers & Pages → Create → Pages → Connect to Git, or deploy with:
+#   npm run build && npx wrangler pages deploy dist
+name = "layngo-storefront"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "dist"
