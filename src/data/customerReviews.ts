@@ -446,6 +446,13 @@ const PLAY_LEGO_CLEANUP_PHOTO = "/products/lay-n-go-large-60/reviews/lego-cleanu
 /** Lay-n-Go Play mats: Large 60″, Lifestyle 44″, Lite 18″ PDPs */
 export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
   {
+    id: "best-product-ever",
+    name: "VictoriaSteele",
+    rating: 5,
+    title: "Best product ever!",
+    text: "Best. Buy. Ever. We have a ton of Lego: and I've tried every storage solution possible. Separating by type was a complete failure; one enormous tub was too hard to search and too heavy to lift. I finally ordered the Lay-n-Go and since I tipped our enormous collection onto it, I have not looked back! It's big enough for a mountain of Lego and plenty of kids and adults at once. Packing away takes literally seconds. Best of all, my kids are actually playing with their Lego again. Massive win!",
+  },
+  {
     id: "good-quality-lego",
     name: "Emily",
     rating: 5,
@@ -466,13 +473,6 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     rating: 5,
     title: "Great travel bag for Lego lovers",
     text: "I bought this mat for an international flight with my 6-year-old and filled it with several Lego Mixel sets. There was more than enough space in the cinched bag. I pre-opened the packages and sorted sets into zip-top bags for the flight. We opened the Lay-n-Go slightly in his lap and he happily built away with no issues. Capacity-wise, you could carry the equivalent of a very large grapefruit: easily four to six smaller Lego sets. Hot Wheels, Polly Pockets, and puzzles work well too. Light but sturdy, with a velcro pocket inside. Where it has really shined is as a playmat on hotel beds, at Grandma's, the doctor's office, or a restaurant table. Easy to cinch back up when playtime is done. Highly recommend!",
-  },
-  {
-    id: "best-product-ever",
-    name: "VictoriaSteele",
-    rating: 5,
-    title: "Best product ever!",
-    text: "Best. Buy. Ever. We have a ton of Lego: and I've tried every storage solution possible. Separating by type was a complete failure; one enormous tub was too hard to search and too heavy to lift. I finally ordered the Lay-n-Go and since I tipped our enormous collection onto it, I have not looked back! It's big enough for a mountain of Lego and plenty of kids and adults at once. Packing away takes literally seconds. Best of all, my kids are actually playing with their Lego again. Massive win!",
   },
   {
     id: "great-quality-large",
