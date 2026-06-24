@@ -7,6 +7,8 @@ export type ContactFormPayload = {
   orderNumber?: string;
   company?: string;
   message: string;
+  /** User agreed to receive inquiry replies and marketing at submit time. */
+  communicationsConsent: boolean;
 };
 
 export type ContactFormResponse =
