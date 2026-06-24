@@ -7,7 +7,7 @@ import { sendChatMessage } from "@/lib/chatApi";
 import { useDialogA11y } from "@/hooks/useDialogA11y";
 import { cn } from "@/lib/utils";
 
-/** Closed Lay-n-Go products — cycles while the assistant is thinking. */
+/** Closed Lay-n-Go products: cycles while the assistant is thinking. */
 const CHAT_THINKING_IMAGES = [
   { src: "/chat/thinking/cosmo-20-pink.png", label: 'Cosmo 20"' },
   { src: "/chat/thinking/cosmo-20-black.png", label: 'Cosmo 20"' },
@@ -22,7 +22,7 @@ const CHAT_THINKING_IMAGES = [
 const STREAM_WORD_MS = 28;
 /** Minimum time to show the thinking animation (also caps how fast FAQ replies appear). */
 const MIN_THINKING_MS = 3_600;
-/** Ms per product image while thinking — lower = faster scroll. */
+/** Ms per product image while thinking: lower = faster scroll. */
 const THINKING_CYCLE_MS = 240;
 
 type UiChatMessage = ChatMessage & { id: string };

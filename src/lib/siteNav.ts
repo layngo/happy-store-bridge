@@ -28,7 +28,7 @@ export const socialLinks = [
   { href: "https://www.pinterest.com/layngo", label: "Pinterest", icon: "pinterest" as const },
 ];
 
-/** Homepage category tiles (COSMO, PLAY, etc.) — link to filtered collection views when applicable */
+/** Homepage category tiles (COSMO, PLAY, etc.): link to filtered collection views when applicable */
 export const heroCategories = [
   { label: "COSMO", hint: "Cosmetics & beauty", to: "/shop/cosmetic-bags" },
   { label: "PLAY", hint: "Toy cleanup & play mats", to: "/collections/play" },
@@ -64,7 +64,7 @@ export const testimonials = [
   },
   {
     quote:
-      "Cannot rave about this bag enough — LOVE IT!! If you wear makeup, you need this bag.",
+      "Cannot rave about this bag enough: LOVE IT!! If you wear makeup, you need this bag.",
     name: "Rachel",
   },
 ] as const;

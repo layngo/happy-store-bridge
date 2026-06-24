@@ -1,4 +1,4 @@
-/** Lay-n-Go complete press archive — generated from legacy press pages. */
+/** Lay-n-Go complete press archive: generated from legacy press pages. */
 
 export type PressArticle = {
   date: string;
@@ -23,7 +23,7 @@ export const PRESS_ARCHIVE_SUBTITLE = "Sources: layngo.com/pages/press & layngo.
 
 export const PRESS_ARCHIVE_SECTIONS: readonly PressSection[] = [
   {
-    "title": "📰 MAIN PRESS PAGE — Featured Articles (2013–2024)",
+    "title": "📰 MAIN PRESS PAGE: Featured Articles (2013–2024)",
     "categories": [
       {
         "title": "🌍 Travel & Lifestyle",
@@ -166,7 +166,7 @@ export const PRESS_ARCHIVE_SECTIONS: readonly PressSection[] = [
           },
           {
             "date": "Feb 25, 2019",
-            "publication": "U.S. Chamber of Commerce / CO—",
+            "publication": "U.S. Chamber of Commerce / CO: ",
             "title": "'Product is King' – Business Lessons from the Founder of Lay-n-Go",
             "featured": false,
             "href": "https://www.uschamber.com/co/good-company/growth-studio/business-advice-lay-n-go"
@@ -382,7 +382,7 @@ export const PRESS_ARCHIVE_SECTIONS: readonly PressSection[] = [
     ]
   },
   {
-    "title": "📰 PRESS SUBPAGE — Articles 2011–2014",
+    "title": "📰 PRESS SUBPAGE: Articles 2011–2014",
     "categories": [
       {
         "title": "⭐ Featured Press Highlights (2011–2014)",
@@ -404,7 +404,7 @@ export const PRESS_ARCHIVE_SECTIONS: readonly PressSection[] = [
           {
             "date": "Dec 6, 2013",
             "publication": "Gizmodo AU",
-            "title": "Lay-n-Go TRAVELER Review — The Perfect Toiletry Bag",
+            "title": "Lay-n-Go TRAVELER Review: The Perfect Toiletry Bag",
             "featured": true,
             "href": "https://www.gizmodo.com.au/2013/12/the-perfect-toiletry-bag-for-those-morally-opposed-to-organization/"
           },

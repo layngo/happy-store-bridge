@@ -32,11 +32,11 @@ const CALLOUT_LIP_LIFESTYLE = "/products/lay-n-go-lifestyle-44/callout-containme
 const CALLOUT_LIP_LITE = "/products/lay-n-go-lite-18/callout-containment-lip.png";
 const CALLOUT_CORD_LITE = "/products/lay-n-go-lite-18/callout-cord-pocket-handle.png";
 const CALLOUT_HANDLE_LITE = "/products/lay-n-go-lite-18/litestrap.png";
-/** Circular callout thumbs — Defender Tactical 20″ diagram (cropped from hero). */
+/** Circular callout thumbs: Defender Tactical 20″ diagram (cropped from hero). */
 const DEFENDER_TACTICAL_CALLOUT_ASSET_V = "2";
 const DEFENDER_TACTICAL_CALLOUT_MESH = `/products/lay-n-go-tactical-bag-20/callout-mesh.png?v=${DEFENDER_TACTICAL_CALLOUT_ASSET_V}`;
 const DEFENDER_TACTICAL_CALLOUT_ZIPPER = `/products/lay-n-go-tactical-bag-20/callout-zipper.png?v=${DEFENDER_TACTICAL_CALLOUT_ASSET_V}`;
-/** Circular callout thumbs — Defender Mini + Tactical lip/cord/strap (trimmed PNGs). */
+/** Circular callout thumbs: Defender Mini + Tactical lip/cord/strap (trimmed PNGs). */
 const DEFENDER_CALLOUT_ASSET_V = "5";
 const DEFENDER_CALLOUT_STRAP = `/products/lay-n-go-defender-callouts/callout-strap.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
 const DEFENDER_CALLOUT_LIP = `/products/lay-n-go-defender-callouts/callout-lip.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
@@ -60,7 +60,7 @@ const DEFENDER_MINI_DIAMETER_BRACKET_CLASS =
   "mx-auto w-[min(100%,58%)] sm:w-[min(100%,58%)] md:w-[min(100%,58%)]";
 const DEFENDER_TACTICAL_DIAMETER_BRACKET_CLASS =
   "mx-auto w-[min(100%,86%)] sm:w-[min(100%,86%)] md:w-[min(100%,85%)] lg:w-[min(100%,85%)]";
-/** Traveler hero — black mat spans ~91% of PNG width (928/1024). */
+/** Traveler hero: black mat spans ~91% of PNG width (928/1024). */
 const TRAVELER_DIAMETER_BRACKET_CLASS =
   "mx-auto w-[min(100%,90.625%)] sm:w-[min(100%,90.625%)] md:w-[min(100%,90.625%)]";
 const DEFENDER_TACTICAL_DOT_R = 6.5;
@@ -120,14 +120,14 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
   },
 ];
 
-/** Defender Mini hero callout stage — matches `hero-callout-main.png` (1024×600). */
+/** Defender Mini hero callout stage: matches `hero-callout-main.png` (1024×600). */
 const DEFENDER_MINI_CALLOUT_VB = { w: 1024, h: 600 } as const;
-/** Defender Tactical hero callout stage — matches `hero-callout-main.png` (1024×1024). */
+/** Defender Tactical hero callout stage: matches `hero-callout-main.png` (1024×1024). */
 const DEFENDER_TACTICAL_CALLOUT_VB = { w: 1024, h: 1024 } as const;
 
 /** Shared callout stage width; Tactical inner stage scales to match Mini height. */
 const DEFENDER_CALLOUT_STAGE_MAX_W = "max-w-5xl";
-/** Mini is 600/1024 tall at full stage width; Tactical PNG is square — same footprint when width = this fraction. */
+/** Mini is 600/1024 tall at full stage width; Tactical PNG is square: same footprint when width = this fraction. */
 const DEFENDER_TACTICAL_STAGE_WIDTH_FRAC = DEFENDER_MINI_CALLOUT_VB.h / DEFENDER_MINI_CALLOUT_VB.w;
 
 const DEFENDER_MINI_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
@@ -192,7 +192,7 @@ const LIFESTYLE_MESH_POCKET_DY_HALF_20PX = 1.33 + (20 / 768) * 100 * 0.5;
 
 type CalloutKey = "cord" | "lip" | "mesh" | "handle";
 
-/** Lite 18″ detail assets have extra padding — zoom so handle, cord/pocket, and lip fill the circle. */
+/** Lite 18″ detail assets have extra padding: zoom so handle, cord/pocket, and lip fill the circle. */
 const LITE_18_THUMB_CROP: Partial<Record<CalloutKey, string>> = {
   handle: "origin-center scale-[1.55] object-cover object-center",
   cord: "origin-center scale-[1.4] object-cover object-[50%_58%]",
@@ -248,7 +248,7 @@ function lifestyleStageXFromMatPercent(matX: number) {
   return LIFESTYLE_STAGE_MAT_MARGIN_PCT + (matX / 100) * LIFESTYLE_STAGE_MAT_WIDTH_PCT;
 }
 
-/** Lip / mesh callout centers — deep in left/right whitespace (≈28% into each gutter at max stage). */
+/** Lip / mesh callout centers: deep in left/right whitespace (≈28% into each gutter at max stage). */
 const LIFESTYLE_LIP_ANCHOR_X = LIFESTYLE_STAGE_MAT_MARGIN_PCT * 0.28;
 const LIFESTYLE_MESH_ANCHOR_X = 100 - LIFESTYLE_STAGE_MAT_MARGIN_PCT * 0.28;
 
@@ -316,7 +316,7 @@ function diagramUsesLifestyleChrome(variant: LayNGoCalloutDiagramVariant) {
   return variant === "lifestyle-44" || variant === "lite-18" || usesFixedDefenderCalloutStage(variant);
 }
 
-/** Mat/diagram stage — Lifestyle, Lite, and Defender match site `bg-background`. */
+/** Mat/diagram stage: Lifestyle, Lite, and Defender match site `bg-background`. */
 function diagramMatSurfaceBg(variant: LayNGoCalloutDiagramVariant) {
   return variant === "lifestyle-44" ||
     variant === "lite-18" ||
@@ -459,7 +459,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 16,
       containerMinHClass: "min-h-[min(92vh,920px)]",
       heroWidthClass: "w-[min(94vw,920px)]",
-      /** Below hero — bracket tracks inset 16″ disc in hero PNG. */
+      /** Below hero: bracket tracks inset 16″ disc in hero PNG. */
       dimensionWrapClass:
         "relative z-20 mx-auto mt-5 w-full max-w-5xl pt-1 pb-4 sm:mt-6 sm:pb-5 md:mt-8 md:pb-6",
       mobileHeroMaxClass: "max-w-[min(96vw,36rem)]",
@@ -479,7 +479,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 20,
       containerMinHClass: "min-h-[min(92vh,920px)]",
       heroWidthClass: "w-[min(94vw,920px)]",
-      /** Below hero — same width as desktop callout stage so bracket aligns with mat. */
+      /** Below hero: same width as desktop callout stage so bracket aligns with mat. */
       dimensionWrapClass:
         "relative z-20 mx-auto mt-5 w-full max-w-5xl pt-1 pb-4 sm:mt-6 sm:pb-5 md:mt-8 md:w-[58.59375%] md:max-w-[calc(64rem*0.5859375)] md:pb-6",
       mobileHeroMaxClass: "max-w-[min(96vw,36rem)]",
@@ -499,7 +499,7 @@ function diagramConfig(variant: LayNGoCalloutDiagramVariant) {
       diameterInches: 18,
       containerMinHClass: "min-h-[min(76.8vh,768px)]",
       heroWidthClass: "w-[min(75.2vw,736px)]",
-      /** Bracket below mat — positive margin clears drawstring / pocket. */
+      /** Bracket below mat: positive margin clears drawstring / pocket. */
       dimensionWrapClass:
         "relative z-20 mx-auto flex w-[min(75.2vw,736px)] flex-col items-center mt-6 pt-2 pb-2 sm:mt-8 sm:pt-3 sm:pb-3 md:mt-10 md:pt-4 md:pb-4 lg:mt-12 lg:pt-5 lg:pb-6",
       mobileHeroMaxClass: "max-w-[min(90vw,25.5rem)]",
@@ -553,22 +553,22 @@ function DiameterLine({
     variant === "traveler-20";
 
   const bracketWidthClass = lifestyle44
-    ? /** Lifestyle hero: mat fills most of the frame — bracket tracks the blue disc, not PNG width */
+    ? /** Lifestyle hero: mat fills most of the frame: bracket tracks the blue disc, not PNG width */
       "mx-auto w-[min(100%,90%)] sm:w-[min(100%,88%)] md:w-[min(100%,86%)] lg:w-[min(100%,84%)]"
     : lite18
-      ? /** Lite hero: mat fills the frame — bracket spans the green disc (centered under product). */
+      ? /** Lite hero: mat fills the frame: bracket spans the green disc (centered under product). */
         "mx-auto w-[min(100%,94%)] sm:w-[min(100%,93%)] md:w-[min(100%,92%)]"
       : defenderMini16
-        ? /** Defender 16″ hero — mat is inset in the PNG (~58% width). */
+        ? /** Defender 16″ hero: mat is inset in the PNG (~58% width). */
           DEFENDER_MINI_DIAMETER_BRACKET_CLASS
         : defenderTactical20
-          ? /** Defender 20″ hero — mat spans ~86% of PNG width. */
+          ? /** Defender 20″ hero: mat spans ~86% of PNG width. */
             DEFENDER_TACTICAL_DIAMETER_BRACKET_CLASS
           : traveler20
-            ? /** Traveler callout hero — black mat spans ~91% of PNG width. */
+            ? /** Traveler callout hero: black mat spans ~91% of PNG width. */
               TRAVELER_DIAMETER_BRACKET_CLASS
             : large60
-              ? /** Large hero: mat is inset in the PNG — bracket must match the blue disc, not the full image width */
+              ? /** Large hero: mat is inset in the PNG: bracket must match the blue disc, not the full image width */
                 "mx-auto w-[min(100%,58%)] sm:w-[min(100%,60%)] md:w-[min(100%,62%)] lg:w-[min(100%,61%)]"
               : "w-full max-w-md sm:max-w-lg";
 
@@ -809,7 +809,7 @@ function DefenderArrowEditorOverlay({
   return (
     <div className="pointer-events-none absolute inset-0 z-[80] overflow-visible">
       <span className="pointer-events-none absolute left-2 top-2 z-[90] rounded bg-amber-100 px-2 py-1 text-[10px] font-bold text-amber-950 shadow-sm ring-1 ring-amber-300">
-        Editing: {activeLeaderKey} — drag blue and rose handles
+        Editing: {activeLeaderKey}: drag blue and rose handles
       </span>
       {joints.map(({ joint, label, point, dotClass }) => {
         const pos = viewBoxPointToStagePos(point, stageRect, viewBox);
@@ -1055,7 +1055,7 @@ function FloatingCallout({
   const liteHandle = variant === "lite-18" && calloutKey === "handle";
   const y = liteHandle ? Math.max(0, Math.min(3, anchorY)) : anchorY;
   const lifestyleThumb = diagramUsesLifestyleChrome(variant);
-  /** Lifestyle 44″ only — Lite uses full-size cord thumb and lip-like stacking (see `textAbove`). */
+  /** Lifestyle 44″ only: Lite uses full-size cord thumb and lip-like stacking (see `textAbove`). */
   const cordLifestyleCompact = lifestyleThumb && calloutKey === "cord" && variant !== "lite-18";
   const lite18Thumb = variant === "lite-18";
   const textAbove = variant === "lite-18" && calloutKey === "cord" ? false : metaTextAbove;
@@ -1484,7 +1484,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
     >
       {isDefenderVariant ? (
         <>
-          {/* Mobile — stacked hero, diameter, and callout thumbs (matches Large / Traveler diagrams) */}
+          {/* Mobile: stacked hero, diameter, and callout thumbs (matches Large / Traveler diagrams) */}
           <div className="flex flex-col items-center gap-3 pb-6 md:hidden">
             <img
               src={config.heroSrc}
@@ -1511,7 +1511,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             </div>
           </div>
 
-          {/* Desktop — hero with leader lines and positioned callout thumbs */}
+          {/* Desktop: hero with leader lines and positioned callout thumbs */}
           <div className="relative hidden px-1 pb-8 sm:px-2 md:block md:pb-10">
             <EditableDefenderCalloutStage
               variant={defenderVariant}

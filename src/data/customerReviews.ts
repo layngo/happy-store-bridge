@@ -46,7 +46,7 @@ export const COSMO_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Olivia Hart",
     rating: 5,
     title: "The Ultimate Travel Companion for Makeup Lovers",
-    text: "If you're tired of dealing with messy makeup bags that make it hard to find what you need, the Lay-n-Go Cosmo Drawstring Cosmetic & Makeup Bag is a game-changer. I purchased the purple 22-inch version for my travel essentials, and it's been an absolute lifesaver. This durable, machine washable organizer has totally transformed how I store and access my makeup, making travel a breeze! The drawstring design makes it super easy to open and close the bag with one simple pull, and it instantly transforms into a flat surface for easy access to your makeup items. With plenty of space to organize makeup, brushes, skincare, and accessories—plus a zipper pocket and loops for brushes—everything stays neatly separated. It's compact, lightweight, and the easy-to-carry handle makes it a must-have for your suitcase, gym bag, or purse. The sturdy, water-resistant material is built to last, and it's machine washable. When I unpack it, everything is laid out flat and easy to see, so I no longer waste time digging around for items. When I'm done, it all cinches up in seconds. I couldn't be happier with this purchase, and it's made my makeup routine so much easier—whether at home or on the go.",
+    text: "If you're tired of dealing with messy makeup bags that make it hard to find what you need, the Lay-n-Go Cosmo Drawstring Cosmetic & Makeup Bag is a game-changer. I purchased the purple 22-inch version for my travel essentials, and it's been an absolute lifesaver. This durable, machine washable organizer has totally transformed how I store and access my makeup, making travel a breeze! The drawstring design makes it super easy to open and close the bag with one simple pull, and it instantly transforms into a flat surface for easy access to your makeup items. With plenty of space to organize makeup, brushes, skincare, and accessories: plus a zipper pocket and loops for brushes: everything stays neatly separated. It's compact, lightweight, and the easy-to-carry handle makes it a must-have for your suitcase, gym bag, or purse. The sturdy, water-resistant material is built to last, and it's machine washable. When I unpack it, everything is laid out flat and easy to see, so I no longer waste time digging around for items. When I'm done, it all cinches up in seconds. I couldn't be happier with this purchase, and it's made my makeup routine so much easier: whether at home or on the go.",
   },
   {
     id: "daily-use",
@@ -88,7 +88,7 @@ export const COSMO_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Rebecca Sloan",
     rating: 5,
     title: "The Best makeup travel AND storing case ever!",
-    text: "I wanted to try this for a few weeks to see how I liked it. I would give it more stars if I could. I usually have clutter either on my counter or in a drawer—not anymore. I can now easily see what I have, what I have already purchased, and when I'm low on an item. I purchased the 20-inch which was perfect for me. All my makeup is inside and it makes a very easy bag to store or travel with, making design and makeup application much easier. The drawstring has a clasp that locks so it won't open on its own. Easy close and open—when open, all items are easily seen. I keep my lip colors in the inside zip and the extra bag (with the same drawstring closure) is for my eye shadow colors. The elastic strap sewn in the lining keeps things organized. I went for better quality and value—you won't regret it. I really love mine.",
+    text: "I wanted to try this for a few weeks to see how I liked it. I would give it more stars if I could. I usually have clutter either on my counter or in a drawer: not anymore. I can now easily see what I have, what I have already purchased, and when I'm low on an item. I purchased the 20-inch which was perfect for me. All my makeup is inside and it makes a very easy bag to store or travel with, making design and makeup application much easier. The drawstring has a clasp that locks so it won't open on its own. Easy close and open: when open, all items are easily seen. I keep my lip colors in the inside zip and the extra bag (with the same drawstring closure) is for my eye shadow colors. The elastic strap sewn in the lining keeps things organized. I went for better quality and value: you won't regret it. I really love mine.",
     images: [
       "/products/lay-n-go-cosmo-20/reviews/best-travel-1.jpg",
       "/products/lay-n-go-cosmo-20/reviews/best-travel-2.jpg",
@@ -129,7 +129,7 @@ export const COSMO_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "GemmaWalsh",
     rating: 5,
     title: "Game-Changing Drawstring Cosmetic Bag",
-    text: "I absolutely love this cosmetic bag—it's hands down one of the best I've ever owned. The drawstring design is a total game-changer. Instead of digging around for products, I can lay it flat, see everything at once, and then pull the drawstring to neatly close it in seconds.",
+    text: "I absolutely love this cosmetic bag: it's hands down one of the best I've ever owned. The drawstring design is a total game-changer. Instead of digging around for products, I can lay it flat, see everything at once, and then pull the drawstring to neatly close it in seconds.",
   },
   {
     id: "adhd-friendly",
@@ -185,7 +185,7 @@ export const NAILSPA_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Denise Whitmore",
     rating: 5,
     title: "I thought it was a make up bag",
-    text: "I bought this as a gift as I thought it was a make up bag. It's actually a nail spa bag. My daughter does use it as a make up bag—so multi-purpose, I guess! Very durable. Cute color. A little small but that's the size I purchased—easy to use.",
+    text: "I bought this as a gift as I thought it was a make up bag. It's actually a nail spa bag. My daughter does use it as a make up bag: so multi-purpose, I guess! Very durable. Cute color. A little small but that's the size I purchased: easy to use.",
   },
   {
     id: "versatile",
@@ -302,7 +302,7 @@ export const TRAVELER_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Rachel Dunne",
     rating: 5,
     title: "Really Like This Bag",
-    text: "I found this bag on a website called Grommet.com, which introduces new products by small businesses. I came on Amazon to buy it because I like their protection plan. This bag works great. I usually do my makeup in the car ride on the way to work (I'm a passenger of course) and I've had all kinds of makeup bags from big to small but always found myself digging for something that was always at the bottom of whatever bag I had. I also go on vacation and found myself having to spread everything out in the bathroom and having to clean residue off the sink—and who wants to be cleaning bathrooms on vacation? This bag opens comfortably on my lap and I can spread it out as far or as small as I want to keep things from falling out. I can see everything I need and do my makeup in half the time. I haven't tried it in the bathroom yet, but I can see that it'll make using makeup while on vacation a snap. Some people complained about a gap in the top. I find that if I close it very tightly and then take the cord across the small gap, wind the ends up, and then shove the ends into the little outside pocket that velcros shut, the cord across the gap keeps everything inside the bag. This bag appears water resistant and would clean up nicely with a damp cloth. It also is rather shapeless (meaning no hard edges), leaving it flexible enough to squeeze into tight places like overstuffed suitcases.",
+    text: "I found this bag on a website called Grommet.com, which introduces new products by small businesses. I came on Amazon to buy it because I like their protection plan. This bag works great. I usually do my makeup in the car ride on the way to work (I'm a passenger of course) and I've had all kinds of makeup bags from big to small but always found myself digging for something that was always at the bottom of whatever bag I had. I also go on vacation and found myself having to spread everything out in the bathroom and having to clean residue off the sink: and who wants to be cleaning bathrooms on vacation? This bag opens comfortably on my lap and I can spread it out as far or as small as I want to keep things from falling out. I can see everything I need and do my makeup in half the time. I haven't tried it in the bathroom yet, but I can see that it'll make using makeup while on vacation a snap. Some people complained about a gap in the top. I find that if I close it very tightly and then take the cord across the small gap, wind the ends up, and then shove the ends into the little outside pocket that velcros shut, the cord across the gap keeps everything inside the bag. This bag appears water resistant and would clean up nicely with a damp cloth. It also is rather shapeless (meaning no hard edges), leaving it flexible enough to squeeze into tight places like overstuffed suitcases.",
   },
   {
     id: "where-has-this-been",
@@ -316,7 +316,7 @@ export const TRAVELER_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Laura Ingram",
     rating: 5,
     title: "Great product!",
-    text: "I bought this for my husband because he had commandeered my Lay-n-Go that I found at a craft show and really liked—and while sharing is great, it doesn't work well in this situation. This is perfect for quick organization of travel necessities or anything else you might want to keep organized and contained. I do wish that they had a slightly larger one—maybe 30\"—though as sometimes it can get overcrowded.",
+    text: "I bought this for my husband because he had commandeered my Lay-n-Go that I found at a craft show and really liked: and while sharing is great, it doesn't work well in this situation. This is perfect for quick organization of travel necessities or anything else you might want to keep organized and contained. I do wish that they had a slightly larger one: maybe 30\": though as sometimes it can get overcrowded.",
   },
   {
     id: "constant-traveler",
@@ -358,7 +358,7 @@ export const TRAVELER_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "StellaPark",
     rating: 5,
     title: "Holds everything!",
-    text: "It's super handy—holds all the stuff, but expands out so you can see it all at once instead of having to dig around inside a makeup bag!",
+    text: "It's super handy: holds all the stuff, but expands out so you can see it all at once instead of having to dig around inside a makeup bag!",
   },
   {
     id: "works-advertised",
@@ -421,7 +421,7 @@ export const TRAVELER_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Rochelle",
     rating: 5,
     title: "Awesome must have",
-    text: "I love it—bought a second.",
+    text: "I love it: bought a second.",
   },
   {
     id: "husband-travels-lot",
@@ -444,7 +444,7 @@ const PLAY_LEGO_BOUNDARY_PHOTO = "/products/lay-n-go-large-60/reviews/lego-bound
 const PLAY_DUPLO_STORAGE_PHOTO = "/products/lay-n-go-large-60/reviews/duplo-storage.jpg";
 const PLAY_LEGO_CLEANUP_PHOTO = "/products/lay-n-go-large-60/reviews/lego-cleanup.jpg";
 
-/** Lay-n-Go Play mats — Large 60″, Lifestyle 44″, Lite 18″ PDPs */
+/** Lay-n-Go Play mats: Large 60″, Lifestyle 44″, Lite 18″ PDPs */
 export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
   {
     id: "good-quality-lego",
@@ -458,7 +458,7 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "HeatherColby",
     rating: 5,
     title: "Perfect for hot wheels",
-    text: "I got the large size—I think I would have liked the medium better but my son has a lot of cars and the large is working out GREAT! Perfect for hot wheels and easy clean up. Didn't want to buy any storage container or toy bin. I am very, very happy with this purchase.",
+    text: "I got the large size: I think I would have liked the medium better but my son has a lot of cars and the large is working out GREAT! Perfect for hot wheels and easy clean up. Didn't want to buy any storage container or toy bin. I am very, very happy with this purchase.",
     images: [PLAY_HOT_WHEELS_PHOTO],
   },
   {
@@ -466,14 +466,14 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Jennifer Hart",
     rating: 5,
     title: "Great travel bag for Lego lovers",
-    text: "I bought this mat for an international flight with my 6-year-old and filled it with several Lego Mixel sets. There was more than enough space in the cinched bag. I pre-opened the packages and sorted sets into zip-top bags for the flight. We opened the Lay-n-Go slightly in his lap and he happily built away with no issues. Capacity-wise, you could carry the equivalent of a very large grapefruit—easily four to six smaller Lego sets. Hot Wheels, Polly Pockets, and puzzles work well too. Light but sturdy, with a velcro pocket inside. Where it has really shined is as a playmat on hotel beds, at Grandma's, the doctor's office, or a restaurant table. Easy to cinch back up when playtime is done. Highly recommend!",
+    text: "I bought this mat for an international flight with my 6-year-old and filled it with several Lego Mixel sets. There was more than enough space in the cinched bag. I pre-opened the packages and sorted sets into zip-top bags for the flight. We opened the Lay-n-Go slightly in his lap and he happily built away with no issues. Capacity-wise, you could carry the equivalent of a very large grapefruit: easily four to six smaller Lego sets. Hot Wheels, Polly Pockets, and puzzles work well too. Light but sturdy, with a velcro pocket inside. Where it has really shined is as a playmat on hotel beds, at Grandma's, the doctor's office, or a restaurant table. Easy to cinch back up when playtime is done. Highly recommend!",
   },
   {
     id: "overpriced-boundary",
     name: "Nathan",
     rating: 4,
     title: "Overpriced but serves its purpose like nothing else",
-    text: "This product creates an illusion of a boundary like nothing else, magically resulting in most of the LEGO staying within its circumference. For that alone, 4 stars. In terms of value, the item could easily be sold at half the price—it's basically a ripstop nylon circle with a cord. In terms of size, it is barely 60\" to the rim and will barely hold one large tote of LEGO (30 lbs or so). We use it as a designated play area and dump the LEGO back into a tote when we're done. For storing LEGO it only works for a small collection, but it keeps blocks in a designated area and makes cleanup easier.",
+    text: "This product creates an illusion of a boundary like nothing else, magically resulting in most of the LEGO staying within its circumference. For that alone, 4 stars. In terms of value, the item could easily be sold at half the price: it's basically a ripstop nylon circle with a cord. In terms of size, it is barely 60\" to the rim and will barely hold one large tote of LEGO (30 lbs or so). We use it as a designated play area and dump the LEGO back into a tote when we're done. For storing LEGO it only works for a small collection, but it keeps blocks in a designated area and makes cleanup easier.",
     images: [PLAY_LEGO_BOUNDARY_PHOTO],
   },
   {
@@ -481,7 +481,7 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "VictoriaSteele",
     rating: 5,
     title: "Best product ever!",
-    text: "Best. Buy. Ever. We have a ton of Lego—and I've tried every storage solution possible. Separating by type was a complete failure; one enormous tub was too hard to search and too heavy to lift. I finally ordered the Lay-n-Go and since I tipped our enormous collection onto it, I have not looked back! It's big enough for a mountain of Lego and plenty of kids and adults at once. Packing away takes literally seconds. Best of all, my kids are actually playing with their Lego again. Massive win!",
+    text: "Best. Buy. Ever. We have a ton of Lego: and I've tried every storage solution possible. Separating by type was a complete failure; one enormous tub was too hard to search and too heavy to lift. I finally ordered the Lay-n-Go and since I tipped our enormous collection onto it, I have not looked back! It's big enough for a mountain of Lego and plenty of kids and adults at once. Packing away takes literally seconds. Best of all, my kids are actually playing with their Lego again. Massive win!",
   },
   {
     id: "great-quality-large",
@@ -502,14 +502,14 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "ChristineAldridge",
     rating: 4,
     title: "Peace restored!",
-    text: "I'm a 44-year-old mom with a LEGO-addicted 5-year-old son. The mess was driving us nuts. This mat restored peace to our home. When it's time to pick up, we pull the cord, the mat gathers into a bag, and in literally 30 seconds they are stored. When opened flat, it provides good play space. You can drag the open mat around easily—very convenient. My only dislike is the slider on the cord and the length of the drawstring when shut—a strangulation hazard for small children, and the slider snags so my son can't open it alone. Still, he is cooperative about putting Legos away now. Thanks to Lay-n-Go, I haven't stepped on a LEGO in weeks!",
+    text: "I'm a 44-year-old mom with a LEGO-addicted 5-year-old son. The mess was driving us nuts. This mat restored peace to our home. When it's time to pick up, we pull the cord, the mat gathers into a bag, and in literally 30 seconds they are stored. When opened flat, it provides good play space. You can drag the open mat around easily: very convenient. My only dislike is the slider on the cord and the length of the drawstring when shut: a strangulation hazard for small children, and the slider snags so my son can't open it alone. Still, he is cooperative about putting Legos away now. Thanks to Lay-n-Go, I haven't stepped on a LEGO in weeks!",
   },
   {
     id: "favorite-amazon-purchase",
     name: "Monica Delaney",
     rating: 5,
     title: "One of my favorite Amazon purchases!",
-    text: "Absolutely LOVE this Lego storage bag! We were gifted a large box of Lego Duplos from cousins. Storing them in cardboard meant they got dumped everywhere and the kids barely played with them twice a year. I bought the biggest size—we LOVE IT! Cleanup is a breeze, pieces are accessible, and we've played with our Legos at least 25 times in the last 3 months! Happy kids. Happy mom. Our large grocery-store apple box of Duplos fits with room to spare.",
+    text: "Absolutely LOVE this Lego storage bag! We were gifted a large box of Lego Duplos from cousins. Storing them in cardboard meant they got dumped everywhere and the kids barely played with them twice a year. I bought the biggest size: we LOVE IT! Cleanup is a breeze, pieces are accessible, and we've played with our Legos at least 25 times in the last 3 months! Happy kids. Happy mom. Our large grocery-store apple box of Duplos fits with room to spare.",
     images: [PLAY_DUPLO_STORAGE_PHOTO],
   },
   {
@@ -517,7 +517,7 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Teresa",
     rating: 5,
     title: "Great storage and clean-up for executive functioning needs",
-    text: "I bought this organizer for my daughter, who has executive functioning needs. We use it for beaded bracelets. Her beads were often spread on the carpet and she was constantly losing them—until this. Now her beads are neatly contained on the mat. When it's time to clean up, she pulls the strings to close the bag. I highly recommend this for parents with children who have executive functioning needs.",
+    text: "I bought this organizer for my daughter, who has executive functioning needs. We use it for beaded bracelets. Her beads were often spread on the carpet and she was constantly losing them: until this. Now her beads are neatly contained on the mat. When it's time to clean up, she pulls the strings to close the bag. I highly recommend this for parents with children who have executive functioning needs.",
   },
   {
     id: "lego-bag-amazing",
@@ -531,7 +531,7 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Julie Brennan",
     rating: 4,
     title: "Handy helper with one caveat",
-    text: "My five-year-old recently got into Legos—the tiny ones—and they were everywhere! We tried bins and baggies but cleanup was a real pain. The Lay-n-Go thought proved worth it. We keep it in a toy chest; my son pulls it out to play. He needs help opening it, but cleanup is so much easier. When done we throw strays on the mat. He tries to close it by pulling the string (which doesn't lock it), so an adult usually helps. There is a hole in the opening when closed—small Legos can fall through if it isn't kept upright. Even with that, it's still good value for us.",
+    text: "My five-year-old recently got into Legos: the tiny ones: and they were everywhere! We tried bins and baggies but cleanup was a real pain. The Lay-n-Go thought proved worth it. We keep it in a toy chest; my son pulls it out to play. He needs help opening it, but cleanup is so much easier. When done we throw strays on the mat. He tries to close it by pulling the string (which doesn't lock it), so an adult usually helps. There is a hole in the opening when closed: small Legos can fall through if it isn't kept upright. Even with that, it's still good value for us.",
     images: [PLAY_LEGO_CLEANUP_PHOTO],
   },
   {
@@ -539,49 +539,49 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Greg",
     rating: 5,
     title: "Great Lightweight Bag",
-    text: "I've bought this as well as an Ozzykids play bag about half the price. The Ozzykids was canvas, much heavier and doesn't shut as tight—I keep Magnatiles in it. This Lay-n-Go is nylon, cinches down, and can be carried like a backpack. Very lightweight and easier to deal with. I keep Legos in this one. It's expensive at $60 but worth it versus the competitor. I'm an actual customer who paid full price.",
+    text: "I've bought this as well as an Ozzykids play bag about half the price. The Ozzykids was canvas, much heavier and doesn't shut as tight: I keep Magnatiles in it. This Lay-n-Go is nylon, cinches down, and can be carried like a backpack. Very lightweight and easier to deal with. I keep Legos in this one. It's expensive at $60 but worth it versus the competitor. I'm an actual customer who paid full price.",
   },
   {
     id: "amazing-time-saver",
     name: "BrianCooke",
     rating: 5,
     title: "Amazing Time Saver",
-    text: "It opens up wide and makes clean up a snap. I could not see laying out Legos without this. The material is strong. The one thing I do not like is the pouch on the side—it has velcro. My wife assumed it was there to store the draw cord, which seems logical, but if you put the cord there it will stick to the velcro and get frayed. The company would do better replacing the velcro with a snap button or removing the pocket.",
+    text: "It opens up wide and makes clean up a snap. I could not see laying out Legos without this. The material is strong. The one thing I do not like is the pouch on the side: it has velcro. My wife assumed it was there to store the draw cord, which seems logical, but if you put the cord there it will stick to the velcro and get frayed. The company would do better replacing the velcro with a snap button or removing the pocket.",
   },
   {
     id: "worth-the-money",
     name: "Helen Vasquez",
     rating: 5,
     title: "Worth the money",
-    text: "Prior to purchasing this, we were using the bucket-blanket system: Legos in a bucket, poured on a blanket for play, hopefully scooped back in. They always strayed beyond the blanket. This mat with interior pockets—for my daughter's Lego people—makes cleanup so much easier. The mat is big enough we don't have stray pieces everywhere. The cord is very long when cinched so an adult helps younger users, but it's a simple step to save my feet from pokey blocks. The thick handle makes moving the closed mat easy. Durable materials and a solid color background when searching for pieces.",
+    text: "Prior to purchasing this, we were using the bucket-blanket system: Legos in a bucket, poured on a blanket for play, hopefully scooped back in. They always strayed beyond the blanket. This mat with interior pockets: for my daughter's Lego people: makes cleanup so much easier. The mat is big enough we don't have stray pieces everywhere. The cord is very long when cinched so an adult helps younger users, but it's a simple step to save my feet from pokey blocks. The thick handle makes moving the closed mat easy. Durable materials and a solid color background when searching for pieces.",
   },
   {
     id: "excellent-messy-toys",
     name: "Susan",
     rating: 5,
     title: "Excellent for kids with messy toys!",
-    text: "Our children think the most fun is dumping a box of toys and ignoring what's inside—then we parents clean up. The Lay-n-Go is an excellent solution. The slight ridge keeps small bits together. It's easy for kids to expand when they want to play. If a younger one dumps it and leaves it, cleanup is easier: expand the mat, sweep toys on, cinch closed. In the closed state it fits in a cubby—we use Ikea wall toy storage and when full of bricks it fits fine.",
+    text: "Our children think the most fun is dumping a box of toys and ignoring what's inside: then we parents clean up. The Lay-n-Go is an excellent solution. The slight ridge keeps small bits together. It's easy for kids to expand when they want to play. If a younger one dumps it and leaves it, cleanup is easier: expand the mat, sweep toys on, cinch closed. In the closed state it fits in a cubby: we use Ikea wall toy storage and when full of bricks it fits fine.",
   },
   {
     id: "love-this-thing",
     name: "MichelleOrtiz",
     rating: 5,
     title: "Love this thing!!!",
-    text: "We tried everything for our son's HUGE Lego collection—sorting by color, by type, even the size sorter (a waste!). Hours of organization doomed when your kid just wants to build. The Lay-n-Go is perfect: he pulls it to whatever room we're in, opens up, and builds. We take it to Grandma's and all the cousins play! One rule: keep Legos in the pile, not on the floor. When he finishes a creation it goes on the bookshelf; if there's no room, something comes down and goes back in the Lay-n-Go. LOVE, LOVE, LOVE this thing. Now I need to buy one more!",
+    text: "We tried everything for our son's HUGE Lego collection: sorting by color, by type, even the size sorter (a waste!). Hours of organization doomed when your kid just wants to build. The Lay-n-Go is perfect: he pulls it to whatever room we're in, opens up, and builds. We take it to Grandma's and all the cousins play! One rule: keep Legos in the pile, not on the floor. When he finishes a creation it goes on the bookshelf; if there's no room, something comes down and goes back in the Lay-n-Go. LOVE, LOVE, LOVE this thing. Now I need to buy one more!",
   },
   {
     id: "fast-lego-cleanups",
     name: "Lauren Gibbs",
     rating: 5,
     title: "A must have for fast Lego clean-ups and easy travel",
-    text: "While my son does not contain all his Lego play to this mat, cleanup is a total breeze. He leaves most on there, uses what he wants, then tosses the rest on in handfuls—we pull the drawstring and we're good. We also pack toys beyond Legos for road trips: cinch it up, open again at the rental house. Awesome.",
+    text: "While my son does not contain all his Lego play to this mat, cleanup is a total breeze. He leaves most on there, uses what he wants, then tosses the rest on in handfuls: we pull the drawstring and we're good. We also pack toys beyond Legos for road trips: cinch it up, open again at the rental house. Awesome.",
   },
   {
     id: "cadillac-lego",
     name: "TracyMonroe",
     rating: 4,
     title: "The cadillac of Lego management",
-    text: "My kids play with Legos EVERYWHERE. I learned to wear shoes at all times or suffer foot trauma from a Lego. I had tubs, crates, boxes and special carriers—then grandma sent even MORE. I found this online after stepping on mini-figs and bought it immediately. It keeps Legos in one place, makes kids eager to help clean up, and hangs easily when not in use. Four stars because for what it is, it costs a lot—but money well spent if you need Lego management!",
+    text: "My kids play with Legos EVERYWHERE. I learned to wear shoes at all times or suffer foot trauma from a Lego. I had tubs, crates, boxes and special carriers: then grandma sent even MORE. I found this online after stepping on mini-figs and bought it immediately. It keeps Legos in one place, makes kids eager to help clean up, and hangs easily when not in use. Four stars because for what it is, it costs a lot: but money well spent if you need Lego management!",
   },
 ];
 
@@ -593,7 +593,7 @@ export function isLayNGoPlayReviewsPdp(handle: string): boolean {
 
 /** Shown under “What Our Customers Are Saying” on Large, Lifestyle, and Lite PDPs. */
 export const PLAY_CUSTOMER_REVIEWS_DISCLAIMER =
-  "Reviews in this section are shared across Lay-n-Go play products—the Large (60\"), Lifestyle (44\"), and Lite (18\") mats—not only the product on this page.";
+  "Reviews in this section are shared across Lay-n-Go play products: the Large (60\"), Lifestyle (44\"), and Lite (18\") mats: not only the product on this page.";
 
 const DEFENDER_UTILITY_PHOTOS = [
   "/products/lay-n-go-tactical-bag-20/reviews/utility-open-1.jpg",
@@ -613,28 +613,28 @@ export const DEFENDER_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Cameron",
     rating: 5,
     title: "One word: Perfect.",
-    text: "These are amazing, easy, and great. We like to travel so whether we're staying in a hotel or in a tent, it's perfect. When we stay in a hotel, all the charging cables and pockets are emptied and kept in it and when it's time to go, nothing is left behind. When camping, it's easy to lose things in the dark—but the pockets keep everything secure so when it's time to go, just pull the string and everything is secure. I'm so glad they made the tactical looking option especially since the original ones were made for makeup. My son always has this on him and loves it. Money well spent.",
+    text: "These are amazing, easy, and great. We like to travel so whether we're staying in a hotel or in a tent, it's perfect. When we stay in a hotel, all the charging cables and pockets are emptied and kept in it and when it's time to go, nothing is left behind. When camping, it's easy to lose things in the dark: but the pockets keep everything secure so when it's time to go, just pull the string and everything is secure. I'm so glad they made the tactical looking option especially since the original ones were made for makeup. My son always has this on him and loves it. Money well spent.",
   },
   {
     id: "great-idea-execution",
     name: "Marcus Hale",
     rating: 5,
     title: "Great idea, great execution",
-    text: "When I first saw this, I was really excited to try it out—just seemed like a really smart invention. I've gotten better use out of this than I originally thought. I have used this mostly in a military setting: electrical tape, multi-tool, a Zippo, lip balm, extra boot bands, cammie paint, map pen, extra batteries, and more. I scrunch it up in the top zipper of my pack—super easy to grab, get what I need, and throw it back in. The organizer pockets make it so everything has a place. Has held up really well after extended time in the field. Useful for military, first responders, backpackers, and anyone who needs to organize and quickly access multiple items. I plan to purchase one for my truck and snowmobile bag. Highly recommend.",
+    text: "When I first saw this, I was really excited to try it out: just seemed like a really smart invention. I've gotten better use out of this than I originally thought. I have used this mostly in a military setting: electrical tape, multi-tool, a Zippo, lip balm, extra boot bands, cammie paint, map pen, extra batteries, and more. I scrunch it up in the top zipper of my pack: super easy to grab, get what I need, and throw it back in. The organizer pockets make it so everything has a place. Has held up really well after extended time in the field. Useful for military, first responders, backpackers, and anyone who needs to organize and quickly access multiple items. I plan to purchase one for my truck and snowmobile bag. Highly recommend.",
   },
   {
     id: "love-love-love",
     name: "Tyler",
     rating: 5,
     title: "Love love love...",
-    text: "This is one of those silly little things that you will wind up using constantly. Every day when I travel I have a wallet, phone, hat, keys, chapstick, etc. All the little stuff adds up. It's so nice to put everything in a bag like this, pull the draw cord, and move it all at once from a nightstand to a bed or dresser—or just put it in a duffle and leave the hotel. Also use it for tools on small projects when I need 10–15 items then back to the shop. Awesome little bag.",
+    text: "This is one of those silly little things that you will wind up using constantly. Every day when I travel I have a wallet, phone, hat, keys, chapstick, etc. All the little stuff adds up. It's so nice to put everything in a bag like this, pull the draw cord, and move it all at once from a nightstand to a bed or dresser: or just put it in a duffle and leave the hotel. Also use it for tools on small projects when I need 10–15 items then back to the shop. Awesome little bag.",
   },
   {
     id: "utility-bulky",
     name: "Gavin Ortiz",
     rating: 4,
     title: "Good Utility bag but bulky",
-    text: "Very good bag but kind of large if you are looking for a small organizer to fit in your day bag. I'm using this as a lunch and utilities bag. It's great when you're in a hurry—dump your stuff on the bag and cinch it closed. I regularly pack lunch, toothpaste, toothbrush, earplugs, charger and cable in the zipper pocket, plus a tourniquet and gauze. For an organizer it is a bit bulky but fits an impressive volume. Good for expendable items or collecting things you may not have a specific bag for. When done I use a carabiner to secure it to my belt. Disappointed with how large it is for packing, but I may keep it and buy a smaller one for my pack permanently.",
+    text: "Very good bag but kind of large if you are looking for a small organizer to fit in your day bag. I'm using this as a lunch and utilities bag. It's great when you're in a hurry: dump your stuff on the bag and cinch it closed. I regularly pack lunch, toothpaste, toothbrush, earplugs, charger and cable in the zipper pocket, plus a tourniquet and gauze. For an organizer it is a bit bulky but fits an impressive volume. Good for expendable items or collecting things you may not have a specific bag for. When done I use a carabiner to secure it to my belt. Disappointed with how large it is for packing, but I may keep it and buy a smaller one for my pack permanently.",
     images: [...DEFENDER_UTILITY_PHOTOS],
     deferImagesFirst: true,
   },
@@ -643,21 +643,21 @@ export const DEFENDER_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "LoganPierce",
     rating: 5,
     title: "Amazing how much it holds",
-    text: "Perfect for travel and at home—keeps all my pocket stuff ready to fold and travel.",
+    text: "Perfect for travel and at home: keeps all my pocket stuff ready to fold and travel.",
   },
   {
     id: "three-years-ouch-pouch",
     name: "Jason",
     rating: 5,
     title: "Just shy of 3 years and it's still brand new minus stains.",
-    text: "I have owned my original since January 2023. Figured it's about time to review as I just bought a second for Halloween makeup. This bag is awesome. My original is what we call the ouch pouch—the first aid kit that goes everywhere. It has been used, abused, and abused again; other than stains that don't wash out it is still as good as when I bought it almost 3 years ago. Buy once, cry once—I see this bag easily lasting many more years. My use as a first aid kit contains our normal kit plus advanced diabetic needs and a two-pack of Narcan. Not the most organized but it's the ouch pouch.",
+    text: "I have owned my original since January 2023. Figured it's about time to review as I just bought a second for Halloween makeup. This bag is awesome. My original is what we call the ouch pouch: the first aid kit that goes everywhere. It has been used, abused, and abused again; other than stains that don't wash out it is still as good as when I bought it almost 3 years ago. Buy once, cry once: I see this bag easily lasting many more years. My use as a first aid kit contains our normal kit plus advanced diabetic needs and a two-pack of Narcan. Not the most organized but it's the ouch pouch.",
   },
   {
     id: "organizers-companion",
     name: "Blake Finley",
     rating: 5,
     title: "Organizers companion",
-    text: "Very fast shipping and it's like all the other reviews describe—will be buying more.",
+    text: "Very fast shipping and it's like all the other reviews describe: will be buying more.",
   },
   {
     id: "fast-quick-access",
@@ -671,28 +671,28 @@ export const DEFENDER_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "TravisMcKinney",
     rating: 5,
     title: "FLY FISHING Best thing ever",
-    text: "I got this for fly fishing on local trout streams when I don't want my big bag unless I'm away from the car a long time. I put two small fly boxes, a lanyard, small knife, and other little gear for a quick trip. I snap the bag to my fly rod case and I'm out the door—set up at the river's edge and it works great. My brother bought one on sight; a couple friends bought them too. Awesome for fly fishing when you just want a short outing. For an all-day trek up and down the river I use my Fishpond sling. I bought a second for my ultra-lite fly rig—this thing rocks.",
+    text: "I got this for fly fishing on local trout streams when I don't want my big bag unless I'm away from the car a long time. I put two small fly boxes, a lanyard, small knife, and other little gear for a quick trip. I snap the bag to my fly rod case and I'm out the door: set up at the river's edge and it works great. My brother bought one on sight; a couple friends bought them too. Awesome for fly fishing when you just want a short outing. For an all-day trek up and down the river I use my Fishpond sling. I bought a second for my ultra-lite fly rig: this thing rocks.",
   },
   {
     id: "space-saver-job",
     name: "Damon Reyes",
     rating: 5,
     title: "What a space saver this is",
-    text: "I usually have a small amount of equipment I use daily at my job but it's been hard finding something that holds them all while staying compact. Square tactical bags on Amazon weren't the solution. I was doubtful when I saw the style and colors—it looked more like a makeup bag than a durable tac bag. Then I found the OD green version and gave it a shot. Pretty much all my stuff and more fit in it and cleared up a lot of space. Now I just carry this instead of a few small bags.",
+    text: "I usually have a small amount of equipment I use daily at my job but it's been hard finding something that holds them all while staying compact. Square tactical bags on Amazon weren't the solution. I was doubtful when I saw the style and colors: it looked more like a makeup bag than a durable tac bag. Then I found the OD green version and gave it a shot. Pretty much all my stuff and more fit in it and cleared up a lot of space. Now I just carry this instead of a few small bags.",
   },
   {
     id: "woman-owned-pricing",
     name: "Lauren",
     rating: 4,
     title: "For a Woman Owned Company",
-    text: "The product hands down is great. It seems durable so far—we just got it two days ago. I was sadly disappointed in the pricing between the Defender Tactical and the regular Lay-n-Go. Clearly one's marketed to men and the other to women. I bought both, one for myself and the Defender for my husband. The Defender has a feature or two the regular didn't have and yet the men's was still cheaper—I made sure they were both 20-inch diameter. Need I say more?",
+    text: "The product hands down is great. It seems durable so far: we just got it two days ago. I was sadly disappointed in the pricing between the Defender Tactical and the regular Lay-n-Go. Clearly one's marketed to men and the other to women. I bought both, one for myself and the Defender for my husband. The Defender has a feature or two the regular didn't have and yet the men's was still cheaper: I made sure they were both 20-inch diameter. Need I say more?",
   },
   {
     id: "favorite-amazon-travel",
     name: "Noah Sutton",
     rating: 5,
     title: "One of my favorite Amazon purchases",
-    text: "This makes packing for travel so much easier. Just open it up, toss your charger, cables, meds, chapstick—whatever—on the bag and pull the drawstring to close. It's a long drawstring so I daisy chain the tail to make it shorter, then toss the whole thing into my backpack. At the hotel, on the plane, or in the car, all your stuff is easily accessible.",
+    text: "This makes packing for travel so much easier. Just open it up, toss your charger, cables, meds, chapstick: whatever: on the bag and pull the drawstring to close. It's a long drawstring so I daisy chain the tail to make it shorter, then toss the whole thing into my backpack. At the hotel, on the plane, or in the car, all your stuff is easily accessible.",
   },
   {
     id: "pricey-durable",
@@ -706,7 +706,7 @@ export const DEFENDER_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Grant Whitfield",
     rating: 5,
     title: "I now take this everywhere",
-    text: "Holds a surprising amount of stuff. Two Velcro netted mesh pockets on the inside and a zippered pocket as well (opaque so you don't see through). One Velcro pocket on the outside. Also has a place for attaching Velcro patches. I can now carry a huge amount of things I usually didn't carry with me—bandaids, antibiotic, box cutter, aspirin, charging cables, earbuds, etc. Doesn't look like a purse.",
+    text: "Holds a surprising amount of stuff. Two Velcro netted mesh pockets on the inside and a zippered pocket as well (opaque so you don't see through). One Velcro pocket on the outside. Also has a place for attaching Velcro patches. I can now carry a huge amount of things I usually didn't carry with me: bandaids, antibiotic, box cutter, aspirin, charging cables, earbuds, etc. Doesn't look like a purse.",
     images: [...DEFENDER_EDC_PHOTOS],
   },
   {
@@ -721,7 +721,7 @@ export const DEFENDER_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Ruben",
     rating: 5,
     title: "LAY/N/GO DEFENDER TACTICAL.",
-    text: "Efficient, compact and fits lots of items—recommend it. Fits lots of items but of course is not for everyone; the ones that like it will know what I'm talking about. And it's the bag, not the person, just saying.",
+    text: "Efficient, compact and fits lots of items: recommend it. Fits lots of items but of course is not for everyone; the ones that like it will know what I'm talking about. And it's the bag, not the person, just saying.",
   },
   {
     id: "bought-on-whim",
@@ -735,7 +735,7 @@ export const DEFENDER_CUSTOMER_REVIEWS: CustomerReview[] = [
     name: "Vince",
     rating: 5,
     title: "Great addition to the tool bag",
-    text: "Perfect for quick little jobs! Electrical or low voltage trim outs would be great—grab a couple tools and parts you need, throw me in and go! Awesome! Do wish they had a thicker canvas version though!",
+    text: "Perfect for quick little jobs! Electrical or low voltage trim outs would be great: grab a couple tools and parts you need, throw me in and go! Awesome! Do wish they had a thicker canvas version though!",
   },
   {
     id: "amazing-edc-pouch",

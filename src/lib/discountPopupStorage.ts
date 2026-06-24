@@ -30,7 +30,7 @@ export function markDiscountSignupComplete(email?: string): void {
   }
 }
 
-/** Popup was shown or dismissed this browser session — do not show again until a new session. */
+/** Popup was shown or dismissed this browser session: do not show again until a new session. */
 export function hasSeenDiscountPopupThisSession(): boolean {
   try {
     return sessionStorage.getItem(SEEN_SESSION_KEY) === "1";

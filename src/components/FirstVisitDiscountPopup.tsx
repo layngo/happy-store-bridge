@@ -21,6 +21,9 @@ import { cn } from "@/lib/utils";
 const HERO_IMAGE = "/promo/first-visit-cosmo-hero.png";
 const HERO_WIDTH = 1024;
 const HERO_HEIGHT = 804;
+const MOBILE_HERO_IMAGE = "/promo/first-visit-mobile-hero.png";
+const MOBILE_HERO_WIDTH = 595;
+const MOBILE_HERO_HEIGHT = 1280;
 type Step = "intro" | "email" | "phone" | "verify" | "code";
 
 const redeemFieldClass =
@@ -174,6 +177,162 @@ export function FirstVisitDiscountPopup() {
     setOpen(false);
   };
 
+  /** Shared form/CTA block used by both mobile and desktop layouts. */
+  const renderFormBlock = (align: "right" | "center") => (
+    <div className={cn("flex flex-col gap-2.5 sm:gap-3", align === "center" && "text-center")}>
+      {step === "intro" ? (
+        <Button
+          type="button"
+          size="lg"
+          onClick={() => setStep("email")}
+          className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 shadow-md hover:bg-[#1f1f1f] sm:h-12 sm:text-base"
+        >
+          Redeem
+        </Button>
+      ) : null}
+
+      {step === "email" ? (
+        <form onSubmit={submitEmail} className="space-y-2">
+          <label htmlFor="discount-email" className="sr-only">Email</label>
+          <Input
+            id="discount-email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={cn(redeemFieldClass, "h-11 text-sm sm:h-12 sm:text-base", align === "right" ? "text-right" : "text-center")}
+            required
+          />
+          <Button
+            type="submit"
+            size="lg"
+            className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] sm:h-12 sm:text-base"
+          >
+            Continue
+          </Button>
+        </form>
+      ) : null}
+
+      {step === "phone" ? (
+        <form onSubmit={submitPhone} className="space-y-2">
+          <label htmlFor="discount-phone" className="sr-only">Phone</label>
+          <Input
+            id="discount-phone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="Enter your phone number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className={cn(redeemFieldClass, "h-11 text-sm sm:h-12 sm:text-base", align === "right" ? "text-right" : "text-center")}
+            required
+          />
+          <div className="flex items-start gap-2 rounded-md border border-neutral-200/90 bg-white/90 px-2.5 py-2 text-left shadow-sm backdrop-blur-sm">
+            <Checkbox
+              id="discount-marketing-consent"
+              checked={marketingConsent}
+              onCheckedChange={(checked) => setMarketingConsent(checked === true)}
+              className="mt-0.5 border-neutral-700 data-[state=checked]:bg-neutral-800"
+              aria-required
+            />
+            <label
+              htmlFor="discount-marketing-consent"
+              className="min-w-0 cursor-pointer text-[0.65rem] font-medium leading-snug text-neutral-800 sm:text-xs"
+            >
+              I agree to receive text and marketing emails from Lay-n-Go
+            </label>
+          </div>
+          <Button
+            type="submit"
+            size="lg"
+            disabled={!marketingConsent || busy}
+            className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
+          >
+            {busy ? "Sending code..." : "Email me a verification code"}
+          </Button>
+        </form>
+      ) : null}
+
+      {step === "verify" ? (
+        <form onSubmit={submitVerify} className="space-y-2.5 rounded-xl border border-neutral-200/90 bg-white/95 p-3 shadow-md backdrop-blur-sm sm:space-y-3 sm:p-4">
+          <p className="text-left text-xs font-semibold leading-snug text-neutral-900 sm:text-sm">
+            Check your email for the code
+          </p>
+          <p className="text-left text-[0.65rem] leading-snug text-neutral-600 sm:text-xs">
+            We sent a 6-digit code to <span className="font-medium text-neutral-900">{email}</span>. Check spam if you don&apos;t see it.
+          </p>
+          <div className="flex justify-center">
+            <InputOTP maxLength={6} value={otp} onChange={setOtp} autoFocus>
+              <InputOTPGroup className="gap-1.5 sm:gap-2">
+                <InputOTPSlot index={0} className={otpSlotClass} />
+                <InputOTPSlot index={1} className={otpSlotClass} />
+                <InputOTPSlot index={2} className={otpSlotClass} />
+                <InputOTPSlot index={3} className={otpSlotClass} />
+                <InputOTPSlot index={4} className={otpSlotClass} />
+                <InputOTPSlot index={5} className={otpSlotClass} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+          <Button
+            type="submit"
+            size="lg"
+            disabled={busy || otp.length < 6}
+            className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
+          >
+            {busy ? "Verifying..." : "Verify & get my code"}
+          </Button>
+          <button
+            type="button"
+            onClick={resendCode}
+            disabled={busy}
+            className="w-full text-[0.65rem] font-medium text-neutral-700 underline-offset-2 hover:underline disabled:opacity-50 sm:text-xs"
+          >
+            Resend code to email
+          </button>
+        </form>
+      ) : null}
+
+      {step === "code" ? (
+        <div className="space-y-2.5 rounded-xl border border-neutral-200/90 bg-white/90 p-3 shadow-md backdrop-blur-sm sm:p-4">
+          <p className="text-xs font-medium text-neutral-700 sm:text-sm">Your discount code</p>
+          <p className="text-[0.65rem] text-neutral-600 sm:text-xs">
+            Valid for 10 days: use it at checkout before it expires.
+          </p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <code className="w-full rounded-md border border-neutral-200 bg-white px-2 py-2 text-center font-mono text-base font-semibold tracking-wide text-foreground sm:flex-1 sm:text-lg">
+              {discountCode}
+            </code>
+            <Button type="button" variant="outline" size="sm" className="shrink-0" onClick={copyCode}>
+              Copy
+            </Button>
+          </div>
+          <Button
+            type="button"
+            onClick={finish}
+            className="font-cosmo-cta h-10 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm text-neutral-50 hover:bg-[#1f1f1f] sm:h-11"
+          >
+            Done
+          </Button>
+        </div>
+      ) : null}
+
+      {step !== "code" ? (
+        <Button
+          type="button"
+          variant="destructive"
+          size="lg"
+          onClick={dismiss}
+          className="h-11 w-full gap-2 rounded-md bg-red-600 text-sm font-semibold text-white shadow-md hover:bg-red-700 sm:h-12 sm:text-base"
+        >
+          <X className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" aria-hidden />
+          No, thanks. I&apos;ll pay more.
+        </Button>
+      ) : null}
+    </div>
+  );
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
@@ -186,8 +345,43 @@ export function FirstVisitDiscountPopup() {
           You just won a free discount
         </DialogTitle>
 
+        {/* Mobile layout: portrait hero image with text on top and CTAs toward middle */}
         <div
-          className="relative mx-auto w-full max-w-[min(1024px,calc(100vw-1rem))] shrink-0 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15"
+          className="relative mx-auto block w-full max-w-[min(420px,calc(100vw-1rem))] shrink-0 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15 sm:hidden"
+          style={{ aspectRatio: `${MOBILE_HERO_WIDTH} / ${MOBILE_HERO_HEIGHT}` }}
+        >
+          <img
+            src={MOBILE_HERO_IMAGE}
+            alt="Lay-n-Go Cosmo promotional offer"
+            width={MOBILE_HERO_WIDTH}
+            height={MOBILE_HERO_HEIGHT}
+            className="absolute inset-0 block h-full w-full select-none object-cover"
+            loading="eager"
+            decoding="async"
+            draggable={false}
+          />
+          <div className="absolute inset-0 flex flex-col px-5 pb-5 pt-6">
+            {/* Text block at the top */}
+            <div className="space-y-1.5 text-center">
+              <h2 className="font-heading text-[clamp(1.4rem,6.8vw,2rem)] font-black uppercase leading-[0.95] tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
+                You just won<br />a free discount
+              </h2>
+              <p className="font-heading text-[clamp(0.9rem,4vw,1.15rem)] font-semibold uppercase tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
+                (15% off)
+              </p>
+            </div>
+            {/* Buttons toward the middle */}
+            <div className="mt-[28%] w-full">
+              <div className="mx-auto w-full max-w-[18rem]">
+                {renderFormBlock("center")}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop / tablet layout: existing landscape hero with right-aligned form */}
+        <div
+          className="relative mx-auto hidden w-full max-w-[min(1024px,calc(100vw-1rem))] shrink-0 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15 sm:block"
           style={{ aspectRatio: `${HERO_WIDTH} / ${HERO_HEIGHT}` }}
         >
           <img
@@ -222,164 +416,7 @@ export function FirstVisitDiscountPopup() {
                 </p>
               </div>
 
-              <div className="flex flex-col gap-2.5 sm:gap-3">
-                {step === "intro" ? (
-                  <Button
-                    type="button"
-                    size="lg"
-                    onClick={() => setStep("email")}
-                    className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 shadow-md hover:bg-[#1f1f1f] sm:h-12 sm:text-base"
-                  >
-                    Redeem
-                  </Button>
-                ) : null}
-
-                {step === "email" ? (
-                  <form onSubmit={submitEmail} className="space-y-2">
-                    <label htmlFor="discount-email" className="sr-only">
-                      Email
-                    </label>
-                    <Input
-                      id="discount-email"
-                      type="email"
-                      inputMode="email"
-                      autoComplete="email"
-                      placeholder="Enter your email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className={cn(redeemFieldClass, "h-11 text-right text-sm sm:h-12 sm:text-base")}
-                      required
-                    />
-                    <Button
-                      type="submit"
-                      size="lg"
-                      className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] sm:h-12 sm:text-base"
-                    >
-                      Continue
-                    </Button>
-                  </form>
-                ) : null}
-
-                {step === "phone" ? (
-                  <form onSubmit={submitPhone} className="space-y-2">
-                    <label htmlFor="discount-phone" className="sr-only">
-                      Phone
-                    </label>
-                    <Input
-                      id="discount-phone"
-                      type="tel"
-                      inputMode="tel"
-                      autoComplete="tel"
-                      placeholder="Enter your phone number"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className={cn(redeemFieldClass, "h-11 text-right text-sm sm:h-12 sm:text-base")}
-                      required
-                    />
-                    <div className="flex items-start justify-end gap-2 rounded-md border border-neutral-200/90 bg-white/90 px-2.5 py-2 text-left shadow-sm backdrop-blur-sm">
-                      <Checkbox
-                        id="discount-marketing-consent"
-                        checked={marketingConsent}
-                        onCheckedChange={(checked) => setMarketingConsent(checked === true)}
-                        className="mt-0.5 border-neutral-700 data-[state=checked]:bg-neutral-800"
-                        aria-required
-                      />
-                      <label
-                        htmlFor="discount-marketing-consent"
-                        className="min-w-0 cursor-pointer text-[0.65rem] font-medium leading-snug text-neutral-800 sm:text-xs"
-                      >
-                        I agree to receive text and marketing emails from Lay-n-Go
-                      </label>
-                    </div>
-                    <Button
-                      type="submit"
-                      size="lg"
-                      disabled={!marketingConsent || busy}
-                      className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
-                    >
-                      {busy ? "Sending code…" : "Email me a verification code"}
-                    </Button>
-                  </form>
-                ) : null}
-
-                {step === "verify" ? (
-                  <form onSubmit={submitVerify} className="space-y-2.5 rounded-xl border border-neutral-200/90 bg-white/95 p-3 text-right shadow-md backdrop-blur-sm sm:space-y-3 sm:p-4">
-                    <p className="text-left text-xs font-semibold leading-snug text-neutral-900 sm:text-sm">
-                      Check your email for the code
-                    </p>
-                    <p className="text-left text-[0.65rem] leading-snug text-neutral-600 sm:text-xs">
-                      We sent a 6-digit code to{" "}
-                      <span className="font-medium text-neutral-900">{email}</span>. Check spam if you
-                      don&apos;t see it.
-                    </p>
-                    <div className="flex justify-center sm:justify-end">
-                      <InputOTP maxLength={6} value={otp} onChange={setOtp} autoFocus>
-                        <InputOTPGroup className="gap-1.5 sm:gap-2">
-                          <InputOTPSlot index={0} className={otpSlotClass} />
-                          <InputOTPSlot index={1} className={otpSlotClass} />
-                          <InputOTPSlot index={2} className={otpSlotClass} />
-                          <InputOTPSlot index={3} className={otpSlotClass} />
-                          <InputOTPSlot index={4} className={otpSlotClass} />
-                          <InputOTPSlot index={5} className={otpSlotClass} />
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </div>
-                    <Button
-                      type="submit"
-                      size="lg"
-                      disabled={busy || otp.length < 6}
-                      className="font-cosmo-cta h-11 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm font-semibold tracking-wide text-neutral-50 hover:bg-[#1f1f1f] disabled:cursor-not-allowed disabled:opacity-50 sm:h-12 sm:text-base"
-                    >
-                      {busy ? "Verifying…" : "Verify & get my code"}
-                    </Button>
-                    <button
-                      type="button"
-                      onClick={resendCode}
-                      disabled={busy}
-                      className="w-full text-[0.65rem] font-medium text-neutral-700 underline-offset-2 hover:underline disabled:opacity-50 sm:text-xs"
-                    >
-                      Resend code to email
-                    </button>
-                  </form>
-                ) : null}
-
-                {step === "code" ? (
-                  <div className="space-y-2.5 rounded-xl border border-neutral-200/90 bg-white/90 p-3 text-right shadow-md backdrop-blur-sm sm:p-4">
-                    <p className="text-xs font-medium text-neutral-700 sm:text-sm">Your discount code</p>
-                    <p className="text-[0.65rem] text-neutral-600 sm:text-xs">
-                      Valid for 10 days — use it at checkout before it expires.
-                    </p>
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
-                      <code className="w-full rounded-md border border-neutral-200 bg-white px-2 py-2 text-center font-mono text-base font-semibold tracking-wide text-foreground sm:flex-1 sm:text-lg sm:text-right">
-                        {discountCode}
-                      </code>
-                      <Button type="button" variant="outline" size="sm" className="shrink-0" onClick={copyCode}>
-                        Copy
-                      </Button>
-                    </div>
-                    <Button
-                      type="button"
-                      onClick={finish}
-                      className="font-cosmo-cta h-10 w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-sm text-neutral-50 hover:bg-[#1f1f1f] sm:h-11"
-                    >
-                      Done
-                    </Button>
-                  </div>
-                ) : null}
-
-                {step !== "code" ? (
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="lg"
-                    onClick={dismiss}
-                    className="h-11 w-full gap-2 rounded-md bg-red-600 text-sm font-semibold text-white shadow-md hover:bg-red-700 sm:h-12 sm:text-base"
-                  >
-                    <X className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" aria-hidden />
-                    No, thanks. I&apos;ll pay more.
-                  </Button>
-                ) : null}
-              </div>
+              {renderFormBlock("right")}
             </div>
           </div>
         </div>

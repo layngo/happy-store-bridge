@@ -21,7 +21,7 @@ const DEFENDER_V2_ASSET_V = "8";
 const IMG_16 = `/military-first-responder-v2/defender-mini-16.png?v=${DEFENDER_V2_ASSET_V}`;
 const IMG_20 = `/military-first-responder-v2/defender-tactical-20.png?v=${DEFENDER_V2_ASSET_V}`;
 
-/** Largest disk (20″); 16″ derives from 16:20 — same cap pattern as Cosmo V2 (2 columns). */
+/** Largest disk (20″); 16″ derives from 16:20: same cap pattern as Cosmo V2 (2 columns). */
 const DEFENDER_CIRCLE_BASE_REM = 19.75;
 
 /** Open-mat width ÷ image width (olive-fabric bbox on collection PNGs). */
@@ -30,11 +30,11 @@ const DEFENDER_MAT_WIDTH_FRACTION: Record<16 | 20, number> = {
   20: 443 / 477,
 };
 
-/** 20″ mat width — target mat scales as (inches / 20) × this. */
+/** 20″ mat width: target mat scales as (inches / 20) × this. */
 const DEFENDER_MAT_REF_FRACTION = DEFENDER_MAT_WIDTH_FRACTION[20];
 
 /**
- * Nudge vs literal inches/20 — same idea as Cosmo V2 (20″ photo has extra canvas padding).
+ * Nudge vs literal inches/20: same idea as Cosmo V2 (20″ photo has extra canvas padding).
  */
 const DEFENDER_DISPLAY_SCALE: Record<16 | 20, number> = {
   16: 1.1,
@@ -53,7 +53,7 @@ function defenderStageWidthRatio(inches: 16 | 20): number {
   return (inches / 20) * (DEFENDER_MAT_REF_FRACTION / matFill) * DEFENDER_DISPLAY_SCALE[inches];
 }
 
-/** If any stage >100% column width, every image clamps to full width — mats look the same size. */
+/** If any stage >100% column width, every image clamps to full width: mats look the same size. */
 const DEFENDER_MAX_STAGE_WIDTH_RATIO = Math.max(defenderStageWidthRatio(16), defenderStageWidthRatio(20));
 const DEFENDER_STAGE_FIT = 1 / DEFENDER_MAX_STAGE_WIDTH_RATIO;
 
@@ -61,7 +61,7 @@ function defenderStageHeightRatio(inches: 16 | 20): number {
   return (defenderStageWidthRatio(inches) * DEFENDER_STAGE_FIT) / DEFENDER_IMAGE_ASPECT_W_OVER_H[inches];
 }
 
-/** Shared band height (20″ frame) — all mats bottom-align like Cosmo V2. */
+/** Shared band height (20″ frame): all mats bottom-align like Cosmo V2. */
 const DEFENDER_MAX_BAND_HEIGHT_RATIO = Math.max(
   defenderStageHeightRatio(16),
   defenderStageHeightRatio(20),
@@ -69,7 +69,7 @@ const DEFENDER_MAX_BAND_HEIGHT_RATIO = Math.max(
 
 type SizeSpec = {
   inches: 16 | 20;
-  /** Upper overlay on the circle — matches Cosmo PDP story headline typography. */
+  /** Upper overlay on the circle: matches Cosmo PDP story headline typography. */
   shortName: string;
   imageSrc: string;
   imageAlt: string;
@@ -256,7 +256,7 @@ const MilitaryFirstResponder = () => {
                   ["--defender-stage-w" as string]: stageWidth,
                   ["--defender-diameter-w" as string]: diameterWidth,
                 }}
-                aria-label={`${spec.shortName}, ${spec.inches} inch — ${product.title}. Opens product page.`}
+                aria-label={`${spec.shortName}, ${spec.inches} inch: ${product.title}. Opens product page.`}
               >
                 <p
                   className={cn(

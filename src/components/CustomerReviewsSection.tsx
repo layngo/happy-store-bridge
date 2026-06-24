@@ -143,7 +143,7 @@ export function CustomerReviewsSection({
           ) : null}
         </>
       ) : (
-        <p className="brand-review-body mt-8 px-4 sm:px-0">No reviews yet—be the first to share your experience.</p>
+        <p className="brand-review-body mt-8 px-4 sm:px-0">No reviews yet: be the first to share your experience.</p>
       )}
     </section>
   );

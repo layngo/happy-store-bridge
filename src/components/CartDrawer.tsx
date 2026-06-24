@@ -15,11 +15,12 @@ import { toast } from "sonner";
 import { useCartStore, type CartItem } from "@/stores/cartStore";
 import { navigateToCheckout } from "@/lib/navigateToCheckout";
 import { cn } from "@/lib/utils";
+import { normalizeOptionValueLabel } from "@/lib/displayOptionValue";
 
 function formatOptions(item: CartItem) {
   return item.selectedOptions
     .filter((o) => o.value && o.value !== "Default Title")
-    .map((o) => o.value)
+    .map((o) => normalizeOptionValueLabel(o.value))
     .join(" · ");
 }
 
@@ -160,7 +161,7 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
           </SheetTitle>
           <SheetDescription className="text-sm text-muted-foreground">
             {totalItems === 0
-              ? "Nothing here yet — add something you love."
+              ? "Nothing here yet: add something you love."
               : `${totalItems} item${totalItems !== 1 ? "s" : ""}`}
           </SheetDescription>
         </SheetHeader>

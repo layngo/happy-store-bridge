@@ -52,7 +52,7 @@ export function postYouTubeCommand(iframe: HTMLIFrameElement, func: "playVideo" 
 
 export function buildVimeoEmbedSrc(
   videoId: string,
-  { autoplay, background }: { autoplay: boolean; /** Hex without # — player chrome / letterbox fill */ background?: string },
+  { autoplay, background }: { autoplay: boolean; /** Hex without #: player chrome / letterbox fill */ background?: string },
 ) {
   const params = new URLSearchParams({
     badge: "0",

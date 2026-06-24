@@ -16,7 +16,7 @@ function openCheckoutInNewTab(checkoutUrl: string): boolean {
     return true;
   }
 
-  // Popup blocked — fall back to a user-initiated anchor click which keeps
+  // Popup blocked: fall back to a user-initiated anchor click which keeps
   // the current tab on the storefront.
   const link = document.createElement("a");
   link.href = checkoutUrl;
@@ -30,7 +30,7 @@ function openCheckoutInNewTab(checkoutUrl: string): boolean {
 
 /**
  * Send the buyer to Shopify hosted checkout in a new top-level tab.
- * Never navigates the current frame when embedded — Shopify blocks iframes
+ * Never navigates the current frame when embedded: Shopify blocks iframes
  * (browser shows "refused to connect" for layngo-new.myshopify.com).
  *
  * Appends GA4 cross-domain `_gl` linker params before opening the tab.

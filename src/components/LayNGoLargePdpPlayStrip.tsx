@@ -373,7 +373,7 @@ function TravelerDetailCalloutSection() {
   const { w: vbW, h: vbH } = TRAVELER_CALLOUT_VIEWBOX;
   return (
     <section className="mx-auto mt-12 w-full max-w-6xl overflow-visible md:mt-14" aria-label="Traveler feature callouts">
-      {/* Mobile — stacked hero, diameter, and callout thumbs (matches Large / Lifestyle diagrams) */}
+      {/* Mobile: stacked hero, diameter, and callout thumbs (matches Large / Lifestyle diagrams) */}
       <div className="flex flex-col items-center gap-2 pb-8 md:hidden">
         <div className={TRAVELER_STAGE_CLASS}>
           <img
@@ -398,7 +398,7 @@ function TravelerDetailCalloutSection() {
         </div>
       </div>
 
-      {/* Desktop — hero with leader lines and positioned callout thumbs */}
+      {/* Desktop: hero with leader lines and positioned callout thumbs */}
       <div className="mx-auto hidden w-full max-w-4xl md:block">
         <div className="relative overflow-visible">
           <img
@@ -637,7 +637,7 @@ export function LayNGoLargePdpPlayStrip({
       : "max-h-[min(34vh,220px)] sm:max-h-[min(42vh,300px)] md:max-h-[min(48vh,380px)] lg:max-h-[460px]",
   );
 
-  /** Lifestyle “triangle”: apex + base row — each photo gets more width than a 3-across strip. */
+  /** Lifestyle “triangle”: apex + base row: each photo gets more width than a 3-across strip. */
   const lifestyleTriangleApexImg = cn(
     "h-auto w-full max-w-full object-contain",
     LAY_NGO_LIFESTYLE_PRODUCT_IMAGE_CLASS,
@@ -649,7 +649,7 @@ export function LayNGoLargePdpPlayStrip({
     "max-h-[min(42vh,280px)] sm:max-h-[min(50vh,380px)] md:max-h-[min(54vh,460px)] lg:max-h-[520px]",
   );
 
-  /** Large 60″ — mobile vertical stack uses the same sizing contract as Lifestyle. */
+  /** Large 60″: mobile vertical stack uses the same sizing contract as Lifestyle. */
   const large60MobileApexImg = cn(
     threeStepImageClassName,
     "max-h-[min(50vh,340px)] sm:max-h-[min(56vh,420px)]",
@@ -658,7 +658,7 @@ export function LayNGoLargePdpPlayStrip({
     threeStepImageClassName,
     "max-h-[min(42vh,280px)] sm:max-h-[min(50vh,380px)]",
   );
-  /** Large carry step — taller on mobile so strap + headline read clearly. */
+  /** Large carry step: taller on mobile so strap + headline read clearly. */
   const large60MobileCarryImg = cn(
     threeStepImageClassName,
     "max-h-[min(58vh,400px)] sm:max-h-[min(64vh,480px)]",
@@ -804,7 +804,7 @@ export function LayNGoLargePdpPlayStrip({
               }
             >
               <>
-                {/* Mobile: stacked steps — label on each image, dashed arrows point down */}
+                {/* Mobile: stacked steps: label on each image, dashed arrows point down */}
                 <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-4 px-1 py-1 sm:gap-5 md:hidden">
                   {threeStepFeatures.map((step, index) => (
                     <div key={step.src} className="contents">

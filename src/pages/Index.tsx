@@ -24,35 +24,33 @@ const LAST_BAG_BANNER = "/home/last-bag-banner.png";
 const PRESS_LOGOS = [
   {
     name: "BuzzFeed",
-    src: "/press/logos/buzzfeed.png",
+    src: "/press/logos/buzzfeed.png?v=2",
     href: "https://www.buzzfeed.com/jessicaprobus/store-it-good#.bma95m3qjl",
-    imageClass: "scale-150",
   },
   {
     name: "Parents",
-    src: "/press/logos/parents.png",
+    src: "/press/logos/parents.png?v=2",
     href: "https://www.parents.com/parenting/work/entrepreneurial-moms/#page=2",
   },
   {
     name: "People",
-    src: "/press/logos/people.png",
+    src: "/press/logos/people.png?v=2",
     href: "https://people.com/style/youve-never-seen-a-makeup-bag-that-keeps-your-products-this-organized/",
   },
   {
     name: "Today Show",
-    src: "/press/logos/today.png",
+    src: "/press/logos/today.png?v=2",
     href: "https://www.today.com/style/bobbies-buzz-3-great-gifts-girlfriends-2D11638370",
   },
   {
     name: "Lifehacker",
-    src: "/press/logos/lifehacker.png",
+    src: "/press/logos/lifehacker.png?v=2",
     href: "https://lifehacker.com/lay-n-go-traveler-makes-finding-small-items-in-your-bag-1496408342",
   },
   {
     name: "Elvis Duran",
-    src: "/press/logos/iheart.png",
+    src: "/press/logos/iheart.png?v=2",
     href: "https://elvisduran.iheart.com/articles/whats-trending-461825/whats-trending-december-11th-13055859/",
-    imageClass: "scale-125",
   },
   {
     name: "Red Tricycle",
@@ -62,7 +60,7 @@ const PRESS_LOGOS = [
   },
   {
     name: "Gizmodo",
-    src: "/press/logos/gizmodo-au.png",
+    src: "/press/logos/gizmodo-au.png?v=2",
     href: "https://www.gizmodo.com.au/2013/12/the-perfect-toiletry-bag-for-those-morally-opposed-to-organization/",
   },
 ];
@@ -77,8 +75,29 @@ const Index = () => {
   });
 
   useEffect(() => {
+    // Stale-while-revalidate: render cached collections immediately, then refresh.
+    const CACHE_KEY = "layngo:home-collections:v1";
+    try {
+      const cached = sessionStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached) as ShopifyCollectionSummary[];
+        if (Array.isArray(parsed) && parsed.length) {
+          setCollections(sortCollectionsForDisplay(parsed));
+          setCollectionsLoading(false);
+        }
+      }
+    } catch {
+      // ignore cache read errors
+    }
     fetchCollections(50)
-      .then((raw) => setCollections(sortCollectionsForDisplay(raw)))
+      .then((raw) => {
+        setCollections(sortCollectionsForDisplay(raw));
+        try {
+          sessionStorage.setItem(CACHE_KEY, JSON.stringify(raw));
+        } catch {
+          // ignore cache write errors (quota, private mode)
+        }
+      })
       .catch(console.error)
       .finally(() => setCollectionsLoading(false));
   }, []);
@@ -87,13 +106,13 @@ const Index = () => {
     <div className="min-h-dvh bg-white flex flex-col">
       <PageSeo
         title={`${SITE_TAGLINE}`}
-        description="Shop Lay-n-Go patented drawstring organizers — Cosmo cosmetic bags, Play toy mats, Traveler tech bags, pet beds, and tactical gear. Open flat, cinch closed in seconds."
+        description="Shop Lay-n-Go patented drawstring organizers: Cosmo cosmetic bags, Play toy mats, Traveler tech bags, pet beds, and tactical gear. Open flat, cinch closed in seconds."
         pathname="/"
         keywords="Lay-n-Go, Cosmo makeup bag, drawstring organizer, toy cleanup mat, travel toiletry bag, patented cosmetic bag"
         jsonLd={[
           webPageJsonLd(
             SITE_TAGLINE,
-            "Shop Lay-n-Go patented drawstring organizers — Cosmo cosmetic bags, Play toy mats, Traveler tech bags, pet beds, and tactical gear.",
+            "Shop Lay-n-Go patented drawstring organizers: Cosmo cosmetic bags, Play toy mats, Traveler tech bags, pet beds, and tactical gear.",
             "/",
           ),
           faqJsonLd([...HOME_FAQS]),
@@ -118,7 +137,7 @@ const Index = () => {
       <Header variant="light" />
 
       <main id="main-content" className="flex-1">
-      {/* Hero — ~20:9 frame reveals more of the 16:9 Vimeo crop; Cosmo brand film */}
+      {/* Hero: ~20:9 frame reveals more of the 16:9 Vimeo crop; Cosmo brand film */}
       <section className="relative w-full bg-white">
         <div className="relative aspect-[20/9] w-full overflow-hidden">
           <div className="absolute left-0 right-0 top-1/2 z-[5] aspect-video w-full -translate-y-1/2">
@@ -241,7 +260,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Last bag banner — image left, headline beside it */}
+      {/* Last bag banner: image left, headline beside it */}
       <section className="w-full overflow-hidden bg-white py-6 sm:py-8 md:py-10">
         <div className="flex w-full max-w-[100vw] flex-col items-center gap-6 sm:flex-row sm:items-center sm:gap-8 md:gap-12 lg:gap-16">
           <div className="relative inline-block max-w-[min(100%,63rem)] shrink-0">

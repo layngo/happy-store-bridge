@@ -2,11 +2,14 @@ import { useMemo, type CSSProperties } from "react";
 import type { ShopifyProduct } from "@/lib/shopify";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 import { cn } from "@/lib/utils";
+import quiltedLavenderAsset from "@/assets/cosmo-20-quilted-lavender.png.asset.json";
+import floralFunAsset from "@/assets/cosmo-20-floral-fun.jpg.asset.json";
+import floralFunSwatchAsset from "@/assets/cosmo-20-floral-fun-swatch.jpg.asset.json";
 
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
 
 export interface Cosmo20SwatchDef {
-  /** Canonical catalog key; Shopify may use a shorter alias — see {@link COSMO_20_SHOPIFY_ALIASES} */
+  /** Canonical catalog key; Shopify may use a shorter alias: see {@link COSMO_20_SHOPIFY_ALIASES} */
   shopifyColor: string;
   /** Label under the grid when this swatch is selected */
   selectedLabel: string;
@@ -238,9 +241,8 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     shopifyColor: "Floral Fun",
     selectedLabel: "Floral Fun",
     tooltip: "Floral Fun",
-    bagImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/COS20FLBG7679-OPENANDCLOSED-SquareOverlayVersion_1.jpg?v=1730750646",
-    swatchImageUrl: "https://m.media-amazon.com/images/I/51PEb9KgQ-L._SS64_.jpg",
+    bagImageUrl: floralFunAsset.url,
+    swatchImageUrl: floralFunSwatchAsset.url,
   },
   {
     shopifyColor: "Lips (Black Inside)",
@@ -253,8 +255,7 @@ export const COSMO_20_SWATCHES: Cosmo20SwatchDef[] = [
     shopifyColor: "Quilted Lavender",
     selectedLabel: "Quilted Lavender",
     tooltip: "Quilted Lavender",
-    bagImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/COS20QLAV7709-OPENANDCLOSED-SquareOverlayVersion_1.jpg?v=1730750845",
+    bagImageUrl: quiltedLavenderAsset.url,
     swatchImageUrl: "https://m.media-amazon.com/images/I/21JH7De0Y-L._SS64_.jpg",
   },
 ];

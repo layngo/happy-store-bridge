@@ -4,7 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
 /**
- * Editorial strip below Cosmo PDP hero — flush edges, white field matching photo backs,
+ * Editorial strip below Cosmo PDP hero: flush edges, white field matching photo backs,
  * dotted arrows drawn over images toward bag details.
  */
 
@@ -163,7 +163,7 @@ export function CosmoPdpStory({ hideIntroImage = false }: { hideIntroImage?: boo
       className="relative left-1/2 -ml-[50vw] w-screen bg-white text-foreground"
       aria-labelledby="cosmo-story-intro"
     >
-      {/* Block 1 — mobile: headline full bleed width; desktop: image | headline + bullets */}
+      {/* Block 1: mobile: headline full bleed width; desktop: image | headline + bullets */}
       <div className="py-10 sm:py-12 md:flex md:flex-row md:flex-nowrap md:items-center md:gap-9 lg:gap-10 lg:py-14">
         <p id="cosmo-story-intro" className="sr-only">
           {COSMO_STORY_HEADLINE}
@@ -239,7 +239,7 @@ export function CosmoPdpStory({ hideIntroImage = false }: { hideIntroImage?: boo
             <div className="relative mx-auto w-full max-w-[min(100%,620px)]">
               <RippleLipImage
                 src="/cosmo-pdp/story/image2.png"
-                alt="Lay-n-Go Cosmo bag laid flat — every cosmetic visible at once"
+                alt="Lay-n-Go Cosmo bag laid flat: every cosmetic visible at once"
                 className="block h-auto w-full object-contain object-bottom max-md:max-h-[min(72vh,560px)] md:max-h-[min(68vh,540px)]"
                 loading="lazy"
                 scale={7}

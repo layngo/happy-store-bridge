@@ -27,7 +27,7 @@ export function LoadingSpinner({
   );
 }
 
-/** Inline spinner for buttons — keeps visible label, adds busy state. */
+/** Inline spinner for buttons: keeps visible label, adds busy state. */
 export function ButtonSpinner({ label = "Loading" }: { label?: string }) {
   return (
     <>

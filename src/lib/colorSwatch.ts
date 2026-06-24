@@ -1,4 +1,4 @@
-/** Rough fill when no fabric swatch image exists (never use Shopify variant photos — those are bag heroes). */
+/** Rough fill when no fabric swatch image exists (never use Shopify variant photos: those are bag heroes). */
 export function colorNameToApproximateHex(value: string): string {
   const key = value.trim().toLowerCase();
   const map: Record<string, string> = {

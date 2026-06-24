@@ -1,4 +1,4 @@
-/** Defender Mini / Tactical hero diagram — leader lines + callout positions (viewBox + %). */
+/** Defender Mini / Tactical hero diagram: leader lines + callout positions (viewBox + %). */
 
 export type DefenderCalloutAnchor = "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center";
 

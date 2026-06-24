@@ -77,13 +77,58 @@
 }
 
 @layer components {
-  /* Cosmo story / editorial display — “Forget everything you knew…” */
+  /* Cosmo story / editorial display: “Forget everything you knew…” */
   .brand-display {
     font-family: var(--font-heading);
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: -0.025em;
     line-height: 0.92;
+  }
+
+  /* Added-to-cart toast: editorial display look + accent pulse border */
+  .added-to-cart-toast {
+    font-family: var(--font-heading) !important;
+    padding: 1.25rem 1.5rem !important;
+    min-width: 22rem !important;
+    border-width: 2px !important;
+    border-color: hsl(var(--primary) / 0.6) !important;
+    border-radius: 0.75rem !important;
+    animation: added-to-cart-pulse 1.6s ease-in-out infinite;
+  }
+  .added-to-cart-toast [data-title] {
+    font-family: var(--font-heading) !important;
+    font-weight: 900 !important;
+    font-size: 1.3125rem !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.05 !important;
+    text-transform: uppercase;
+  }
+  .added-to-cart-toast [data-description] {
+    font-family: var(--font-heading) !important;
+    font-weight: 500 !important;
+    font-size: 1.0625rem !important;
+    letter-spacing: -0.01em !important;
+    line-height: 1.25 !important;
+    margin-top: 0.25rem;
+  }
+  .added-to-cart-toast [data-icon] {
+    transform: scale(1.4);
+    margin-right: 0.5rem;
+  }
+  @keyframes added-to-cart-pulse {
+    0%, 100% {
+      box-shadow:
+        0 0 0 0 hsl(var(--primary) / 0.55),
+        0 10px 30px -10px hsl(var(--primary) / 0.25);
+      border-color: hsl(var(--primary) / 0.55);
+    }
+    50% {
+      box-shadow:
+        0 0 0 8px hsl(var(--primary) / 0),
+        0 14px 40px -10px hsl(var(--primary) / 0.45);
+      border-color: hsl(var(--primary));
+    }
   }
 
   .brand-eyebrow {
@@ -930,7 +975,7 @@
     animation-name: our-story-fade-b, our-story-zoom;
   }
 
-  /* Home — Shop by Category tile titles (per-category fonts from brand mockups). */
+  /* Home: Shop by Category tile titles (per-category fonts from brand mockups). */
   .home-cat-label {
     @apply max-w-[92%] text-balance text-center text-white;
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
@@ -965,7 +1010,7 @@
     text-transform: uppercase;
   }
 
-  /* Lay-n-Go PLAY — rounded heavy slab (brand hero / collection tile). */
+  /* Lay-n-Go PLAY: rounded heavy slab (brand hero / collection tile). */
   .home-cat-label--play {
     font-family: "Alfa Slab One", "Cooper Black", "Cooper Std Black", Georgia, serif;
     font-size: clamp(2.75rem, 9.5vw, 4rem);
@@ -978,7 +1023,7 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Outdoor / Tactical — condensed PREVALENT-style, two balanced lines. */
+  /* Outdoor / Tactical: condensed PREVALENT-style, two balanced lines. */
   .home-cat-label--tactical {
     font-family: "Saira Extra Condensed", "League Spartan", sans-serif;
     font-size: clamp(1.75rem, 5.8vw, 2.5rem);
@@ -1013,7 +1058,7 @@
     letter-spacing: 0.06em;
   }
 
-  /* Defender PDP / collection — full-bleed Vimeo, no letterbox bars */
+  /* Defender PDP / collection: full-bleed Vimeo, no letterbox bars */
   .defender-hero-video {
     position: relative;
     left: 50%;
@@ -1031,7 +1076,7 @@
     overflow: hidden;
   }
 
-  /* Match iframe to hero frame — no overscan so the full export stays visible */
+  /* Match iframe to hero frame: no overscan so the full export stays visible */
   .defender-hero-video__embed-inner {
     position: absolute;
     inset: 0;
@@ -1065,7 +1110,7 @@
     text-transform: uppercase;
   }
 
-  /* Cart drawer — roomy line items, large product thumbs */
+  /* Cart drawer: roomy line items, large product thumbs */
   .cart-drawer [data-radix-dialog-close] {
     @apply right-4 top-5 h-9 w-9 rounded-full bg-black/[0.04] opacity-100 hover:bg-black/[0.08];
   }
@@ -1079,7 +1124,7 @@
   }
 
   .cart-line__img {
-    @apply h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03];
+    @apply h-full w-full object-contain p-1 transition-transform duration-300 group-hover:scale-[1.03];
   }
 
   .cart-line__img-placeholder {
@@ -1134,7 +1179,7 @@
     @apply text-xs text-muted-foreground;
   }
 
-  /* About Us — whisper-thin Old Town Alexandria backdrop (Southside 815 painting) */
+  /* About Us: whisper-thin Old Town Alexandria backdrop (Southside 815 painting) */
   .about-us-page {
     @apply relative isolate;
   }

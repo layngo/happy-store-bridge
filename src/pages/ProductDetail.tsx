@@ -234,7 +234,7 @@ const LAY_N_GO_DEFENDER_TACTICAL_20_GALLERY_SLIDES = [
 
 const LAY_N_GO_LARGE_60_BULLETS = [
   `Lay-n-Go Large 60" diameter activity play mat with patented raised lip to keep LEGOs and small toys contained`,
-  "Play for hours, clean up in seconds — just pull the drawstring and it closes completely",
+  "Play for hours, clean up in seconds: just pull the drawstring and it closes completely",
   "4 mesh pockets for storing special pieces",
   "Wide strap for easy carrying, hanging, and storage",
   "Machine washable",
@@ -244,7 +244,7 @@ const LAY_N_GO_LARGE_60_BULLETS = [
 
 const LAY_N_GO_LIFESTYLE_44_BULLETS = [
   `44" diameter backpack activity play mat with patented raised lip to keep toys contained`,
-  "Play for hours, clean up in seconds — just pull the drawstring and it cinches completely closed",
+  "Play for hours, clean up in seconds: just pull the drawstring and it cinches completely closed",
   "Convenient backpack straps plus an extra handle for carrying, hanging, or storing",
   "4 mesh velcroed interior pockets for storing special pieces",
   "Additional purple inner rip-stop liner",
@@ -254,7 +254,7 @@ const LAY_N_GO_LIFESTYLE_44_BULLETS = [
 ] as const;
 
 const LAY_N_GO_LITE_18_BULLETS = [
-  `18" diameter personal activity play mat — compact enough to take anywhere`,
+  `18" diameter personal activity play mat: compact enough to take anywhere`,
   "Perfect for airplanes, car rides, restaurants, or any on-the-go adventure",
   "Patented raised lip keeps LEGOs and small pieces contained on the mat",
   "Pull the drawstring and it cinches completely closed for storage and travel",
@@ -267,14 +267,14 @@ const LAY_N_GO_LITE_18_BULLETS = [
 
 const LAY_N_GO_NAILSPA_18_BULLETS = [
   `Patented 18" portable nail station that opens flat for a clean, contained work surface`,
-  "See all your polishes and tools at once — no more digging through a traditional bag or shoebox",
+  "See all your polishes and tools at once: no more digging through a traditional bag or shoebox",
   "Eight elastic mesh pockets hold your favorite polishes, plus a large circular center pocket for tools and accessories",
   "Raised containment lip keeps polish and tools from rolling off the counter",
   "Machine washable and wipeable for easy cleaning and everyday use",
   "Pull the drawstring to cinch completely closed for storage or travel",
-  "Compact enough to pack in a suitcase or overnight bag — fits anywhere",
+  "Compact enough to pack in a suitcase or overnight bag: fits anywhere",
   "Built-in carrying handle for easy grab-and-go",
-  "Smart 4-in-1 solution — clean surface, quick cleanup, carry-all, and storage in one",
+  "Smart 4-in-1 solution: clean surface, quick cleanup, carry-all, and storage in one",
   "Protected by four U.S. patents: #9,084,459 · #10,016,036 · #10,561,213 · #11,116,298",
   "Nail polish, cosmetics, and accessories not included",
 ] as const;
@@ -282,7 +282,7 @@ const LAY_N_GO_NAILSPA_18_BULLETS = [
 const LAY_N_GO_TRAVELER_20_BULLETS = [
   `20" diameter men's Dopp Kit that lays completely flat for full access to all your toiletries`,
   "No more digging through a traditional kit or putting your toothbrush on a hotel counter",
-  "Patented raised lip keeps everything contained on a clean, dry surface — at home, on the road, or at the gym",
+  "Patented raised lip keeps everything contained on a clean, dry surface: at home, on the road, or at the gym",
   "Zippered interior pocket for storing smaller items",
   "Pull the drawstring and it cinches back into a completely sealed, handled pack",
   "Machine washable",
@@ -471,7 +471,7 @@ const COSMO_FAQ_ITEMS = [
   {
     question: "How does it work?",
     answer:
-      "Open the bag flat to see and reach everything inside. When you're done, pull the drawstring cord to cinch it closed in seconds—no dumping, no rummaging, no mess.",
+      "Open the bag flat to see and reach everything inside. When you're done, pull the drawstring cord to cinch it closed in seconds: no dumping, no rummaging, no mess.",
   },
   {
     question: "What can fit inside?",
@@ -481,7 +481,7 @@ const COSMO_FAQ_ITEMS = [
   {
     question: "Is it actually machine washable?",
     answer:
-      "Yes—just toss it in the washing machine. It's also made from water-resistant fabric that wipes clean easily for quick cleanups between washes.",
+      "Yes: just toss it in the washing machine. It's also made from water-resistant fabric that wipes clean easily for quick cleanups between washes.",
   },
   {
     question: "Is it water resistant?",
@@ -519,7 +519,7 @@ const NAILSPA_FAQ_ITEMS = [
   {
     question: "How does it work?",
     answer:
-      "Open the drawstring so the mat lies flat. Mesh pockets and elastic keep bottles and tools visible and upright while you work. When you are finished, pull the cord to gather everything closed—no more bottles rolling off the towel.",
+      "Open the drawstring so the mat lies flat. Mesh pockets and elastic keep bottles and tools visible and upright while you work. When you are finished, pull the cord to gather everything closed: no more bottles rolling off the towel.",
   },
   {
     question: "What can fit inside?",
@@ -529,7 +529,7 @@ const NAILSPA_FAQ_ITEMS = [
   {
     question: "Is it machine washable?",
     answer:
-      "Yes—follow care instructions on the product label. Between washes, the water-resistant fabric wipes clean for polish smudges and spills.",
+      "Yes: follow care instructions on the product label. Between washes, the water-resistant fabric wipes clean for polish smudges and spills.",
   },
   {
     question: "Is it good for travel?",
@@ -539,7 +539,7 @@ const NAILSPA_FAQ_ITEMS = [
   {
     question: "How is it different from a zippered pouch?",
     answer:
-      "A zip pouch hides everything in a pile. The NAILSPA stays open and flat so you see every item at once, with pockets that keep polish from tipping—then closes in seconds when you are done.",
+      "A zip pouch hides everything in a pile. The NAILSPA stays open and flat so you see every item at once, with pockets that keep polish from tipping: then closes in seconds when you are done.",
   },
 ] as const;
 
@@ -547,7 +547,7 @@ const DEFENDER_MINI_FAQ_ITEMS = [
   {
     question: "What is the Lay-n-Go DEFENDER mini?",
     answer:
-      'The DEFENDER mini is a 16" patented mat-to-bag system that opens flat as a containment mat and cinches closed into a fully sealed bag in seconds—ideal for organizing personal essentials at home, at work, or on the go.',
+      'The DEFENDER mini is a 16" patented mat-to-bag system that opens flat as a containment mat and cinches closed into a fully sealed bag in seconds: ideal for organizing personal essentials at home, at work, or on the go.',
   },
   {
     question: "How does it work?",
@@ -557,7 +557,7 @@ const DEFENDER_MINI_FAQ_ITEMS = [
   {
     question: "What can I store in it?",
     answer:
-      "It's designed to hold personal mission essentials — tools, first aid items, snacks, batteries, lights, knives, and more.",
+      "It's designed to hold personal mission essentials: tools, first aid items, snacks, batteries, lights, knives, and more.",
   },
   {
     question: "What pockets does it include?",
@@ -600,7 +600,7 @@ const DEFENDER_TACTICAL_FAQ_ITEMS = [
   {
     question: "What is the Lay-n-Go DEFENDER Tactical?",
     answer:
-      "The DEFENDER Tactical is a patented utility bag developed with input from active duty and retired service members. It opens flat as a containment mat and cinches closed into a fully sealed bag in seconds—built for anyone who needs fast, organized pack-and-go storage.",
+      "The DEFENDER Tactical is a patented utility bag developed with input from active duty and retired service members. It opens flat as a containment mat and cinches closed into a fully sealed bag in seconds: built for anyone who needs fast, organized pack-and-go storage.",
   },
   {
     question: "How does it work?",
@@ -620,7 +620,7 @@ const DEFENDER_TACTICAL_FAQ_ITEMS = [
   {
     question: "What can I store in it?",
     answer:
-      "It's designed to hold personal mission essentials — tools, first aid supplies, food, batteries, lights, and more. The mesh pockets keep items visible at a glance while the zippered pocket secures valuables or smaller items.",
+      "It's designed to hold personal mission essentials: tools, first aid supplies, food, batteries, lights, and more. The mesh pockets keep items visible at a glance while the zippered pocket secures valuables or smaller items.",
   },
   {
     question: "Is it washable?",
@@ -663,7 +663,7 @@ const DOG_BED_44_FAQ_ITEMS = [
   {
     question: "What is the containment lip?",
     answer:
-      "When laid flat, the DogBed forms a raised edge around the perimeter that keeps your pet's toys, bowls, and belongings contained in one place — perfect for keeping things organized at home or on the go.",
+      "When laid flat, the DogBed forms a raised edge around the perimeter that keeps your pet's toys, bowls, and belongings contained in one place: perfect for keeping things organized at home or on the go.",
   },
   {
     question: "Is it comfortable for my dog?",
@@ -678,7 +678,7 @@ const DOG_BED_44_FAQ_ITEMS = [
   {
     question: "Where can I use it?",
     answer:
-      "The DogBed is designed to go anywhere your dog goes — at home, in the car, on vacation, at outdoor restaurants, or any pet-friendly destination.",
+      "The DogBed is designed to go anywhere your dog goes: at home, in the car, on vacation, at outdoor restaurants, or any pet-friendly destination.",
   },
   {
     question: "What fits in the zipper pocket?",
@@ -716,7 +716,7 @@ const TRAVELER_20_FAQ_ITEMS = [
   {
     question: "How does it work?",
     answer:
-      "Simply open the TRAVELER flat to spread out all your toiletries on a clean, dry, contained surface. When you're done, pull the drawstring to cinch everything closed and pack it away — no sorting, no digging, no mess.",
+      "Simply open the TRAVELER flat to spread out all your toiletries on a clean, dry, contained surface. When you're done, pull the drawstring to cinch everything closed and pack it away: no sorting, no digging, no mess.",
   },
   {
     question: "What is the containment lip?",
@@ -731,7 +731,7 @@ const TRAVELER_20_FAQ_ITEMS = [
   {
     question: "Can I put my toothbrush directly on it?",
     answer:
-      "Yes. The TRAVELER provides a clean, dry surface to place your toothbrush, razor, and other essentials — no more setting items on a hotel bathroom counter.",
+      "Yes. The TRAVELER provides a clean, dry surface to place your toothbrush, razor, and other essentials: no more setting items on a hotel bathroom counter.",
   },
   {
     question: "What pockets does it include?",
@@ -751,7 +751,7 @@ const TRAVELER_20_FAQ_ITEMS = [
   {
     question: "Where can I use it?",
     answer:
-      "The TRAVELER is designed for use at home, in hotels, on the road, or at the gym — anywhere you need a clean, organized surface for your essentials.",
+      "The TRAVELER is designed for use at home, in hotels, on the road, or at the gym: anywhere you need a clean, organized surface for your essentials.",
   },
   {
     question: "Is the design patented?",
@@ -764,12 +764,12 @@ const LITE_18_FAQ_ITEMS = [
   {
     question: "What is the Lay-n-Go LITE?",
     answer:
-      'The Lay-n-Go LITE is a patented 18" personal activity play mat that converts into a carry-all storage bag in seconds. It\'s designed for kids to play, clean up, store, and travel with their small toys — all in one product.',
+      'The Lay-n-Go LITE is a patented 18" personal activity play mat that converts into a carry-all storage bag in seconds. It\'s designed for kids to play, clean up, store, and travel with their small toys: all in one product.',
   },
   {
     question: "How does it work?",
     answer:
-      "Lay the mat flat for playtime, then simply pull the drawstring to cinch everything closed into a fully sealed bag for storage or travel. No dumping bins, no chasing pieces — cleanup takes seconds.",
+      "Lay the mat flat for playtime, then simply pull the drawstring to cinch everything closed into a fully sealed bag for storage or travel. No dumping bins, no chasing pieces: cleanup takes seconds.",
   },
   {
     question: "What is the containment lip?",
@@ -789,12 +789,12 @@ const LITE_18_FAQ_ITEMS = [
   {
     question: "Where can I use it?",
     answer:
-      "The LITE is designed to go anywhere — on an airplane, in the car, at a restaurant, or at home. Its compact size makes it easy to bring along wherever your child goes.",
+      "The LITE is designed to go anywhere: on an airplane, in the car, at a restaurant, or at home. Its compact size makes it easy to bring along wherever your child goes.",
   },
   {
     question: "What does the 4-in-1 solution mean?",
     answer:
-      "The LITE serves as an activity mat, cleanup tool, storage bag, and carry-all — four functions in one product, replacing the need for separate toy bins, bags, and mats.",
+      "The LITE serves as an activity mat, cleanup tool, storage bag, and carry-all: four functions in one product, replacing the need for separate toy bins, bags, and mats.",
   },
   {
     question: "Is it machine washable?",
@@ -827,7 +827,7 @@ const LIFESTYLE_44_FAQ_ITEMS = [
   {
     question: "What is the Lay-n-Go LIFESTYLE?",
     answer:
-      'The Lay-n-Go LIFESTYLE is a patented 44" high-quality backpack activity play mat designed for quick, effortless toy cleanup. Play for hours, then pull the drawstring to cinch it completely closed for storage and travel — no more dumping bins and baskets.',
+      'The Lay-n-Go LIFESTYLE is a patented 44" high-quality backpack activity play mat designed for quick, effortless toy cleanup. Play for hours, then pull the drawstring to cinch it completely closed for storage and travel: no more dumping bins and baskets.',
   },
   {
     question: "How does it work?",
@@ -847,7 +847,7 @@ const LIFESTYLE_44_FAQ_ITEMS = [
   {
     question: "What does the 4-in-1 solution mean?",
     answer:
-      "The LIFESTYLE is a smart all-in-one solution: activity mat, cleanup tool, storage bag, and carry-all — four functions in one product.",
+      "The LIFESTYLE is a smart all-in-one solution: activity mat, cleanup tool, storage bag, and carry-all: four functions in one product.",
   },
   {
     question: "What pockets does it include?",
@@ -885,12 +885,12 @@ const LARGE_60_FAQ_ITEMS = [
   {
     question: "What is the Lay-n-Go LARGE?",
     answer:
-      'The Lay-n-Go LARGE is a patented 60" activity play mat that converts into a fully cinched carry-all in seconds. It\'s designed for kids to play, clean up, store, and travel with their toys — all in one product.',
+      'The Lay-n-Go LARGE is a patented 60" activity play mat that converts into a fully cinched carry-all in seconds. It\'s designed for kids to play, clean up, store, and travel with their toys: all in one product.',
   },
   {
     question: "How does it work?",
     answer:
-      "Lay the mat flat for playtime, then simply pull the drawstring to cinch all the toys closed into a fully sealed bag for storage or travel. No dumping bins, no chasing pieces — cleanup takes seconds.",
+      "Lay the mat flat for playtime, then simply pull the drawstring to cinch all the toys closed into a fully sealed bag for storage or travel. No dumping bins, no chasing pieces: cleanup takes seconds.",
   },
   {
     question: "What is the containment lip?",
@@ -900,7 +900,7 @@ const LARGE_60_FAQ_ITEMS = [
   {
     question: "What size is it?",
     answer:
-      'The LARGE measures 60" in diameter, making it the biggest play surface in the Lay-n-Go lineup — ideal for large toy collections or multiple children playing together.',
+      'The LARGE measures 60" in diameter, making it the biggest play surface in the Lay-n-Go lineup: ideal for large toy collections or multiple children playing together.',
   },
   {
     question: "Does it have pockets?",
@@ -920,7 +920,7 @@ const LARGE_60_FAQ_ITEMS = [
   {
     question: "What does the 4-in-1 solution mean?",
     answer:
-      "The LARGE serves as an activity mat, cleanup tool, storage bag, and carry-all — four functions in one product, replacing the need for separate toy bins, bags, and mats.",
+      "The LARGE serves as an activity mat, cleanup tool, storage bag, and carry-all: four functions in one product, replacing the need for separate toy bins, bags, and mats.",
   },
   {
     question: "Is it good for Lego®?",
@@ -944,7 +944,7 @@ const LARGE_60_FAQ_ITEMS = [
   },
 ] as const;
 
-/** Shopify “PT##” art for Traveler — feature/sizing/travel diagrams, not product photography. */
+/** Shopify “PT##” art for Traveler: feature/sizing/travel diagrams, not product photography. */
 function isLayNGoTraveler20InfographicImageUrl(url: string): boolean {
   return /B00F1TI8T0\.PT\d+/i.test(url);
 }
@@ -1096,7 +1096,7 @@ const ProductDetail = () => {
     return pdpColorHeroPreviewUrl(product, variant, isCosmoMini16);
   }, [product, selectedVariantIdx, isCosmoMini16]);
 
-  /** Cosmo Mini: variant heroes only (Black / CrossMarks) — no Shopify PT/lifestyle/features strip. */
+  /** Cosmo Mini: variant heroes only (Black / CrossMarks): no Shopify PT/lifestyle/features strip. */
   const cosmoMiniHeroUrl = isCosmoMini16 ? stickyConfirmPreviewUrl : null;
 
   const orderedImages = useMemo(() => {
@@ -1141,7 +1141,7 @@ const ProductDetail = () => {
         product.handle.toLowerCase() === "lay-n-go-travel-dog-bed-44"),
   );
 
-  /** Editorial story strip + arrow editor — Cosmo bags only, not Nailspa. */
+  /** Editorial story strip + arrow editor: Cosmo bags only, not Nailspa. */
   const isCosmoStoryPdp = Boolean(
     product &&
       (isCosmo20Product(product.handle) ||
@@ -1380,7 +1380,34 @@ const ProductDetail = () => {
   ).toFixed(2);
   const handleAddToCart = async () => {
     if (!selectedVariant) return;
-    const shopifyProduct: ShopifyProduct = { node: product };
+    // Use the hero image currently displayed on the PDP for this color/variant,
+    // not Shopify's default first image (which is often the color-selector composite).
+    const currentHeroUrl: string | null =
+      cosmoMiniHeroUrl ||
+      (isCosmo22Product(product.handle) && cosmo22HeroUrls.length > 0
+        ? cosmo22HeroUrls[Math.min(cosmo22GalleryIndex, cosmo22HeroUrls.length - 1)]
+        : null) ||
+      (isCosmo20Product(product.handle) && cosmo20HeroUrls.length > 0
+        ? cosmo20HeroUrls[Math.min(cosmo20GalleryIndex, cosmo20HeroUrls.length - 1)]
+        : null) ||
+      (isNailspa18Product(product.handle) && nailspa18HeroUrls.length > 0
+        ? nailspa18HeroUrls[0]
+        : null) ||
+      orderedImages[selectedImage]?.node?.url ||
+      null;
+    const productWithHero = currentHeroUrl
+      ? {
+          ...product,
+          images: {
+            ...product.images,
+            edges: [
+              { node: { url: currentHeroUrl, altText: product.title } },
+              ...(product.images?.edges ?? []),
+            ],
+          },
+        }
+      : product;
+    const shopifyProduct: ShopifyProduct = { node: productWithHero };
     await addItem({
       product: shopifyProduct,
       variantId: selectedVariant.id,
@@ -1389,7 +1416,11 @@ const ProductDetail = () => {
       quantity,
       selectedOptions: selectedVariant.selectedOptions || [],
     });
-    toast.success("Added to cart", { description: `${product.title} × ${quantity}`, position: "top-center" });
+    toast.success("Added to cart", {
+      description: `${product.title} × ${quantity}`,
+      position: "top-center",
+      className: "added-to-cart-toast",
+    });
   };
 
   const handleVariantSelection = (variantIdx: number) => {
@@ -1465,7 +1496,7 @@ const ProductDetail = () => {
                 i === cosmo20GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-white" : "ring-0",
               )}
             >
-              <img src={url} alt={`${product.title} — photo ${i + 1}`} className="max-h-full max-w-full object-contain" />
+              <img src={url} alt={`${product.title}: photo ${i + 1}`} className="max-h-full max-w-full object-contain" />
             </button>
           ))}
         </div>
@@ -1483,7 +1514,7 @@ const ProductDetail = () => {
                 i === nailspa18GalleryIndex ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-0",
               )}
             >
-              <img src={url} alt={`${product.title} — photo ${i + 1}`} className={NAILSPA_PRODUCT_IMAGE_CLASS} />
+              <img src={url} alt={`${product.title}: photo ${i + 1}`} className={NAILSPA_PRODUCT_IMAGE_CLASS} />
             </button>
           ))}
         </div>
@@ -1754,12 +1785,12 @@ const ProductDetail = () => {
         title={product.title}
         description={
           truncateText(stripHtml(product.description || ""), 160) ||
-          `Shop the ${product.title} — patented Lay-n-Go drawstring organizer that opens flat and cinches closed for travel and storage.`
+          `Shop the ${product.title}: patented Lay-n-Go drawstring organizer that opens flat and cinches closed for travel and storage.`
         }
         pathname={`/product/${product.handle}`}
         type="product"
         image={product.images?.edges?.[0]?.node?.url ?? undefined}
-        imageAlt={`${product.title} — Lay-n-Go product photo`}
+        imageAlt={`${product.title}: Lay-n-Go product photo`}
         keywords={`${product.title}, Lay-n-Go, drawstring bag, ${product.tags?.[0] || "organizer"}`}
         jsonLd={[
           productJsonLd({
@@ -2001,7 +2032,7 @@ const ProductDetail = () => {
             ) : null}
 
             <section
-              className="mt-14 sm:mt-16"
+              className="mt-20 sm:mt-24"
               aria-label={
                 layNGoLifestyleGallery
                   ? isLayNGoLarge60
@@ -2044,7 +2075,7 @@ const ProductDetail = () => {
                 ) : (
                   <div
                     className={cn(
-                      "relative w-full overflow-hidden rounded-2xl border border-border bg-white shadow-inner aspect-video",
+                      "relative mx-auto w-full max-w-full overflow-hidden rounded-2xl border border-border bg-white shadow-inner aspect-video md:w-[80%]",
                       !cosmoYoutubeId && "bg-muted/40",
                     )}
                   >
@@ -2061,7 +2092,7 @@ const ProductDetail = () => {
                           Video placeholder
                         </span>
                         <span className="max-w-sm text-sm text-muted-foreground">
-                          Drop in an embed when you&apos;re ready—the layout is sized for 16×9.
+                          Drop in an embed when you&apos;re ready: the layout is sized for 16×9.
                         </span>
                       </div>
                     )}
@@ -2316,7 +2347,7 @@ function isCosmoBlackVariant(v: ShopifyProduct["node"]["variants"]["edges"][numb
 
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
 
-/** Color circles for PDP pickers — fabric swatch or solid fill, never the variant hero photo. */
+/** Color circles for PDP pickers: fabric swatch or solid fill, never the variant hero photo. */
 function pdpColorCircleSwatchStyle(
   handle: string,
   isCosmoMini16Product: boolean,
@@ -2377,7 +2408,7 @@ function dogBedColorSortKey(optionValue: string): number {
   return optionValue.trim().toLowerCase().includes("navy") ? 0 : 1;
 }
 
-/** Lay-n-Go Travel Dog Bed (44″) — solid swatches aligned to product fabric (Burgundy Chocolate / Navy). */
+/** Lay-n-Go Travel Dog Bed (44″): solid swatches aligned to product fabric (Burgundy Chocolate / Navy). */
 function dogBedSwatchStyle(optionValue: string): CSSProperties {
   const key = optionValue.trim().toLowerCase();
   if (key.includes("navy")) return { backgroundColor: "#1e2445" };

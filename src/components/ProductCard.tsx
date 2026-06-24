@@ -185,7 +185,11 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
       quantity: 1,
       selectedOptions: selectedVariant.selectedOptions || [],
     });
-    toast.success("Added to cart", { description: node.title, position: "top-center" });
+    toast.success("Added to cart", {
+      description: node.title,
+      position: "top-center",
+      className: "added-to-cart-toast",
+    });
   };
 
   const colorValues = useMemo(() => {
