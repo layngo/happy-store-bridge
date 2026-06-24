@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Facebook, Globe, Instagram } from "lucide-react";
 import { footerCatalogLinks, footerInfoLinks, socialLinks } from "@/lib/siteNav";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
-import { isNewsletterCaptchaEnabled, subscribeToNewsletter } from "@/lib/newsletterApi";
+import { isNewsletterCaptchaEnabled, subscribeToNewsletter, TURNSTILE_SITE_KEY } from "@/lib/newsletterApi";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ButtonSpinner } from "@/components/LoadingSpinner";
@@ -17,8 +17,6 @@ interface SiteFooterProps {
 
 const sectionHeading =
   "font-heading text-sm font-semibold uppercase tracking-[0.14em] text-foreground";
-
-const turnstileSiteKey = (import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined)?.trim();
 
 export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
   const [email, setEmail] = useState("");
@@ -156,10 +154,10 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
                   {submitting ? <ButtonSpinner label="Subscribing" /> : "Join"}
                 </Button>
               </div>
-              {captchaEnabled && turnstileSiteKey ? (
+              {captchaEnabled ? (
                 <TurnstileWidget
                   key={turnstileKey}
-                  siteKey={turnstileSiteKey}
+                  siteKey={TURNSTILE_SITE_KEY}
                   onToken={setTurnstileToken}
                   onExpire={resetCaptcha}
                   onError={resetCaptcha}

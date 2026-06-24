@@ -1,3 +1,5 @@
+import { isTurnstileConfigured, TURNSTILE_SITE_KEY } from "@/lib/turnstileConfig";
+
 export type NewsletterSignupPayload = {
   email: string;
   turnstileToken?: string;
@@ -10,10 +12,8 @@ export type NewsletterSignupResponse =
 const DEFAULT_NEWSLETTER_WEBHOOK_URL =
   "https://layngo.app.n8n.cloud/webhook/layngo-newsletter-signup";
 
-const turnstileSiteKey = (import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined)?.trim();
-
 function newsletterEndpoint(): string {
-  if (import.meta.env.DEV || turnstileSiteKey) {
+  if (import.meta.env.DEV || isTurnstileConfigured()) {
     return "/api/newsletter";
   }
 
@@ -24,8 +24,10 @@ function newsletterEndpoint(): string {
 }
 
 export function isNewsletterCaptchaEnabled(): boolean {
-  return Boolean(turnstileSiteKey);
+  return isTurnstileConfigured();
 }
+
+export { TURNSTILE_SITE_KEY };
 
 export async function subscribeToNewsletter(
   payload: NewsletterSignupPayload,
