@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Facebook, Globe, Instagram } from "lucide-react";
 import { footerCatalogLinks, footerInfoLinks, socialLinks } from "@/lib/siteNav";
-import { subscribeToNewsletter } from "@/lib/newsletterApi";
-import { useRef, useState } from "react";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
+import { isNewsletterCaptchaEnabled, subscribeToNewsletter } from "@/lib/newsletterApi";
+import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ButtonSpinner } from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/button";
@@ -17,28 +18,50 @@ interface SiteFooterProps {
 const sectionHeading =
   "font-heading text-sm font-semibold uppercase tracking-[0.14em] text-foreground";
 
+const turnstileSiteKey = (import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined)?.trim();
+
 export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileKey, setTurnstileKey] = useState(0);
   const submitInFlight = useRef(false);
+  const captchaEnabled = isNewsletterCaptchaEnabled();
+
+  const resetCaptcha = useCallback(() => {
+    setTurnstileToken(null);
+    setTurnstileKey((k) => k + 1);
+  }, []);
 
   const onNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim();
     if (!trimmed || submitting || submitInFlight.current) return;
 
+    if (captchaEnabled && !turnstileToken) {
+      toast.error("Security check required", {
+        description: "Please complete the verification below the email field.",
+      });
+      return;
+    }
+
     submitInFlight.current = true;
     setSubmitting(true);
     try {
-      const result = await subscribeToNewsletter({ email: trimmed });
+      const result = await subscribeToNewsletter({
+        email: trimmed,
+        turnstileToken: turnstileToken ?? undefined,
+      });
 
       if (!result.ok) {
         toast.error("Could not join", { description: (result as { error: string }).error });
+        resetCaptcha();
         return;
       }
 
       toast.success("You are on the list!", { description: result.message });
       setEmail("");
+      resetCaptcha();
     } finally {
       submitInFlight.current = false;
       setSubmitting(false);
@@ -105,26 +128,44 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
             </p>
             <form
               onSubmit={onNewsletter}
-              className="flex w-full max-w-[300px] flex-col gap-2 sm:max-w-none sm:flex-row sm:items-center"
+              className="flex w-full max-w-[300px] flex-col gap-2 sm:max-w-none"
               aria-label="Newsletter signup"
             >
-              <Label htmlFor="footer-newsletter-email" className="sr-only">
-                Email address for newsletter
-              </Label>
-              <Input
-                id="footer-newsletter-email"
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-9 flex-1 bg-background text-sm"
-                disabled={submitting}
-                required
-                autoComplete="email"
-              />
-              <Button type="submit" size="sm" className="h-9 shrink-0 px-4 sm:w-auto w-full" disabled={submitting} aria-busy={submitting}>
-                {submitting ? <ButtonSpinner label="Subscribing" /> : "Join"}
-              </Button>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <Label htmlFor="footer-newsletter-email" className="sr-only">
+                  Email address for newsletter
+                </Label>
+                <Input
+                  id="footer-newsletter-email"
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-9 flex-1 bg-background text-sm"
+                  disabled={submitting}
+                  required
+                  autoComplete="email"
+                />
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="h-9 shrink-0 px-4 sm:w-auto w-full"
+                  disabled={submitting || (captchaEnabled && !turnstileToken)}
+                  aria-busy={submitting}
+                >
+                  {submitting ? <ButtonSpinner label="Subscribing" /> : "Join"}
+                </Button>
+              </div>
+              {captchaEnabled && turnstileSiteKey ? (
+                <TurnstileWidget
+                  key={turnstileKey}
+                  siteKey={turnstileSiteKey}
+                  onToken={setTurnstileToken}
+                  onExpire={resetCaptcha}
+                  onError={resetCaptcha}
+                  className="min-h-[65px]"
+                />
+              ) : null}
             </form>
           </div>
 
