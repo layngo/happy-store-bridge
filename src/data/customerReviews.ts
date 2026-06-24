@@ -494,10 +494,10 @@ export const PLAY_CUSTOMER_REVIEWS: CustomerReview[] = [
   },
   {
     id: "peace-restored",
-    name: "ChristineAldridge",
+    name: "ChristineA",
     rating: 4,
     title: "Peace restored!",
-    text: "I'm a 44-year-old mom with a LEGO-addicted 5-year-old son. The mess was driving us nuts. This mat restored peace to our home. When it's time to pick up, we pull the cord, the mat gathers into a bag, and in literally 30 seconds they are stored. When opened flat, it provides good play space. You can drag the open mat around easily: very convenient. My only dislike is the slider on the cord and the length of the drawstring when shut: a strangulation hazard for small children, and the slider snags so my son can't open it alone. Still, he is cooperative about putting Legos away now. Thanks to Lay-n-Go, I haven't stepped on a LEGO in weeks!",
+    text: "I'm a 44-year-old mom with a LEGO-addicted 5-year-old son. The mess was driving us nuts. This mat restored peace to our home. When it's time to pick up, we pull the cord, the mat gathers into a bag, and in literally 30 seconds they are stored. When opened flat, it provides good play space. You can drag the open mat around easily: very convenient...Thanks to Lay-n-Go, I haven't stepped on a LEGO in weeks!",
   },
   {
     id: "favorite-amazon-purchase",
