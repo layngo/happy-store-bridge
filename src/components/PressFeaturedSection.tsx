@@ -109,30 +109,26 @@ function PressFeaturedPressArtCard({
   return (
     <article
       className={cn(
-        "not-prose flex w-full flex-col",
-        pressFeaturedBorderClass,
-        pressFeaturedClipClass,
+        "not-prose flex w-full flex-col overflow-hidden rounded-2xl border-2 border-black bg-[#0a0a0a]",
         className,
       )}
     >
-      <div className="overflow-hidden rounded-t-2xl bg-black">
-        <img
-          src={item.imageSrc}
-          srcSet={item.imageSrcSet}
-          sizes={item.imageSrcSet ? "(min-width: 768px) 80rem, 100vw" : undefined}
-          alt={item.imageAlt}
-          className="block h-auto w-full"
-          style={{ aspectRatio: desktopAspect }}
-          loading="eager"
-          decoding="async"
-        />
-      </div>
-      <div className="flex justify-center rounded-b-2xl bg-white px-5 py-5 sm:px-8 sm:py-6">
+      <img
+        src={item.imageSrc}
+        srcSet={item.imageSrcSet}
+        sizes={item.imageSrcSet ? "(min-width: 768px) 80rem, 100vw" : undefined}
+        alt={item.imageAlt}
+        className="block h-auto w-full"
+        style={{ aspectRatio: desktopAspect }}
+        loading="eager"
+        decoding="async"
+      />
+      <div className="flex justify-center bg-[#0a0a0a] px-5 pb-6 pt-4 sm:px-8 sm:pb-7 sm:pt-5">
         <a
           href={item.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex w-fit items-center justify-center rounded-full bg-primary px-6 py-2.5 font-heading text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="inline-flex w-fit items-center justify-center rounded-full bg-primary px-6 py-2.5 font-heading text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
         >
           {item.linkLabel}
         </a>
