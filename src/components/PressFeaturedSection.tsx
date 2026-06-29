@@ -97,6 +97,50 @@ function FeaturedCopy({
   );
 }
 
+function PressFeaturedPressArtCard({
+  item,
+  className,
+}: {
+  item: PressFeaturedItem;
+  className?: string;
+}) {
+  const desktopAspect = (item.imageAspect ?? "2048/768").replace("/", " / ");
+
+  return (
+    <article
+      className={cn(
+        "not-prose flex w-full flex-col",
+        pressFeaturedBorderClass,
+        pressFeaturedClipClass,
+        className,
+      )}
+    >
+      <div className="overflow-hidden rounded-t-2xl bg-black">
+        <img
+          src={item.imageSrc}
+          srcSet={item.imageSrcSet}
+          sizes={item.imageSrcSet ? "(min-width: 768px) 80rem, 100vw" : undefined}
+          alt={item.imageAlt}
+          className="block h-auto w-full"
+          style={{ aspectRatio: desktopAspect }}
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+      <div className="flex justify-center rounded-b-2xl bg-white px-5 py-5 sm:px-8 sm:py-6">
+        <a
+          href={item.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex w-fit items-center justify-center rounded-full bg-primary px-6 py-2.5 font-heading text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+          {item.linkLabel}
+        </a>
+      </div>
+    </article>
+  );
+}
+
 function PressFeaturedBannerCard({
   item,
   className,
@@ -235,7 +279,10 @@ function PressFeaturedCardCard({
 export function PressFeaturedSection() {
   if (PRESS_FEATURED_ITEMS.length === 0) return null;
 
-  const bannerItems = PRESS_FEATURED_ITEMS.filter((item) => item.layout !== "card");
+  const pressArtItems = PRESS_FEATURED_ITEMS.filter((item) => item.layout === "pressArt");
+  const bannerItems = PRESS_FEATURED_ITEMS.filter(
+    (item) => item.layout !== "card" && item.layout !== "pressArt",
+  );
   const cardItems = PRESS_FEATURED_ITEMS.filter((item) => item.layout === "card");
 
   return (
@@ -248,6 +295,10 @@ export function PressFeaturedSection() {
       </h2>
       <div className="mx-auto w-full max-w-[min(100%,80rem)] px-4 sm:px-6">
         <div className="space-y-6 sm:space-y-8 md:space-y-10">
+          {pressArtItems.map((item) => (
+            <PressFeaturedPressArtCard key={item.href} item={item} />
+          ))}
+
           {bannerItems.map((item) => (
             <PressFeaturedBannerCard key={item.href} item={item} />
           ))}

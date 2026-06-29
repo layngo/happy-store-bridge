@@ -366,6 +366,14 @@ function stagePosToViewBoxPoint(pos: BoxPos, container: DOMRect, viewBox: string
   return clientToViewBoxPoint(clientX, clientY, container, viewBox);
 }
 
+function quadPoint(start: Point, control: Point, end: Point, t: number): Point {
+  const u = 1 - t;
+  return {
+    x: u * u * start.x + 2 * u * t * control.x + t * t * end.x,
+    y: u * u * start.y + 2 * u * t * control.y + t * t * end.y,
+  };
+}
+
 function arrowPivot(geom: Pick<ArrowGeom, "start" | "control" | "end">) {
   return {
     x: (geom.start.x + geom.control.x + geom.end.x) / 3,
@@ -507,6 +515,7 @@ function ArrowPaths({ geom }: { geom: ArrowGeom }) {
   const spread = 3.8 * headScale;
   const left = { x: end.x - ux * size - uy * spread, y: end.y - uy * size + ux * spread };
   const right = { x: end.x - ux * size + uy * spread, y: end.y - uy * size - ux * spread };
+  const curveEnd = quadPoint(start, control, end, 0.94);
   const pivot = arrowPivot(geom);
   const rotation = geom.rotation ?? 0;
   const transform = rotation !== 0 ? `rotate(${rotation} ${pivot.x} ${pivot.y})` : undefined;
@@ -514,13 +523,14 @@ function ArrowPaths({ geom }: { geom: ArrowGeom }) {
   return (
     <g transform={transform} className="text-neutral-800/85">
       <path
-        d={`M${start.x} ${start.y} Q${control.x} ${control.y} ${end.x} ${end.y}`}
+        d={`M${start.x} ${start.y} Q${control.x} ${control.y} ${curveEnd.x} ${curveEnd.y}`}
         stroke="currentColor"
         strokeWidth={strokeWidth}
         strokeDasharray="3 4"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      <path d={`M${end.x} ${end.y} L${left.x} ${left.y} L${right.x} ${right.y} Z`} fill="currentColor" />
+      <path d={`M${end.x} ${end.y} L${left.x} ${left.y} L${right.x} ${right.y} Z`} fill="currentColor" stroke="none" />
     </g>
   );
 }

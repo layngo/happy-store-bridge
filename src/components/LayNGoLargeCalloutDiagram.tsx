@@ -37,7 +37,7 @@ const DEFENDER_TACTICAL_CALLOUT_ASSET_V = "2";
 const DEFENDER_TACTICAL_CALLOUT_MESH = `/products/lay-n-go-tactical-bag-20/callout-mesh.png?v=${DEFENDER_TACTICAL_CALLOUT_ASSET_V}`;
 const DEFENDER_TACTICAL_CALLOUT_ZIPPER = `/products/lay-n-go-tactical-bag-20/callout-zipper.png?v=${DEFENDER_TACTICAL_CALLOUT_ASSET_V}`;
 /** Circular callout thumbs: Defender Mini + Tactical lip/cord/strap (trimmed PNGs). */
-const DEFENDER_CALLOUT_ASSET_V = "5";
+const DEFENDER_CALLOUT_ASSET_V = "7";
 const DEFENDER_CALLOUT_STRAP = `/products/lay-n-go-defender-callouts/callout-strap.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
 const DEFENDER_CALLOUT_LIP = `/products/lay-n-go-defender-callouts/callout-lip.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
 const DEFENDER_CALLOUT_DRAWSTRING = `/products/lay-n-go-defender-callouts/callout-drawstring.png?v=${DEFENDER_CALLOUT_ASSET_V}`;
@@ -107,7 +107,10 @@ const DEFENDER_TACTICAL_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
     label: "Raised containment lip",
     thumbSrc: DEFENDER_CALLOUT_LIP,
     thumbAlt: "Raised containment lip on Defender Tactical",
-    thumbClassName: defenderThumbClassName("lip"),
+    thumbClassName: cn(
+      DEFENDER_THUMB_IMG_CLASS,
+      "object-left object-bottom [transform:translate(-6px,6px)]",
+    ),
     labelAbove: false,
   },
   {
@@ -136,7 +139,10 @@ const DEFENDER_MINI_CALLOUTS: readonly DefenderHeroCalloutItem[] = [
     label: "Raised containment lip",
     thumbSrc: DEFENDER_CALLOUT_LIP,
     thumbAlt: "Raised containment lip on Defender Mini",
-    thumbClassName: defenderThumbClassName("lip"),
+    thumbClassName: cn(
+      DEFENDER_THUMB_IMG_CLASS,
+      "object-left object-bottom [transform:translate(-6px,6px)]",
+    ),
     labelAbove: true,
   },
   {
@@ -1065,7 +1071,7 @@ function FloatingCallout({
   const thumbCropClass = (() => {
     if (lite18Thumb) return lite18ThumbCropClass(calloutKey);
     if (cordLifestyleCompact) return "origin-center scale-[1.26] object-[center_18%]";
-    if (lipLifestyleTightCrop) return "origin-center scale-[1.24] object-[30%_center]";
+    if (lipLifestyleTightCrop) return "!object-cover object-left origin-left";
     if (meshLifestyleTightCrop) return "origin-center scale-[1.24] object-[58%_center]";
     return "";
   })();
@@ -1613,7 +1619,7 @@ export function LayNGoLargeCalloutDiagram({ variant = "large-60" }: LayNGoLargeC
             diagramUsesLifestyleChrome(variant) &&
               k === "lip" &&
               variant !== "lite-18" &&
-              "origin-center scale-[1.24] object-[30%_center]",
+              "object-left origin-left !object-cover",
             diagramUsesLifestyleChrome(variant) && k === "mesh" && "origin-center scale-[1.24] object-[58%_center]",
           );
           const thumb = (

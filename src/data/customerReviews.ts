@@ -174,12 +174,6 @@ export const COSMO_CUSTOMER_REVIEWS: CustomerReview[] = [
   },
 ];
 
-const NAILSPA_REVIEW_PHOTOS = [
-  "/products/lay-n-go-nailspa-18/reviews/customer-photo-1.jpg",
-  "/products/lay-n-go-nailspa-18/reviews/customer-photo-2.jpg",
-  "/products/lay-n-go-nailspa-18/reviews/customer-photo-3.jpg",
-] as const;
-
 /** Lay-n-Go NAILSPA 18″ PDP */
 export const NAILSPA_CUSTOMER_REVIEWS: CustomerReview[] = [
   {
@@ -237,14 +231,6 @@ export const NAILSPA_CUSTOMER_REVIEWS: CustomerReview[] = [
     rating: 4,
     title: "Fantastic for travel",
     text: "Great to keep your nail salon items in an easy to use & carry case. Plus, it comes in a matching drawstring bag which is great to hold unwieldy items, like files & nippers in. I just wish it had more pouches for to carry more polishes. That's the reason I didn't give it 5 stars. Fantastic invention, though!!!",
-  },
-  {
-    id: "narrow-holders",
-    name: "Juliette Marsh",
-    rating: 4,
-    title: "Great but nail polish holders are narrow",
-    text: "I really like this! My only complaint is the openings for the nail polish holders could be a little wider. They're fine for the skinny bottles (clear) but for standard size (pink), it's a struggle. I had to really maneuver and be careful not to rip the netted part trying to get them in. Getting them out was a bit easier. I also appreciated the additional matching storage bag.",
-    images: [...NAILSPA_REVIEW_PHOTOS],
   },
   {
     id: "cute-bag",
@@ -347,13 +333,6 @@ export const TRAVELER_CUSTOMER_REVIEWS: CustomerReview[] = [
     rating: 5,
     title: "Perfect for my needs",
     text: "I'm excited to say that this gem is great for my travel needs. I'm a flight attendant and saw this and ordered it right away. Shipping was fast. This replaced my clear pouch zippered makeup bag which held a lot. I got tired of digging for all my stuff. This solves that problem (that's why I always have clear or mesh makeup bags) but I don't need to. I can open, see everything, and quickly pull it closed. Love it. I have foundation, blush brush, eyelash curler, lots of tubes, eyeliner crayons, mascara, a compact and it all fits!",
-  },
-  {
-    id: "different-fabric",
-    name: "Karen",
-    rating: 3,
-    title: "Needs different fabric.",
-    text: "I bought these to give the guys for traveling. I think they are a little cumbersome as the closing cord is very long, and the fabric is heavy. I have bought some with a lighter weight fabric for ladies, and they are easier to handle.",
   },
   {
     id: "holds-everything",
@@ -678,13 +657,6 @@ export const DEFENDER_CUSTOMER_REVIEWS: CustomerReview[] = [
     text: "I usually have a small amount of equipment I use daily at my job but it's been hard finding something that holds them all while staying compact. Square tactical bags on Amazon weren't the solution. I was doubtful when I saw the style and colors: it looked more like a makeup bag than a durable tac bag. Then I found the OD green version and gave it a shot. Pretty much all my stuff and more fit in it and cleared up a lot of space. Now I just carry this instead of a few small bags.",
   },
   {
-    id: "woman-owned-pricing",
-    name: "Lauren",
-    rating: 4,
-    title: "For a Woman Owned Company",
-    text: "The product hands down is great. It seems durable so far: we just got it two days ago. I was sadly disappointed in the pricing between the Defender Tactical and the regular Lay-n-Go. Clearly one's marketed to men and the other to women. I bought both, one for myself and the Defender for my husband. The Defender has a feature or two the regular didn't have and yet the men's was still cheaper: I made sure they were both 20-inch diameter. Need I say more?",
-  },
-  {
     id: "favorite-amazon-travel",
     name: "Noah Sutton",
     rating: 5,
@@ -768,6 +740,38 @@ export const DEFENDER_CUSTOMER_REVIEWS: CustomerReview[] = [
     rating: 5,
     title: "Lay-n-Go Defender Tactical Gear Accessory, Tool & Utility Storage Bag",
     text: "A good bag for its intended use.",
+  },
+];
+
+/** Lay-n-Go Travel Dog Bed 44″ / Pet Solutions PDP */
+export const PET_CUSTOMER_REVIEWS: CustomerReview[] = [
+  {
+    id: "more-convenient-than-expected",
+    name: "Morgan",
+    rating: 5,
+    title: "More convenient than expected",
+    text: "I use this as a car seat cover in rental cars and friends' cars. One handle goes over the headrest and the dog bed/seat sits on top of it on the seat. The other handle drops to the floor making it easy to grab both handles and remove the whole dog seat together without flying fur. The soft inside fabric contains any loose fur and the smooth fabric on the other side prevents dog fur from clinging to the seat surface underneath. Glad I purchased it.",
+  },
+  {
+    id: "can-be-used-for-child",
+    name: "Gaby",
+    rating: 5,
+    title: "Can be used for a child.",
+    text: "I purchased this item for my toddler. It is very practical to transport his toys and set up basically anywhere. Takes less than a minute to pack and go. Thick and very soft. If it works for a toddler it definitely works for a pet.",
+  },
+  {
+    id: "great-product-easy-clean",
+    name: "MM",
+    rating: 5,
+    title: "Great product.",
+    text: "It's very convenient and easy to clean. Puppy threw up on it within 5 minutes (he gets car sick) and it was perfect.",
+  },
+  {
+    id: "love-this-travel",
+    name: "Lisa Mellott",
+    rating: 5,
+    title: "Love this!!!",
+    text: "It is perfect for traveling with your dog: a place to lie down in outdoor restaurants, etc. Only thing, if you use the zipper pocket, you need to pull out what's in the pocket or it's in the way for your dog!",
   },
 ];
 

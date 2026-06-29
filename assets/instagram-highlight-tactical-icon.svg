@@ -1,0 +1,23 @@
+<svg viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect width="1024" height="1024" fill="#ffffff"/>
+  <!-- Mountains (back to front) -->
+  <g stroke="#3a9fb0" stroke-width="18" stroke-linejoin="round" paint-order="stroke fill">
+    <path d="M88 820 292 430c12-22 40-22 52 0l204 390H88z" fill="#000000"/>
+    <path d="M548 820 736 470c12-22 40-22 52 0l188 350H548z" fill="#000000"/>
+    <path d="M248 820 512 250c16-30 54-30 70 0l264 570H248z" fill="#000000"/>
+  </g>
+  <!-- Pine tree on top -->
+  <g stroke="#3a9fb0" stroke-width="18" stroke-linejoin="round" stroke-linecap="round" paint-order="stroke fill">
+    <path
+      d="M220 285
+         L188 352 L204 352 L168 428 L186 428 L138 518 L160 518 L98 672
+         L342 672
+         L280 518 L302 518 L254 428 L272 428 L236 352 L252 352 Z"
+      fill="#000000"
+    />
+    <path
+      d="M202 655c0-8 7-15 15-15h6c8 0 15 7 15 15v128c0 8-7 15-15 15h-6c-8 0-15-7-15-15V655z"
+      fill="#000000"
+    />
+  </g>
+</svg>

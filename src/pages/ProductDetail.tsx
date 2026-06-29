@@ -60,6 +60,7 @@ import {
   PLAY_CUSTOMER_REVIEWS,
   isLayNGoPlayReviewsPdp,
   DEFENDER_CUSTOMER_REVIEWS,
+  PET_CUSTOMER_REVIEWS,
   isLayNGoDefenderReviewsPdp,
   type CustomerReview,
 } from "@/data/customerReviews";
@@ -1192,6 +1193,7 @@ const ProductDetail = () => {
     if (handle.toLowerCase() === "lay-n-go-traveler-20") return TRAVELER_CUSTOMER_REVIEWS;
     if (isLayNGoPlayReviewsPdp(handle)) return PLAY_CUSTOMER_REVIEWS;
     if (isLayNGoDefenderReviewsPdp(handle)) return DEFENDER_CUSTOMER_REVIEWS;
+    if (handle.toLowerCase() === "lay-n-go-travel-dog-bed-44") return PET_CUSTOMER_REVIEWS;
     return null;
   }, [product]);
 

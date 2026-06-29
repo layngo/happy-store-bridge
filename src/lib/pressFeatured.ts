@@ -1,4 +1,4 @@
-export type PressFeaturedLayout = "banner" | "card";
+export type PressFeaturedLayout = "banner" | "card" | "pressArt";
 
 export type PressFeaturedItem = {
   layout?: PressFeaturedLayout;
@@ -35,6 +35,19 @@ export type PressFeaturedItem = {
 };
 
 export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
+  {
+    layout: "pressArt",
+    publication: "",
+    headline: "",
+    href: "https://10best.usatoday.com/lifestyle/layflat-bag-deal-amazon-prime-day/",
+    linkLabel: "VIEW FULL ARTICLE",
+    dateLabel: "",
+    productName: "",
+    imageSrc: "/press/featured-usatoday-10best-banner.png?v=1",
+    imageAlt:
+      "USA TODAY 10BEST feature: Lay-n-Go Cosmo makeup organizer — “A total game changer.” Published Jun. 26, 2026",
+    imageAspect: "2048/768",
+  },
   {
     publication: "Condé Nast Traveler",
     headline: "53 Best Travel Gifts for Every Globetrotter on Your List",
