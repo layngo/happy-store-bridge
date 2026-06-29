@@ -1,4 +1,4 @@
-export type PressFeaturedLayout = "banner" | "card" | "pressArt";
+export type PressFeaturedLayout = "banner" | "card" | "pressArt" | "usatoday10best";
 
 export type PressFeaturedItem = {
   layout?: PressFeaturedLayout;
@@ -36,17 +36,18 @@ export type PressFeaturedItem = {
 
 export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
   {
-    layout: "pressArt",
-    publication: "",
-    headline: "",
+    layout: "usatoday10best",
+    publication: "USA TODAY 10BEST",
+    headline: "This Clever Makeup Organizer Has Become My Ultimate Travel Companion",
     href: "https://10best.usatoday.com/lifestyle/layflat-bag-deal-amazon-prime-day/",
     linkLabel: "VIEW FULL ARTICLE",
-    dateLabel: "",
-    productName: "",
-    imageSrc: "/press/featured-usatoday-10best-banner.png?v=1",
+    dateLabel: "Published on Jun. 26, 2026",
+    productName:
+      "It fits so much stuff and it is so easy to find things. Very easy to open and close and great quality. Highly recommend.",
+    quote: "A total game changer.",
+    imageSrc: "/press/usatoday-layflat-feature-hero-trimmed.png",
     imageAlt:
-      "USA TODAY 10BEST feature: Lay-n-Go Cosmo makeup organizer — “A total game changer.” Published Jun. 26, 2026",
-    imageAspect: "2048/768",
+      "Lay-n-Go Cosmo makeup organizer open with cosmetics, brushes, and beauty products inside",
   },
   {
     publication: "Condé Nast Traveler",
