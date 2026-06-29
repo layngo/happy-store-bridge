@@ -22,30 +22,30 @@ export function PressUsatoday10BestBanner({ item, className }: PressUsatoday10Be
   return (
     <article
       className={cn(
-        "not-prose overflow-hidden rounded-2xl border-2 border-black bg-[#0a0a0a] font-heading",
+        "not-prose mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border-2 border-black bg-[#0a0a0a] font-heading sm:max-w-4xl",
         className,
       )}
       itemScope
       itemType="https://schema.org/NewsArticle"
     >
-      <header className="bg-[#322e08] px-6 py-4 sm:px-10 sm:py-5">
-        <p className="text-xs font-bold uppercase tracking-[0.06em] text-white sm:text-base">
+      <header className="bg-[#322e08] px-5 py-3 sm:px-7 sm:py-3.5">
+        <p className="text-[10px] font-bold uppercase tracking-[0.06em] text-white sm:text-xs">
           USA TODAY
         </p>
-        <p className="mt-0.5 text-3xl font-extrabold uppercase leading-none text-white sm:text-4xl md:text-[3.125rem]">
+        <p className="mt-0.5 text-2xl font-extrabold uppercase leading-none text-white sm:text-3xl">
           10BEST
         </p>
       </header>
 
-      <div className="grid gap-6 p-6 sm:gap-8 sm:p-8 md:grid-cols-[1.02fr_0.98fr] md:items-stretch lg:gap-10 lg:p-10">
-        <div className="overflow-hidden rounded-[18px] border-2 border-white/55 bg-[#0a0a0a] shadow-[0_16px_40px_rgba(0,0,0,0.42)]">
+      <div className="grid gap-4 p-4 sm:gap-5 sm:p-5 md:grid-cols-[0.95fr_1.05fr] md:items-center md:p-6">
+        <div className="overflow-hidden rounded-xl border-2 border-white/55 bg-[#0a0a0a] shadow-[0_12px_28px_rgba(0,0,0,0.35)]">
           <img
             src={item.imageSrc || HERO_IMAGE}
             alt={
               item.imageAlt ||
               "Lay-n-Go Cosmo makeup organizer open with cosmetics inside"
             }
-            className="aspect-[4/3] w-full object-cover object-[center_22%] md:aspect-auto md:min-h-[17.5rem] md:h-full lg:min-h-[20rem]"
+            className="aspect-[5/4] w-full max-h-44 object-cover object-[center_22%] sm:max-h-48 md:aspect-auto md:max-h-52 md:min-h-0"
             loading="eager"
             decoding="async"
           />
@@ -53,29 +53,29 @@ export function PressUsatoday10BestBanner({ item, className }: PressUsatoday10Be
 
         <div className="flex flex-col justify-center text-[#f5f5f2]">
           <h2
-            className="text-xl font-extrabold uppercase leading-[1.1] tracking-[0.025em] sm:text-2xl lg:text-[2.625rem] lg:leading-[1.08]"
+            className="text-base font-extrabold uppercase leading-[1.12] tracking-[0.02em] sm:text-lg md:text-xl"
             itemProp="headline"
           >
             {headline}
           </h2>
 
-          <div className="mt-5 border-t border-white/15 pt-5 lg:mt-6 lg:pt-6">
+          <div className="mt-3 border-t border-white/15 pt-3 sm:mt-3.5 sm:pt-3.5">
             <blockquote className="border-0 p-0" cite={item.href}>
               <p
-                className="text-2xl font-extrabold leading-[1.12] text-primary sm:text-3xl lg:text-[2.875rem] lg:leading-[1.1]"
+                className="text-lg font-extrabold leading-[1.15] text-primary sm:text-xl md:text-2xl"
                 itemProp="description"
               >
                 &ldquo;{quote}&rdquo;
               </p>
             </blockquote>
-            <p className="mt-4 text-lg font-semibold leading-relaxed text-[#f5f5f2] sm:text-xl lg:mt-5 lg:text-[1.75rem] lg:leading-[1.38]">
+            <p className="mt-2.5 text-sm font-semibold leading-relaxed text-[#f5f5f2] sm:text-[0.95rem] md:text-base md:leading-snug">
               {excerpt}
             </p>
           </div>
 
           <time
             dateTime="2026-06-26"
-            className="mt-5 text-base font-bold uppercase tracking-[0.04em] text-white sm:text-lg lg:mt-6 lg:text-xl"
+            className="mt-3 text-xs font-bold uppercase tracking-[0.04em] text-white sm:text-sm md:mt-3.5"
             itemProp="datePublished"
           >
             {dateLabel}
@@ -83,12 +83,12 @@ export function PressUsatoday10BestBanner({ item, className }: PressUsatoday10Be
         </div>
       </div>
 
-      <div className="flex justify-center px-6 pb-6 pt-1 sm:px-8 sm:pb-8">
+      <div className="flex justify-center px-4 pb-4 pt-0 sm:px-6 sm:pb-5">
         <a
           href={item.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex w-fit items-center justify-center rounded-full bg-primary px-6 py-2.5 text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
+          className="inline-flex w-fit items-center justify-center rounded-full bg-primary px-5 py-2 font-heading text-xs font-bold uppercase tracking-[0.08em] text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] sm:px-6 sm:py-2.5 sm:text-sm"
           itemProp="url"
         >
           {item.linkLabel}
