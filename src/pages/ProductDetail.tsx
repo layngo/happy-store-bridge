@@ -2032,7 +2032,7 @@ const ProductDetail = () => {
                 {descHtml ? (
                   <div
                     className="space-y-3 text-sm font-medium leading-relaxed text-neutral-600 [&_a]:text-primary [&_iframe]:hidden [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5"
-                    dangerouslySetInnerHTML={{ __html: product.description }}
+                    dangerouslySetInnerHTML={{ __html: sanitizedDescriptionHtml }}
                   />
                 ) : (
                   <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-neutral-600">
@@ -2146,7 +2146,7 @@ const ProductDetail = () => {
               {descHtml ? (
                 <div
                   className="space-y-3 text-sm font-medium leading-relaxed text-muted-foreground [&_a]:text-primary [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5"
-                  dangerouslySetInnerHTML={{ __html: product.description }}
+                  dangerouslySetInnerHTML={{ __html: sanitizedDescriptionHtml }}
                 />
               ) : product.description ? (
                 <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-muted-foreground">
