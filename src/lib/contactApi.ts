@@ -15,18 +15,10 @@ export type ContactFormResponse =
   | { ok: true; message: string }
   | { ok: false; error: string };
 
-const DEFAULT_CONTACT_FORM_WEBHOOK_URL =
-  "https://layngo.app.n8n.cloud/webhook/layngo-contact-form";
-
 function contactEndpoint(): string {
-  if (import.meta.env.DEV) {
-    return "/api/contact";
-  }
-
-  return (
-    (import.meta.env.VITE_CONTACT_FORM_WEBHOOK_URL as string | undefined) ||
-    DEFAULT_CONTACT_FORM_WEBHOOK_URL
-  );
+  // Always route through our server-side endpoint so the upstream webhook URL
+  // is never exposed and all submissions are validated before being forwarded.
+  return "/api/contact";
 }
 
 export async function submitContactForm(payload: ContactFormPayload): Promise<ContactFormResponse> {
