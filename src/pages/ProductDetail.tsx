@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
+import DOMPurify from "dompurify";
 import { PageSeo } from "@/components/PageSeo";
 import { breadcrumbJsonLd, absoluteUrl, itemListJsonLd, productJsonLd, faqJsonLd, stripHtml, truncateText } from "@/lib/siteSeo";
 import {
@@ -1377,6 +1378,20 @@ const ProductDetail = () => {
                   ? { slides: LAY_N_GO_NAILSPA_18_GALLERY_SLIDES, ariaLabel: "Lay-n-Go NAILSPA lifestyle photos" }
                   : null;
   const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
+  const sanitizedDescriptionHtml = useMemo(
+    () =>
+      descHtml
+        ? DOMPurify.sanitize(product.description, {
+            ALLOWED_TAGS: [
+              "a", "p", "br", "strong", "em", "b", "i", "u", "ul", "ol", "li",
+              "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "span", "div",
+            ],
+            ALLOWED_ATTR: ["href", "title", "target", "rel"],
+            ALLOW_DATA_ATTR: false,
+          })
+        : "",
+    [descHtml, product.description],
+  );
   const priceDisplay = parseFloat(
     selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount,
   ).toFixed(2);
@@ -2017,7 +2032,7 @@ const ProductDetail = () => {
                 {descHtml ? (
                   <div
                     className="space-y-3 text-sm font-medium leading-relaxed text-neutral-600 [&_a]:text-primary [&_iframe]:hidden [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5"
-                    dangerouslySetInnerHTML={{ __html: product.description }}
+                    dangerouslySetInnerHTML={{ __html: sanitizedDescriptionHtml }}
                   />
                 ) : (
                   <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-neutral-600">
@@ -2131,7 +2146,7 @@ const ProductDetail = () => {
               {descHtml ? (
                 <div
                   className="space-y-3 text-sm font-medium leading-relaxed text-muted-foreground [&_a]:text-primary [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-5"
-                  dangerouslySetInnerHTML={{ __html: product.description }}
+                  dangerouslySetInnerHTML={{ __html: sanitizedDescriptionHtml }}
                 />
               ) : product.description ? (
                 <p className="whitespace-pre-wrap text-sm font-medium leading-relaxed text-muted-foreground">

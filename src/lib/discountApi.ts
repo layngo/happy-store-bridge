@@ -14,25 +14,12 @@ export type DiscountApiResponse =
   | { ok: true; message?: string; discountCode?: string }
   | { ok: false; error: string };
 
-const DEFAULT_SEND_CODE_WEBHOOK =
-  "https://layngo.app.n8n.cloud/webhook/layngo-discount-send-code";
-const DEFAULT_VERIFY_CODE_WEBHOOK =
-  "https://layngo.app.n8n.cloud/webhook/layngo-discount-verify";
-
 function sendCodeEndpoint(): string {
-  if (import.meta.env.DEV) return "/api/discount/send-code";
-  return (
-    (import.meta.env.VITE_DISCOUNT_SEND_CODE_WEBHOOK_URL as string | undefined) ||
-    DEFAULT_SEND_CODE_WEBHOOK
-  );
+  return "/api/discount/send-code";
 }
 
 function verifyCodeEndpoint(): string {
-  if (import.meta.env.DEV) return "/api/discount/verify-code";
-  return (
-    (import.meta.env.VITE_DISCOUNT_VERIFY_CODE_WEBHOOK_URL as string | undefined) ||
-    DEFAULT_VERIFY_CODE_WEBHOOK
-  );
+  return "/api/discount/verify-code";
 }
 
 async function postJson<T extends DiscountApiResponse>(
