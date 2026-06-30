@@ -9,19 +9,8 @@ export type NewsletterSignupResponse =
   | { ok: true; message: string }
   | { ok: false; error: string };
 
-const DEFAULT_NEWSLETTER_WEBHOOK_URL =
-  "https://layngo.app.n8n.cloud/webhook/layngo-newsletter-signup";
-
 function newsletterEndpoint(): string {
-  // Local dev uses Vite middleware; production posts to n8n (Turnstile verified there).
-  if (import.meta.env.DEV) {
-    return "/api/newsletter";
-  }
-
-  return (
-    (import.meta.env.VITE_NEWSLETTER_WEBHOOK_URL as string | undefined) ||
-    DEFAULT_NEWSLETTER_WEBHOOK_URL
-  );
+  return "/api/newsletter";
 }
 
 export function isNewsletterCaptchaEnabled(): boolean {
