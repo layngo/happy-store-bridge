@@ -13,6 +13,11 @@ export type SubmitReviewResponse =
   | { ok: true; pending: true; message: string }
   | { ok: false; error: string };
 
+/** In-memory dedupe + short cache so summary + section share one request. */
+const CLIENT_CACHE_TTL_MS = 10 * 60 * 1000;
+const reviewCache = new Map<string, { at: number; reviews: CustomerReview[] }>();
+const inflight = new Map<string, Promise<CustomerReview[]>>();
+
 function reviewSubmitEndpoint(): string {
   return "/api/reviews/submit";
 }
@@ -33,8 +38,32 @@ export async function submitCustomerReview(
 }
 
 export async function fetchSubmittedReviews(productHandle: string): Promise<CustomerReview[]> {
-  const res = await fetch(reviewsListEndpoint(productHandle));
-  if (!res.ok) return [];
-  const data = (await res.json()) as { reviews?: CustomerReview[] };
-  return data.reviews ?? [];
+  const key = productHandle.trim().toLowerCase();
+  if (!key) return [];
+
+  const cached = reviewCache.get(key);
+  if (cached && Date.now() - cached.at < CLIENT_CACHE_TTL_MS) {
+    return cached.reviews;
+  }
+
+  let pending = inflight.get(key);
+  if (!pending) {
+    pending = (async () => {
+      try {
+        const res = await fetch(reviewsListEndpoint(key));
+        if (!res.ok) return [];
+        const data = (await res.json()) as { reviews?: CustomerReview[] };
+        const reviews = data.reviews ?? [];
+        reviewCache.set(key, { at: Date.now(), reviews });
+        return reviews;
+      } catch {
+        return [];
+      }
+    })().finally(() => {
+      inflight.delete(key);
+    });
+    inflight.set(key, pending);
+  }
+
+  return pending;
 }

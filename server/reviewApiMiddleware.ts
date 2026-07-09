@@ -1,10 +1,10 @@
 import type { IncomingMessage, ServerResponse } from "http";
 import { URL } from "url";
 
+import { fetchPublishedReviewsFromN8n } from "./reviewsListUpstream";
+
 const DEFAULT_REVIEW_SUBMIT_WEBHOOK =
   "https://layngo.app.n8n.cloud/webhook/layngo-review-submit";
-const DEFAULT_REVIEWS_LIST_WEBHOOK =
-  "https://layngo.app.n8n.cloud/webhook/layngo-reviews-list";
 
 function readBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -21,20 +21,8 @@ function sendJson(res: ServerResponse, status: number, data: unknown) {
   res.end(JSON.stringify(data));
 }
 
-async function fetchPublishedReviews(
-  productHandle: string,
-  webhookUrl: string,
-): Promise<unknown[]> {
-  const url = `${webhookUrl}?productHandle=${encodeURIComponent(productHandle)}`;
-  const upstream = await fetch(url, { method: "GET" });
-  if (!upstream.ok) return [];
-  const data = (await upstream.json().catch(() => null)) as { reviews?: unknown[] } | null;
-  return data?.reviews ?? [];
-}
-
 export function createReviewApiMiddleware(env: Record<string, string>) {
   const submitWebhook = env.REVIEW_SUBMIT_WEBHOOK_URL || DEFAULT_REVIEW_SUBMIT_WEBHOOK;
-  const listWebhook = env.REVIEWS_LIST_WEBHOOK_URL || DEFAULT_REVIEWS_LIST_WEBHOOK;
 
   return async (req: IncomingMessage, res: ServerResponse, next: () => void) => {
     if (!req.url || !req.url.startsWith("/api/reviews")) {
@@ -50,9 +38,10 @@ export function createReviewApiMiddleware(env: Record<string, string>) {
         const productHandle = url.searchParams.get("productHandle") ?? "";
         const { listReviewsForProduct, storedToCustomerReview } = await import("./reviewStore");
         const local = await listReviewsForProduct(productHandle);
-        const remote = (await fetchPublishedReviews(productHandle, listWebhook)) as ReturnType<
-          typeof storedToCustomerReview
-        >[];
+        const remote = (await fetchPublishedReviewsFromN8n(productHandle, {
+          REVIEWS_LIST_WEBHOOK_URL: env.REVIEWS_LIST_WEBHOOK_URL,
+          REVIEWS_LIST_WEBHOOK_SECRET: env.REVIEWS_LIST_WEBHOOK_SECRET,
+        })) as ReturnType<typeof storedToCustomerReview>[];
         const merged = [...local.map(storedToCustomerReview), ...remote];
         sendJson(res, 200, { reviews: merged });
         return;

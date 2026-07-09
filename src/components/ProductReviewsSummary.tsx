@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { averageReviewRating, type CustomerReview } from "@/data/customerReviews";
 import type { ProductAmazonReview } from "@/data/productAmazonReviews";
-import { fetchSubmittedReviews } from "@/lib/reviewApi";
+import { useSubmittedReviews } from "@/hooks/useSubmittedReviews";
 import { StarRating } from "@/components/StarRating";
 import { cn } from "@/lib/utils";
 
@@ -32,18 +32,10 @@ export function ProductReviewsSummary({
   amazonReviews = [],
   className,
 }: ProductReviewsSummaryProps) {
-  const [submittedReviews, setSubmittedReviews] = useState<CustomerReview[]>([]);
-
-  useEffect(() => {
-    if (staticNativeReviews === undefined) return;
-    let cancelled = false;
-    fetchSubmittedReviews(productHandle).then((list) => {
-      if (!cancelled) setSubmittedReviews(list);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [productHandle, staticNativeReviews]);
+  const submittedReviews = useSubmittedReviews(
+    productHandle,
+    staticNativeReviews !== undefined,
+  );
 
   const { averageRating, reviewCount } = useMemo(() => {
     if (staticNativeReviews?.length) {

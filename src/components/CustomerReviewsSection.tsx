@@ -5,7 +5,7 @@ import {
   PLAY_CUSTOMER_REVIEWS_DISCLAIMER,
   type CustomerReview,
 } from "@/data/customerReviews";
-import { fetchSubmittedReviews } from "@/lib/reviewApi";
+import { useSubmittedReviews } from "@/hooks/useSubmittedReviews";
 import { StarRating } from "@/components/StarRating";
 import { ReviewPhotoGallery } from "@/components/ReviewPhotoGallery";
 import { SubmitReviewDialog } from "@/components/SubmitReviewDialog";
@@ -65,18 +65,8 @@ export function CustomerReviewsSection({
   heading = "What customers are saying",
   className,
 }: CustomerReviewsSectionProps) {
-  const [submittedReviews, setSubmittedReviews] = useState<CustomerReview[]>([]);
+  const submittedReviews = useSubmittedReviews(productHandle);
   const [visibleCount, setVisibleCount] = useState(REVIEWS_PAGE_SIZE);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchSubmittedReviews(productHandle).then((list) => {
-      if (!cancelled) setSubmittedReviews(list);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [productHandle]);
 
   const reviews = useMemo(
     () => orderCustomerReviews([...staticReviews, ...submittedReviews]),
