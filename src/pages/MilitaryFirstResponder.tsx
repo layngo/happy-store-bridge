@@ -7,6 +7,8 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { PageSeo } from "@/components/PageSeo";
 import { getStaticPageSeo } from "@/lib/staticPageSeo";
 import { getCollectionGridSwatchPreview } from "@/components/ProductCard";
+import { selectItem, viewItemList } from "@/lib/analytics";
+import { productNodeToItem } from "@/lib/analyticsItems";
 import { cn } from "@/lib/utils";
 import { PageBreadcrumb } from "@/components/PageBreadcrumb";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
@@ -165,6 +167,16 @@ const MilitaryFirstResponder = () => {
     return cols.sort((a, b) => a.spec.inches - b.spec.inches);
   }, [sizedProducts]);
 
+  useEffect(() => {
+    if (!collection?.products.length) return;
+    viewItemList(
+      collection.products.map((p, i) =>
+        productNodeToItem(p.node, { index: i, item_category: collection.title }),
+      ),
+      collection.title,
+    );
+  }, [collection]);
+
   if (loading) {
     return (
       <div className="min-h-dvh bg-background flex flex-col">
@@ -247,6 +259,12 @@ const MilitaryFirstResponder = () => {
                 key={product.id}
                 to={`/product/${product.handle}`}
                 state={{ fromMilitaryFirstResponder: true }}
+                onClick={() =>
+                  selectItem(
+                    productNodeToItem(product, { item_category: collection.title }),
+                    collection.title,
+                  )
+                }
                 className={cn(
                   "group relative flex min-h-0 min-w-0 cursor-pointer flex-col items-center gap-0 px-0 pb-1 pt-0 sm:px-0.5 sm:pb-2 md:px-1.5 md:pt-0 lg:px-2",
                   "rounded-xl outline-none transition-colors duration-200",

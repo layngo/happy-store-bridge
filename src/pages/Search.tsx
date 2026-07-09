@@ -7,6 +7,7 @@ import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
 import { Header } from "@/components/Header";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
+import { searchEvent } from "@/lib/analytics";
 
 const Search = () => {
   const [params] = useSearchParams();
@@ -23,6 +24,11 @@ const Search = () => {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [query]);
+
+  useEffect(() => {
+    if (!query || loading) return;
+    searchEvent(query);
+  }, [query, loading]);
 
   return (
     <div className="min-h-dvh bg-background flex flex-col">
@@ -67,7 +73,7 @@ const Search = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((p) => (
-              <ProductCard key={p.node.id} product={p} />
+              <ProductCard key={p.node.id} product={p} listName={`Search: ${query}`} />
             ))}
           </div>
         )}

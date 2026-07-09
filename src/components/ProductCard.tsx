@@ -27,10 +27,14 @@ import {
   LAY_NGO_LITE_SHOPIFY_HERO_IMAGE_CLASS,
   layNGoPlayMatSwatchStyle,
 } from "@/lib/layNGoPlayMat";
+import { addToCart as trackAddToCart, selectItem } from "@/lib/analytics";
+import { productNodeToItem } from "@/lib/analyticsItems";
 
 interface ProductCardProps {
   product: ShopifyProduct;
   variant?: "default" | "imageOverlay";
+  /** GA4 item_list_name for select_item / add_to_cart context. */
+  listName?: string;
 }
 
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
@@ -38,7 +42,7 @@ type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
 const COSMO_MINI_CROSSMARKS_HERO = "/products/cosmo-mini-16-crossmarks-hero.png";
 const COSMO_MINI_CROSSMARKS_SWATCH = "/swatches/cosmo-mini-16-crossmarks-swatch.png";
 
-export const ProductCard = ({ product, variant = "default" }: ProductCardProps) => {
+export const ProductCard = ({ product, variant = "default", listName }: ProductCardProps) => {
   const { node } = product;
   const addItem = useCartStore(state => state.addItem);
   const isLoading = useCartStore(state => state.isLoading);
@@ -173,6 +177,19 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
       ? selectedVariant.price.amount
       : node.priceRange.minVariantPrice.amount;
 
+  const analyticsItem = (index?: number) =>
+    productNodeToItem(node, {
+      index,
+      item_category: listName ?? node.tags[0],
+      item_variant: getVariantColorValue(selectedVariant) ?? selectedVariant?.title,
+      price: parseFloat(priceAmount),
+    });
+
+  const handleSelectItem = () => {
+    if (!listName) return;
+    selectItem(analyticsItem(), listName);
+  };
+
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -185,6 +202,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
       quantity: 1,
       selectedOptions: selectedVariant.selectedOptions || [],
     });
+    trackAddToCart({ ...analyticsItem(), quantity: 1 });
     toast.success("Added to cart", {
       description: node.title,
       position: "top-center",
@@ -208,7 +226,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
 
   if (variant === "imageOverlay") {
     return (
-      <Link to={`/product/${node.handle}`} className="group block">
+      <Link to={`/product/${node.handle}`} className="group block" onClick={handleSelectItem}>
         <article className="relative overflow-hidden rounded-xl border border-border/80 bg-card shadow-sm">
           <div className="relative aspect-[4/5] overflow-hidden bg-muted">
             {defaultImage ? (
@@ -244,6 +262,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
     <article className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
       <Link
         to={`/product/${node.handle}`}
+        onClick={handleSelectItem}
           className={cn(
             "group relative block aspect-square w-full shrink-0 overflow-hidden",
             isNailspa18Interactive || isLite18Interactive
@@ -283,6 +302,7 @@ export const ProductCard = ({ product, variant = "default" }: ProductCardProps) 
         <div className="flex min-h-[3rem] items-start justify-between gap-2">
           <Link
             to={`/product/${node.handle}`}
+            onClick={handleSelectItem}
             className="font-heading text-[1.05rem] font-medium leading-snug text-foreground line-clamp-2 hover:text-primary min-w-0"
           >
             {node.title}

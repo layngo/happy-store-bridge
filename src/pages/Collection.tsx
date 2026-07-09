@@ -9,6 +9,8 @@ import { ProductGrid } from "@/components/ProductGrid";
 import { PageBreadcrumb } from "@/components/PageBreadcrumb";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { sortProductsList, type ProductSortKey } from "@/lib/productSort";
+import { viewItemList } from "@/lib/analytics";
+import { productNodeToItem } from "@/lib/analyticsItems";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronRight, Home } from "lucide-react";
@@ -35,6 +37,14 @@ const Collection = () => {
     if (!collection) return [];
     return sortProductsList(collection.products, sortKey, handle);
   }, [collection, sortKey, handle]);
+
+  useEffect(() => {
+    if (!collection || displayProducts.length === 0) return;
+    viewItemList(
+      displayProducts.map((p, i) => productNodeToItem(p.node, { index: i, item_category: collection.title })),
+      collection.title,
+    );
+  }, [collection, displayProducts]);
 
   if (loading) {
     return (
@@ -141,7 +151,7 @@ const Collection = () => {
           <p className="text-sm text-muted-foreground mb-4">
             {displayProducts.length} product{displayProducts.length !== 1 ? "s" : ""} found
           </p>
-          <ProductGrid prefetchedProducts={displayProducts} />
+          <ProductGrid prefetchedProducts={displayProducts} listName={collection.title} />
         </div>
       </main>
       <SiteFooter />

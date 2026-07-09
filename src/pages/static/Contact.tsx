@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { submitContactForm } from "@/lib/contactApi";
+import { generateLead } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 const wholesaleStats = [
@@ -75,6 +76,7 @@ const Contact = () => {
       }
 
       toast.success(result.message);
+      generateLead();
       setFirstName("");
       setLastName("");
       setEmail("");

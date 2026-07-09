@@ -6,6 +6,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useCartSync } from "@/hooks/useCartSync";
+import { useScrollDepth } from "@/hooks/useScrollDepth";
 import { FirstVisitDiscountPopup } from "@/components/FirstVisitDiscountPopup";
 import { SiteChatbot } from "@/components/SiteChatbot";
 import Index from "./pages/Index.tsx";
@@ -39,6 +40,7 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   useCartSync();
+  useScrollDepth();
   return (
     <BrowserRouter>
       <ScrollToTop />

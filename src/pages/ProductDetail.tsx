@@ -76,6 +76,8 @@ import {
   layNGoPlayMatSwatchStyle,
 } from "@/lib/layNGoPlayMat";
 import { MILITARY_FIRST_RESPONDER_PATH, OUTDOOR_TACTICAL_COLLECTION_TITLE } from "@/pages/MilitaryFirstResponder";
+import { addToCart as trackAddToCart, viewItem } from "@/lib/analytics";
+import { variantLabel } from "@/lib/analyticsItems";
 
 const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags";
 
@@ -1051,6 +1053,19 @@ const ProductDetail = () => {
   }, [product?.id, product?.handle]);
 
   useEffect(() => {
+    if (!product) return;
+    const variant = product.variants.edges[selectedVariantIdx]?.node;
+    const price = parseFloat(variant?.price.amount ?? product.priceRange.minVariantPrice.amount);
+    viewItem({
+      item_id: product.handle,
+      item_name: product.title,
+      price,
+      item_category: collectionHandle ?? product.tags[0],
+      item_variant: variant ? variantLabel(variant.selectedOptions) : undefined,
+    });
+  }, [product, selectedVariantIdx, collectionHandle]);
+
+  useEffect(() => {
     if (!product || product.handle.toLowerCase() !== "lay-n-go-travel-dog-bed-44") return;
     const colorName = product.options.find((opt) => isColorOptionName(opt.name))?.name;
     if (!colorName) return;
@@ -1437,6 +1452,14 @@ const ProductDetail = () => {
       description: `${product.title} × ${quantity}`,
       position: "top-center",
       className: "added-to-cart-toast",
+    });
+    trackAddToCart({
+      item_id: product.handle,
+      item_name: product.title,
+      price: parseFloat(selectedVariant.price.amount),
+      item_category: collectionHandle ?? product.tags[0],
+      item_variant: variantLabel(selectedVariant.selectedOptions),
+      quantity,
     });
   };
 
@@ -2200,7 +2223,7 @@ const ProductDetail = () => {
             <h2 className="font-heading text-2xl font-bold text-foreground mb-8">Related products</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {related.map((p) => (
-                <ProductCard key={p.node.id} product={p} />
+                <ProductCard key={p.node.id} product={p} listName="Related products" />
               ))}
             </div>
           </section>

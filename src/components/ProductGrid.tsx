@@ -14,6 +14,8 @@ interface ProductGridProps {
   cardVariant?: "default" | "imageOverlay";
   /** Override default grid layout classes. */
   gridClassName?: string;
+  /** GA4 item_list_name passed to product cards. */
+  listName?: string;
 }
 
 export const ProductGrid = ({
@@ -22,6 +24,7 @@ export const ProductGrid = ({
   fetchFirst,
   cardVariant = "default",
   gridClassName,
+  listName,
 }: ProductGridProps = {}) => {
   const [products, setProducts] = useState<ShopifyProduct[]>(prefetchedProducts ?? []);
   const [loading, setLoading] = useState(prefetchedProducts === undefined);
@@ -84,7 +87,7 @@ export const ProductGrid = ({
       }
     >
       {products.map((product) => (
-        <ProductCard key={product.node.id} product={product} variant={cardVariant} />
+        <ProductCard key={product.node.id} product={product} variant={cardVariant} listName={listName} />
       ))}
     </div>
   );

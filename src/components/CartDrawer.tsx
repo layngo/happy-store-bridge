@@ -14,6 +14,8 @@ import { ShoppingBag, Minus, Plus, Trash2, ArrowRight, Loader2 } from "lucide-re
 import { toast } from "sonner";
 import { useCartStore, type CartItem } from "@/stores/cartStore";
 import { navigateToCheckout } from "@/lib/navigateToCheckout";
+import { beginCheckout, viewCart } from "@/lib/analytics";
+import { cartItemsToAnalyticsItems } from "@/lib/analyticsItems";
 import { cn } from "@/lib/utils";
 import { normalizeOptionValueLabel } from "@/lib/displayOptionValue";
 
@@ -121,12 +123,19 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
     if (isOpen) syncCart();
   }, [isOpen, syncCart]);
 
+  useEffect(() => {
+    if (!isOpen || items.length === 0) return;
+    viewCart(cartItemsToAnalyticsItems(items), totalPrice);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fire when drawer opens, not on line-item edits
+  }, [isOpen]);
+
   const handleCheckout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     if (busy || items.length === 0) return;
     await syncCart();
     const url = getCheckoutUrl();
     if (url) {
+      beginCheckout(cartItemsToAnalyticsItems(items), totalPrice);
       setIsOpen(false);
       await navigateToCheckout(url);
       return;
