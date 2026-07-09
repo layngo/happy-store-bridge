@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run generate:sitemap && vite build && wrangler pages functions build --outdir=./worker-dist",
+    "cf:build": "npm ci && npm run build",
     "deploy": "wrangler deploy",
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "build:dev": "vite build --mode development",

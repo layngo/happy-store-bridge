@@ -2,7 +2,7 @@
 export const REVIEWS_LIST_AUTH_HEADER = "X-Layngo-Reviews-Token";
 
 const DEFAULT_REVIEWS_LIST_WEBHOOK =
-  "https://layngo.app.n8n.cloud/webhook/layngo-reviews-list";
+  "https://layngo.app.n8n.cloud/webhook/layngo-reviews-internal";
 
 export function reviewsListWebhookUrl(env: { REVIEWS_LIST_WEBHOOK_URL?: string }): string {
   return env.REVIEWS_LIST_WEBHOOK_URL || DEFAULT_REVIEWS_LIST_WEBHOOK;
