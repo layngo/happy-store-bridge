@@ -66,11 +66,12 @@ export function CustomerReviewsSection({
   className,
 }: CustomerReviewsSectionProps) {
   const submittedReviews = useSubmittedReviews(productHandle);
+  const [optimisticReviews, setOptimisticReviews] = useState<CustomerReview[]>([]);
   const [visibleCount, setVisibleCount] = useState(REVIEWS_PAGE_SIZE);
 
   const reviews = useMemo(
-    () => orderCustomerReviews([...staticReviews, ...submittedReviews]),
-    [staticReviews, submittedReviews],
+    () => orderCustomerReviews([...staticReviews, ...submittedReviews, ...optimisticReviews]),
+    [staticReviews, submittedReviews, optimisticReviews],
   );
 
   useEffect(() => {
@@ -83,7 +84,7 @@ export function CustomerReviewsSection({
   const averageRating = useMemo(() => averageReviewRating(reviews), [reviews]);
 
   const handleReviewSubmitted = (review: CustomerReview) => {
-    setSubmittedReviews((prev) => [...prev, review]);
+    setOptimisticReviews((prev) => [...prev, review]);
   };
 
   return (
