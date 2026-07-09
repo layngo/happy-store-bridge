@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
-import DOMPurify from "dompurify";
+import { sanitizeProductDescription } from "@/lib/sanitizeProductHtml";
 import { PageSeo } from "@/components/PageSeo";
 import { breadcrumbJsonLd, absoluteUrl, itemListJsonLd, productJsonLd, faqJsonLd, stripHtml, truncateText } from "@/lib/siteSeo";
 import {
@@ -1337,21 +1337,6 @@ const ProductDetail = () => {
     return () => observer.disconnect();
   }, [product?.id, isCosmoPdp]);
 
-  const sanitizedDescriptionHtml = useMemo(() => {
-    if (!product) return "";
-    const descHtml = /<[a-z][\s\S]*>/i.test(product.description);
-    return descHtml
-      ? DOMPurify.sanitize(product.description, {
-          ALLOWED_TAGS: [
-            "a", "p", "br", "strong", "em", "b", "i", "u", "ul", "ol", "li",
-            "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "span", "div",
-          ],
-          ALLOWED_ATTR: ["href", "title", "target", "rel"],
-          ALLOW_DATA_ATTR: false,
-        })
-      : "";
-  }, [product]);
-
   if (loading) {
     return (
       <div className="min-h-dvh bg-background flex flex-col">
@@ -1407,7 +1392,8 @@ const ProductDetail = () => {
                 : isLayNGoNailspa18
                   ? { slides: LAY_N_GO_NAILSPA_18_GALLERY_SLIDES, ariaLabel: "Lay-n-Go NAILSPA lifestyle photos" }
                   : null;
-  const descHtml = product ? /<[a-z][\s\S]*>/i.test(product.description) : false;
+  const sanitizedDescriptionHtml = sanitizeProductDescription(product.description);
+  const descHtml = sanitizedDescriptionHtml.length > 0;
   const priceDisplay = parseFloat(
     selectedVariant?.price.amount || product.priceRange.minVariantPrice.amount,
   ).toFixed(2);

@@ -9,3 +9,12 @@ main = "./worker-dist/index.js"
 [assets]
 directory = "./dist"
 not_found_handling = "single-page-application"
+
+# Serve layngo.com from this Worker (overrides Lovable once deployed).
+[[routes]]
+pattern = "layngo.com/*"
+zone_name = "layngo.com"
+
+[[routes]]
+pattern = "www.layngo.com/*"
+zone_name = "layngo.com"
