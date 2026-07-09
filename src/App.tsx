@@ -42,7 +42,7 @@ const AppContent = () => {
   useCartSync();
   useScrollDepth();
   return (
-    <BrowserRouter>
+    <>
       <ScrollToTop />
       <SkipToMain />
       <FirstVisitDiscountPopup />
@@ -102,7 +102,7 @@ const AppContent = () => {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+    </>
   );
 };
 
@@ -111,7 +111,9 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <AppContent />
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
 );
