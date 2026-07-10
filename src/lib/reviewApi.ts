@@ -18,11 +18,15 @@ const CLIENT_CACHE_TTL_MS = 10 * 60 * 1000;
 const reviewCache = new Map<string, { at: number; reviews: CustomerReview[] }>();
 const inflight = new Map<string, Promise<CustomerReview[]>>();
 
-/** Worker origin in production (Lovable); local Vite middleware in dev. */
+/** Public Cloudflare Worker — proxies /api/reviews to n8n (not a secret). */
+const PRODUCTION_REVIEWS_API_BASE = "https://happy-store-bridge.tommy-4fd.workers.dev";
+
+/** Worker origin in production; local Vite middleware in dev. */
 function reviewsApiBase(): string {
   if (import.meta.env.DEV) return "";
-  const base = (import.meta.env.VITE_REVIEWS_API_URL as string | undefined)?.trim();
-  return base ? base.replace(/\/$/, "") : "";
+  const fromEnv = (import.meta.env.VITE_REVIEWS_API_URL as string | undefined)?.trim();
+  const base = fromEnv || PRODUCTION_REVIEWS_API_BASE;
+  return base.replace(/\/$/, "");
 }
 
 function reviewSubmitEndpoint(): string {
