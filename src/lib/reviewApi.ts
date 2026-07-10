@@ -18,12 +18,19 @@ const CLIENT_CACHE_TTL_MS = 10 * 60 * 1000;
 const reviewCache = new Map<string, { at: number; reviews: CustomerReview[] }>();
 const inflight = new Map<string, Promise<CustomerReview[]>>();
 
+/** Worker origin in production (Lovable); local Vite middleware in dev. */
+function reviewsApiBase(): string {
+  if (import.meta.env.DEV) return "";
+  const base = (import.meta.env.VITE_REVIEWS_API_URL as string | undefined)?.trim();
+  return base ? base.replace(/\/$/, "") : "";
+}
+
 function reviewSubmitEndpoint(): string {
-  return "/api/reviews/submit";
+  return `${reviewsApiBase()}/api/reviews/submit`;
 }
 
 function reviewsListEndpoint(productHandle: string): string {
-  return `/api/reviews?productHandle=${encodeURIComponent(productHandle)}`;
+  return `${reviewsApiBase()}/api/reviews?productHandle=${encodeURIComponent(productHandle)}`;
 }
 
 export async function submitCustomerReview(
