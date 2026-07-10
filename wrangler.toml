@@ -15,10 +15,5 @@ main = "./worker-dist/index.js"
 directory = "./dist"
 not_found_handling = "single-page-application"
 
-[[routes]]
-pattern = "layngo.com/*"
-zone_name = "layngo.com"
-
-[[routes]]
-pattern = "www.layngo.com/*"
-zone_name = "layngo.com"
+# Custom domain routes (layngo.com) removed — site stays on Lovable.
+# Attach api.layngo.com via Worker dashboard → Domains when ready.
