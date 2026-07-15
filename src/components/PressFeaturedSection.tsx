@@ -1,5 +1,4 @@
 import { PRESS_FEATURED_ITEMS, type PressFeaturedItem } from "@/lib/pressFeatured";
-import { PressUsatoday10BestBanner } from "@/components/PressUsatoday10BestBanner";
 import { cn } from "@/lib/utils";
 
 const featuredTextBlockClass =
@@ -276,11 +275,9 @@ function PressFeaturedCardCard({
 export function PressFeaturedSection() {
   if (PRESS_FEATURED_ITEMS.length === 0) return null;
 
-  const usatodayItems = PRESS_FEATURED_ITEMS.filter((item) => item.layout === "usatoday10best");
   const pressArtItems = PRESS_FEATURED_ITEMS.filter((item) => item.layout === "pressArt");
   const bannerItems = PRESS_FEATURED_ITEMS.filter(
-    (item) =>
-      item.layout !== "card" && item.layout !== "pressArt" && item.layout !== "usatoday10best",
+    (item) => item.layout !== "card" && item.layout !== "pressArt",
   );
   const cardItems = PRESS_FEATURED_ITEMS.filter((item) => item.layout === "card");
 
@@ -294,10 +291,6 @@ export function PressFeaturedSection() {
       </h2>
       <div className="mx-auto w-full max-w-[min(100%,80rem)] px-4 sm:px-6">
         <div className="space-y-6 sm:space-y-8 md:space-y-10">
-          {usatodayItems.map((item) => (
-            <PressUsatoday10BestBanner key={item.href} item={item} />
-          ))}
-
           {pressArtItems.map((item) => (
             <PressFeaturedPressArtCard key={item.href} item={item} />
           ))}
