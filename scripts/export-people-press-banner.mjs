@@ -85,10 +85,10 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
       z-index: 1;
       height: 100%;
       display: grid;
-      grid-template-columns: 0.88fr 1.12fr;
+      grid-template-columns: 0.78fr 1.22fr;
       align-items: center;
-      padding: 36px 56px 36px 48px;
-      gap: 28px;
+      padding: 32px 48px 32px 44px;
+      gap: 20px;
     }
 
     .visual {
@@ -103,7 +103,7 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
     /* Circular crop — filled like before (cover + mild scale) */
     .orb {
       position: relative;
-      width: min(620px, 92%);
+      width: min(560px, 94%);
       aspect-ratio: 1;
       border-radius: 50%;
       overflow: hidden;
@@ -137,8 +137,8 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
 
     .copy {
       position: relative;
-      padding: 4px 0 4px 40px;
-      max-width: 40rem;
+      padding: 4px 8px 4px 40px;
+      max-width: 48rem;
       min-width: 0;
     }
 
@@ -162,12 +162,12 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
     .masthead {
       display: flex;
       align-items: center;
-      gap: 20px;
-      margin-bottom: 22px;
+      gap: 22px;
+      margin-bottom: 20px;
     }
 
     .masthead__logo {
-      height: 48px;
+      height: 92px;
       width: auto;
       display: block;
     }
@@ -183,7 +183,7 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
 
     .kicker {
       display: inline-block;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       padding-bottom: 8px;
       color: ${PEOPLE};
       font-size: 20px;
@@ -196,40 +196,44 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
     .headline {
       color: ${TEXT};
       font-family: "Fraunces", Georgia, serif;
-      font-size: 64px;
+      font-size: 78px;
       font-weight: 700;
-      line-height: 1.02;
-      letter-spacing: -0.02em;
-      max-width: 16ch;
+      line-height: 0.98;
+      letter-spacing: -0.025em;
+      max-width: 15ch;
     }
 
     .quote {
-      margin-top: 24px;
+      margin-top: 28px;
     }
 
     .quote__lead {
-      position: relative;
+      display: inline;
       color: ${TEXT};
       font-family: "Fraunces", Georgia, serif;
-      font-size: 38px;
+      font-size: 40px;
       font-weight: 500;
       font-style: italic;
-      line-height: 1.22;
+      line-height: 1.25;
       letter-spacing: -0.01em;
-      max-width: 22ch;
-      padding-left: 0.15em;
     }
 
-    .quote__lead::before {
-      content: "“";
-      position: absolute;
-      left: -0.38em;
-      top: -0.12em;
+    .quote__mark {
       color: ${PEOPLE};
-      font-size: 1.4em;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.55em;
       font-style: normal;
       font-weight: 700;
-      opacity: 0.95;
+      line-height: 0;
+      vertical-align: -0.12em;
+    }
+
+    .quote__mark--open {
+      margin-right: 0.08em;
+    }
+
+    .quote__mark--close {
+      margin-left: 0.08em;
     }
 
   </style>
@@ -255,7 +259,7 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
         <h1 class="headline">The layflat bag PEOPLE is eyeing for summer getaways</h1>
 
         <div class="quote">
-          <p class="quote__lead">Spread out your whole routine, then cinch it closed.&rdquo;</p>
+          <p class="quote__lead"><span class="quote__mark quote__mark--open">“</span>Spread out your whole routine, then cinch it closed.<span class="quote__mark quote__mark--close">”</span></p>
         </div>
       </div>
     </div>
