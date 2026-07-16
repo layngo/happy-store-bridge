@@ -22,8 +22,8 @@ const PEOPLE = "#28a8e0";
 const BG = "#111111";
 const TEXT = "#f3f0ea";
 
-/** Open black Cosmo studio flat lay — makeup + jewelry on black background. */
-const HERO = path.join(PUBLIC, "cosmetic-bags-v2", "cosmo-20.png");
+/** Cleaned open Cosmo flat lay — speckles reduced for press export. */
+const HERO = path.join(PUBLIC, "press", "cosmo-20-flatlay-clean.png");
 
 function toDataUrl(filePath) {
   const buf = fs.readFileSync(filePath);
@@ -66,20 +66,9 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
       width: ${WIDTH}px;
       height: ${HEIGHT}px;
       background:
-        radial-gradient(ellipse 58% 90% at 18% 52%, #1c1c1c 0%, transparent 68%),
+        radial-gradient(ellipse 62% 88% at 22% 50%, #1c1c1c 0%, transparent 70%),
         linear-gradient(115deg, #0e0e0e 0%, #161616 48%, #101010 100%);
       overflow: hidden;
-    }
-
-    /* Soft paper grain — keeps it from looking flat / AI-slick */
-    .banner::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      opacity: 0.09;
-      pointer-events: none;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      mix-blend-mode: soft-light;
     }
 
     .accent {
@@ -87,7 +76,7 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
       left: 0;
       top: 0;
       bottom: 0;
-      width: 10px;
+      width: 12px;
       background: ${PEOPLE};
     }
 
@@ -96,10 +85,10 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
       z-index: 1;
       height: 100%;
       display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
+      grid-template-columns: 0.88fr 1.12fr;
       align-items: center;
-      padding: 48px 64px 48px 52px;
-      gap: 18px;
+      padding: 36px 56px 36px 48px;
+      gap: 28px;
     }
 
     .visual {
@@ -108,9 +97,10 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
       align-items: center;
       justify-content: center;
       height: 100%;
+      min-width: 0;
     }
 
-    /* Circular crop echoes the lay-flat bag — no border/frame */
+    /* Circular crop — filled like before (cover + mild scale) */
     .orb {
       position: relative;
       width: min(620px, 92%);
@@ -128,144 +118,120 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
       object-fit: cover;
       object-position: center 48%;
       display: block;
-      transform: scale(1.04);
-    }
-
-    /* Soft vignette into dark bg so edge isn’t hard/AI */
-    .orb::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      box-shadow: inset 0 0 64px 28px rgba(17, 17, 17, 0.55);
-      pointer-events: none;
+      transform: scale(1.02);
+      image-rendering: auto;
     }
 
     .mark {
       position: absolute;
-      right: -8px;
-      bottom: 58px;
+      right: 0;
+      bottom: 42px;
       writing-mode: vertical-rl;
       transform: rotate(180deg);
-      color: rgba(243, 240, 234, 0.28);
-      font-size: 13px;
+      color: rgba(243, 240, 234, 0.38);
+      font-size: 16px;
       font-weight: 700;
-      letter-spacing: 0.28em;
+      letter-spacing: 0.24em;
       text-transform: uppercase;
     }
 
     .copy {
       position: relative;
-      padding: 8px 0 8px 36px;
-      max-width: 34rem;
+      padding: 4px 0 4px 40px;
+      max-width: 40rem;
+      min-width: 0;
     }
 
     .copy::before {
       content: "";
       position: absolute;
       left: 0;
-      top: 10px;
-      bottom: 10px;
-      width: 2px;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
       background: linear-gradient(
         180deg,
         transparent 0%,
-        ${PEOPLE} 18%,
-        ${PEOPLE} 82%,
+        ${PEOPLE} 14%,
+        ${PEOPLE} 86%,
         transparent 100%
       );
-      opacity: 0.85;
+      opacity: 0.9;
     }
 
     .masthead {
       display: flex;
       align-items: center;
-      gap: 18px;
-      margin-bottom: 28px;
+      gap: 20px;
+      margin-bottom: 22px;
     }
 
     .masthead__logo {
-      height: 36px;
+      height: 48px;
       width: auto;
       display: block;
     }
 
     .masthead__meta {
-      font-size: 14px;
+      font-size: 18px;
       font-weight: 700;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(243, 240, 234, 0.48);
-      line-height: 1.35;
+      color: rgba(243, 240, 234, 0.55);
+      line-height: 1.3;
     }
 
     .kicker {
       display: inline-block;
-      margin-bottom: 14px;
-      padding-bottom: 6px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
       color: ${PEOPLE};
-      font-size: 15px;
+      font-size: 20px;
       font-weight: 800;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      border-bottom: 2px solid ${PEOPLE};
+      border-bottom: 3px solid ${PEOPLE};
     }
 
     .headline {
       color: ${TEXT};
       font-family: "Fraunces", Georgia, serif;
-      font-size: 46px;
+      font-size: 64px;
       font-weight: 700;
-      line-height: 1.05;
-      letter-spacing: -0.015em;
-      max-width: 17ch;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      max-width: 16ch;
     }
 
     .quote {
-      margin-top: 26px;
+      margin-top: 24px;
     }
 
     .quote__lead {
       position: relative;
       color: ${TEXT};
       font-family: "Fraunces", Georgia, serif;
-      font-size: 28px;
+      font-size: 38px;
       font-weight: 500;
       font-style: italic;
-      line-height: 1.28;
+      line-height: 1.22;
       letter-spacing: -0.01em;
       max-width: 22ch;
+      padding-left: 0.15em;
     }
 
     .quote__lead::before {
       content: "“";
       position: absolute;
-      left: -0.42em;
-      top: -0.15em;
+      left: -0.38em;
+      top: -0.12em;
       color: ${PEOPLE};
-      font-size: 1.35em;
+      font-size: 1.4em;
       font-style: normal;
       font-weight: 700;
-      opacity: 0.9;
+      opacity: 0.95;
     }
 
-    .quote__rest {
-      margin-top: 18px;
-      color: rgba(243, 240, 234, 0.72);
-      font-size: 20px;
-      font-weight: 500;
-      line-height: 1.45;
-      max-width: 32rem;
-    }
-
-    .date {
-      margin-top: 28px;
-      color: rgba(243, 240, 234, 0.42);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
   </style>
 </head>
 <body>
@@ -289,11 +255,8 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
         <h1 class="headline">The layflat bag PEOPLE is eyeing for summer getaways</h1>
 
         <div class="quote">
-          <p class="quote__lead">Spread out your whole routine, then cinch it closed.</p>
-          <p class="quote__rest">PEOPLE calls out our 20-inch lay-flat circle, raised edges that keep lipsticks from rolling, and a hidden pocket for valuables, plus more travel bags from $13.</p>
+          <p class="quote__lead">Spread out your whole routine, then cinch it closed.&rdquo;</p>
         </div>
-
-        <p class="date">Published on Jul. 5, 2026</p>
       </div>
     </div>
   </div>

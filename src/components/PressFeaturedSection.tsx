@@ -109,30 +109,30 @@ function PressFeaturedPressArtCard({
   return (
     <article
       className={cn(
-        "not-prose flex w-full flex-col overflow-hidden rounded-2xl border-2 border-black bg-[#0a0a0a]",
+        "not-prose relative w-full overflow-hidden rounded-2xl border-2 border-black",
         className,
       )}
     >
-      <img
-        src={item.imageSrc}
-        srcSet={item.imageSrcSet}
-        sizes={item.imageSrcSet ? "(min-width: 768px) 80rem, 100vw" : undefined}
-        alt={item.imageAlt}
-        className="block h-auto w-full"
-        style={{ aspectRatio: desktopAspect }}
-        loading="eager"
-        decoding="async"
-      />
-      <div className="flex justify-center bg-[#0a0a0a] px-5 pb-6 pt-4 sm:px-8 sm:pb-7 sm:pt-5">
-        <a
-          href={item.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex w-fit items-center justify-center rounded-full bg-primary px-6 py-2.5 font-heading text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
-        >
+      <a
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group relative block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      >
+        <img
+          src={item.imageSrc}
+          srcSet={item.imageSrcSet}
+          sizes={item.imageSrcSet ? "(min-width: 768px) 80rem, 100vw" : undefined}
+          alt={item.imageAlt}
+          className="block h-auto w-full"
+          style={{ aspectRatio: desktopAspect }}
+          loading="eager"
+          decoding="async"
+        />
+        <span className="pointer-events-none absolute bottom-4 left-1/2 z-10 -translate-x-1/2 inline-flex w-fit items-center justify-center rounded-full bg-primary px-6 py-2.5 font-heading text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-colors group-hover:bg-primary/90 sm:bottom-5">
           {item.linkLabel}
-        </a>
-      </div>
+        </span>
+      </a>
     </article>
   );
 }

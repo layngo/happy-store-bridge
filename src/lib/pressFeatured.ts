@@ -59,7 +59,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     dateLabel: "Published on Jul. 5, 2026",
     productName: "Surprisingly Spacious",
     quote: "Spread out your whole routine, then cinch it closed.",
-    imageSrc: "/press/featured-people-travel-toiletry-banner.png?v=1",
+    imageSrc: "/press/featured-people-travel-toiletry-banner.png?v=8",
     imageAlt:
       "PEOPLE Travel Deals feature: Lay-n-Go Cosmo layflat drawstring cosmetic organizer",
     imageAspect: "2048/768",
