@@ -37,6 +37,20 @@ export type PressFeaturedItem = {
 export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
   {
     layout: "pressArt",
+    publication: "PEOPLE",
+    headline: "The layflat bag PEOPLE is eyeing for summer getaways",
+    href: "https://people.com/travel-toiletry-bag-deals-amazon-july-2026-11990655",
+    linkLabel: "VIEW FULL ARTICLE",
+    dateLabel: "Published on Jul. 5, 2026",
+    productName: "Surprisingly Spacious",
+    quote: "Spread out your whole routine, then cinch it closed.",
+    imageSrc: "/press/featured-people-travel-toiletry-banner.png?v=10",
+    imageAlt:
+      "PEOPLE Travel Deals feature: Lay-n-Go Cosmo layflat drawstring cosmetic organizer",
+    imageAspect: "2048/768",
+  },
+  {
+    layout: "pressArt",
     publication: "USA TODAY 10BEST",
     headline: "This Clever Makeup Organizer Has Become My Ultimate Travel Companion",
     href: "https://10best.usatoday.com/lifestyle/layflat-bag-deal-amazon-prime-day/",
@@ -48,20 +62,6 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     imageSrc: "/press/featured-usatoday-10best-banner.png?v=2",
     imageAlt:
       "USA TODAY 10BEST feature: Lay-n-Go Cosmo makeup organizer as ultimate travel companion",
-    imageAspect: "2048/768",
-  },
-  {
-    layout: "pressArt",
-    publication: "PEOPLE",
-    headline: "The layflat bag PEOPLE is eyeing for summer getaways",
-    href: "https://people.com/travel-toiletry-bag-deals-amazon-july-2026-11990655",
-    linkLabel: "VIEW FULL ARTICLE",
-    dateLabel: "Published on Jul. 5, 2026",
-    productName: "Surprisingly Spacious",
-    quote: "Spread out your whole routine, then cinch it closed.",
-    imageSrc: "/press/featured-people-travel-toiletry-banner.png?v=10",
-    imageAlt:
-      "PEOPLE Travel Deals feature: Lay-n-Go Cosmo layflat drawstring cosmetic organizer",
     imageAspect: "2048/768",
   },
   {
