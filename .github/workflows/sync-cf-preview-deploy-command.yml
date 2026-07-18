@@ -1,0 +1,51 @@
+name: Sync Cloudflare preview deploy command
+
+# One-shot / idempotent: keeps the non-production Workers Builds deploy command
+# pointed at `npm run deploy:preview` (not the broken "… then npx wrangler deploy").
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/sync-cf-preview-deploy-command.yml"
+      - "scripts/cf-preview-deploy.mjs"
+      - "package.json"
+  workflow_dispatch:
+
+jobs:
+  sync-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Patch non-production deploy command
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          ACCOUNT_ID="34fd5c5a677e8c4b172d3888be1653cb"
+          WORKER_TAG="79bba5b38af64200882ffa76256c899a"
+          EXPECTED='npm run deploy:preview'
+
+          TRIGGERS="$(curl -sS "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/builds/workers/${WORKER_TAG}/triggers" \
+            --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}")"
+          echo "$TRIGGERS" | jq '.result[] | {trigger_name, deploy_command, branch_includes, branch_excludes}'
+
+          PREVIEW_UUID="$(echo "$TRIGGERS" | jq -r '.result[] | select(.trigger_name=="Deploy non-production branches") | .trigger_uuid')"
+          if [ -z "$PREVIEW_UUID" ] || [ "$PREVIEW_UUID" = "null" ]; then
+            echo "Could not find non-production trigger"
+            exit 1
+          fi
+
+          CURRENT="$(echo "$TRIGGERS" | jq -r --arg id "$PREVIEW_UUID" '.result[] | select(.trigger_uuid==$id) | .deploy_command')"
+          echo "Current non-production deploy_command: $CURRENT"
+          if [ "$CURRENT" = "$EXPECTED" ]; then
+            echo "Already correct; nothing to patch."
+            exit 0
+          fi
+
+          RESP="$(curl -sS "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/builds/triggers/${PREVIEW_UUID}" \
+            --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            --header "Content-Type: application/json" \
+            --request PATCH \
+            --data "{\"deploy_command\":\"${EXPECTED}\"}")"
+          echo "$RESP" | jq '{success, errors, result: (.result | {trigger_name, deploy_command})}'
+          echo "$RESP" | jq -e '.success == true' >/dev/null
+          echo "Updated non-production deploy_command to: ${EXPECTED}"
