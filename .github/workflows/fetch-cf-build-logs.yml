@@ -7,15 +7,39 @@ on:
         description: Cloudflare Workers Builds UUID
         required: true
         type: string
+  push:
+    branches: [main]
+    paths:
+      - ".github/cf-fetch-build-uuid"
 
 jobs:
   fetch-logs:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve build UUID
+        id: uuid
+        env:
+          INPUT_UUID: ${{ inputs.build_uuid }}
+        run: |
+          set -euo pipefail
+          if [ -n "${INPUT_UUID:-}" ]; then
+            UUID="$INPUT_UUID"
+          elif [ -f .github/cf-fetch-build-uuid ]; then
+            UUID="$(tr -d '[:space:]' < .github/cf-fetch-build-uuid)"
+          else
+            echo "No build UUID provided"
+            exit 1
+          fi
+          echo "uuid=$UUID" >> "$GITHUB_OUTPUT"
+          echo "Fetching logs for $UUID"
+
       - name: Fetch build logs
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          BUILD_UUID: ${{ inputs.build_uuid }}
+          BUILD_UUID: ${{ steps.uuid.outputs.uuid }}
         run: |
           set -euo pipefail
           ACCOUNT_ID="34fd5c5a677e8c4b172d3888be1653cb"
@@ -23,10 +47,25 @@ jobs:
             echo "CLOUDFLARE_API_TOKEN secret is missing"
             exit 1
           fi
+
+          echo "## Trigger config (if accessible)"
+          # List workers + triggers to understand deploy commands
+          SCRIPTS="$(curl -sS "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/scripts" \
+            --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" || true)"
+          echo "$SCRIPTS" | tee cf-workers-scripts.json | jq -r '.result[]? | select(.id=="happy-store-bridge") | {id,tag}' || true
+          TAG="$(echo "$SCRIPTS" | jq -r '.result[]? | select(.id=="happy-store-bridge") | .tag' || true)"
+          if [ -n "${TAG:-}" ] && [ "$TAG" != "null" ]; then
+            curl -sS "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/builds/workers/${TAG}/triggers" \
+              --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              | tee cf-triggers.json \
+              | jq '.' || true
+          fi
+
+          echo "## Build logs for ${BUILD_UUID}"
           curl -sS "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/builds/builds/${BUILD_UUID}/logs" \
             --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
             | tee cf-build-logs.json
-          # Also try to pretty-print common shapes
+
           jq -r '
             if .success == false then
               "API error: " + (.errors|tostring)
@@ -50,3 +89,5 @@ jobs:
           path: |
             cf-build-logs.json
             cf-build-logs.txt
+            cf-triggers.json
+            cf-workers-scripts.json
