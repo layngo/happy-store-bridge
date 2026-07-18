@@ -1,0 +1,52 @@
+name: Fetch Cloudflare build logs
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_uuid:
+        description: Cloudflare Workers Builds UUID
+        required: true
+        type: string
+
+jobs:
+  fetch-logs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch build logs
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          BUILD_UUID: ${{ inputs.build_uuid }}
+        run: |
+          set -euo pipefail
+          ACCOUNT_ID="34fd5c5a677e8c4b172d3888be1653cb"
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            echo "CLOUDFLARE_API_TOKEN secret is missing"
+            exit 1
+          fi
+          curl -sS "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/builds/builds/${BUILD_UUID}/logs" \
+            --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            | tee cf-build-logs.json
+          # Also try to pretty-print common shapes
+          jq -r '
+            if .success == false then
+              "API error: " + (.errors|tostring)
+            elif .result == null then
+              "No result: " + tostring
+            elif (.result|type) == "string" then
+              .result
+            elif .result.logs then
+              (.result.logs | if type=="array" then join("\n") else tostring end)
+            elif .result.lines then
+              (.result.lines | if type=="array" then map(if type=="object" then (.line // .message // tostring) else tostring end) | join("\n") else tostring end)
+            else
+              tostring
+            end
+          ' cf-build-logs.json | tee cf-build-logs.txt
+
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: cf-build-logs
+          path: |
+            cf-build-logs.json
+            cf-build-logs.txt
