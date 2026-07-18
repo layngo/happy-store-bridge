@@ -1,15 +1,20 @@
 # Cloudflare Worker — static assets (dist/) + compiled API routes (worker-dist/).
 #
-# Workers Builds (Git) — dashboard settings:
-#   Build variable:  SKIP_DEPENDENCY_INSTALL = true
-#   Build command:   npm run cf:build
-#   Deploy command:  npm run deploy
+# Workers Builds (Git) — dashboard / trigger settings:
+#   Build variable:                 SKIP_DEPENDENCY_INSTALL = true
+#   Build command (both triggers):  npm run cf:build
+#   Production deploy command:      npx wrangler deploy
+#   Non-production deploy command:  npm run deploy:preview
 #
+# Do NOT put shell words like "then" in deploy commands — npm run appends extra
+# tokens to the script and breaks `wrangler pages functions build`.
 # Do NOT use `bun run build` — bun.lock is not in this repo. Use npm only.
 # Do NOT use bare `npx wrangler deploy` without `npm run build` first (needs worker-dist/).
 name = "happy-store-bridge"
 compatibility_date = "2024-09-23"
 main = "./worker-dist/index.js"
+workers_dev = true
+preview_urls = true
 
 [assets]
 directory = "./dist"
