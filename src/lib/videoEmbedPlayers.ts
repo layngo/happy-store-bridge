@@ -56,7 +56,8 @@ export function buildVimeoEmbedSrc(
 ) {
   const params = new URLSearchParams({
     badge: "0",
-    autopause: "0",
+    // Pause other Vimeo players on the page when this one plays (home has many embeds).
+    autopause: "1",
     player_id: "0",
     app_id: "58479",
     autoplay: autoplay ? "1" : "0",

@@ -28,6 +28,7 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
     );
     const hasVideo = Boolean(homeConfig.videoId);
     const hoverImageSrc = homeConfig.hoverSrc ?? (hasVideo ? img?.url : undefined);
+    const posterSrc = img?.url ?? homeConfig.hoverSrc;
 
     return (
       <Link to={href} className="group mx-auto block w-[94%]">
@@ -48,6 +49,8 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
                 videoId={homeConfig.videoId!}
                 title={`${homeConfig.label} category video`}
                 className="pointer-events-none absolute inset-0 h-full w-full"
+                posterSrc={posterSrc}
+                loadWhenVisible
               />
             </div>
           ) : img ? (

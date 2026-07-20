@@ -140,13 +140,15 @@ const Index = () => {
       {/* Hero: ~20:9 frame reveals more of the 16:9 Vimeo crop; Cosmo brand film */}
       <section className="relative w-full bg-white">
         <div className="relative aspect-[20/9] w-full overflow-hidden">
-          <div className="absolute left-0 right-0 top-1/2 z-[5] aspect-video w-full -translate-y-1/2">
+          <div className="absolute left-0 right-0 top-1/2 z-[5] aspect-video w-full -translate-y-1/2 bg-neutral-900">
             <PausableAutoplayEmbed
               provider="vimeo"
               videoId={HOME_HERO_VIMEO_ID}
               title="Lay-n-Go brand film"
               iframeClassName="absolute inset-0 h-full w-full border-0 select-none"
               showPauseControl
+              // Let first paint finish before the hero stream competes for bandwidth.
+              deferMs={350}
             />
           </div>
           <div
@@ -229,12 +231,16 @@ const Index = () => {
                   src={OUR_STORY_IMAGES[0]}
                   alt="Lay-n-Go founder story"
                   className="our-story-slide our-story-slide-a h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <img
                   src={OUR_STORY_IMAGES[1]}
                   alt=""
                   aria-hidden
                   className="our-story-slide our-story-slide-b h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
 

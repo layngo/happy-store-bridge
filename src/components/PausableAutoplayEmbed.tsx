@@ -23,6 +23,17 @@ type PausableAutoplayEmbedProps = {
   showPauseControl?: boolean;
   /** Vimeo only: player background hex without # (e.g. `000000`). */
   vimeoBackground?: string;
+  /**
+   * Defer iframe src until the embed is near the viewport.
+   * Use for below-fold category videos so the hero isn't competing with 6 streams.
+   */
+  loadWhenVisible?: boolean;
+  /** Shown until the iframe is allowed to load (poster / collection image). */
+  posterSrc?: string;
+  /** Extra IntersectionObserver rootMargin (default 240px). */
+  rootMargin?: string;
+  /** Delay iframe mount even when eager (hero first-paint win). */
+  deferMs?: number;
 };
 
 function usePrefersReducedMotion() {
@@ -42,6 +53,7 @@ function usePrefersReducedMotion() {
 /**
  * Autoplaying muted Vimeo/YouTube embed with a visible pause/play control (bottom-right).
  * Honors `prefers-reduced-motion` by starting paused and omitting autoplay.
+ * Optional viewport gating keeps off-screen embeds from loading until needed.
  */
 export function PausableAutoplayEmbed({
   provider,
@@ -52,13 +64,21 @@ export function PausableAutoplayEmbed({
   vimeoLoopFade = false,
   showPauseControl = true,
   vimeoBackground,
+  loadWhenVisible = false,
+  posterSrc,
+  rootMargin = "240px 0px",
+  deferMs = 0,
 }: PausableAutoplayEmbedProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const vimeoPlayerRef = useRef<VimeoPlayerInstance | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [isPaused, setIsPaused] = useState(prefersReducedMotion);
+  const [isNearViewport, setIsNearViewport] = useState(!loadWhenVisible);
+  const [deferReady, setDeferReady] = useState(deferMs <= 0);
   const labelId = useId();
+
+  const allowIframe = isNearViewport && deferReady;
 
   const src = useMemo(
     () =>
@@ -70,6 +90,87 @@ export function PausableAutoplayEmbed({
         : buildYouTubeEmbedSrc(videoId, { autoplay: !prefersReducedMotion }),
     [provider, videoId, prefersReducedMotion, vimeoBackground],
   );
+
+  useEffect(() => {
+    if (!loadWhenVisible) {
+      setIsNearViewport(true);
+      return;
+    }
+
+    const el = wrapRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setIsNearViewport(true);
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setIsNearViewport(true);
+          // Keep loaded once revealed — avoids reload thrash while scrolling the grid.
+          io.disconnect();
+        }
+      },
+      { root: null, rootMargin, threshold: 0.01 },
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, [loadWhenVisible, rootMargin, videoId]);
+
+  useEffect(() => {
+    if (deferMs <= 0) {
+      setDeferReady(true);
+      return;
+    }
+
+    let cancelled = false;
+    let timeoutId = 0;
+    const start = () => {
+      timeoutId = window.setTimeout(() => {
+        if (!cancelled) setDeferReady(true);
+      }, deferMs);
+    };
+
+    if (typeof window.requestIdleCallback === "function") {
+      const idleId = window.requestIdleCallback(start, { timeout: deferMs + 400 });
+      return () => {
+        cancelled = true;
+        window.cancelIdleCallback(idleId);
+        window.clearTimeout(timeoutId);
+      };
+    }
+
+    start();
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, [deferMs, videoId]);
+
+  // Pause when scrolled far away (after load) to free CPU/decode.
+  useEffect(() => {
+    if (!allowIframe) return;
+    const el = wrapRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        const visible = Boolean(entry?.isIntersecting);
+        if (!visible) {
+          setIsPaused(true);
+          void syncPausedRef.current(true);
+        } else if (!prefersReducedMotion) {
+          setIsPaused(false);
+          void syncPausedRef.current(false);
+        }
+      },
+      { root: null, rootMargin: "80px 0px", threshold: 0.15 },
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, [allowIframe, prefersReducedMotion, videoId]);
 
   const syncPaused = useCallback(
     async (paused: boolean) => {
@@ -89,6 +190,9 @@ export function PausableAutoplayEmbed({
     [provider],
   );
 
+  const syncPausedRef = useRef(syncPaused);
+  syncPausedRef.current = syncPaused;
+
   const togglePause = useCallback(() => {
     setIsPaused((prev) => {
       const next = !prev;
@@ -102,7 +206,7 @@ export function PausableAutoplayEmbed({
   }, [prefersReducedMotion, videoId, provider]);
 
   useEffect(() => {
-    if (provider !== "vimeo" || !vimeoLoopFade) return;
+    if (!allowIframe || provider !== "vimeo" || !vimeoLoopFade) return;
 
     let cancelled = false;
     let player: VimeoPlayerInstance | null = null;
@@ -167,10 +271,10 @@ export function PausableAutoplayEmbed({
         /* ignore */
       }
     };
-  }, [provider, vimeoLoopFade, videoId, prefersReducedMotion, isPaused]);
+  }, [allowIframe, provider, vimeoLoopFade, videoId, prefersReducedMotion, isPaused]);
 
   useEffect(() => {
-    if (provider !== "vimeo" || vimeoLoopFade) return;
+    if (!allowIframe || provider !== "vimeo" || vimeoLoopFade) return;
 
     let cancelled = false;
     let player: VimeoPlayerInstance | null = null;
@@ -203,10 +307,10 @@ export function PausableAutoplayEmbed({
         /* ignore */
       }
     };
-  }, [provider, vimeoLoopFade, videoId, prefersReducedMotion, isPaused]);
+  }, [allowIframe, provider, vimeoLoopFade, videoId, prefersReducedMotion, isPaused]);
 
   useEffect(() => {
-    if (provider !== "youtube") return;
+    if (!allowIframe || provider !== "youtube") return;
 
     const iframe = iframeRef.current;
     if (!iframe) return;
@@ -219,7 +323,7 @@ export function PausableAutoplayEmbed({
 
     iframe.addEventListener("load", onLoad);
     return () => iframe.removeEventListener("load", onLoad);
-  }, [provider, videoId, prefersReducedMotion, isPaused]);
+  }, [allowIframe, provider, videoId, prefersReducedMotion, isPaused]);
 
   return (
     <div
@@ -236,16 +340,31 @@ export function PausableAutoplayEmbed({
           ? `${title}. Autoplaying background video. Use the pause button to stop playback.`
           : `${title}. Autoplaying background video.`}
       </p>
-      <iframe
-        ref={iframeRef}
-        src={src}
-        title={title}
-        className={iframeClassName}
-        allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        aria-describedby={labelId}
-      />
-      {showPauseControl ? (
+      {posterSrc ? (
+        <img
+          src={posterSrc}
+          alt=""
+          aria-hidden
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover transition-opacity duration-500",
+            allowIframe ? "opacity-0" : "opacity-100",
+          )}
+          loading={loadWhenVisible ? "lazy" : "eager"}
+          decoding="async"
+        />
+      ) : null}
+      {allowIframe ? (
+        <iframe
+          ref={iframeRef}
+          src={src}
+          title={title}
+          className={iframeClassName}
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          aria-describedby={labelId}
+        />
+      ) : null}
+      {showPauseControl && allowIframe ? (
         <VideoPauseButton isPaused={isPaused} onToggle={togglePause} label={title} />
       ) : null}
     </div>
