@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { generateLead } from "@/lib/analytics";
 import { sendDiscountVerificationCode, verifyDiscountCode } from "@/lib/discountApi";
 import {
   hasCompletedDiscountSignup,
@@ -141,6 +142,7 @@ export function FirstVisitDiscountPopup() {
     }
 
     markDiscountSignupComplete(email.trim());
+    generateLead();
     setDiscountCode(result.discountCode ?? "");
     toast.success(result.message ?? "You're verified!");
     setStep("code");
