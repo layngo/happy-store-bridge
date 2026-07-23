@@ -4,8 +4,11 @@ const YOUTUBE_SCRIPT = "https://www.youtube.com/iframe_api";
 export type VimeoPlayerInstance = {
   play: () => Promise<void>;
   pause: () => Promise<void>;
+  getPaused: () => Promise<boolean>;
   getDuration: () => Promise<number>;
+  setVolume: (volume: number) => Promise<void>;
   on: (event: string, cb: (payload: { seconds: number }) => void) => void;
+  off?: (event: string, cb?: (payload: { seconds: number }) => void) => void;
   destroy?: () => void | Promise<void>;
 };
 
@@ -62,44 +65,44 @@ export function vimeoPosterUrl(videoId: string, width = 1280): string {
   return `https://vumbnail.com/${videoId}.jpg?width=${width}`;
 }
 
+/**
+ * Build a free-account-safe Vimeo embed URL.
+ *
+ * Do NOT use `background=1` — that requires a paid Vimeo plan. This account is free
+ * (`account_type: free`), so background mode can fail or no-op on real mobile devices.
+ */
 export function buildVimeoEmbedSrc(
   videoId: string,
   {
     autoplay,
     background,
     quality,
-    lightweight,
   }: {
     autoplay: boolean;
-    /** Hex without #: player chrome / letterbox fill */
+    /** Hex without #: player chrome color (ignored on free plans). */
     background?: string;
     quality?: VimeoEmbedQuality;
-    /** Ambient background player — faster startup, no chrome. */
-    lightweight?: boolean;
   },
 ) {
   const params = new URLSearchParams({
+    // Unique id so Player.js / postMessage can target this iframe among many.
+    player_id: videoId,
+    api: "1",
+    app_id: "58479",
     badge: "0",
     autopause: "0",
-    player_id: "0",
-    app_id: "58479",
     autoplay: autoplay ? "1" : "0",
     muted: "1",
     loop: "1",
+    playsinline: "1",
+    // Best-effort chromeless; free plans may ignore this.
     controls: "0",
     title: "0",
     byline: "0",
     portrait: "0",
     dnt: "1",
-    playsinline: "1",
   });
-  // Ambient mode helps mobile autoplay; don't pass a hex into `background`.
-  if (lightweight) {
-    params.set("background", "1");
-  } else if (background) {
-    params.set("color", background);
-  }
-  // Only set quality when explicitly requested — invalid qualities can break playback.
+  if (background) params.set("color", background);
   if (quality && quality !== "auto") params.set("quality", quality);
   return `https://player.vimeo.com/video/${videoId}?${params.toString()}`;
 }

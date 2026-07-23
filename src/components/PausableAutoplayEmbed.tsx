@@ -23,7 +23,7 @@ type PausableAutoplayEmbedProps = {
   vimeoLoopFade?: boolean;
   /** When false, no pause/play button. Defaults to true. */
   showPauseControl?: boolean;
-  /** Vimeo only: player background hex without # (e.g. `000000`). */
+  /** Vimeo only: player chrome hex without # (e.g. `000000`). */
   vimeoBackground?: string;
   /** Defer iframe until near the viewport (category tiles below the fold). */
   loadWhenVisible?: boolean;
@@ -34,11 +34,13 @@ type PausableAutoplayEmbedProps = {
 };
 
 function usePrefersReducedMotion() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  });
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mq.matches);
     const onChange = () => setPrefersReducedMotion(mq.matches);
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
@@ -53,8 +55,8 @@ function isMobileViewport() {
 
 /**
  * Autoplaying muted Vimeo/YouTube embed.
- * Poster sits above the iframe until playback can start; iframe is never opacity-0
- * (iOS often skips iframe `load`, which previously left videos invisible).
+ * Uses free-account-safe Vimeo params (no paid-only `background=1`) and Player.js
+ * to re-trigger play on iOS after the iframe is ready.
  */
 export function PausableAutoplayEmbed({
   provider,
@@ -73,17 +75,17 @@ export function PausableAutoplayEmbed({
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const vimeoPlayerRef = useRef<VimeoPlayerInstance | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  // Init from matchMedia immediately — flipping later used to rebuild the iframe src
+  // after mount, which kills iOS autoplay.
+  const [isMobile] = useState(() => isMobileViewport());
   const [isPaused, setIsPaused] = useState(prefersReducedMotion);
   const [shouldLoad, setShouldLoad] = useState(() => !loadWhenVisible);
   const [showPoster, setShowPoster] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
   const labelId = useId();
 
   const resolvedPoster =
     posterSrc || (provider === "vimeo" ? vimeoPosterUrl(videoId, priority ? 1280 : 640) : undefined);
 
-  // Ambient / background mode on mobile + hero — faster and more reliable autoplay.
-  const lightweight = provider === "vimeo" && (priority || isMobile || !vimeoLoopFade);
   const useLoopFade = vimeoLoopFade && !isMobile && !priority;
 
   const src = useMemo(
@@ -92,20 +94,10 @@ export function PausableAutoplayEmbed({
         ? buildVimeoEmbedSrc(videoId, {
             autoplay: !prefersReducedMotion,
             background: vimeoBackground,
-            // Let Vimeo pick quality — forcing 540p can break playback on some clips.
-            lightweight,
           })
         : buildYouTubeEmbedSrc(videoId, { autoplay: !prefersReducedMotion }),
-    [provider, videoId, prefersReducedMotion, vimeoBackground, lightweight],
+    [provider, videoId, prefersReducedMotion, vimeoBackground],
   );
-
-  useEffect(() => {
-    setIsMobile(isMobileViewport());
-    const mq = window.matchMedia("(max-width: 767px)");
-    const onChange = () => setIsMobile(mq.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
 
   // Lazy-load category tiles when near viewport; hero mounts immediately.
   useEffect(() => {
@@ -114,23 +106,51 @@ export function PausableAutoplayEmbed({
       return;
     }
 
+    const marginPx = isMobile ? 220 : 280;
+
+    const isNearViewport = (node: HTMLElement) => {
+      const rect = node.getBoundingClientRect();
+      return rect.bottom >= -marginPx && rect.top <= window.innerHeight + marginPx;
+    };
+
+    let io: IntersectionObserver | undefined;
+    let raf = 0;
+
+    const arm = (el: HTMLElement) => {
+      // Sync check first — IntersectionObserver sometimes skips already-visible nodes
+      // (esp. absolute-positioned tiles after late collection data mounts).
+      if (isNearViewport(el)) {
+        setShouldLoad(true);
+        return;
+      }
+
+      io = new IntersectionObserver(
+        ([entry]) => {
+          if (entry?.isIntersecting) {
+            setShouldLoad(true);
+            io?.disconnect();
+          }
+        },
+        { root: null, rootMargin: `${marginPx}px 0px`, threshold: 0 },
+      );
+      io.observe(el);
+    };
+
     const el = wrapRef.current;
-    if (!el) return;
+    if (el) {
+      arm(el);
+    } else {
+      // Ref can be unset for one frame when cards mount after async collection fetch.
+      raf = requestAnimationFrame(() => {
+        if (wrapRef.current) arm(wrapRef.current);
+        else setShouldLoad(true);
+      });
+    }
 
-    const rootMargin = isMobile ? "180px 0px" : "280px 0px";
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setShouldLoad(true);
-          io.disconnect();
-        }
-      },
-      { root: null, rootMargin, threshold: 0 },
-    );
-
-    io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      if (raf) cancelAnimationFrame(raf);
+      io?.disconnect();
+    };
   }, [loadWhenVisible, videoId, isMobile]);
 
   const syncPaused = useCallback(
@@ -170,7 +190,7 @@ export function PausableAutoplayEmbed({
     setShowPoster(true);
   }, [prefersReducedMotion, videoId, provider]);
 
-  // Reveal video: prefer iframe load, always fall back so iOS never sticks on the poster.
+  // Reveal poster on a timer so we never stick on a frozen poster if load never fires.
   useEffect(() => {
     if (!shouldLoad) return;
 
@@ -181,11 +201,11 @@ export function PausableAutoplayEmbed({
     const reveal = () => setShowPoster(false);
 
     const onLoad = () => {
-      loadTimer = window.setTimeout(reveal, isMobile ? 120 : 60);
+      loadTimer = window.setTimeout(reveal, isMobile ? 180 : 80);
     };
 
     iframe?.addEventListener("load", onLoad);
-    fallbackTimer = window.setTimeout(reveal, isMobile ? 1200 : 900);
+    fallbackTimer = window.setTimeout(reveal, isMobile ? 1800 : 1000);
 
     return () => {
       iframe?.removeEventListener("load", onLoad);
@@ -194,21 +214,50 @@ export function PausableAutoplayEmbed({
     };
   }, [shouldLoad, videoId, isMobile]);
 
-  // Loop-fade only on desktop category tiles (needs Player.js).
+  // Player.js: force muted play (iOS often ignores URL autoplay alone) + optional loop fade.
   useEffect(() => {
-    if (!shouldLoad || provider !== "vimeo" || !useLoopFade) return;
+    if (!shouldLoad || provider !== "vimeo") return;
 
     let cancelled = false;
     let player: VimeoPlayerInstance | null = null;
+    let retryTimer: number | undefined;
     const el = wrapRef.current;
 
     const run = async () => {
-      await loadVimeoPlayerScript();
-      if (cancelled || !iframeRef.current || !el) return;
+      try {
+        await loadVimeoPlayerScript();
+      } catch {
+        return;
+      }
+      if (cancelled || !iframeRef.current) return;
 
       player = createVimeoPlayer(iframeRef.current);
       if (!player) return;
       vimeoPlayerRef.current = player;
+
+      try {
+        await player.setVolume(0);
+      } catch {
+        /* ignore */
+      }
+
+      const tryPlay = async () => {
+        if (cancelled || prefersReducedMotion || isPaused) return;
+        try {
+          await player!.play();
+          setShowPoster(false);
+        } catch {
+          // iOS sometimes rejects the first play(); retry once shortly after.
+          retryTimer = window.setTimeout(() => {
+            void player
+              ?.play()
+              .then(() => setShowPoster(false))
+              .catch(() => {
+                /* leave poster / first frame */
+              });
+          }, 350);
+        }
+      };
 
       if (prefersReducedMotion || isPaused) {
         try {
@@ -216,7 +265,11 @@ export function PausableAutoplayEmbed({
         } catch {
           /* ignore */
         }
+      } else {
+        await tryPlay();
       }
+
+      if (!useLoopFade || !el) return;
 
       let duration = 0;
       try {
@@ -254,6 +307,7 @@ export function PausableAutoplayEmbed({
 
     return () => {
       cancelled = true;
+      if (retryTimer) window.clearTimeout(retryTimer);
       vimeoPlayerRef.current = null;
       try {
         player?.destroy?.();

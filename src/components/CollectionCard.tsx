@@ -50,7 +50,9 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
                 title={`${homeConfig.label} category video`}
                 className="pointer-events-none absolute inset-0 h-full w-full"
                 posterSrc={posterSrc}
-                loadWhenVisible
+                // Home only has 6 short clips — load immediately so mobile IO quirks
+                // can't leave tiles stuck on posters.
+                loadWhenVisible={false}
               />
             </div>
           ) : img ? (
