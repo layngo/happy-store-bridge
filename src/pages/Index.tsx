@@ -147,8 +147,7 @@ const Index = () => {
               title="Lay-n-Go brand film"
               iframeClassName="absolute inset-0 h-full w-full border-0 select-none"
               showPauseControl
-              // Let first paint finish before the hero stream competes for bandwidth.
-              deferMs={350}
+              priority
             />
           </div>
           <div

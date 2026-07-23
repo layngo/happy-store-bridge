@@ -11,6 +11,8 @@ export type VimeoPlayerInstance = {
 
 type VimeoPlayerCtor = new (element: HTMLIFrameElement) => VimeoPlayerInstance;
 
+export type VimeoEmbedQuality = "auto" | "360p" | "540p" | "720p";
+
 export function loadVimeoPlayerScript(): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
   if ((window as unknown as { Vimeo?: { Player?: VimeoPlayerCtor } }).Vimeo?.Player) {
@@ -42,6 +44,11 @@ export function createVimeoPlayer(iframe: HTMLIFrameElement): VimeoPlayerInstanc
   }
 }
 
+/** Lightweight pause/play without loading player.js (hero / mobile). */
+export function postVimeoCommand(iframe: HTMLIFrameElement, method: "play" | "pause") {
+  iframe.contentWindow?.postMessage(JSON.stringify({ method }), "https://player.vimeo.com");
+}
+
 /** PostMessage control for YouTube embed iframes (`enablejsapi=1` required). */
 export function postYouTubeCommand(iframe: HTMLIFrameElement, func: "playVideo" | "pauseVideo") {
   iframe.contentWindow?.postMessage(
@@ -50,14 +57,30 @@ export function postYouTubeCommand(iframe: HTMLIFrameElement, func: "playVideo" 
   );
 }
 
+/** Fast static poster while the Vimeo iframe boots. */
+export function vimeoPosterUrl(videoId: string, width = 1280): string {
+  return `https://vumbnail.com/${videoId}.jpg?width=${width}`;
+}
+
 export function buildVimeoEmbedSrc(
   videoId: string,
-  { autoplay, background }: { autoplay: boolean; /** Hex without #: player chrome / letterbox fill */ background?: string },
+  {
+    autoplay,
+    background,
+    quality,
+    lightweight,
+  }: {
+    autoplay: boolean;
+    /** Hex without #: player chrome / letterbox fill */
+    background?: string;
+    quality?: VimeoEmbedQuality;
+    /** Ambient background player — faster startup, no chrome. */
+    lightweight?: boolean;
+  },
 ) {
   const params = new URLSearchParams({
     badge: "0",
-    // Pause other Vimeo players on the page when this one plays (home has many embeds).
-    autopause: "1",
+    autopause: "0",
     player_id: "0",
     app_id: "58479",
     autoplay: autoplay ? "1" : "0",
@@ -68,8 +91,12 @@ export function buildVimeoEmbedSrc(
     byline: "0",
     portrait: "0",
     dnt: "1",
+    playsinline: "1",
   });
-  if (background) params.set("background", background);
+  // `background=1` = ambient player (faster). Hex letterbox only when not lightweight.
+  if (lightweight) params.set("background", "1");
+  else if (background) params.set("background", background);
+  if (quality && quality !== "auto") params.set("quality", quality);
   return `https://player.vimeo.com/video/${videoId}?${params.toString()}`;
 }
 

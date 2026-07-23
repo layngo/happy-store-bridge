@@ -4,13 +4,13 @@ interface VimeoLoopFadeEmbedProps {
   videoId: string;
   title: string;
   className?: string;
-  /** Static image until the card is near the viewport. */
+  /** Static image until the card is near the viewport / iframe is ready. */
   posterSrc?: string;
   /** Defer iframe until near viewport (default true for home category tiles). */
   loadWhenVisible?: boolean;
 }
 
-/** Vimeo embed with loop-boundary fade and accessible pause control. */
+/** Vimeo embed with loop-boundary fade (desktop) and accessible pause control. */
 export function VimeoLoopFadeEmbed({
   videoId,
   title,
@@ -26,6 +26,8 @@ export function VimeoLoopFadeEmbed({
       className={className}
       iframeClassName="pointer-events-none absolute inset-0 h-full w-full border-0"
       vimeoLoopFade
+      // Pause control is redundant on pointer-events-none category tiles.
+      showPauseControl={false}
       loadWhenVisible={loadWhenVisible}
       posterSrc={posterSrc}
     />
