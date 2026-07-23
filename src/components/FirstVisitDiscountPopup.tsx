@@ -337,16 +337,20 @@ export function FirstVisitDiscountPopup() {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
-          "left-[50%] top-[50%] z-[100] mx-auto w-[90vw] max-h-[90dvh] max-w-[min(1024px,90vw)] translate-x-[-50%] translate-y-[-50%] gap-0 overflow-hidden border-0 bg-transparent p-0 shadow-none sm:rounded-2xl",
-          "[&>button]:right-3 [&>button]:top-3 [&>button]:z-[120] [&>button]:rounded-full [&>button]:border [&>button]:border-neutral-300/80 [&>button]:bg-white/95 [&>button]:p-2 [&>button]:shadow-md [&>button]:hover:bg-white",
+          // Mobile: pin near top (avoid -50% translate clipping on iOS). Desktop: centered.
+          "z-[200] mx-auto gap-0 overflow-visible border-0 bg-transparent p-0 shadow-none",
+          "left-[50%] w-[90vw] max-w-[420px] translate-x-[-50%] translate-y-0",
+          "top-[5dvh] max-h-[90dvh]",
+          "sm:top-[50%] sm:max-w-[min(1024px,90vw)] sm:max-h-[90dvh] sm:translate-y-[-50%] sm:rounded-2xl",
+          "[&>button]:right-3 [&>button]:top-3 [&>button]:z-[220] [&>button]:rounded-full [&>button]:border [&>button]:border-neutral-300/80 [&>button]:bg-white/95 [&>button]:p-2 [&>button]:shadow-md [&>button]:hover:bg-white",
         )}
       >
         <DialogTitle id="first-visit-discount-title" className="sr-only">
           You just won a free discount
         </DialogTitle>
 
-        {/* Mobile: fit ~90% of the viewport — no scroll to reach CTAs */}
-        <div className="relative mx-auto flex h-[90dvh] max-h-[90dvh] w-full max-w-[420px] shrink-0 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15 sm:hidden">
+        {/* Mobile: 90% viewport height, image fills, CTAs always on-screen */}
+        <div className="relative mx-auto flex h-[90dvh] max-h-[90dvh] w-full overflow-hidden rounded-2xl bg-neutral-100 shadow-2xl ring-1 ring-black/15 sm:hidden">
           <img
             src={MOBILE_HERO_IMAGE}
             alt="Lay-n-Go Cosmo promotional offer"
@@ -357,8 +361,8 @@ export function FirstVisitDiscountPopup() {
             decoding="async"
             draggable={false}
           />
-          <div className="absolute inset-0 flex flex-col overflow-y-auto overscroll-contain px-5 pb-5 pt-6">
-            <div className="space-y-1.5 text-center">
+          <div className="absolute inset-0 flex flex-col px-5 pb-6 pt-6">
+            <div className="shrink-0 space-y-1.5 text-center">
               <h2 className="font-heading text-[clamp(1.25rem,6vw,1.85rem)] font-black uppercase leading-[0.95] tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
                 You just won<br />a free discount
               </h2>
@@ -366,7 +370,7 @@ export function FirstVisitDiscountPopup() {
                 (15% off)
               </p>
             </div>
-            <div className="mt-auto flex min-h-0 flex-1 flex-col justify-center py-4">
+            <div className="mt-auto w-full pb-1">
               <div className="mx-auto w-full max-w-[18rem]">
                 {renderFormBlock("center")}
               </div>
@@ -374,7 +378,7 @@ export function FirstVisitDiscountPopup() {
           </div>
         </div>
 
-        {/* Desktop / tablet layout: existing landscape hero with right-aligned form */}
+        {/* Desktop / tablet layout */}
         <div
           className="relative mx-auto hidden w-full max-w-[min(1024px,calc(100vw-1rem))] shrink-0 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15 sm:block"
           style={{ aspectRatio: `${HERO_WIDTH} / ${HERO_HEIGHT}` }}

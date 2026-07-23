@@ -11,7 +11,6 @@ import {
   vimeoPosterUrl,
   type VimeoPlayerInstance,
 } from "@/lib/videoEmbedPlayers";
-import { acquireVideoLoadSlot, getVideoLoadProfile } from "@/lib/videoLoadProfile";
 
 type PausableAutoplayEmbedProps = {
   provider: "vimeo" | "youtube";
@@ -22,7 +21,7 @@ type PausableAutoplayEmbedProps = {
   iframeClassName?: string;
   /** Vimeo only: soften opacity at loop boundaries (collection cards). */
   vimeoLoopFade?: boolean;
-  /** When false, no pause/play button (e.g. home hero). Defaults to true. */
+  /** When false, no pause/play button. Defaults to true. */
   showPauseControl?: boolean;
   /** Vimeo only: player background hex without # (e.g. `000000`). */
   vimeoBackground?: string;
@@ -30,7 +29,7 @@ type PausableAutoplayEmbedProps = {
   loadWhenVisible?: boolean;
   /** Static image shown until the iframe is ready to paint. */
   posterSrc?: string;
-  /** Bypass the concurrent-load queue (home hero). */
+  /** Prefer eager load (home hero). */
   priority?: boolean;
 };
 
@@ -48,15 +47,14 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
-function isNearViewport(el: HTMLElement, marginPx: number) {
-  const rect = el.getBoundingClientRect();
-  return rect.bottom >= -marginPx && rect.top <= window.innerHeight + marginPx;
+function isMobileViewport() {
+  return typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
 }
 
 /**
- * Autoplaying muted Vimeo/YouTube embed with a visible pause/play control (bottom-right).
- * Honors `prefers-reduced-motion` by starting paused and omitting autoplay.
- * Mobile: lower quality, fewer concurrent iframes, posters until ready.
+ * Autoplaying muted Vimeo/YouTube embed.
+ * Poster sits above the iframe until playback can start; iframe is never opacity-0
+ * (iOS often skips iframe `load`, which previously left videos invisible).
  */
 export function PausableAutoplayEmbed({
   provider,
@@ -74,19 +72,19 @@ export function PausableAutoplayEmbed({
   const wrapRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const vimeoPlayerRef = useRef<VimeoPlayerInstance | null>(null);
-  const releaseSlotRef = useRef<(() => void) | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const [isPaused, setIsPaused] = useState(prefersReducedMotion);
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const [iframeReady, setIframeReady] = useState(false);
-  const [profile, setProfile] = useState(() => getVideoLoadProfile());
+  const [shouldLoad, setShouldLoad] = useState(() => !loadWhenVisible);
+  const [showPoster, setShowPoster] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const labelId = useId();
 
   const resolvedPoster =
     posterSrc || (provider === "vimeo" ? vimeoPosterUrl(videoId, priority ? 1280 : 640) : undefined);
 
-  const useLoopFade = vimeoLoopFade && !profile.preferLightweight;
-  const lightweight = provider === "vimeo" && (profile.preferLightweight || priority || !useLoopFade);
+  // Ambient / background mode on mobile + hero — faster and more reliable autoplay.
+  const lightweight = provider === "vimeo" && (priority || isMobile || !vimeoLoopFade);
+  const useLoopFade = vimeoLoopFade && !isMobile && !priority;
 
   const src = useMemo(
     () =>
@@ -94,83 +92,46 @@ export function PausableAutoplayEmbed({
         ? buildVimeoEmbedSrc(videoId, {
             autoplay: !prefersReducedMotion,
             background: vimeoBackground,
-            quality: profile.quality,
+            // Let Vimeo pick quality — forcing 540p can break playback on some clips.
             lightweight,
           })
         : buildYouTubeEmbedSrc(videoId, { autoplay: !prefersReducedMotion }),
-    [provider, videoId, prefersReducedMotion, vimeoBackground, profile.quality, lightweight],
+    [provider, videoId, prefersReducedMotion, vimeoBackground, lightweight],
   );
 
   useEffect(() => {
-    const update = () => setProfile(getVideoLoadProfile());
-    update();
+    setIsMobile(isMobileViewport());
     const mq = window.matchMedia("(max-width: 767px)");
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+    const onChange = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
   }, []);
 
-  // Gate iframe mount: visibility + optional concurrent slot + save-data.
+  // Lazy-load category tiles when near viewport; hero mounts immediately.
   useEffect(() => {
-    let cancelled = false;
-
-    const armLoad = async () => {
-      // Save-Data only: keep posters. Normal mobile/desktop always load video.
-      if (profile.postersOnly) return;
-
-      const release = await acquireVideoLoadSlot(priority || !loadWhenVisible);
-      if (cancelled) {
-        release();
-        return;
-      }
-      releaseSlotRef.current = release;
-      setShouldLoad(true);
-      // Free the slot as soon as the iframe is requested so the next tile can start.
-      window.setTimeout(() => {
-        releaseSlotRef.current?.();
-        releaseSlotRef.current = null;
-      }, profile.isMobile ? 450 : 250);
-    };
-
     if (!loadWhenVisible) {
-      void armLoad();
-      return () => {
-        cancelled = true;
-        releaseSlotRef.current?.();
-        releaseSlotRef.current = null;
-      };
+      setShouldLoad(true);
+      return;
     }
 
     const el = wrapRef.current;
     if (!el) return;
 
-    const margin = profile.rootMarginPx;
-    if (isNearViewport(el, margin)) {
-      void armLoad();
-      return () => {
-        cancelled = true;
-        releaseSlotRef.current?.();
-        releaseSlotRef.current = null;
-      };
-    }
+    const rootMargin = isMobile ? "180px 0px" : "280px 0px";
 
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {
-          void armLoad();
+          setShouldLoad(true);
           io.disconnect();
         }
       },
-      { root: null, rootMargin: `${margin}px 0px`, threshold: 0.01 },
+      { root: null, rootMargin, threshold: 0 },
     );
 
     io.observe(el);
-    return () => {
-      cancelled = true;
-      io.disconnect();
-      releaseSlotRef.current?.();
-      releaseSlotRef.current = null;
-    };
-  }, [loadWhenVisible, videoId, profile.rootMarginPx, profile.postersOnly, priority]);
+    return () => io.disconnect();
+  }, [loadWhenVisible, videoId, isMobile]);
 
   const syncPaused = useCallback(
     async (paused: boolean) => {
@@ -206,29 +167,34 @@ export function PausableAutoplayEmbed({
 
   useEffect(() => {
     setIsPaused(prefersReducedMotion);
-    setIframeReady(false);
+    setShowPoster(true);
   }, [prefersReducedMotion, videoId, provider]);
 
-  // Mark ready after iframe load so the poster covers the black Vimeo boot screen.
+  // Reveal video: prefer iframe load, always fall back so iOS never sticks on the poster.
   useEffect(() => {
     if (!shouldLoad) return;
+
+    let loadTimer: number | undefined;
+    let fallbackTimer: number | undefined;
     const iframe = iframeRef.current;
-    if (!iframe) return;
 
-    let readyTimer: number | undefined;
+    const reveal = () => setShowPoster(false);
+
     const onLoad = () => {
-      // Small delay lets the first video frame paint under the poster.
-      readyTimer = window.setTimeout(() => setIframeReady(true), profile.isMobile ? 180 : 80);
+      loadTimer = window.setTimeout(reveal, isMobile ? 120 : 60);
     };
 
-    iframe.addEventListener("load", onLoad);
+    iframe?.addEventListener("load", onLoad);
+    fallbackTimer = window.setTimeout(reveal, isMobile ? 1200 : 900);
+
     return () => {
-      iframe.removeEventListener("load", onLoad);
-      if (readyTimer) window.clearTimeout(readyTimer);
+      iframe?.removeEventListener("load", onLoad);
+      if (loadTimer) window.clearTimeout(loadTimer);
+      if (fallbackTimer) window.clearTimeout(fallbackTimer);
     };
-  }, [shouldLoad, videoId, profile.isMobile]);
+  }, [shouldLoad, videoId, isMobile]);
 
-  // Loop-fade only when we intentionally load Player.js (desktop category tiles).
+  // Loop-fade only on desktop category tiles (needs Player.js).
   useEffect(() => {
     if (!shouldLoad || provider !== "vimeo" || !useLoopFade) return;
 
@@ -299,7 +265,6 @@ export function PausableAutoplayEmbed({
 
   useEffect(() => {
     if (!shouldLoad || provider !== "youtube") return;
-
     const iframe = iframeRef.current;
     if (!iframe) return;
 
@@ -312,8 +277,6 @@ export function PausableAutoplayEmbed({
     iframe.addEventListener("load", onLoad);
     return () => iframe.removeEventListener("load", onLoad);
   }, [shouldLoad, provider, videoId, prefersReducedMotion, isPaused]);
-
-  const showPoster = Boolean(resolvedPoster) && !iframeReady;
 
   return (
     <div
@@ -330,29 +293,29 @@ export function PausableAutoplayEmbed({
           ? `${title}. Autoplaying background video. Use the pause button to stop playback.`
           : `${title}. Autoplaying background video.`}
       </p>
+      {shouldLoad ? (
+        <iframe
+          ref={iframeRef}
+          src={src}
+          title={title}
+          className={cn(iframeClassName, "z-0")}
+          allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share; accelerometer; gyroscope"
+          referrerPolicy="strict-origin-when-cross-origin"
+          aria-describedby={labelId}
+        />
+      ) : null}
       {resolvedPoster ? (
         <img
           src={resolvedPoster}
           alt=""
           aria-hidden
           className={cn(
-            "absolute inset-0 h-full w-full object-cover transition-opacity duration-300",
-            showPoster ? "opacity-100" : "pointer-events-none opacity-0",
+            "pointer-events-none absolute inset-0 z-[1] h-full w-full object-cover transition-opacity duration-300",
+            showPoster || !shouldLoad ? "opacity-100" : "opacity-0",
           )}
           loading={priority || !loadWhenVisible ? "eager" : "lazy"}
           decoding="async"
           fetchPriority={priority ? "high" : "auto"}
-        />
-      ) : null}
-      {shouldLoad ? (
-        <iframe
-          ref={iframeRef}
-          src={src}
-          title={title}
-          className={cn(iframeClassName, !iframeReady && "opacity-0")}
-          allow="autoplay; fullscreen; picture-in-picture; encrypted-media; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          aria-describedby={labelId}
         />
       ) : null}
       {showPauseControl && shouldLoad ? (

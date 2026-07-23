@@ -93,9 +93,13 @@ export function buildVimeoEmbedSrc(
     dnt: "1",
     playsinline: "1",
   });
-  // `background=1` = ambient player (faster). Hex letterbox only when not lightweight.
-  if (lightweight) params.set("background", "1");
-  else if (background) params.set("background", background);
+  // Ambient mode helps mobile autoplay; don't pass a hex into `background`.
+  if (lightweight) {
+    params.set("background", "1");
+  } else if (background) {
+    params.set("color", background);
+  }
+  // Only set quality when explicitly requested — invalid qualities can break playback.
   if (quality && quality !== "auto") params.set("quality", quality);
   return `https://player.vimeo.com/video/${videoId}?${params.toString()}`;
 }
