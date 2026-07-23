@@ -1,3 +1,5 @@
+import { corsPreflightResponse, jsonWithCors } from "../../../server/cors";
+
 interface Env {
   DISCOUNT_SEND_CODE_WEBHOOK_URL?: string;
 }
@@ -13,25 +15,33 @@ function isValidPhone(phone: string): boolean {
   return phone.replace(/\D/g, "").length >= 10;
 }
 
+export async function onRequestOptions(context: {
+  request: Request;
+}): Promise<Response> {
+  return corsPreflightResponse(context.request);
+}
+
 export async function onRequestPost(context: {
   request: Request;
   env: Env;
 }): Promise<Response> {
-  const raw = (await context.request.json().catch(() => ({}))) as Record<string, unknown>;
+  const req = context.request;
+  const raw = (await req.json().catch(() => ({}))) as Record<string, unknown>;
   const email = String(raw.email ?? "").trim().slice(0, 254);
   const phone = String(raw.phone ?? "").trim().slice(0, 40);
   const marketingConsent = raw.marketingConsent === true;
 
   if (!isValidEmail(email)) {
-    return Response.json({ ok: false, error: "Please enter a valid email." }, { status: 400 });
+    return jsonWithCors(req, { ok: false, error: "Please enter a valid email." }, 400);
   }
   if (!isValidPhone(phone)) {
-    return Response.json({ ok: false, error: "Please enter a valid phone number." }, { status: 400 });
+    return jsonWithCors(req, { ok: false, error: "Please enter a valid phone number." }, 400);
   }
   if (!marketingConsent) {
-    return Response.json(
+    return jsonWithCors(
+      req,
       { ok: false, error: "Please agree to receive texts and marketing emails." },
-      { status: 400 },
+      400,
     );
   }
 
@@ -50,19 +60,17 @@ export async function onRequestPost(context: {
     } | null;
 
     if (!upstream.ok) {
-      return Response.json(
+      return jsonWithCors(
+        req,
         { ok: false, error: data?.error ?? "Could not send verification code." },
-        { status: upstream.status },
+        upstream.status,
       );
     }
-    return Response.json({
+    return jsonWithCors(req, {
       ok: true,
       message: data?.message ?? "Verification code sent.",
     });
   } catch {
-    return Response.json(
-      { ok: false, error: "Could not send verification code." },
-      { status: 500 },
-    );
+    return jsonWithCors(req, { ok: false, error: "Could not send verification code." }, 500);
   }
 }

@@ -14,12 +14,23 @@ export type DiscountApiResponse =
   | { ok: true; message?: string; discountCode?: string }
   | { ok: false; error: string };
 
+/** Public Cloudflare Worker — proxies /api/discount to n8n (same as reviews). */
+const PRODUCTION_DISCOUNT_API_BASE = "https://happy-store-bridge.tommy-4fd.workers.dev";
+
+/** Worker origin in production; local Vite middleware in dev. */
+function discountApiBase(): string {
+  if (import.meta.env.DEV) return "";
+  const fromEnv = (import.meta.env.VITE_DISCOUNT_API_URL as string | undefined)?.trim();
+  const base = fromEnv || PRODUCTION_DISCOUNT_API_BASE;
+  return base.replace(/\/$/, "");
+}
+
 function sendCodeEndpoint(): string {
-  return "/api/discount/send-code";
+  return `${discountApiBase()}/api/discount/send-code`;
 }
 
 function verifyCodeEndpoint(): string {
-  return "/api/discount/verify-code";
+  return `${discountApiBase()}/api/discount/verify-code`;
 }
 
 async function postJson<T extends DiscountApiResponse>(
@@ -32,6 +43,14 @@ async function postJson<T extends DiscountApiResponse>(
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
+
+    const contentType = res.headers.get("content-type") ?? "";
+    if (!contentType.includes("application/json")) {
+      return {
+        ok: false,
+        error: "Discount signup is temporarily unavailable. Please try again later.",
+      } as T;
+    }
 
     const data = (await res.json().catch(() => null)) as T | null;
 

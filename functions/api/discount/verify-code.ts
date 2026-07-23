@@ -1,3 +1,5 @@
+import { corsPreflightResponse, jsonWithCors } from "../../../server/cors";
+
 interface Env {
   DISCOUNT_VERIFY_CODE_WEBHOOK_URL?: string;
 }
@@ -13,17 +15,24 @@ function isValidPhone(phone: string): boolean {
   return phone.replace(/\D/g, "").length >= 10;
 }
 
+export async function onRequestOptions(context: {
+  request: Request;
+}): Promise<Response> {
+  return corsPreflightResponse(context.request);
+}
+
 export async function onRequestPost(context: {
   request: Request;
   env: Env;
 }): Promise<Response> {
-  const raw = (await context.request.json().catch(() => ({}))) as Record<string, unknown>;
+  const req = context.request;
+  const raw = (await req.json().catch(() => ({}))) as Record<string, unknown>;
   const email = String(raw.email ?? "").trim().slice(0, 254);
   const phone = String(raw.phone ?? "").trim().slice(0, 40);
   const code = String(raw.code ?? "").trim().slice(0, 16);
 
   if (!isValidEmail(email) || !isValidPhone(phone) || code.length < 4 || code.length > 10) {
-    return Response.json({ ok: false, error: "Invalid verification request." }, { status: 400 });
+    return jsonWithCors(req, { ok: false, error: "Invalid verification request." }, 400);
   }
 
   const webhookUrl = context.env.DISCOUNT_VERIFY_CODE_WEBHOOK_URL || DEFAULT_VERIFY_CODE_WEBHOOK;
@@ -42,20 +51,18 @@ export async function onRequestPost(context: {
     } | null;
 
     if (!upstream.ok) {
-      return Response.json(
+      return jsonWithCors(
+        req,
         { ok: false, error: data?.error ?? "Incorrect or expired code." },
-        { status: upstream.status },
+        upstream.status,
       );
     }
-    return Response.json({
+    return jsonWithCors(req, {
       ok: true,
       message: data?.message ?? "You're verified! Use your code at checkout.",
       discountCode: data?.discountCode,
     });
   } catch {
-    return Response.json(
-      { ok: false, error: "Could not verify code." },
-      { status: 500 },
-    );
+    return jsonWithCors(req, { ok: false, error: "Could not verify code." }, 500);
   }
 }
