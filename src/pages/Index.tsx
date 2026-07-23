@@ -146,7 +146,7 @@ const Index = () => {
               videoId={HOME_HERO_VIMEO_ID}
               title="Lay-n-Go brand film"
               iframeClassName="absolute inset-0 h-full w-full border-0 select-none"
-              showPauseControl
+              showPauseControl={false}
               priority
             />
           </div>
@@ -183,7 +183,7 @@ const Index = () => {
         {collectionsLoading ? (
           <LoadingSpinner label="Loading categories" className="py-16" />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
             {displayCollections.map((c) => (
               <CollectionCard key={c.id} collection={c} variant="home" />
             ))}

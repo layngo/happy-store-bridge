@@ -337,7 +337,7 @@ export function FirstVisitDiscountPopup() {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className={cn(
-          "left-[50%] top-[50%] z-[100] mx-auto w-[min(100%,calc(100vw-1rem))] max-h-[100dvh] max-w-[min(1024px,calc(100vw-1rem))] translate-x-[-50%] translate-y-[-50%] gap-0 overflow-x-hidden overflow-y-auto border-0 bg-transparent p-0 shadow-none sm:rounded-2xl",
+          "left-[50%] top-[50%] z-[100] mx-auto w-[90vw] max-h-[90dvh] max-w-[min(1024px,90vw)] translate-x-[-50%] translate-y-[-50%] gap-0 overflow-hidden border-0 bg-transparent p-0 shadow-none sm:rounded-2xl",
           "[&>button]:right-3 [&>button]:top-3 [&>button]:z-[120] [&>button]:rounded-full [&>button]:border [&>button]:border-neutral-300/80 [&>button]:bg-white/95 [&>button]:p-2 [&>button]:shadow-md [&>button]:hover:bg-white",
         )}
       >
@@ -345,33 +345,28 @@ export function FirstVisitDiscountPopup() {
           You just won a free discount
         </DialogTitle>
 
-        {/* Mobile layout: portrait hero image with text on top and CTAs toward middle */}
-        <div
-          className="relative mx-auto block w-full max-w-[min(420px,calc(100vw-1rem))] shrink-0 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15 sm:hidden"
-          style={{ aspectRatio: `${MOBILE_HERO_WIDTH} / ${MOBILE_HERO_HEIGHT}` }}
-        >
+        {/* Mobile: fit ~90% of the viewport — no scroll to reach CTAs */}
+        <div className="relative mx-auto flex h-[90dvh] max-h-[90dvh] w-full max-w-[420px] shrink-0 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/15 sm:hidden">
           <img
             src={MOBILE_HERO_IMAGE}
             alt="Lay-n-Go Cosmo promotional offer"
             width={MOBILE_HERO_WIDTH}
             height={MOBILE_HERO_HEIGHT}
-            className="absolute inset-0 block h-full w-full select-none object-cover"
+            className="absolute inset-0 block h-full w-full select-none object-cover object-center"
             loading="eager"
             decoding="async"
             draggable={false}
           />
-          <div className="absolute inset-0 flex flex-col px-5 pb-5 pt-6">
-            {/* Text block at the top */}
+          <div className="absolute inset-0 flex flex-col overflow-y-auto overscroll-contain px-5 pb-5 pt-6">
             <div className="space-y-1.5 text-center">
-              <h2 className="font-heading text-[clamp(1.4rem,6.8vw,2rem)] font-black uppercase leading-[0.95] tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
+              <h2 className="font-heading text-[clamp(1.25rem,6vw,1.85rem)] font-black uppercase leading-[0.95] tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
                 You just won<br />a free discount
               </h2>
-              <p className="font-heading text-[clamp(0.9rem,4vw,1.15rem)] font-semibold uppercase tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
+              <p className="font-heading text-[clamp(0.85rem,3.6vw,1.05rem)] font-semibold uppercase tracking-tight text-neutral-900 drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]">
                 (15% off)
               </p>
             </div>
-            {/* Buttons toward the middle */}
-            <div className="mt-[28%] w-full">
+            <div className="mt-auto flex min-h-0 flex-1 flex-col justify-center py-4">
               <div className="mx-auto w-full max-w-[18rem]">
                 {renderFormBlock("center")}
               </div>

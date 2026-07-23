@@ -31,7 +31,7 @@ export const CollectionCard = ({ collection, variant = "default" }: CollectionCa
     const posterSrc = img?.url ?? homeConfig.hoverSrc;
 
     return (
-      <Link to={href} className="group mx-auto block w-[94%]">
+      <Link to={href} className="group mx-auto block w-full sm:w-[94%]">
         <article
           className={cn(
             "relative aspect-square overflow-hidden border border-border bg-white transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5",

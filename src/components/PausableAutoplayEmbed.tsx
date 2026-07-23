@@ -114,7 +114,7 @@ export function PausableAutoplayEmbed({
     let cancelled = false;
 
     const armLoad = async () => {
-      // Save-Data / 2G: keep posters only — skip all iframes including hero.
+      // Save-Data only: keep posters. Normal mobile/desktop always load video.
       if (profile.postersOnly) return;
 
       const release = await acquireVideoLoadSlot(priority || !loadWhenVisible);
@@ -124,6 +124,11 @@ export function PausableAutoplayEmbed({
       }
       releaseSlotRef.current = release;
       setShouldLoad(true);
+      // Free the slot as soon as the iframe is requested so the next tile can start.
+      window.setTimeout(() => {
+        releaseSlotRef.current?.();
+        releaseSlotRef.current = null;
+      }, profile.isMobile ? 450 : 250);
     };
 
     if (!loadWhenVisible) {
@@ -214,8 +219,6 @@ export function PausableAutoplayEmbed({
     const onLoad = () => {
       // Small delay lets the first video frame paint under the poster.
       readyTimer = window.setTimeout(() => setIframeReady(true), profile.isMobile ? 180 : 80);
-      releaseSlotRef.current?.();
-      releaseSlotRef.current = null;
     };
 
     iframe.addEventListener("load", onLoad);
