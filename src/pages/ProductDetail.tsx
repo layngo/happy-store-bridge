@@ -1053,7 +1053,7 @@ const ProductDetail = () => {
   }, [product?.id, product?.handle]);
 
   useEffect(() => {
-    if (!product) return;
+    if (!product?.id) return;
     const variant = product.variants.edges[selectedVariantIdx]?.node;
     const price = parseFloat(variant?.price.amount ?? product.priceRange.minVariantPrice.amount);
     viewItem({
@@ -1063,7 +1063,9 @@ const ProductDetail = () => {
       item_category: collectionHandle ?? product.tags[0],
       item_variant: variant ? variantLabel(variant.selectedOptions) : undefined,
     });
-  }, [product, selectedVariantIdx, collectionHandle]);
+    // Fire once per product id — not on every variant default/re-render (was 7× ViewContent).
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: product.id only
+  }, [product?.id]);
 
   useEffect(() => {
     if (!product || product.handle.toLowerCase() !== "lay-n-go-travel-dog-bed-44") return;

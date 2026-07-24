@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { GA_MEASUREMENT_ID } from "@/lib/gaAnalytics";
-import { trackMetaPageView } from "@/lib/metaPixel";
+import { resetMetaPixelNavigationDedupe, trackMetaPageView } from "@/lib/metaPixel";
 
 function trackGaPageView(path: string) {
   if (typeof window.gtag !== "function") return;
@@ -17,11 +17,15 @@ export function ScrollToTop() {
     window.scrollTo(0, 0);
     const path = `${pathname}${search}`;
     trackGaPageView(path);
-    // Base pixel snippet already fired PageView on first load — avoid a duplicate.
+
     if (isFirst.current) {
       isFirst.current = false;
+      // Base pixel snippet already fired PageView — seed dedupe so SPA doesn't double it.
+      resetMetaPixelNavigationDedupe();
       return;
     }
+
+    resetMetaPixelNavigationDedupe();
     trackMetaPageView();
   }, [pathname, search]);
 

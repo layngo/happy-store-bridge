@@ -44,7 +44,9 @@ const Collection = () => {
       displayProducts.map((p, i) => productNodeToItem(p.node, { index: i, item_category: collection.title })),
       collection.title,
     );
-  }, [collection, displayProducts]);
+    // Once per collection — ignore sort reshuffles of displayProducts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collection?.id]);
 
   if (loading) {
     return (

@@ -200,7 +200,8 @@ const CosmeticBagsV2 = () => {
       collection.products.map((p, i) => productNodeToItem(p.node, { index: i, item_category: collection.title })),
       collection.title,
     );
-  }, [collection]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collection?.id]);
 
   if (loading) {
     return (

@@ -175,7 +175,8 @@ const MilitaryFirstResponder = () => {
       ),
       collection.title,
     );
-  }, [collection]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collection?.id]);
 
   if (loading) {
     return (
