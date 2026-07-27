@@ -47,6 +47,7 @@ import { LayNGoPlayAwardsSection } from "@/components/LayNGoPlayAwardsSection";
 import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
+import { CosmoPdpDemoVideos } from "@/components/CosmoPdpDemoVideos";
 import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
 import { ProductLifestyleGallery } from "@/components/ProductLifestyleGallery";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
@@ -328,8 +329,6 @@ const LAY_N_GO_TRAVEL_DOG_BED_44_BULLETS = [
   "Durable design made for everyday adventures with your pet",
   "Smart all-in-one dog bed and travel bag solution",
 ] as const;
-
-const COSMO_AUTOPLAY_YOUTUBE_ID = "G3E80xl9lSM";
 
 const HOW_IT_WORKS_FAQ_ANSWER =
   "It's a patented drawstring organizer that opens flat so you can see and reach every item. When you're finished, one pull of the drawstring cinches it closed into a compact bag for travel or storage.";
@@ -1188,7 +1187,7 @@ const ProductDetail = () => {
 
   const cosmoYoutubeId = useMemo(() => {
     if (!product) return null;
-    if (isCosmoStoryPdp) return COSMO_AUTOPLAY_YOUTUBE_ID;
+    if (isCosmoStoryPdp) return null;
     return extractFirstYoutubeVideoId(product.description || "");
   }, [isCosmoStoryPdp, product, product?.description]);
 
@@ -1913,6 +1912,7 @@ const ProductDetail = () => {
                     {mainHeroImage}
                   </div>
                   {heroThumbnails}
+                  {isCosmoStoryPdp ? <CosmoPdpDemoVideos className="pt-2" /> : null}
                 </div>
 
                 <div className="flex flex-col gap-6 px-0 py-0">
@@ -2060,75 +2060,77 @@ const ProductDetail = () => {
               <CosmoPdpStory hideIntroImage={isCosmo22Product(product.handle)} />
             ) : null}
 
-            <section
-              className="mt-20 sm:mt-24"
-              aria-label={
-                layNGoLifestyleGallery
-                  ? isLayNGoLarge60
-                    ? "Lay-n-Go Large product video and lifestyle gallery"
+            {!isCosmoStoryPdp ? (
+              <section
+                className="mt-20 sm:mt-24"
+                aria-label={
+                  layNGoLifestyleGallery
+                    ? isLayNGoLarge60
+                      ? "Lay-n-Go Large product video and lifestyle gallery"
+                      : isNailspa18Product(product.handle)
+                        ? "NAILSPA product video and lifestyle gallery"
+                        : "Product image showcase"
                     : isNailspa18Product(product.handle)
-                      ? "NAILSPA product video and lifestyle gallery"
-                      : "Product image showcase"
-                  : isNailspa18Product(product.handle)
-                    ? "NAILSPA product video"
-                    : cosmoYoutubeId
-                      ? "Product video"
-                      : "Video placeholder"
-              }
-            >
-              <div className="w-full">
-                {layNGoLifestyleGallery ? (
-                  <div className="mx-auto w-full max-w-full md:w-[80%]">
-                    {isNailspaPdp ? (
-                      <div className="mb-8 w-full sm:mb-10">
-                        <NailspaPdpHeroVideo />
-                      </div>
-                    ) : null}
-                    {isLayNGoLarge60 ? (
-                      <div className="mb-8 w-full sm:mb-10">
-                        <LayNGoLargePdpHeroVideo />
-                      </div>
-                    ) : null}
-                    <ProductLifestyleGallery
-                      key={product.id}
-                      slides={layNGoLifestyleGallery.slides}
-                      ariaLabel={layNGoLifestyleGallery.ariaLabel}
-                      surfaceClassName={pdpUsesSiteBackground ? "bg-background" : "bg-neutral-50"}
-                      frameClassName={
-                        isLayNGoLite18 || isLayNGoLifestyle44
-                          ? "rounded-none border-0 shadow-none"
-                          : undefined
-                      }
-                    />
-                  </div>
-                ) : (
-                  <div
-                    className={cn(
-                      "relative mx-auto w-full max-w-full overflow-hidden rounded-2xl border border-border bg-white shadow-inner aspect-video md:w-[80%]",
-                      !cosmoYoutubeId && "bg-muted/40",
-                    )}
-                  >
-                    {cosmoYoutubeId ? (
-                      <PausableAutoplayEmbed
-                        provider="youtube"
-                        videoId={cosmoYoutubeId}
-                        title="Product video"
-                        iframeClassName="absolute inset-0 h-full w-full border-0"
+                      ? "NAILSPA product video"
+                      : cosmoYoutubeId
+                        ? "Product video"
+                        : "Video placeholder"
+                }
+              >
+                <div className="w-full">
+                  {layNGoLifestyleGallery ? (
+                    <div className="mx-auto w-full max-w-full md:w-[80%]">
+                      {isNailspaPdp ? (
+                        <div className="mb-8 w-full sm:mb-10">
+                          <NailspaPdpHeroVideo />
+                        </div>
+                      ) : null}
+                      {isLayNGoLarge60 ? (
+                        <div className="mb-8 w-full sm:mb-10">
+                          <LayNGoLargePdpHeroVideo />
+                        </div>
+                      ) : null}
+                      <ProductLifestyleGallery
+                        key={product.id}
+                        slides={layNGoLifestyleGallery.slides}
+                        ariaLabel={layNGoLifestyleGallery.ariaLabel}
+                        surfaceClassName={pdpUsesSiteBackground ? "bg-background" : "bg-neutral-50"}
+                        frameClassName={
+                          isLayNGoLite18 || isLayNGoLifestyle44
+                            ? "rounded-none border-0 shadow-none"
+                            : undefined
+                        }
                       />
-                    ) : (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/35 bg-muted/30 px-6 py-12 text-center">
-                        <span className="font-heading text-xl font-semibold tracking-tight text-muted-foreground">
-                          Video placeholder
-                        </span>
-                        <span className="max-w-sm text-sm text-muted-foreground">
-                          Drop in an embed when you&apos;re ready: the layout is sized for 16×9.
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </section>
+                    </div>
+                  ) : (
+                    <div
+                      className={cn(
+                        "relative mx-auto w-full max-w-full overflow-hidden rounded-2xl border border-border bg-white shadow-inner aspect-video md:w-[80%]",
+                        !cosmoYoutubeId && "bg-muted/40",
+                      )}
+                    >
+                      {cosmoYoutubeId ? (
+                        <PausableAutoplayEmbed
+                          provider="youtube"
+                          videoId={cosmoYoutubeId}
+                          title="Product video"
+                          iframeClassName="absolute inset-0 h-full w-full border-0"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/35 bg-muted/30 px-6 py-12 text-center">
+                          <span className="font-heading text-xl font-semibold tracking-tight text-muted-foreground">
+                            Video placeholder
+                          </span>
+                          <span className="max-w-sm text-sm text-muted-foreground">
+                            Drop in an embed when you&apos;re ready: the layout is sized for 16×9.
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </section>
+            ) : null}
 
             {isLayNGoPlayReviewsPdp(product.handle) ? <LayNGoPlayAwardsSection /> : null}
 
