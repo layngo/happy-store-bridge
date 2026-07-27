@@ -47,7 +47,6 @@ import { LayNGoPlayAwardsSection } from "@/components/LayNGoPlayAwardsSection";
 import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
-import { CosmoPdpDemoVideos } from "@/components/CosmoPdpDemoVideos";
 import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
 import { ProductLifestyleGallery } from "@/components/ProductLifestyleGallery";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
@@ -1912,7 +1911,6 @@ const ProductDetail = () => {
                     {mainHeroImage}
                   </div>
                   {heroThumbnails}
-                  {isCosmoStoryPdp ? <CosmoPdpDemoVideos className="pt-2" /> : null}
                 </div>
 
                 <div className="flex flex-col gap-6 px-0 py-0">

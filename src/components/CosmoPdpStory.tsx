@@ -1,4 +1,5 @@
 import { useEffect, useId, useState } from "react";
+import { CosmoPdpDemoVideos } from "@/components/CosmoPdpDemoVideos";
 import { readCosmoStoryArrowPath } from "@/data/cosmoPdpStoryArrows";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -223,6 +224,10 @@ export function CosmoPdpStory({ hideIntroImage = false }: { hideIntroImage?: boo
             </ul>
           </div>
         </div>
+      </div>
+
+      <div className="px-4 pb-10 sm:px-6 sm:pb-12 md:px-8 lg:pb-14">
+        <CosmoPdpDemoVideos />
       </div>
 
       <div className="grid gap-0 md:grid-cols-2">
