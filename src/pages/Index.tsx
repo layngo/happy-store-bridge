@@ -13,7 +13,7 @@ import { StarRating } from "@/components/StarRating";
 import { faqJsonLd, HOME_FAQS, itemListJsonLd, SITE_TAGLINE, siteNavigationJsonLd, webPageJsonLd } from "@/lib/siteSeo";
 import { shopCollectionLinks } from "@/lib/siteNav";
 
-const HOME_HERO_VIMEO_ID = "1185281289";
+const HOME_HERO_VIMEO_ID = "1213296167";
 const OUR_STORY_IMAGES = [
   "/our-story-slide-1.png",
   "/our-story-slide-2.png",
