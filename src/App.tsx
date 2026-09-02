@@ -1,5 +1,8 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { captureAttributionParams } from "@/lib/navigateToCheckout";
+
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { SkipToMain } from "@/components/SkipToMain";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -41,6 +44,10 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   useCartSync();
   useScrollDepth();
+  useEffect(() => {
+    captureAttributionParams();
+  }, []);
+
   return (
     <>
       <ScrollToTop />
