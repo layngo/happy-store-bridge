@@ -41,6 +41,10 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   useCartSync();
   useScrollDepth();
+  useEffect(() => {
+    captureAttributionParams();
+  }, []);
+
   return (
     <>
       <ScrollToTop />
