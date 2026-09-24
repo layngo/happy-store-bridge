@@ -37,6 +37,19 @@ export type PressFeaturedItem = {
 export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
   {
     layout: "pressArt",
+    publication: "BuzzFeed Shopping",
+    headline: "Lay-n-Go Cosmo Layflat Drawstring Cosmetic Organizer",
+    href: "https://www.buzzfeed.com/buzzfeedshopping/2026-buzzy-awards#141167987",
+    linkLabel: "VIEW FULL ARTICLE",
+    dateLabel: "Published in 2026 Buzzy Awards",
+    productName: "Featured pick",
+    imageSrc: "/press/featured-buzzfeed-buzzy-awards-2026-banner.png?v=8",
+    imageAlt:
+      "BuzzFeed Shopping 2026 Buzzy Awards feature: Lay-n-Go Cosmo layflat drawstring cosmetic organizer",
+    imageAspect: "2048/768",
+  },
+  {
+    layout: "pressArt",
     publication: "PEOPLE",
     headline: "The layflat bag PEOPLE is eyeing for summer getaways",
     href: "https://people.com/travel-toiletry-bag-deals-amazon-july-2026-11990655",

@@ -23,11 +23,18 @@ export const PRESS_ARCHIVE_SUBTITLE = "Sources: layngo.com/pages/press & layngo.
 
 export const PRESS_ARCHIVE_SECTIONS: readonly PressSection[] = [
   {
-    "title": "📰 MAIN PRESS PAGE: Featured Articles (2013–2024)",
+    "title": "📰 MAIN PRESS PAGE: Featured Articles (2013–2026)",
     "categories": [
       {
         "title": "🌍 Travel & Lifestyle",
         "articles": [
+          {
+            "date": "2026",
+            "publication": "BuzzFeed Shopping",
+            "title": "2026 Buzzy Awards — Lay-n-Go Cosmo Layflat Drawstring Cosmetic Organizer",
+            "featured": true,
+            "href": "https://www.buzzfeed.com/buzzfeedshopping/2026-buzzy-awards#141167987"
+          },
           {
             "date": "Oct 29, 2024",
             "publication": "Condé Nast Traveler",
