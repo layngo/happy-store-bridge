@@ -48,14 +48,14 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
   <meta charset="utf-8" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,500;0,9..40,700;0,9..40,800;1,9..40,500&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500;1,9..144,650&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       width: ${WIDTH}px;
       height: ${HEIGHT}px;
-      font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+      font-family: "League Spartan", ui-sans-serif, system-ui, sans-serif;
       background: ${BG};
       overflow: hidden;
       -webkit-font-smoothing: antialiased;
@@ -195,12 +195,12 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
 
     .headline {
       color: ${TEXT};
-      font-family: "Fraunces", Georgia, serif;
-      font-size: 78px;
-      font-weight: 700;
-      line-height: 0.98;
-      letter-spacing: -0.025em;
-      max-width: 15ch;
+      font-family: "League Spartan", ui-sans-serif, system-ui, sans-serif;
+      font-size: 68px;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      max-width: 16ch;
     }
 
     .quote {
@@ -210,22 +210,22 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
     .quote__lead {
       display: inline;
       color: ${TEXT};
-      font-family: "Fraunces", Georgia, serif;
-      font-size: 40px;
-      font-weight: 500;
-      font-style: italic;
-      line-height: 1.25;
-      letter-spacing: -0.01em;
+      font-family: "League Spartan", ui-sans-serif, system-ui, sans-serif;
+      font-size: 34px;
+      font-weight: 600;
+      font-style: normal;
+      line-height: 1.3;
+      letter-spacing: -0.015em;
     }
 
     .quote__mark {
       color: ${PEOPLE};
-      font-family: "Fraunces", Georgia, serif;
-      font-size: 1.55em;
+      font-family: "League Spartan", ui-sans-serif, system-ui, sans-serif;
+      font-size: 1.35em;
       font-style: normal;
-      font-weight: 700;
+      font-weight: 800;
       line-height: 0;
-      vertical-align: -0.12em;
+      vertical-align: -0.08em;
     }
 
     .quote__mark--open {
@@ -280,8 +280,13 @@ async function main() {
     deviceScaleFactor: 1,
   });
 
-  await page.setContent(bannerHtml({ peopleLogoUrl, heroUrl }), { waitUntil: "load" });
-  await page.waitForTimeout(500);
+  await page.setContent(bannerHtml({ peopleLogoUrl, heroUrl }), {
+    waitUntil: "networkidle",
+  });
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+  });
+  await page.waitForTimeout(800);
 
   const outPath = path.join(OUT_DIR, `people-travel-toiletry-press-banner-${WIDTH}x${HEIGHT}.png`);
   const publicPath = path.join(PUBLIC, "press", "featured-people-travel-toiletry-banner.png");
