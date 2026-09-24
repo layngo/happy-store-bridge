@@ -9,6 +9,7 @@ import { chromium } from "@playwright/test";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import sharp from "sharp";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
@@ -19,26 +20,58 @@ const WIDTH = 2048;
 const HEIGHT = 768;
 /** Matches public/press/logos/people.png wordmark */
 const PEOPLE = "#28a8e0";
-const BG = "#111111";
-const TEXT = "#f3f0ea";
+const BG = "#ffffff";
+const TEXT = "#111111";
+const TEXT_MUTED = "rgba(17, 17, 17, 0.48)";
 
 /** Cleaned open Cosmo flat lay — speckles reduced for press export. */
 const HERO = path.join(PUBLIC, "press", "cosmo-20-flatlay-clean.png");
 
-function toDataUrl(filePath) {
-  const buf = fs.readFileSync(filePath);
-  const ext = path.extname(filePath).slice(1).toLowerCase();
-  const mime =
-    ext === "svg"
-      ? "image/svg+xml"
-      : ext === "jpg" || ext === "jpeg"
-        ? "image/jpeg"
-        : "image/png";
+function toDataUrl(bufOrPath, mime = "image/png") {
+  const buf = Buffer.isBuffer(bufOrPath) ? bufOrPath : fs.readFileSync(bufOrPath);
+  if (!Buffer.isBuffer(bufOrPath)) {
+    const ext = path.extname(bufOrPath).slice(1).toLowerCase();
+    mime =
+      ext === "svg"
+        ? "image/svg+xml"
+        : ext === "jpg" || ext === "jpeg"
+          ? "image/jpeg"
+          : "image/png";
+  }
   return `data:${mime};base64,${buf.toString("base64")}`;
 }
 
 function asset(...parts) {
   return toDataUrl(path.join(PUBLIC, ...parts));
+}
+
+/** Punch near-white pixels to transparent — no crop. */
+async function prepHeroTransparent() {
+  const { data, info } = await sharp(HERO)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  for (let i = 0; i < data.length; i += info.channels) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const min = Math.min(r, g, b);
+    const max = Math.max(r, g, b);
+    // Near-white / light gray backdrop (low chroma)
+    if (min > 236 && max - min < 18) {
+      data[i + 3] = 0;
+    } else if (min > 220 && max - min < 22) {
+      const t = (min - 220) / 16;
+      data[i + 3] = Math.round(data[i + 3] * (1 - t));
+    }
+  }
+
+  return sharp(data, {
+    raw: { width: info.width, height: info.height, channels: 4 },
+  })
+    .png()
+    .toBuffer();
 }
 
 function bannerHtml({ peopleLogoUrl, heroUrl }) {
@@ -66,8 +99,8 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
       width: ${WIDTH}px;
       height: ${HEIGHT}px;
       background:
-        radial-gradient(ellipse 62% 88% at 22% 50%, #1c1c1c 0%, transparent 70%),
-        linear-gradient(115deg, #0e0e0e 0%, #161616 48%, #101010 100%);
+        radial-gradient(ellipse 70% 90% at 18% 50%, #f7f7f8 0%, transparent 68%),
+        linear-gradient(115deg, #ffffff 0%, #fafafa 52%, #ffffff 100%);
       overflow: hidden;
     }
 
@@ -100,25 +133,24 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
       min-width: 0;
     }
 
-    /* Circular crop — filled like before (cover + mild scale) */
     .orb {
       position: relative;
-      width: min(560px, 94%);
-      aspect-ratio: 1;
-      border-radius: 50%;
-      overflow: hidden;
-      box-shadow:
-        0 28px 70px rgba(0, 0, 0, 0.55),
-        0 0 0 1px rgba(255, 255, 255, 0.04);
+      width: min(768px, 100%);
+      max-height: 100%;
+      overflow: visible;
+      background: transparent;
+      box-shadow: none;
+      border-radius: 0;
     }
 
     .orb img {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 48%;
+      height: auto;
+      max-height: 840px;
+      object-fit: contain;
+      object-position: center center;
       display: block;
-      transform: scale(1.02);
+      transform: none;
       image-rendering: auto;
     }
 
@@ -128,7 +160,7 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
       bottom: 42px;
       writing-mode: vertical-rl;
       transform: rotate(180deg);
-      color: rgba(243, 240, 234, 0.38);
+      color: ${TEXT_MUTED};
       font-size: 16px;
       font-weight: 700;
       letter-spacing: 0.24em;
@@ -177,7 +209,7 @@ function bannerHtml({ peopleLogoUrl, heroUrl }) {
       font-weight: 700;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(243, 240, 234, 0.55);
+      color: ${TEXT_MUTED};
       line-height: 1.3;
     }
 
@@ -272,7 +304,8 @@ async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true });
 
   const peopleLogoUrl = asset("press", "logos", "people.png");
-  const heroUrl = toDataUrl(HERO);
+  const heroBuf = await prepHeroTransparent();
+  const heroUrl = toDataUrl(heroBuf);
 
   const browser = await chromium.launch();
   const page = await browser.newPage({
