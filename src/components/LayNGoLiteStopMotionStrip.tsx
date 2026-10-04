@@ -75,7 +75,7 @@ export function LayNGoLiteStopMotionStrip({ className }: { className?: string })
       aria-label="Lay-n-Go Lite opens and closes on both reversible colorways"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:max-w-7xl">
-        <div className="grid w-full max-w-3xl grid-cols-2 items-end gap-6 sm:max-w-4xl sm:gap-10 lg:max-w-5xl">
+        <div className="mx-auto grid w-full max-w-3xl grid-cols-2 items-end justify-items-center gap-6 sm:max-w-4xl sm:gap-10 lg:max-w-5xl">
           <StopMotionPlayer frames={COLOR_A_FRAMES} frameIndex={frameIndex} className="w-full" />
           <StopMotionPlayer frames={COLOR_B_FRAMES} frameIndex={frameIndex} className="w-full" />
         </div>
