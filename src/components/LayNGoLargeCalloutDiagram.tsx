@@ -579,7 +579,13 @@ function DiameterLine({
               : "w-full max-w-md sm:max-w-lg";
 
   return (
-    <div className={cn("flex w-full flex-col items-center px-2", className)}>
+    <div
+      className={cn(
+        "flex w-full flex-col items-center px-2",
+        lite18 && "mt-14 sm:mt-16 md:mt-20",
+        className,
+      )}
+    >
       <div className={cn("flex items-end justify-center", bracketWidthClass)}>
         <div
           className={cn(
