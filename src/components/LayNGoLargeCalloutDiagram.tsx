@@ -582,7 +582,7 @@ function DiameterLine({
     <div
       className={cn(
         "flex w-full flex-col items-center px-2",
-        lite18 && "translate-y-14 sm:translate-y-16 md:translate-y-20",
+        lite18 && "mt-14 sm:mt-16 md:mt-20",
         className,
       )}
     >
