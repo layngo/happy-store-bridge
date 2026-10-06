@@ -2,6 +2,7 @@ import { useMemo, type CSSProperties } from "react";
 import type { ShopifyProduct } from "@/lib/shopify";
 import { colorNameToApproximateHex } from "@/lib/colorSwatch";
 import { cn } from "@/lib/utils";
+import tanCheckSwatch from "@/assets/cosmo-22-tan-check-swatch.png.asset.json";
 
 type VariantNode = ShopifyProduct["node"]["variants"]["edges"][number]["node"];
 
@@ -68,7 +69,7 @@ export const COSMO_22_SWATCHES: Cosmo22SwatchDef[] = [
     bagImageUrl:
       "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/71YpBeuqSEL._AC_SL1500.jpg?v=1768938304",
     swatchImageUrl:
-      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/71YpBeuqSEL._AC_SL1500.jpg?v=1768938304&width=64&height=64&crop=center",
+      tanCheckSwatch.url,
   },
 ];
 
@@ -166,7 +167,7 @@ export function getCosmo22SwatchStyle(def: Cosmo22SwatchDef | undefined, shopify
   if (def?.swatchImageUrl) {
     return {
       backgroundImage: `url(${def.swatchImageUrl})`,
-      backgroundSize: "contain",
+      backgroundSize: "cover",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
     };
