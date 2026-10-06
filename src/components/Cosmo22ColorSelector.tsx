@@ -61,6 +61,15 @@ export const COSMO_22_SWATCHES: Cosmo22SwatchDef[] = [
     bagImageUrl: "https://m.media-amazon.com/images/I/8182IPeHmIL._AC_SX679_.jpg",
     swatchImageUrl: "https://m.media-amazon.com/images/I/31J83-22JUL._SS64_.jpg",
   },
+  {
+    shopifyColor: "Tan Check",
+    selectedLabel: "Tan Check",
+    tooltip: "Tan Check",
+    bagImageUrl:
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/71YpBeuqSEL._AC_SL1500.jpg?v=1768938304",
+    swatchImageUrl:
+      "https://cdn.shopify.com/s/files/1/0531/5369/3877/files/71YpBeuqSEL._AC_SL1500.jpg?v=1768938304&width=64&height=64&crop=center",
+  },
 ];
 
 interface Cosmo22ColorSelectorProps {
