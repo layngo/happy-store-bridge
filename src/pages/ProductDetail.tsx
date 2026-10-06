@@ -2055,7 +2055,7 @@ const ProductDetail = () => {
             {isNailspa18Product(product.handle) ? <NailspaPdpStory /> : null}
 
             {isCosmoStoryPdp ? (
-              <CosmoPdpStory hideIntroImage={isCosmo22Product(product.handle)} />
+              <CosmoPdpStory />
             ) : null}
 
             {!isCosmoStoryPdp ? (
