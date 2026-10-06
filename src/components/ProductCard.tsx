@@ -462,7 +462,7 @@ function collectionSwatchStyle(product: ShopifyProduct["node"], colorValue: stri
     if (def?.swatchImageUrl) {
       return {
         backgroundImage: `url(${def.swatchImageUrl})`,
-        backgroundSize: "contain",
+        backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       };
