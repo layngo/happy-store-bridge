@@ -192,7 +192,7 @@ const CartPage = () => {
                 </div>
                 {flash.unlocked ? (
                   <p className="mt-2 text-xs font-medium text-[hsl(var(--flash-deal-ink))]">
-                    Checkout code {FLASH_PET_CODE}. Works with at least 3 items besides the pet bed.
+                    Checkout code {FLASH_PET_CODE}. Works with at least 3 items besides the free pet bed.
                   </p>
                 ) : null}
                 <p className="mt-2 text-xs text-muted-foreground">
