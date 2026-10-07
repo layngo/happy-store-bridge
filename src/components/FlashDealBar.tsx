@@ -22,7 +22,7 @@ export function FlashDealBar() {
 
   return (
     <div className="flash-deal-bar relative w-full" role="region" aria-label="Flash deal">
-      <div className="container flex items-center justify-center gap-2.5 py-2.5 sm:gap-4">
+      <div className="container flex flex-col items-center justify-center gap-1.5 py-2.5 text-center sm:flex-row sm:gap-4">
         <span className="flash-deal-badge shrink-0 rounded-full bg-[hsl(var(--flash-deal-foreground))] px-2.5 py-1 text-[10px] font-extrabold leading-none tracking-[0.12em] text-[hsl(var(--flash-deal))] sm:text-xs">
           FLASH DEAL
         </span>
