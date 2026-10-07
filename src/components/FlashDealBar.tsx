@@ -21,23 +21,24 @@ export function FlashDealBar() {
   else copy = <>Add {remaining} more item{remaining === 1 ? "" : "s"} and a <PetLink /> is free.</>;
 
   return (
-    <div className="flash-deal-bar w-full" role="region" aria-label="Flash deal">
-      <div className="container flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 py-2 text-xs sm:text-sm">
-        <span className="rounded-full bg-[hsl(var(--flash-deal-foreground))] px-2.5 py-0.5 text-[10px] font-bold tracking-[0.14em] text-[hsl(var(--flash-deal))] sm:text-xs">
-          FLASH DEAL
+    <div className="flash-deal-bar relative w-full" role="region" aria-label="Flash deal">
+      <div className="container flex items-center justify-center gap-2.5 py-2.5 sm:gap-4">
+        <span className="flash-deal-badge shrink-0 rounded-full bg-[hsl(var(--flash-deal-foreground))] px-2.5 py-1 text-[10px] font-extrabold leading-none tracking-[0.12em] text-[hsl(var(--flash-deal))] sm:text-xs">
+          ⚡ FLASH DEAL
         </span>
-        <p className="font-medium">{copy}</p>
-        <div className="flex items-center gap-2" aria-label={`${progress} of ${FLASH_THRESHOLD} items`}>
-          <div className="h-1.5 w-20 overflow-hidden rounded-full bg-[hsl(var(--flash-deal-foreground)/0.2)] sm:w-28">
-            <div
-              className="h-full rounded-full bg-[hsl(var(--flash-deal-foreground))] transition-[width] duration-500"
-              style={{ width: `${(progress / FLASH_THRESHOLD) * 100}%` }}
-            />
-          </div>
-          <span className="tabular-nums font-semibold">
-            {progress}/{FLASH_THRESHOLD}
-          </span>
-        </div>
+        <p className="min-w-0 text-[13px] font-semibold leading-snug sm:text-sm">{copy}</p>
+        <span className="shrink-0 rounded-full bg-[hsl(var(--flash-deal-foreground)/0.18)] px-2 py-0.5 text-xs font-bold tabular-nums">
+          {progress}/{FLASH_THRESHOLD}
+        </span>
+      </div>
+      <div
+        className="absolute inset-x-0 bottom-0 h-[3px] bg-[hsl(var(--flash-deal-foreground)/0.2)]"
+        aria-label={`${progress} of ${FLASH_THRESHOLD} items`}
+      >
+        <div
+          className="h-full bg-[hsl(var(--flash-deal-foreground))] transition-[width] duration-500"
+          style={{ width: `${(progress / FLASH_THRESHOLD) * 100}%` }}
+        />
       </div>
     </div>
   );
