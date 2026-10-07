@@ -12,6 +12,7 @@ import {
   isCosmo20Product,
   resolveCosmo20SwatchDef,
 } from "@/components/Cosmo20ColorSelector";
+import { FlashDealPrice } from "@/components/FlashDealPrice";
 import { COSMO_22_SWATCHES, getCosmo22HeroImageUrls, isCosmo22Product } from "@/components/Cosmo22ColorSelector";
 import {
   getNailspa18HeroImageUrls,
@@ -307,9 +308,11 @@ export const ProductCard = ({ product, variant = "default", listName }: ProductC
           >
             {node.title}
           </Link>
-          <span className="shrink-0 text-xl font-semibold tabular-nums text-foreground">
-            ${parseFloat(priceAmount).toFixed(2)}
-          </span>
+          <FlashDealPrice
+            handle={node.handle}
+            amount={priceAmount}
+            className="shrink-0 text-xl font-semibold tabular-nums text-foreground"
+          />
         </div>
 
         <div className="flex min-h-7 flex-wrap items-center gap-2">

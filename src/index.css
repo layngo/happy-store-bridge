@@ -16,6 +16,9 @@
 
 @layer base {
   :root {
+    --flash-deal: 43 96% 56%;
+    --flash-deal-foreground: 26 83% 14%;
+    --flash-deal-ink: 28 90% 30%;
     --background: 0 0% 98%;
     --foreground: 220 16% 10%;
 
@@ -1352,4 +1355,9 @@
   .font-cosmo-cta {
     font-family: var(--font-cosmo-cta);
   }
+}
+
+.flash-deal-bar {
+  background: hsl(var(--flash-deal));
+  color: hsl(var(--flash-deal-foreground));
 }
