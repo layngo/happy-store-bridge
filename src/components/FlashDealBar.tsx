@@ -27,7 +27,7 @@ export function FlashDealBar() {
           ⚡ FLASH DEAL
         </span>
         <p className="min-w-0 text-[13px] font-semibold leading-snug sm:text-sm">{copy}</p>
-        <span className="shrink-0 rounded-full bg-[hsl(var(--flash-deal-foreground)/0.18)] px-2 py-0.5 text-xs font-bold tabular-nums">
+        <span className="hidden shrink-0 rounded-full bg-[hsl(var(--flash-deal-foreground)/0.18)] px-2 sm:inline-block py-0.5 text-xs font-bold tabular-nums">
           {progress}/{FLASH_THRESHOLD}
         </span>
       </div>
