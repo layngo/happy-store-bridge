@@ -13,8 +13,8 @@ const appliedKey = (cartId: string) => `flash-pet-applied:${cartId}`;
 /** Keeps FLASH-PET on the Shopify cart only while the deal is unlocked and a pet bed is in the cart. */
 export function useFlashDealCodeSync() {
   const cartId = useCartStore((s) => s.cartId);
-  const { unlocked, petQty } = useFlashDeal();
-  const want = unlocked && petQty > 0;
+  const { freeApplied } = useFlashDeal();
+  const want = freeApplied;
   const busy = useRef(false);
 
   useEffect(() => {

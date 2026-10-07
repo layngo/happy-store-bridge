@@ -20,7 +20,7 @@ async function copyCode() {
 }
 
 export function FlashDealPopup() {
-  const { paidCount, petQty } = useFlashDeal();
+  const { paidCount, freeApplied } = useFlashDeal();
   const addItem = useCartStore((s) => s.addItem);
   const [open, setOpen] = useState(false);
   const [product, setProduct] = useState<ShopifyProduct["node"] | null>(null);
@@ -60,7 +60,7 @@ export function FlashDealPopup() {
   const handleClaim = async () => {
     setClaiming(true);
     try {
-      if (petQty === 0 && product && variant) {
+      if (!freeApplied && product && variant) {
         await addItem({
           product: { node: product },
           variantId: variant.id,
@@ -85,7 +85,7 @@ export function FlashDealPopup() {
           Congrats! You won a free pet bed
         </DialogTitle>
         <DialogDescription className="text-center text-sm text-muted-foreground">
-          Add it to your cart and use this code at checkout. It applies when the order has at least 3 items besides the free pet bed (other pet beds count).
+          Add it to your cart and use this code at checkout. It applies when the order has at least 3 items besides the free pet bed. Pet beds count too.
         </DialogDescription>
 
         <div className="mx-auto aspect-square w-48 overflow-hidden rounded-xl bg-muted">

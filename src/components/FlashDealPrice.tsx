@@ -14,13 +14,13 @@ export function FlashDealPrice({
   className?: string;
   labelClassName?: string;
 }) {
-  const { unlocked, petQty } = useFlashDeal();
+  const { unlocked, freeApplied } = useFlashDeal();
   const price = `$${parseFloat(String(amount)).toFixed(2)}`;
   if (!isFlashPetHandle(handle)) return <span className={className}>{price}</span>;
 
   const label = cn("block text-xs font-semibold normal-case tracking-normal text-[hsl(var(--flash-deal-ink))]", labelClassName);
 
-  if (unlocked && petQty === 0) {
+  if (unlocked && !freeApplied) {
     return (
       <span className="inline-flex flex-col items-start">
         <span className={className}>
@@ -35,7 +35,7 @@ export function FlashDealPrice({
     <span className="inline-flex flex-col items-start">
       <span className={className}>{price}</span>
       <span className={label}>
-        {unlocked ? "Flash deal · 1 free pet bed per order" : "Flash deal · free with any 3 items"}
+        {freeApplied ? "Flash deal · 1 free pet bed per order" : "Flash deal · free with any 3 items"}
       </span>
     </span>
   );
