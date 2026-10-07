@@ -439,4 +439,27 @@ export async function removeLineFromShopifyCart(cartId: string, lineId: string):
   return { success: true };
 }
 
+const CART_DISCOUNT_CODES_UPDATE_MUTATION = `
+  mutation cartDiscountCodesUpdate($cartId: ID!, $discountCodes: [String!]) {
+    cartDiscountCodesUpdate(cartId: $cartId, discountCodes: $discountCodes) {
+      cart { id discountCodes { code applicable } }
+      userErrors { field message }
+    }
+  }
+`;
+
+/** Replace the cart's discount codes. Returns whether `codes[0]` was accepted as applicable. */
+export async function updateCartDiscountCodes(
+  cartId: string,
+  codes: string[],
+): Promise<{ success: boolean; applicable: boolean }> {
+  const data = await storefrontApiRequest(CART_DISCOUNT_CODES_UPDATE_MUTATION, { cartId, discountCodes: codes });
+  const payload = data?.data?.cartDiscountCodesUpdate;
+  if (!payload || payload.userErrors?.length > 0) return { success: false, applicable: false };
+  const applied: Array<{ code: string; applicable: boolean }> = payload.cart?.discountCodes ?? [];
+  const target = codes[0]?.toUpperCase();
+  const applicable = target ? applied.some((c) => c.code.toUpperCase() === target && c.applicable) : false;
+  return { success: true, applicable };
+}
+
 export { CART_QUERY };
