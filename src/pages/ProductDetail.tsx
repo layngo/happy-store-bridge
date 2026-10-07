@@ -47,6 +47,7 @@ import { LayNGoPlayAwardsSection } from "@/components/LayNGoPlayAwardsSection";
 import { PausableAutoplayEmbed } from "@/components/PausableAutoplayEmbed";
 import { NailspaPdpStory } from "@/components/NailspaPdpStory";
 import { CosmoPdpStory } from "@/components/CosmoPdpStory";
+import { FlashDealPrice } from "@/components/FlashDealPrice";
 import { CosmoPdpVideoGallery } from "@/components/CosmoPdpVideoGallery";
 import { ProductLifestyleGallery } from "@/components/ProductLifestyleGallery";
 import { LayNGoLargePdpPlayStrip } from "@/components/LayNGoLargePdpPlayStrip";
@@ -1937,8 +1938,12 @@ const ProductDetail = () => {
                     ) : null}
                     <div>
                       <p className="text-xs font-medium uppercase tracking-[0.2em] text-neutral-500">Price</p>
-                      <p className="font-cosmo-cta mt-1 text-3xl font-semibold tabular-nums text-neutral-800 sm:text-[2.125rem]">
-                        ${priceDisplay}
+                      <p className="mt-1">
+                        <FlashDealPrice
+                          handle={product.handle}
+                          amount={priceDisplay}
+                          className="font-cosmo-cta text-3xl font-semibold tabular-nums text-neutral-800 sm:text-[2.125rem]"
+                        />
                       </p>
                     </div>
                     <div className="space-y-2">
@@ -2151,7 +2156,7 @@ const ProductDetail = () => {
                   <div className="mt-3">{productReviewsSummary}</div>
                 ) : null}
                 <p className={cn("text-2xl font-bold text-primary", productReviewsSummary && !hasColorChoices ? "mt-3" : "mt-2")}>
-                  ${priceDisplay}
+                  <FlashDealPrice handle={product.handle} amount={priceDisplay} />
                 </p>
               </div>
 

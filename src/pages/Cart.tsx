@@ -9,6 +9,7 @@ import { PageSeo } from "@/components/PageSeo";
 import { useCartStore, type CartItem } from "@/stores/cartStore";
 import { navigateToCheckout } from "@/lib/navigateToCheckout";
 import { normalizeOptionValueLabel } from "@/lib/displayOptionValue";
+import { FLASH_PET_CODE, getFlashDealState, getFreeQtyForItem } from "@/lib/flashDeal";
 
 const formatOptions = (item: CartItem) => {
   const label = item.selectedOptions
@@ -38,6 +39,8 @@ const CartPage = () => {
     (sum, item) => sum + parseFloat(item.price.amount) * item.quantity,
     0,
   );
+  const flash = getFlashDealState(items);
+  const subtotal = totalPrice - flash.savings;
   const busy = isLoading || isSyncing;
   const checkoutUrl = getCheckoutUrl();
 
@@ -87,7 +90,8 @@ const CartPage = () => {
                   const { node } = item.product;
                   const image = node?.images?.edges?.[0]?.node;
                   const unitPrice = parseFloat(item.price.amount);
-                  const lineTotal = unitPrice * item.quantity;
+                  const freeQty = getFreeQtyForItem(item, items, flash);
+                  const lineTotal = unitPrice * (item.quantity - freeQty);
                   const opts = formatOptions(item);
                   return (
                     <li
@@ -151,11 +155,17 @@ const CartPage = () => {
                           </div>
                           <div className="text-right">
                             <p className="font-heading text-base font-semibold text-foreground">
-                              ${lineTotal.toFixed(2)}
+                              {freeQty > 0 && item.quantity === 1 ? (
+                                <>
+                                  <s className="mr-1.5 text-sm font-normal text-muted-foreground">${unitPrice.toFixed(2)}</s>FREE
+                                </>
+                              ) : (
+                                `$${lineTotal.toFixed(2)}`
+                              )}
                             </p>
                             {item.quantity > 1 ? (
                               <p className="text-xs text-muted-foreground">
-                                ${unitPrice.toFixed(2)} each
+                                ${unitPrice.toFixed(2)} each{freeQty > 0 ? " · 1 free" : ""}
                               </p>
                             ) : null}
                           </div>
@@ -168,12 +178,23 @@ const CartPage = () => {
 
               <aside className="h-fit rounded-2xl bg-white p-6 shadow-sm">
                 <h2 className="font-heading text-lg font-semibold text-foreground">Summary</h2>
+                {flash.savings > 0 ? (
+                  <div className="mt-4 flex items-baseline justify-between text-sm font-medium text-[hsl(var(--flash-deal-ink))]">
+                    <span>Flash deal · free pet bed</span>
+                    <span>−${flash.savings.toFixed(2)}</span>
+                  </div>
+                ) : null}
                 <div className="mt-4 flex items-baseline justify-between">
                   <span className="text-sm font-medium text-muted-foreground">Subtotal</span>
                   <span className="font-heading text-2xl font-bold tracking-[-0.02em] text-foreground">
-                    ${totalPrice.toFixed(2)}
+                    ${subtotal.toFixed(2)}
                   </span>
                 </div>
+                {flash.unlocked ? (
+                  <p className="mt-2 text-xs font-medium text-[hsl(var(--flash-deal-ink))]">
+                    Checkout code {FLASH_PET_CODE}. Works with at least 3 items besides the pet bed.
+                  </p>
+                ) : null}
                 <p className="mt-2 text-xs text-muted-foreground">
                   Shipping and taxes calculated at checkout.
                 </p>

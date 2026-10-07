@@ -2,6 +2,7 @@ import { type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { CartDrawer } from "./CartDrawer";
 import { SearchBar } from "./SearchBar";
+import { FlashDealBar } from "./FlashDealBar";
 import { StorefrontHomeLink } from "./StorefrontHomeLink";
 import { cn } from "@/lib/utils";
 import { shopCollectionLinks } from "@/lib/siteNav";
@@ -173,6 +174,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
           </NavItem>
         </nav>
       </div>
+      <FlashDealBar />
     </header>
   );
 };
