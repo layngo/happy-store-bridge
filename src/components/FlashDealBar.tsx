@@ -24,9 +24,9 @@ export function FlashDealBar() {
     <div className="flash-deal-bar relative w-full" role="region" aria-label="Flash deal">
       <div className="container flex items-center justify-center gap-2.5 py-2.5 sm:gap-4">
         <span className="flash-deal-badge shrink-0 rounded-full bg-[hsl(var(--flash-deal-foreground))] px-2.5 py-1 text-[10px] font-extrabold leading-none tracking-[0.12em] text-[hsl(var(--flash-deal))] sm:text-xs">
-          ⚡ FLASH DEAL
+          FLASH DEAL
         </span>
-        <p className="min-w-0 text-[13px] font-semibold leading-snug sm:text-sm">{copy}</p>
+        <p className="min-w-0 text-[15px] font-bold leading-snug sm:text-base">{copy}</p>
         <span className="hidden shrink-0 rounded-full bg-[hsl(var(--flash-deal-foreground)/0.18)] px-2 sm:inline-block py-0.5 text-xs font-bold tabular-nums">
           {progress}/{FLASH_THRESHOLD}
         </span>
