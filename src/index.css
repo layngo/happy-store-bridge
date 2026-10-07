@@ -16,9 +16,9 @@
 
 @layer base {
   :root {
-    --flash-deal: 43 96% 56%;
-    --flash-deal-foreground: 26 83% 14%;
-    --flash-deal-ink: 28 90% 30%;
+    --flash-deal: var(--primary);
+    --flash-deal-foreground: var(--primary-foreground);
+    --flash-deal-ink: var(--primary);
     --background: 0 0% 98%;
     --foreground: 220 16% 10%;
 
