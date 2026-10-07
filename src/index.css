@@ -1114,8 +1114,14 @@
   }
 
   /* Cart drawer: roomy line items, large product thumbs */
-  .cart-drawer [data-radix-dialog-close] {
-    @apply right-4 top-5 h-9 w-9 rounded-full bg-black/[0.04] opacity-100 hover:bg-black/[0.08];
+  .cart-drawer > button.absolute {
+    @apply right-4 top-8 flex h-11 w-11 items-center justify-center rounded-full bg-black/[0.06] opacity-100 hover:bg-black/[0.1] sm:top-5 sm:h-9 sm:w-9;
+  }
+  .cart-drawer > button.absolute svg {
+    @apply h-6 w-6 sm:h-4 sm:w-4;
+  }
+  .cart-drawer__header {
+    @apply max-sm:pt-8 max-sm:pr-16;
   }
 
   .cart-line {
