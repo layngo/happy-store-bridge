@@ -92,9 +92,9 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
   return (
     <footer className={variant === "light" ? "border-t border-border bg-white" : "border-t border-border bg-muted"}>
       <div className="container max-w-5xl py-6 sm:py-7">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-6 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-6">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-2 sm:gap-x-10 sm:gap-y-6 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-6">
           {/* Brand */}
-          <div className="flex flex-col items-center gap-3 text-center sm:items-start sm:text-left">
+          <div className="col-span-2 sm:col-span-1 lg:col-span-1 flex flex-col items-center gap-3 text-center sm:items-start sm:text-left">
             <StorefrontHomeLink aria-label="Lay-n-Go home" className="inline-block shrink-0">
               <img
                 src="/layngo-logo-outlined.png"
@@ -119,7 +119,7 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
           </div>
 
           {/* Newsletter */}
-          <div className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
+          <div className="col-span-2 sm:col-span-1 flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
             <h3 className={sectionHeading}>Newsletter</h3>
             <p className="text-sm text-muted-foreground max-w-[280px] sm:max-w-none">
               Alerts, offers, and codes in your inbox.
@@ -168,9 +168,9 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
           </div>
 
           {/* Catalog */}
-          <nav aria-label="Product catalog" className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
+          <nav aria-label="Product catalog" className="flex flex-col items-start gap-2 text-left">
             <h3 className={sectionHeading}>Catalog</h3>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
+            <ul className="space-y-1 text-[13px] sm:space-y-1.5 sm:text-sm text-muted-foreground">
               {footerCatalogLinks.map((l) => (
                 <li key={l.to}>
                   <Link to={l.to} className="transition-colors hover:text-primary">
@@ -182,9 +182,9 @@ export const SiteFooter = ({ variant = "dark" }: SiteFooterProps) => {
           </nav>
 
           {/* Company */}
-          <nav aria-label="Company information" className="flex flex-col items-center gap-2.5 text-center sm:items-start sm:text-left">
+          <nav aria-label="Company information" className="flex flex-col items-start gap-2 text-left">
             <h3 className={sectionHeading}>Company</h3>
-            <ul className="space-y-1.5 text-sm text-muted-foreground">
+            <ul className="space-y-1 text-[13px] sm:space-y-1.5 sm:text-sm text-muted-foreground">
               {footerInfoLinks.map((l) => (
                 <li key={l.to}>
                   <Link to={l.to} className="transition-colors hover:text-primary">
