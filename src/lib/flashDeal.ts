@@ -36,6 +36,8 @@ export function getFlashDealState(items: CartItem[]): FlashDealState {
       paidCount += item.quantity;
     }
   }
+  // Pet beds count toward the 3 too, except the one that would be free.
+  paidCount += Math.max(0, petQty - 1);
   const unlocked = paidCount >= FLASH_THRESHOLD;
   return {
     paidCount,
