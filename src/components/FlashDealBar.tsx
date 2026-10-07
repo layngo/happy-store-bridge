@@ -16,7 +16,7 @@ export function FlashDealBar() {
 
   let copy: React.ReactNode;
   if (unlocked && petQty > 0) copy = <>Your <PetLink /> is free with this order.</>;
-  else if (unlocked) copy = <>Unlocked — pick your free <PetLink />.</>;
+  else if (unlocked) copy = <>Unlocked! Pick your free <PetLink />.</>;
   else if (paidCount === 0) copy = <>Buy any 3 items and a <PetLink /> is free.</>;
   else copy = <>Add {remaining} more item{remaining === 1 ? "" : "s"} and a <PetLink /> is free.</>;
 

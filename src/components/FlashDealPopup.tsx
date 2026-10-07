@@ -82,7 +82,7 @@ export function FlashDealPopup() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="z-[200] max-w-md rounded-2xl p-6 sm:p-8">
         <DialogTitle className="brand-display text-center text-2xl leading-tight sm:text-3xl">
-          Congrats — you won a free pet bed
+          Congrats! You won a free pet bed
         </DialogTitle>
         <DialogDescription className="text-center text-sm text-muted-foreground">
           Add it to your cart and use this code at checkout. It applies when the order has at least 3 items besides
