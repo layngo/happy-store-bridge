@@ -1361,3 +1361,10 @@
   background: hsl(var(--flash-deal));
   color: hsl(var(--flash-deal-foreground));
 }
+
+.flash-deal-badge { animation: flash-deal-glow 2.2s ease-in-out infinite; }
+@keyframes flash-deal-glow {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--flash-deal-foreground) / 0.55); }
+  50% { box-shadow: 0 0 0 5px hsl(var(--flash-deal-foreground) / 0); }
+}
+@media (prefers-reduced-motion: reduce) { .flash-deal-badge { animation: none; } }
