@@ -133,6 +133,14 @@ export function FlashDealPopup() {
         <Button className="h-12 w-full rounded-full text-base font-semibold" onClick={handleClaim} disabled={claiming}>
           Claim your free pet bed
         </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          className="-mt-2 w-full rounded-full text-sm text-muted-foreground hover:text-foreground"
+          onClick={() => setOpen(false)}
+        >
+          No thanks
+        </Button>
       </DialogContent>
     </Dialog>
   );
