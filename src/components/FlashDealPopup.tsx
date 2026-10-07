@@ -85,8 +85,7 @@ export function FlashDealPopup() {
           Congrats! You won a free pet bed
         </DialogTitle>
         <DialogDescription className="text-center text-sm text-muted-foreground">
-          Add it to your cart and use this code at checkout. It applies when the order has at least 3 items besides
-          the pet bed.
+          Add it to your cart and use this code at checkout. It applies when the order has at least 3 items besides the free pet bed (other pet beds count).
         </DialogDescription>
 
         <div className="mx-auto aspect-square w-48 overflow-hidden rounded-xl bg-muted">
