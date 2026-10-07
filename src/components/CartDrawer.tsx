@@ -18,6 +18,7 @@ import { beginCheckout, viewCart } from "@/lib/analytics";
 import { cartItemsToAnalyticsItems } from "@/lib/analyticsItems";
 import { cn } from "@/lib/utils";
 import { normalizeOptionValueLabel } from "@/lib/displayOptionValue";
+import { FLASH_PET_CODE, getFlashDealState, getFreeQtyForItem } from "@/lib/flashDeal";
 
 function formatOptions(item: CartItem) {
   return item.selectedOptions
@@ -31,7 +32,9 @@ function CartLineItem({
   onRemove,
   onDecrease,
   onIncrease,
+  freeQty = 0,
 }: {
+  freeQty?: number;
   item: CartItem;
   onRemove: () => void;
   onDecrease: () => void;
@@ -40,7 +43,7 @@ function CartLineItem({
   const { node } = item.product;
   const image = node.images?.edges?.[0]?.node;
   const unitPrice = parseFloat(item.price.amount);
-  const lineTotal = unitPrice * item.quantity;
+  const lineTotal = unitPrice * (item.quantity - freeQty);
   const optionsLabel = formatOptions(item);
 
   return (
@@ -100,9 +103,17 @@ function CartLineItem({
           </div>
 
           <div className="cart-line__pricing">
-            <p className="cart-line__line-total">${lineTotal.toFixed(2)}</p>
+            {freeQty > 0 && item.quantity === 1 ? (
+              <p className="cart-line__line-total">
+                <s className="mr-1.5 text-sm font-normal text-muted-foreground">${unitPrice.toFixed(2)}</s>FREE
+              </p>
+            ) : (
+              <p className="cart-line__line-total">${lineTotal.toFixed(2)}</p>
+            )}
             {item.quantity > 1 ? (
-              <p className="cart-line__unit-price">${unitPrice.toFixed(2)} each</p>
+              <p className="cart-line__unit-price">
+                ${unitPrice.toFixed(2)} each{freeQty > 0 ? " · 1 free" : ""}
+              </p>
             ) : null}
           </div>
         </div>
@@ -116,6 +127,8 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
   const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } = useCartStore();
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + parseFloat(item.price.amount) * item.quantity, 0);
+  const flash = getFlashDealState(items);
+  const subtotal = totalPrice - flash.savings;
   const busy = isLoading || isSyncing;
   const checkoutUrl = getCheckoutUrl();
 
@@ -199,6 +212,7 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
                     <CartLineItem
                       key={item.variantId}
                       item={item}
+                      freeQty={getFreeQtyForItem(item, items, flash)}
                       onRemove={() => removeItem(item.variantId)}
                       onDecrease={() => updateQuantity(item.variantId, item.quantity - 1)}
                       onIncrease={() => updateQuantity(item.variantId, item.quantity + 1)}
@@ -208,12 +222,23 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
               </div>
 
               <div className="cart-drawer__footer flex-shrink-0 border-t border-black/[0.06] bg-white px-5 py-5">
+                {flash.savings > 0 ? (
+                  <div className="mb-2 flex items-baseline justify-between gap-4 text-sm font-medium text-[hsl(var(--flash-deal-ink))]">
+                    <span>Flash deal · free pet bed</span>
+                    <span>−${flash.savings.toFixed(2)}</span>
+                  </div>
+                ) : null}
                 <div className="mb-4 flex items-baseline justify-between gap-4">
                   <span className="text-sm font-medium text-muted-foreground">Subtotal</span>
                   <span className="font-heading text-2xl font-bold tracking-[-0.02em] text-foreground">
-                    ${totalPrice.toFixed(2)}
+                    ${subtotal.toFixed(2)}
                   </span>
                 </div>
+                {flash.unlocked ? (
+                  <p className="mb-2 text-xs font-medium text-[hsl(var(--flash-deal-ink))]">
+                    Checkout code {FLASH_PET_CODE}. Works with at least 3 items besides the pet bed.
+                  </p>
+                ) : null}
                 <p className="mb-4 text-xs leading-relaxed text-muted-foreground">
                   Shipping and taxes calculated at checkout.
                 </p>
