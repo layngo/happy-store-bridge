@@ -221,7 +221,7 @@ const LAY_N_GO_DEFENDER_MINI_16_GALLERY_SLIDES = [
     src: "/products/lay-n-go-defender-mini-16/gallery-3.png",
     alt: "Lay-n-Go Defender Mini open as an organizer mat with everyday carry gear beside backpacks and a Jeep tire",
   },
-{
+  {
     src: defenderCarabinerHike.url,
     alt: "Olive Lay-n-Go Defender bag with American flag patch clipped to a hiker's backpack strap",
   },
@@ -240,7 +240,7 @@ const LAY_N_GO_DEFENDER_TACTICAL_20_GALLERY_SLIDES = [
     src: "/products/lay-n-go-tactical-bag-20/gallery-3.png",
     alt: "Lay-n-Go Defender Tactical 20 open in a vehicle trunk with tactical gear organized on the mat",
   },
-{
+  {
     src: defenderCarabinerHike.url,
     alt: "Olive Lay-n-Go Defender bag with American flag patch clipped to a hiker's backpack strap",
   },
