@@ -39,7 +39,8 @@ const PRESS_LOGOS = [
   },
   {
     name: "Today Show",
-    src: "/press/logos/today.png?v=2",
+    src: "",
+    text: "TODAY",
     href: "https://www.today.com/style/bobbies-buzz-3-great-gifts-girlfriends-2D11638370",
   },
   {
@@ -207,12 +208,18 @@ const Index = () => {
                   rel="noopener noreferrer"
                   className="mx-2 inline-flex h-12 w-[44vw] max-w-[9rem] sm:mx-5 sm:h-24 sm:w-44 shrink-0 items-center justify-center"
                 >
+                  {"text" in logo && logo.text ? (
+                    <span className="font-heading text-lg font-extrabold uppercase tracking-[0.08em] text-foreground sm:text-3xl">
+                      {logo.text}
+                    </span>
+                  ) : (
                   <img
                     src={logo.src}
                     alt={logo.name}
                     loading="lazy"
                     className={`h-7 w-20 sm:h-12 sm:w-32 object-contain opacity-95 transition-transform ${logo.imageClass ?? ""}`}
                   />
+                  )}
                 </a>
               ))}
             </div>
