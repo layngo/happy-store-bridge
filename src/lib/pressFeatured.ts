@@ -168,7 +168,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     linkLabel: "FULL ARTICLE",
     dateLabel: "July 13, 2022:",
     productName: "",
-    imageSrc: "/press/featured-cntraveler-editors-picks-text.png?v=2",
+    imageSrc: "/press/featured-cntraveler-editors-picks-text.png?v=3",
     imageAlt: "Condé Nast Traveler logo",
     cardImageAspect: "887/350",
     cardLogoSize: "large",
