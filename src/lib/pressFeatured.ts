@@ -86,11 +86,9 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     linkLabel: "FULL ARTICLE",
     dateLabel: "October 29, 2024:",
     productName: "Lay-n-Go Drawstring Toiletry Bag",
-    quote:
-      "Travelers who are also regulars at Sephora or Ulta will appreciate this cool makeup bag: Instead of having to dump out all your products to find what you're looking for, the bag opens up by way of drawstrings, and can be laid out as a circle on any surface, allowing every product to be on display.",
-    imageSrc: "/press/featured-cntraveler-travel-gifts@2x.png?v=7",
+    imageSrc: "/press/featured-cntraveler-travel-gifts@2x.png?v=8",
     imageSrcSet:
-      "/press/featured-cntraveler-travel-gifts.png?v=7 2048w, /press/featured-cntraveler-travel-gifts@2x.png?v=7 4096w",
+      "/press/featured-cntraveler-travel-gifts.png?v=8 2048w, /press/featured-cntraveler-travel-gifts@2x.png?v=8 4096w",
     imageAlt:
       "Condé Nast Traveler feature: Lay-n-Go drawstring toiletry bag with cosmetics laid flat on a white background",
     imageAspect: "2048/768",
