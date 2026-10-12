@@ -28,6 +28,8 @@ export type PressFeaturedItem = {
   cardBackgroundSrc?: string;
   /** Slightly larger logo in the card header zone. */
   cardLogoSize?: "large";
+  /** Render plain text instead of the logo image. */
+  cardLogoText?: string;
   /** Soft drop shadow on the card logo (for dark-on-transparent wordmarks). */
   cardLogoDropShadow?: boolean;
   /** Extra Tailwind classes for the card logo below `md` (e.g. smaller on phones). */
@@ -186,6 +188,7 @@ export const PRESS_FEATURED_ITEMS: readonly PressFeaturedItem[] = [
     productName: "",
     imageSrc: "/press/featured-today-logo.png?v=1",
     imageAlt: "TODAY show logo",
+    cardLogoText: "TODAY",
     cardImageAspect: "1000/750",
     cardBackgroundSrc: "/press/featured-today-bobbies-buzz.png?v=1",
   },
