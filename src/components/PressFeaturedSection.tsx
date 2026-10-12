@@ -252,6 +252,11 @@ function PressFeaturedCardCard({
             item.cardLogoSize === "large" && "md:min-h-[12rem] lg:min-h-[12.5rem]",
           )}
         >
+          {item.cardLogoText ? (
+            <span className="font-heading text-6xl font-extrabold uppercase tracking-[0.08em] text-foreground sm:text-7xl">
+              {item.cardLogoText}
+            </span>
+          ) : (
           <img
             src={item.imageSrc}
             alt={item.imageAlt}
@@ -266,6 +271,7 @@ function PressFeaturedCardCard({
             loading="lazy"
             decoding="async"
           />
+          )}
         </div>
         <FeaturedCopy
           item={item}
