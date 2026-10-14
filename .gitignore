@@ -29,3 +29,9 @@ data/submitted-reviews.json
 *.njsproj
 *.sln
 *.sw?
+
+# Local tooling (e.g. portable FFmpeg)
+tools/
+
+# Scratch frames/overlays from social export scripts
+exports/social/_weekend-traveler-src/
