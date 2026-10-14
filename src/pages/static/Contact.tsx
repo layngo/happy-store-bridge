@@ -97,7 +97,7 @@ const Contact = () => {
         <a href="mailto:info@layngo.com" className="text-primary hover:underline">
           info@layngo.com
         </a>{" "}
-        or fax <strong className="font-semibold text-foreground">703.995.4916</strong>
+        or fax <strong className="font-semibold text-foreground">703.995.4916</strong>.
       </p>
 
       <section id="wholesale" className="not-prose scroll-mt-24 border-y border-border py-8 my-8">
