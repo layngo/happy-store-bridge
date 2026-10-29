@@ -29,13 +29,6 @@ export const PRESS_ARCHIVE_SECTIONS: readonly PressSection[] = [
         "title": "🌍 Travel & Lifestyle",
         "articles": [
           {
-            "date": "2026",
-            "publication": "BuzzFeed Shopping",
-            "title": "2026 Buzzy Awards — Lay-n-Go Cosmo Layflat Drawstring Cosmetic Organizer",
-            "featured": true,
-            "href": "https://www.buzzfeed.com/buzzfeedshopping/2026-buzzy-awards#141167987"
-          },
-          {
             "date": "Oct 29, 2024",
             "publication": "Condé Nast Traveler",
             "title": "53 Best Travel Gifts for Every Globetrotter on Your List",

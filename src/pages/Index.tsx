@@ -23,11 +23,6 @@ const LAST_BAG_BANNER = "/home/last-bag-banner.png";
 
 const PRESS_LOGOS = [
   {
-    name: "BuzzFeed",
-    src: "/press/logos/buzzfeed.png?v=2",
-    href: "https://www.buzzfeed.com/buzzfeedshopping/2026-buzzy-awards#141167987",
-  },
-  {
     name: "Parents",
     src: "/press/logos/parents.png?v=2",
     href: "https://www.parents.com/parenting/work/entrepreneurial-moms/#page=2",
