@@ -19,6 +19,14 @@
     --flash-deal: var(--primary);
     --flash-deal-foreground: var(--primary-foreground);
     --flash-deal-ink: var(--primary);
+    /* Holiday theme */
+    --xmas-red: 356 74% 44%;
+    --xmas-red-deep: 354 72% 34%;
+    --xmas-green: 148 58% 30%;
+    --xmas-gold: 44 92% 56%;
+    --xmas-blue: 204 88% 56%;
+    --xmas-wire: 150 22% 22%;
+    --xmas-paper-foreground: 0 0% 100%;
     --background: 0 0% 98%;
     --foreground: 220 16% 10%;
 
