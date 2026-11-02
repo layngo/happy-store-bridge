@@ -1398,15 +1398,15 @@
   top: -6px;
   height: var(--garland-h);
   display: flex;
+  justify-content: center;
   overflow: hidden;
 }
-@media (min-width: 640px) { .xmas-garland { --garland-h: 52px; } }
+@media (min-width: 640px) { .xmas-garland { --garland-h: 46px; } }
 .xmas-garland__tile {
   position: relative;
   flex: 0 0 auto;
   height: 100%;
   aspect-ratio: 960 / 180;
-  margin-right: -0.6%;
 }
 .xmas-garland__tile img {
   position: absolute;
@@ -1483,43 +1483,12 @@
   border-radius: 6px;
   color: hsl(var(--xmas-ribbon-ink)) !important;
   font-weight: 800 !important;
-  background: url("/__l5e/assets-v1/c8b387af-7046-4d98-9d16-c09733e04f26/candy_cane_wrapping_paper.jpg") center / 300px auto repeat !important;
+  background: url("/__l5e/assets-v1/c8b387af-7046-4d98-9d16-c09733e04f26/candy_cane_wrapping_paper.jpg") center / cover no-repeat !important;
   box-shadow:
     0 8px 18px -8px hsl(var(--xmas-red-deep) / 0.75),
     inset 0 0 0 1px hsl(var(--xmas-red-deep) / 0.35),
     inset 0 -6px 10px -6px hsl(var(--xmas-red-deep) / 0.45);
   transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
-}
-/* horizontal ribbon carrying the label */
-.gift-wrap-btn::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 50%;
-  transform: translateY(-50%);
-  background: var(--ribbon);
-  box-shadow: 0 1px 2px hsl(var(--xmas-ribbon-shadow) / 0.6), 0 -1px 2px hsl(var(--xmas-ribbon-shadow) / 0.4);
-}
-/* vertical ribbon wrapping over the top and bottom */
-.gift-wrap-btn::after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 16px;
-  transform: translateX(-50%);
-  background: linear-gradient(90deg,
-    hsl(var(--xmas-ribbon-shadow)) 0%,
-    hsl(var(--xmas-ribbon-base)) 18%,
-    hsl(var(--xmas-ribbon-shine)) 50%,
-    hsl(var(--xmas-ribbon-base)) 82%,
-    hsl(var(--xmas-ribbon-shadow)) 100%);
-  box-shadow: 1px 0 2px hsl(var(--xmas-ribbon-shadow) / 0.5), -1px 0 2px hsl(var(--xmas-ribbon-shadow) / 0.5);
 }
 .gift-wrap-btn__label {
   position: relative;
@@ -1528,7 +1497,11 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  text-shadow: 0 1px 0 hsl(var(--xmas-ribbon-shine) / 0.7);
+  padding: 0.2rem 0.9rem;
+  border-radius: 999px;
+  background: hsl(var(--xmas-paper-foreground));
+  color: hsl(var(--xmas-red-deep));
+  box-shadow: 0 1px 3px hsl(var(--xmas-red-deep) / 0.35);
 }
 .gift-wrap-btn__bow {
   position: absolute;
@@ -1551,7 +1524,7 @@
 }
 .gift-wrap-btn:hover:not(:disabled) .gift-wrap-btn__bow { animation: gift-bow-wiggle 0.55s ease-in-out; }
 .gift-wrap-btn:focus-visible {
-  outline: 2px solid hsl(var(--xmas-ribbon-base));
+  outline: 2px solid hsl(var(--xmas-red));
   outline-offset: 3px;
 }
 @keyframes gift-bow-wiggle {
