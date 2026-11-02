@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 import garland from "@/assets/christmas_light_garland.png.asset.json";
 
 type BulbColor = "red" | "gold" | "blue" | "green";
@@ -62,30 +62,9 @@ const GarlandTile = ({ tile }: { tile: number }) => (
   </div>
 );
 
-/** Decorative string of real-looking holiday lights that glow and sparkle bulb by bulb. */
-export const ChristmasLights = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [tiles, setTiles] = useState(5);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const update = () => {
-      const h = el.clientHeight || 52;
-      const tileW = (h * 960) / 180;
-      setTiles(Math.max(1, Math.ceil(el.clientWidth / (tileW * 0.994)) + 1));
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  return (
-    <div ref={ref} className="xmas-garland" aria-hidden>
-      {Array.from({ length: tiles }, (_, t) => (
-        <GarlandTile key={t} tile={t} />
-      ))}
-    </div>
-  );
-};
+/** One short string of real-looking holiday lights, centered above the menu, glowing bulb by bulb. */
+export const ChristmasLights = () => (
+  <div className="xmas-garland" aria-hidden>
+    <GarlandTile tile={0} />
+  </div>
+);
