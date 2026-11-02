@@ -30,7 +30,6 @@ import {
 } from "@/lib/layNGoPlayMat";
 import { addToCart as trackAddToCart, selectItem } from "@/lib/analytics";
 import { productNodeToItem } from "@/lib/analyticsItems";
-import { GiftWrapLabel } from "@/components/GiftWrapLink";
 
 interface ProductCardProps {
   product: ShopifyProduct;
@@ -380,9 +379,9 @@ export const ProductCard = ({ product, variant = "default", listName }: ProductC
           size="sm"
           onClick={handleAddToCart}
           disabled={isLoading || !selectedVariant?.availableForSale}
-          className="gift-wrap-btn mt-auto h-11 w-full"
+          className="mt-auto h-11 w-full rounded-md border border-foreground/25 bg-transparent text-foreground hover:bg-muted"
         >
-          <GiftWrapLabel>{isLoading ? <ButtonSpinner label="Adding to cart" /> : "Add to Cart"}</GiftWrapLabel>
+          {isLoading ? <ButtonSpinner label="Adding to cart" /> : "Add to Cart"}
         </Button>
       </div>
     </article>
