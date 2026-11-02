@@ -1483,7 +1483,7 @@
   border-radius: 6px;
   color: hsl(var(--xmas-ribbon-ink)) !important;
   font-weight: 800 !important;
-  background: url("/__l5e/assets-v1/c8b387af-7046-4d98-9d16-c09733e04f26/candy_cane_wrapping_paper.jpg") center / 300px auto repeat !important;
+  background: url("/__l5e/assets-v1/c8b387af-7046-4d98-9d16-c09733e04f26/candy_cane_wrapping_paper.jpg") center / cover no-repeat !important;
   box-shadow:
     0 8px 18px -8px hsl(var(--xmas-red-deep) / 0.75),
     inset 0 0 0 1px hsl(var(--xmas-red-deep) / 0.35),
