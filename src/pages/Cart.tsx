@@ -10,6 +10,7 @@ import { useCartStore, type CartItem } from "@/stores/cartStore";
 import { navigateToCheckout } from "@/lib/navigateToCheckout";
 import { normalizeOptionValueLabel } from "@/lib/displayOptionValue";
 import { FLASH_PET_CODE, getFlashDealState, getFreeQtyForItem } from "@/lib/flashDeal";
+import { GiftMessageOption } from "@/components/GiftMessageOption";
 
 const formatOptions = (item: CartItem) => {
   const label = item.selectedOptions
@@ -28,6 +29,7 @@ const CartPage = () => {
     removeItem,
     getCheckoutUrl,
     syncCart,
+    saveGiftMessage,
   } = useCartStore();
 
   useEffect(() => {
@@ -47,6 +49,7 @@ const CartPage = () => {
   const handleCheckout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     if (busy || items.length === 0) return;
+    await saveGiftMessage();
     await syncCart();
     const url = getCheckoutUrl();
     if (url) {
@@ -198,6 +201,7 @@ const CartPage = () => {
                 <p className="mt-2 text-xs text-muted-foreground">
                   Shipping and taxes calculated at checkout.
                 </p>
+                <GiftMessageOption className="mt-4" />
                 <Button
                   asChild
                   className="mt-5 h-12 w-full rounded-full text-base font-semibold"
