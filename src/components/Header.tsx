@@ -130,7 +130,7 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
         </div>
 
         <nav aria-label="Main navigation" className={cn(
-            "relative flex min-h-[2rem] w-full flex-wrap items-center justify-center gap-x-5 gap-y-2 px-2 pt-7 mt-2",
+            "relative flex min-h-[2rem] w-full flex-wrap items-center justify-center gap-x-5 gap-y-2 px-2 pt-9 sm:pt-12 mt-1",
           )}
         >
           <ChristmasLights />

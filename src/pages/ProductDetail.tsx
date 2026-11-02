@@ -1754,16 +1754,18 @@ const ProductDetail = () => {
       size="lg"
       onClick={handleAddToCart}
       disabled={isLoading || !selectedVariant?.availableForSale}
-      className="w-full bg-primary text-base text-primary-foreground hover:bg-primary/90"
+      className="gift-wrap-btn w-full text-base"
     >
-      {isLoading ? (
-        <ButtonSpinner label="Adding to cart" />
-      ) : (
-        <>
-          <ShoppingCart className="mr-2 h-5 w-5" />
-          Add to Cart
-        </>
-      )}
+      <GiftWrapLabel>
+        {isLoading ? (
+          <ButtonSpinner label="Adding to cart" />
+        ) : (
+          <>
+            <ShoppingCart className="h-5 w-5" />
+            Add to Cart
+          </>
+        )}
+      </GiftWrapLabel>
     </Button>
   );
 
@@ -1772,16 +1774,18 @@ const ProductDetail = () => {
       size="lg"
       onClick={handleAddToCart}
       disabled={isLoading || !selectedVariant?.availableForSale}
-      className="font-cosmo-cta w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-base font-semibold tracking-wide text-neutral-50 shadow-none hover:bg-[#1f1f1f] disabled:opacity-50"
+      className="gift-wrap-btn font-cosmo-cta w-full text-base tracking-wide disabled:opacity-50"
     >
-      {isLoading ? (
-        <ButtonSpinner label="Adding to cart" />
-      ) : (
-        <>
-          <ShoppingCart className="mr-2 h-5 w-5 opacity-90" />
-          Add to cart
-        </>
-      )}
+      <GiftWrapLabel>
+        {isLoading ? (
+          <ButtonSpinner label="Adding to cart" />
+        ) : (
+          <>
+            <ShoppingCart className="h-5 w-5" />
+            Add to cart
+          </>
+        )}
+      </GiftWrapLabel>
     </Button>
   );
 
@@ -2255,20 +2259,20 @@ const ProductDetail = () => {
             }}
             disabled={isLoading || !selectedVariant?.availableForSale}
             className={cn(
-              "pointer-events-auto w-full max-w-sm text-base font-semibold shadow-[0_10px_28px_-10px_rgba(0,0,0,0.45)] disabled:opacity-50",
-              isCosmoPdp
-                ? "font-cosmo-cta rounded-md border border-neutral-700 bg-[#2c2c2c] tracking-wide text-neutral-50 hover:bg-[#1f1f1f]"
-                : "bg-primary text-primary-foreground hover:bg-primary/90",
+              "gift-wrap-btn pointer-events-auto w-full max-w-sm text-base disabled:opacity-50",
+              isCosmoPdp && "font-cosmo-cta tracking-wide",
             )}
           >
-            {isLoading ? (
-              <ButtonSpinner label="Adding to cart" />
-            ) : (
-              <>
-                <ShoppingCart className={cn("mr-2 h-5 w-5", isCosmoPdp && "opacity-90")} />
-                {isCosmoPdp ? "Add to cart" : "Add to Cart"}
-              </>
-            )}
+            <GiftWrapLabel>
+              {isLoading ? (
+                <ButtonSpinner label="Adding to cart" />
+              ) : (
+                <>
+                  <ShoppingCart className="h-5 w-5" />
+                  {isCosmoPdp ? "Add to cart" : "Add to Cart"}
+                </>
+              )}
+            </GiftWrapLabel>
           </Button>
         </div>
       ) : null}
@@ -2352,16 +2356,18 @@ const ProductDetail = () => {
                 setStickyConfirmOpen(false);
               }}
               disabled={isLoading || !selectedVariant?.availableForSale}
-              className="font-cosmo-cta border border-neutral-700 bg-[#2c2c2c] text-neutral-50 hover:bg-[#1f1f1f]"
+              className="gift-wrap-btn font-cosmo-cta"
             >
-              {isLoading ? (
-                <ButtonSpinner label="Adding to cart" />
-              ) : (
-                <>
-                  <ShoppingCart className="mr-2 h-5 w-5 opacity-90" />
-                  Add to cart
-                </>
-              )}
+              <GiftWrapLabel>
+                {isLoading ? (
+                  <ButtonSpinner label="Adding to cart" />
+                ) : (
+                  <>
+                    <ShoppingCart className="h-5 w-5" />
+                    Add to cart
+                  </>
+                )}
+              </GiftWrapLabel>
             </Button>
           </DialogFooter>
         </DialogContent>
