@@ -80,7 +80,6 @@ import {
 import { MILITARY_FIRST_RESPONDER_PATH, OUTDOOR_TACTICAL_COLLECTION_TITLE } from "@/pages/MilitaryFirstResponder";
 import { addToCart as trackAddToCart, viewItem } from "@/lib/analytics";
 import { variantLabel } from "@/lib/analyticsItems";
-import { GiftWrapLabel } from "@/components/GiftWrapLink";
 
 const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags";
 
@@ -1755,18 +1754,16 @@ const ProductDetail = () => {
       size="lg"
       onClick={handleAddToCart}
       disabled={isLoading || !selectedVariant?.availableForSale}
-      className="gift-wrap-btn w-full text-base"
+      className="w-full bg-primary text-base text-primary-foreground hover:bg-primary/90"
     >
-      <GiftWrapLabel>
-        {isLoading ? (
-          <ButtonSpinner label="Adding to cart" />
-        ) : (
-          <>
-            <ShoppingCart className="h-5 w-5" />
-            Add to Cart
-          </>
-        )}
-      </GiftWrapLabel>
+      {isLoading ? (
+        <ButtonSpinner label="Adding to cart" />
+      ) : (
+        <>
+          <ShoppingCart className="mr-2 h-5 w-5" />
+          Add to Cart
+        </>
+      )}
     </Button>
   );
 
@@ -1775,18 +1772,16 @@ const ProductDetail = () => {
       size="lg"
       onClick={handleAddToCart}
       disabled={isLoading || !selectedVariant?.availableForSale}
-      className="gift-wrap-btn font-cosmo-cta w-full text-base tracking-wide disabled:opacity-50"
+      className="font-cosmo-cta w-full rounded-md border border-neutral-700 bg-[#2c2c2c] text-base font-semibold tracking-wide text-neutral-50 shadow-none hover:bg-[#1f1f1f] disabled:opacity-50"
     >
-      <GiftWrapLabel>
-        {isLoading ? (
-          <ButtonSpinner label="Adding to cart" />
-        ) : (
-          <>
-            <ShoppingCart className="h-5 w-5" />
-            Add to cart
-          </>
-        )}
-      </GiftWrapLabel>
+      {isLoading ? (
+        <ButtonSpinner label="Adding to cart" />
+      ) : (
+        <>
+          <ShoppingCart className="mr-2 h-5 w-5 opacity-90" />
+          Add to cart
+        </>
+      )}
     </Button>
   );
 
@@ -2260,20 +2255,20 @@ const ProductDetail = () => {
             }}
             disabled={isLoading || !selectedVariant?.availableForSale}
             className={cn(
-              "gift-wrap-btn pointer-events-auto w-full max-w-sm text-base disabled:opacity-50",
-              isCosmoPdp && "font-cosmo-cta tracking-wide",
+              "pointer-events-auto w-full max-w-sm text-base font-semibold shadow-[0_10px_28px_-10px_rgba(0,0,0,0.45)] disabled:opacity-50",
+              isCosmoPdp
+                ? "font-cosmo-cta rounded-md border border-neutral-700 bg-[#2c2c2c] tracking-wide text-neutral-50 hover:bg-[#1f1f1f]"
+                : "bg-primary text-primary-foreground hover:bg-primary/90",
             )}
           >
-            <GiftWrapLabel>
-              {isLoading ? (
-                <ButtonSpinner label="Adding to cart" />
-              ) : (
-                <>
-                  <ShoppingCart className="h-5 w-5" />
-                  {isCosmoPdp ? "Add to cart" : "Add to Cart"}
-                </>
-              )}
-            </GiftWrapLabel>
+            {isLoading ? (
+              <ButtonSpinner label="Adding to cart" />
+            ) : (
+              <>
+                <ShoppingCart className={cn("mr-2 h-5 w-5", isCosmoPdp && "opacity-90")} />
+                {isCosmoPdp ? "Add to cart" : "Add to Cart"}
+              </>
+            )}
           </Button>
         </div>
       ) : null}
@@ -2357,18 +2352,16 @@ const ProductDetail = () => {
                 setStickyConfirmOpen(false);
               }}
               disabled={isLoading || !selectedVariant?.availableForSale}
-              className="gift-wrap-btn font-cosmo-cta"
+              className="font-cosmo-cta border border-neutral-700 bg-[#2c2c2c] text-neutral-50 hover:bg-[#1f1f1f]"
             >
-              <GiftWrapLabel>
-                {isLoading ? (
-                  <ButtonSpinner label="Adding to cart" />
-                ) : (
-                  <>
-                    <ShoppingCart className="h-5 w-5" />
-                    Add to cart
-                  </>
-                )}
-              </GiftWrapLabel>
+              {isLoading ? (
+                <ButtonSpinner label="Adding to cart" />
+              ) : (
+                <>
+                  <ShoppingCart className="mr-2 h-5 w-5 opacity-90" />
+                  Add to cart
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
