@@ -1457,8 +1457,8 @@
 }
 @keyframes xmas-sparkle {
   0%, 86% { opacity: 0; transform: translate(-50%, -50%) scale(0.2) rotate(0deg); }
-  91% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(45deg); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(90deg); }
+  91% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(12deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(24deg); }
 }
 @media (prefers-reduced-motion: reduce) {
   .xmas-garland__lit { animation: none; opacity: 1; }
@@ -1483,7 +1483,7 @@
   border-radius: 6px;
   color: hsl(var(--xmas-ribbon-ink)) !important;
   font-weight: 800 !important;
-  background: url("/__l5e/assets-v1/c8b387af-7046-4d98-9d16-c09733e04f26/candy_cane_wrapping_paper.jpg") center / 200px auto repeat !important;
+  background: url("/__l5e/assets-v1/c8b387af-7046-4d98-9d16-c09733e04f26/candy_cane_wrapping_paper.jpg") center / 300px auto repeat !important;
   box-shadow:
     0 8px 18px -8px hsl(var(--xmas-red-deep) / 0.75),
     inset 0 0 0 1px hsl(var(--xmas-red-deep) / 0.35),
@@ -1498,7 +1498,7 @@
   left: 0;
   right: 0;
   top: 50%;
-  height: 54%;
+  height: 50%;
   transform: translateY(-50%);
   background: var(--ribbon);
   box-shadow: 0 1px 2px hsl(var(--xmas-ribbon-shadow) / 0.6), 0 -1px 2px hsl(var(--xmas-ribbon-shadow) / 0.4);
