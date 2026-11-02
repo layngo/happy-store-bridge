@@ -19,6 +19,7 @@ import { cartItemsToAnalyticsItems } from "@/lib/analyticsItems";
 import { cn } from "@/lib/utils";
 import { normalizeOptionValueLabel } from "@/lib/displayOptionValue";
 import { FLASH_PET_CODE, getFlashDealState, getFreeQtyForItem } from "@/lib/flashDeal";
+import { GiftMessageOption } from "@/components/GiftMessageOption";
 
 function formatOptions(item: CartItem) {
   return item.selectedOptions
@@ -124,7 +125,7 @@ function CartLineItem({
 
 export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart } = useCartStore();
+  const { items, isLoading, isSyncing, updateQuantity, removeItem, getCheckoutUrl, syncCart, saveGiftMessage } = useCartStore();
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + parseFloat(item.price.amount) * item.quantity, 0);
   const flash = getFlashDealState(items);
@@ -145,6 +146,7 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
   const handleCheckout = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     if (busy || items.length === 0) return;
+    await saveGiftMessage();
     await syncCart();
     const url = getCheckoutUrl();
     if (url) {
@@ -239,9 +241,10 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
                     Checkout code {FLASH_PET_CODE}. Works with at least 3 items besides the free pet bed.
                   </p>
                 ) : null}
-                <p className="mb-4 text-xs leading-relaxed text-muted-foreground">
+                <p className="mb-3 text-xs leading-relaxed text-muted-foreground">
                   Shipping and taxes calculated at checkout.
                 </p>
+                <GiftMessageOption className="mb-4" />
                 <Button asChild className="h-12 w-full rounded-full text-base font-semibold" size="lg" disabled={items.length === 0 || busy}>
                   <a
                     href={checkoutUrl ?? "#"}

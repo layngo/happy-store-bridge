@@ -6,6 +6,7 @@ import {
   addLineToShopifyCart,
   updateShopifyCartLine,
   removeLineFromShopifyCart,
+  updateCartGiftMessage,
   storefrontApiRequest,
   CART_QUERY,
   type ShopifyProduct,
@@ -15,18 +16,27 @@ import { formatCheckoutUrl } from '@/lib/checkoutUrl';
 export type { CartItem };
 export type { ShopifyProduct };
 
+export const GIFT_MESSAGE_MAX_LENGTH = 250;
+
 interface CartStore {
   items: CartItem[];
   cartId: string | null;
   checkoutUrl: string | null;
   isLoading: boolean;
   isSyncing: boolean;
+  isGift: boolean;
+  giftMessage: string;
+  /** The gift message last saved to Shopify ('' = none), used to skip redundant saves. */
+  savedGiftMessage: string;
   addItem: (item: Omit<CartItem, 'lineId'>) => Promise<void>;
   updateQuantity: (variantId: string, quantity: number) => Promise<void>;
   removeItem: (variantId: string) => Promise<void>;
   clearCart: () => void;
   syncCart: () => Promise<void>;
   getCheckoutUrl: () => string | null;
+  setIsGift: (isGift: boolean) => void;
+  setGiftMessage: (message: string) => void;
+  saveGiftMessage: () => Promise<void>;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -37,6 +47,9 @@ export const useCartStore = create<CartStore>()(
       checkoutUrl: null,
       isLoading: false,
       isSyncing: false,
+      isGift: false,
+      giftMessage: '',
+      savedGiftMessage: '',
 
       addItem: async (item) => {
         const { items, cartId, clearCart } = get();
@@ -46,7 +59,7 @@ export const useCartStore = create<CartStore>()(
           if (!cartId) {
             const result = await createShopifyCart({ ...item, lineId: null });
             if (result) {
-              set({ cartId: result.cartId, checkoutUrl: result.checkoutUrl, items: [{ ...item, lineId: result.lineId }] });
+              set({ cartId: result.cartId, checkoutUrl: result.checkoutUrl, items: [{ ...item, lineId: result.lineId }], savedGiftMessage: '' });
             }
           } else if (existingItem) {
             const newQuantity = existingItem.quantity + item.quantity;
@@ -97,8 +110,23 @@ export const useCartStore = create<CartStore>()(
         finally { set({ isLoading: false }); }
       },
 
-      clearCart: () => set({ items: [], cartId: null, checkoutUrl: null }),
+      clearCart: () => set({ items: [], cartId: null, checkoutUrl: null, isGift: false, giftMessage: '', savedGiftMessage: '' }),
       getCheckoutUrl: () => formatCheckoutUrl(get().checkoutUrl),
+
+      setIsGift: (isGift) => set({ isGift }),
+      setGiftMessage: (message) => set({ giftMessage: message.slice(0, GIFT_MESSAGE_MAX_LENGTH) }),
+
+      saveGiftMessage: async () => {
+        const { cartId, isGift, giftMessage, savedGiftMessage, clearCart } = get();
+        if (!cartId) return;
+        const target = isGift ? giftMessage.trim() : '';
+        if (target === savedGiftMessage) return;
+        try {
+          const result = await updateCartGiftMessage(cartId, target);
+          if (result.success) set({ savedGiftMessage: target });
+          else if (result.cartNotFound) clearCart();
+        } catch (error) { console.error('Failed to save gift message:', error); }
+      },
 
       syncCart: async () => {
         const { cartId, isSyncing, clearCart } = get();
@@ -119,7 +147,14 @@ export const useCartStore = create<CartStore>()(
     {
       name: 'shopify-cart',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ items: state.items, cartId: state.cartId, checkoutUrl: state.checkoutUrl }),
+      partialize: (state) => ({
+        items: state.items,
+        cartId: state.cartId,
+        checkoutUrl: state.checkoutUrl,
+        isGift: state.isGift,
+        giftMessage: state.giftMessage,
+        savedGiftMessage: state.savedGiftMessage,
+      }),
       onRehydrateStorage: () => (state) => {
         if (state?.checkoutUrl) {
           state.checkoutUrl = formatCheckoutUrl(state.checkoutUrl);

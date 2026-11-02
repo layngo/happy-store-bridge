@@ -463,3 +463,43 @@ export async function updateCartDiscountCodes(
 }
 
 export { CART_QUERY };
+
+const CART_GIFT_MESSAGE_MUTATION = `
+  mutation cartGiftMessage($cartId: ID!, $note: String!, $attributes: [AttributeInput!]!) {
+    cartNoteUpdate(cartId: $cartId, note: $note) {
+      cart { id }
+      userErrors { field message }
+    }
+    cartAttributesUpdate(cartId: $cartId, attributes: $attributes) {
+      cart { id }
+      userErrors { field message }
+    }
+  }
+`;
+
+/**
+ * Saves (or clears, when `message` is empty) the buyer's gift message on the Shopify cart.
+ * Written to both the order note and an order attribute so it shows on the order in Shopify admin.
+ */
+export async function updateCartGiftMessage(
+  cartId: string,
+  message: string,
+): Promise<{ success: boolean; cartNotFound?: boolean }> {
+  const trimmed = message.trim();
+  const data = await storefrontApiRequest(CART_GIFT_MESSAGE_MUTATION, {
+    cartId,
+    note: trimmed ? `GIFT MESSAGE: ${trimmed}` : '',
+    attributes: trimmed
+      ? [
+          { key: 'Gift order', value: 'Yes' },
+          { key: 'Gift message', value: trimmed },
+        ]
+      : [],
+  });
+  const userErrors = [
+    ...(data?.data?.cartNoteUpdate?.userErrors || []),
+    ...(data?.data?.cartAttributesUpdate?.userErrors || []),
+  ];
+  if (isCartNotFoundError(userErrors)) return { success: false, cartNotFound: true };
+  return { success: userErrors.length === 0 && !!data };
+}
