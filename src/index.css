@@ -1498,7 +1498,7 @@
   left: 0;
   right: 0;
   top: 50%;
-  height: 60%;
+  height: 54%;
   transform: translateY(-50%);
   background: var(--ribbon);
   box-shadow: 0 1px 2px hsl(var(--xmas-ribbon-shadow) / 0.6), 0 -1px 2px hsl(var(--xmas-ribbon-shadow) / 0.4);
@@ -1511,7 +1511,7 @@
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 14px;
+  width: 16px;
   transform: translateX(-50%);
   background: linear-gradient(90deg,
     hsl(var(--xmas-ribbon-shadow)) 0%,
@@ -1535,9 +1535,9 @@
   z-index: 2;
   left: 50%;
   top: 0;
-  width: 46px;
+  width: 54px;
   height: auto;
-  transform: translate(-50%, -58%);
+  transform: translate(-50%, -60%);
   pointer-events: none;
   filter: drop-shadow(0 2px 2px hsl(var(--xmas-ribbon-shadow) / 0.55));
 }
@@ -1555,7 +1555,7 @@
   outline-offset: 3px;
 }
 @keyframes gift-bow-wiggle {
-  0%, 100% { transform: translate(-50%, -58%) rotate(0); }
+  0%, 100% { transform: translate(-50%, -60%) rotate(0); }
   35% { transform: translate(-50%, -64%) rotate(-7deg); }
   70% { transform: translate(-50%, -61%) rotate(5deg); }
 }
