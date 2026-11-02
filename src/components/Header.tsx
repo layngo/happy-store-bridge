@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { CartDrawer } from "./CartDrawer";
 import { SearchBar } from "./SearchBar";
 import { FlashDealBar } from "./FlashDealBar";
+import { ChristmasLights } from "./ChristmasLights";
 import { StorefrontHomeLink } from "./StorefrontHomeLink";
 import { cn } from "@/lib/utils";
 import { shopCollectionLinks } from "@/lib/siteNav";
@@ -129,10 +130,10 @@ export const Header = ({ variant = "default" }: { variant?: "default" | "light" 
         </div>
 
         <nav aria-label="Main navigation" className={cn(
-            "flex min-h-[2rem] w-full flex-wrap items-center justify-center gap-x-5 gap-y-2 px-2 pt-3 mt-2 border-t",
-            light ? "border-slate-200/80" : "border-border/60",
+            "relative flex min-h-[2rem] w-full flex-wrap items-center justify-center gap-x-5 gap-y-2 px-2 pt-7 mt-2",
           )}
         >
+          <ChristmasLights />
           <NavItem to="/" active={isHomePath(pathname)} light={light}>
             Home
           </NavItem>

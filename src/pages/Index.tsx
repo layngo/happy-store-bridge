@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
+import { GiftWrapLink } from "@/components/GiftWrapLink";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PageSeo } from "@/components/PageSeo";
 import { CollectionCard } from "@/components/CollectionCard";
@@ -157,12 +158,12 @@ const Index = () => {
               for Life, Play, and Travel
             </h1>
             <div className="pointer-events-auto">
-              <Link
+              <GiftWrapLink
                 to="/collections"
-                className="inline-flex rounded-full bg-primary px-8 py-2.5 text-sm font-semibold tracking-wide text-primary-foreground shadow-lg transition-colors hover:bg-primary/90 md:px-9 md:py-3 md:text-base"
+                className="mt-3 px-8 py-2.5 text-sm tracking-wide md:px-9 md:py-3 md:text-base"
               >
                 Shop Now
-              </Link>
+              </GiftWrapLink>
             </div>
           </div>
         </div>
@@ -288,12 +289,12 @@ const Index = () => {
               <span className="block whitespace-nowrap">bag you&apos;ll</span>
               <span className="block whitespace-nowrap">ever need</span>
             </p>
-            <Link
+            <GiftWrapLink
               to="/collections"
-              className="inline-flex rounded-full bg-primary px-8 py-2.5 text-sm font-semibold tracking-wide text-primary-foreground shadow-lg transition-colors hover:bg-primary/90 md:px-9 md:py-3 md:text-base"
+              className="mt-3 px-8 py-2.5 text-sm tracking-wide md:px-9 md:py-3 md:text-base"
             >
               Shop Now
-            </Link>
+            </GiftWrapLink>
           </div>
         </div>
       </section>
