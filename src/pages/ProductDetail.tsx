@@ -80,6 +80,7 @@ import {
 import { MILITARY_FIRST_RESPONDER_PATH, OUTDOOR_TACTICAL_COLLECTION_TITLE } from "@/pages/MilitaryFirstResponder";
 import { addToCart as trackAddToCart, viewItem } from "@/lib/analytics";
 import { variantLabel } from "@/lib/analyticsItems";
+import { GiftWrapLabel } from "@/components/GiftWrapLink";
 
 const COSMETIC_BAGS_V2_PATH = "/shop/cosmetic-bags";
 

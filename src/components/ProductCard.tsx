@@ -30,6 +30,7 @@ import {
 } from "@/lib/layNGoPlayMat";
 import { addToCart as trackAddToCart, selectItem } from "@/lib/analytics";
 import { productNodeToItem } from "@/lib/analyticsItems";
+import { GiftWrapLabel } from "@/components/GiftWrapLink";
 
 interface ProductCardProps {
   product: ShopifyProduct;
