@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
+import { GiftWrapLink } from "@/components/GiftWrapLink";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PageSeo } from "@/components/PageSeo";
 import { CollectionCard } from "@/components/CollectionCard";

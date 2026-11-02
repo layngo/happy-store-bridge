@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { CartDrawer } from "./CartDrawer";
 import { SearchBar } from "./SearchBar";
 import { FlashDealBar } from "./FlashDealBar";
+import { ChristmasLights } from "./ChristmasLights";
 import { StorefrontHomeLink } from "./StorefrontHomeLink";
 import { cn } from "@/lib/utils";
 import { shopCollectionLinks } from "@/lib/siteNav";
