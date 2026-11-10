@@ -9,7 +9,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useCartSync } from "@/hooks/useCartSync";
-import { useFlashDealCodeSync } from "@/hooks/useFlashDeal";
 import { FlashDealPopup } from "@/components/FlashDealPopup";
 import { useScrollDepth } from "@/hooks/useScrollDepth";
 import { FirstVisitDiscountPopup } from "@/components/FirstVisitDiscountPopup";
@@ -45,7 +44,6 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   useCartSync();
-  useFlashDealCodeSync();
   useScrollDepth();
   useEffect(() => {
     captureAttributionParams();
