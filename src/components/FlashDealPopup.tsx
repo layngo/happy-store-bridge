@@ -84,8 +84,9 @@ export function FlashDealPopup() {
           Congrats! You won a free pet bed
         </DialogTitle>
         <DialogDescription className="text-center text-lg font-semibold leading-snug text-foreground sm:text-xl">
-          <span className="block">Choose your color below and</span>
-          <span className="block">claim your free pet bed!</span>
+          Choose your color below and
+          <br />
+          <span className="whitespace-nowrap">claim your free pet bed!</span>
         </DialogDescription>
 
         <div className="mx-auto aspect-square w-48 overflow-hidden rounded-xl bg-muted">
