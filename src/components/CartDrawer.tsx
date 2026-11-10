@@ -236,11 +236,6 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
                     ${subtotal.toFixed(2)}
                   </span>
                 </div>
-                {flash.unlocked ? (
-                  <p className="mb-2 text-xs font-medium text-[hsl(var(--flash-deal-ink))]">
-                    Your free pet bed comes off automatically at checkout.
-                  </p>
-                ) : null}
                 <p className="mb-3 text-xs leading-relaxed text-muted-foreground">
                   Shipping and taxes calculated at checkout.
                 </p>

@@ -120,8 +120,6 @@ export function FlashDealPopup() {
           </div>
         ) : null}
 
-        <p className="text-center text-sm font-medium text-muted-foreground">No code needed. Your discount will apply automatically at checkout.</p>
-
         <Button className="h-12 w-full rounded-full text-base font-semibold" onClick={handleClaim} disabled={claiming}>
           Claim Your Free Pet Bed
         </Button>
