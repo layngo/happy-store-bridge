@@ -83,8 +83,8 @@ export function FlashDealPopup() {
         <DialogTitle className="brand-display text-center text-2xl leading-tight sm:text-3xl">
           Congrats! You won a free pet bed
         </DialogTitle>
-        <DialogDescription className="text-center text-sm text-muted-foreground">
-          Add it to your cart and use this code at checkout. It applies when the order has at least 3 items besides the free pet bed. Pet beds count too.
+        <DialogDescription className="text-center text-lg font-semibold leading-snug text-foreground sm:text-xl">
+          Choose your color below and claim your free pet bed!
         </DialogDescription>
 
         <div className="mx-auto aspect-square w-48 overflow-hidden rounded-xl bg-muted">
@@ -120,10 +120,10 @@ export function FlashDealPopup() {
           </div>
         ) : null}
 
-        <p className="text-center text-sm font-medium text-muted-foreground">No code needed. It comes off automatically at checkout.</p>
+        <p className="text-center text-sm font-medium text-muted-foreground">No code needed. Your discount will apply automatically at checkout.</p>
 
         <Button className="h-12 w-full rounded-full text-base font-semibold" onClick={handleClaim} disabled={claiming}>
-          Claim your free pet bed
+          Claim Your Free Pet Bed
         </Button>
         <Button
           type="button"
