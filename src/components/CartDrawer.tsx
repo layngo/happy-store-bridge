@@ -238,7 +238,7 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
                 </div>
                 {flash.unlocked ? (
                   <p className="mb-2 text-xs font-medium text-[hsl(var(--flash-deal-ink))]">
-                    Your free pet bed comes off automatically at checkout.
+                    Checkout code {FLASH_PET_CODE}. Works with at least 3 items besides the free pet bed.
                   </p>
                 ) : null}
                 <p className="mb-3 text-xs leading-relaxed text-muted-foreground">
