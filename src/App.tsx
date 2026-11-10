@@ -45,7 +45,6 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   useCartSync();
-  useFlashDealCodeSync();
   useScrollDepth();
   useEffect(() => {
     captureAttributionParams();

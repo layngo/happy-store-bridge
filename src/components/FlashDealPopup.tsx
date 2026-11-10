@@ -70,8 +70,7 @@ export function FlashDealPopup() {
           selectedOptions: variant.selectedOptions,
         });
       }
-      await copyCode();
-      toast.success("Free pet bed claimed", { description: `Code ${FLASH_PET_CODE} copied.` });
+      toast.success("Free pet bed claimed", { description: "It comes off automatically at checkout." });
       setOpen(false);
     } finally {
       setClaiming(false);
@@ -121,13 +120,7 @@ export function FlashDealPopup() {
           </div>
         ) : null}
 
-        <div className="flex items-center justify-between gap-3 rounded-xl border-2 border-dashed border-[hsl(var(--flash-deal))] px-4 py-3">
-          <span className="font-mono text-lg font-bold tracking-widest">{FLASH_PET_CODE}</span>
-          <Button type="button" variant="outline" size="sm" onClick={handleCopy}>
-            {copied ? <Check className="mr-1 h-4 w-4" /> : <Copy className="mr-1 h-4 w-4" />}
-            {copied ? "Copied" : "Copy"}
-          </Button>
-        </div>
+        <p className="text-center text-sm font-medium text-muted-foreground">No code needed. It comes off automatically at checkout.</p>
 
         <Button className="h-12 w-full rounded-full text-base font-semibold" onClick={handleClaim} disabled={claiming}>
           Claim your free pet bed
