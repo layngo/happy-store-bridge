@@ -123,8 +123,9 @@ export function FlashDealPopup() {
         ) : null}
 
         <p className="text-center text-sm font-medium text-muted-foreground">
-          <span className="block">No code needed. Your discount will apply</span>
-          <span className="block">automatically at checkout.</span>
+          No code needed. Your discount will apply
+          <br />
+          <span className="whitespace-nowrap">automatically at checkout.</span>
         </p>
 
         <Button className="h-12 w-full rounded-full text-base font-semibold" onClick={handleClaim} disabled={claiming}>
