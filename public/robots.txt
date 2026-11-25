@@ -58,7 +58,7 @@ Allow: /
 User-agent: OAI-SearchBot
 Allow: /
 
-# AI-readable site summary: https://www.layngo.com/llms.txt
-# Alternate: https://www.layngo.com/ai.txt
+# AI-readable site summary: https://layngo.com/llms.txt
+# Alternate: https://layngo.com/ai.txt
 
-Sitemap: https://www.layngo.com/sitemap.xml
+Sitemap: https://layngo.com/sitemap.xml
