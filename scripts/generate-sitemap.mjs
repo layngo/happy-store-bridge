@@ -10,7 +10,7 @@ import { dirname, join } from "path";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
-const SITE_URL = (process.env.VITE_SITE_URL || "https://www.layngo.com").replace(/\/$/, "");
+const SITE_URL = (process.env.VITE_SITE_URL || "https://layngo.com").replace(/\/$/, "");
 const SHOPIFY_URL =
   "https://layngo-new.myshopify.com/api/2025-07/graphql.json";
 const TOKEN = "2c8a6550838731f6030da2127100d9c9";
