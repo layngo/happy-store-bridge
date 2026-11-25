@@ -53,7 +53,7 @@ async function shopify(query: string, variables: Record<string, unknown> = {}) {
     body: JSON.stringify({ query, variables }),
   });
   if (!res.ok) throw new Error(`Shopify HTTP ${res.status}`);
-  const json = await res.json();
+  const json = (await res.json()) as { data?: any; errors?: unknown[] }; // eslint-disable-line @typescript-eslint/no-explicit-any
   if (json.errors?.length) throw new Error(JSON.stringify(json.errors));
   return json.data;
 }
