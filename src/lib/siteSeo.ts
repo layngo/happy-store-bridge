@@ -1,7 +1,7 @@
 /** Canonical production origin; override with VITE_SITE_URL at build time. */
 export const SITE_URL = (
   (import.meta.env.VITE_SITE_URL as string | undefined)?.replace(/\/$/, "") ||
-  "https://www.layngo.com"
+  "https://layngo.com"
 ).replace(/\/$/, "");
 
 /** Headless storefront home: used for logo / “back to shop” from cart & checkout flows. */
