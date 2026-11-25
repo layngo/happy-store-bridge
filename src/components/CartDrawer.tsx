@@ -243,8 +243,6 @@ export const CartDrawer = ({ triggerClassName }: { triggerClassName?: string }) 
                 <Button asChild className="h-12 w-full rounded-full text-base font-semibold" size="lg" disabled={items.length === 0 || busy}>
                   <a
                     href={checkoutUrl ?? "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     onClick={handleCheckout}
                   >
                     {busy ? (

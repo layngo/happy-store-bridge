@@ -210,8 +210,6 @@ const CartPage = () => {
                 >
                   <a
                     href={checkoutUrl ?? "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     onClick={handleCheckout}
                   >
                     {busy ? (

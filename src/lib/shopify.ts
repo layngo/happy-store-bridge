@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { getAttributionAttributes } from "@/lib/attribution";
 import { formatCheckoutUrl, SHOPIFY_STORE_PERMANENT_DOMAIN } from "@/lib/checkoutUrl";
 
 const SHOPIFY_API_VERSION = '2025-07';
@@ -481,6 +482,40 @@ const CART_GIFT_MESSAGE_MUTATION = `
  * Saves (or clears, when `message` is empty) the buyer's gift message on the Shopify cart.
  * Written to both the order note and an order attribute so it shows on the order in Shopify admin.
  */
+const CART_ATTRIBUTES_UPDATE_MUTATION = `
+  mutation cartAttributesUpdate($cartId: ID!, $attributes: [AttributeInput!]!) {
+    cartAttributesUpdate(cartId: $cartId, attributes: $attributes) {
+      cart { id }
+      userErrors { field message }
+    }
+  }
+`;
+
+/** Gift attributes for the cart (cartAttributesUpdate replaces all attributes, so callers merge). */
+export function giftAttributes(message: string): Array<{ key: string; value: string }> {
+  const trimmed = message.trim();
+  return trimmed
+    ? [
+        { key: 'Gift order', value: 'Yes' },
+        { key: 'Gift message', value: trimmed },
+      ]
+    : [];
+}
+
+/** Replace the cart's attributes (gift + attribution) via Storefront API. */
+export async function updateCartAttributes(
+  cartId: string,
+  attributes: Array<{ key: string; value: string }>,
+): Promise<{ success: boolean }> {
+  try {
+    const data = await storefrontApiRequest(CART_ATTRIBUTES_UPDATE_MUTATION, { cartId, attributes });
+    const userErrors = data?.data?.cartAttributesUpdate?.userErrors || [];
+    return { success: !!data && userErrors.length === 0 };
+  } catch {
+    return { success: false };
+  }
+}
+
 export async function updateCartGiftMessage(
   cartId: string,
   message: string,
@@ -489,12 +524,7 @@ export async function updateCartGiftMessage(
   const data = await storefrontApiRequest(CART_GIFT_MESSAGE_MUTATION, {
     cartId,
     note: trimmed ? `GIFT MESSAGE: ${trimmed}` : '',
-    attributes: trimmed
-      ? [
-          { key: 'Gift order', value: 'Yes' },
-          { key: 'Gift message', value: trimmed },
-        ]
-      : [],
+    attributes: [...giftAttributes(trimmed), ...getAttributionAttributes()],
   });
   const userErrors = [
     ...(data?.data?.cartNoteUpdate?.userErrors || []),
